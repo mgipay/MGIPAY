@@ -60,8 +60,8 @@ public class Test {
 	private static CodeTableResponse retriveCode() {
 		System.setProperty("http.proxyHost", "proxy.tcs.com");
 		System.setProperty("http.proxyPort", "8080");
-		System.setProperty("http.proxyUser", "538540");
-		System.setProperty("http.proxyPassword", "Bala@Feb84");
+		System.setProperty("http.proxyUser", "****");
+		System.setProperty("http.proxyPassword", "****");
 		CodeTableRequest codeTableRequest = new CodeTableRequest();
 
 		CodeTableResponse codeTableResponse = new CodeTableResponse();
