@@ -20,10 +20,6 @@ import com.mgipaypal.ac1211.client.SendValidationResponse;
 
 /**
  * @author TCS
- * 
- */
-/**
- * @author TCS
  *
  */
 public class AC1211Impl implements AC1211Manager {

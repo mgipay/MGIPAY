@@ -17,10 +17,16 @@ public enum Country {
 		currencyCode = currency;
 	}
 
+	/**
+	 * @return country code
+	 */
 	public String getCountryCode() {
 		return countryCode;
 	}
 
+	/**
+	 * @return currency code
+	 */
 	public String getCurrencyCode() {
 		return currencyCode;
 	}
