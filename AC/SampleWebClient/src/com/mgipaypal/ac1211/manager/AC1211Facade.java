@@ -70,7 +70,7 @@ public class AC1211Facade {
 
 	/**
 	 * @param commitTransactionRequest
-	 * @return
+	 * @return Commit Transaction Response
 	 */
 	public CommitTransactionResponse commitTransaction(
 			CommitTransactionRequest commitTransactionRequest) {
@@ -96,7 +96,7 @@ public class AC1211Facade {
 
 	/**
 	 * @param detailLookupRequest
-	 * @return
+	 * @return Detail Lookup Response
 	 */
 	public DetailLookupResponse detailLookup(
 			DetailLookupRequest detailLookupRequest) {
@@ -215,6 +215,10 @@ public class AC1211Facade {
 		return sendReversalResponse;
 	}
 
+	/**
+	 * @param sendReversalRequest
+	 * @return Send Validation Response
+	 */
 	public SendReversalResponse sendReversal(
 			SendReversalRequest sendReversalRequest) {
 
@@ -232,6 +236,10 @@ public class AC1211Facade {
 		return sendReversalResponse;
 	}
 
+	/**
+	 * @param sendValidationRequest
+	 * @return Send Validation Response
+	 */
 	public SendValidationResponse sendValidation(
 			SendValidationRequest sendValidationRequest) {
 		SendValidationResponse sendValidationResponse = new SendValidationResponse();
@@ -251,7 +259,11 @@ public class AC1211Facade {
 
 	}
 
+	/**
+	 * @return Code Table Response
+	 */
 	private static CodeTableResponse retrieveCodeTable() {
+		
 		AC1211Facade ac1211Facade = new AC1211Facade();
 
 		CodeTableRequest codeTableRequest = new CodeTableRequest();
@@ -272,7 +284,10 @@ public class AC1211Facade {
 		return ac1211Facade.codeTable(codeTableRequest);
 	}
 
-	public synchronized static List<String> getStateCode() {
+	/**
+	 * @return the List Of States In USA
+	 */
+	public synchronized  List<String> getStateCode() {
 
 		if (dayIdentifier == null
 				|| dayIdentifier != Calendar.getInstance().get(
