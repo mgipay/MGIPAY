@@ -13,6 +13,7 @@ import com.mgipaypal.ac1211.client.DetailLookupRequest;
 import com.mgipaypal.ac1211.client.DetailLookupResponse;
 import com.mgipaypal.ac1211.client.FeeLookupRequest;
 import com.mgipaypal.ac1211.client.FeeLookupResponse;
+import com.mgipaypal.ac1211.client.ProductType;
 import com.mgipaypal.ac1211.client.SendReversalRequest;
 import com.mgipaypal.ac1211.client.SendReversalResponse;
 import com.mgipaypal.ac1211.client.SendValidationRequest;
@@ -52,7 +53,7 @@ public class AC1211Facade {
 
 	private static List<String> stateCode = new ArrayList<String>();
 
-	public CodeTableResponse codeTable(CodeTableRequest codeTableRequest) {
+	private CodeTableResponse codeTable(CodeTableRequest codeTableRequest) {
 		CodeTableResponse codeTableResponse = new CodeTableResponse();
 		try {
 			AC1211Manager ac1211Manager = new AC1211Impl(AGENT_CONNECT_URL,
@@ -114,7 +115,15 @@ public class AC1211Facade {
 		return detailLookupResponse;
 	}
 
-	public FeeLookupResponse feeLookup(BigDecimal amountExcludingFee,
+	/**
+	 * @param amountExcludingFee
+	 * @param sendCountry
+	 * @param recieveCountry
+	 * @param sendCurrencey
+	 * @param recieveCurrency
+	 * @return the Fee Amount
+	 */
+	public BigDecimal feeLookup(BigDecimal amountExcludingFee,
 			String sendCountry, String recieveCountry, String sendCurrencey,
 			String recieveCurrency) {
 
@@ -123,6 +132,24 @@ public class AC1211Facade {
 
 			FeeLookupRequest feeLookupRequest = new FeeLookupRequest();
 
+			feeLookupRequest.setAgentID(MoneyGram_PayPal_Constants.AGENT_ID);
+			feeLookupRequest
+					.setAgentSequence(MoneyGram_PayPal_Constants.AGENT_SEQUENCE_NUMBER);
+			feeLookupRequest.setToken(MoneyGram_PayPal_Constants.TOKEN);
+			feeLookupRequest.setTimeStamp(Calendar.getInstance());
+			feeLookupRequest
+					.setApiVersion(MoneyGram_PayPal_Constants.API_VERSION);
+			feeLookupRequest
+					.setClientSoftwareVersion(MoneyGram_PayPal_Constants.CLIENT_SOFTWARE_VERSION);
+			feeLookupRequest.setAmountExcludingFee(amountExcludingFee);
+			feeLookupRequest.setProductType(ProductType.SEND);
+			feeLookupRequest.setReceiveCountry(recieveCountry);
+			feeLookupRequest
+					.setDeliveryOption(MoneyGram_PayPal_Constants.DELIVERY_OPTION);
+			feeLookupRequest.setReceiveCurrency(recieveCurrency);
+			feeLookupRequest.setSendCurrency(sendCurrencey);
+			feeLookupRequest.setAllOptions(false);
+
 			AC1211Manager ac1211Manager = new AC1211Impl(AGENT_CONNECT_URL,
 					DEFAULT_TIME_OUT);
 
@@ -133,14 +160,18 @@ public class AC1211Facade {
 			exception.printStackTrace();
 
 		}
-		return feeLookupResponse;
+		return feeLookupResponse.getFeeInfo()[0].getTotalAmount().subtract(
+				amountExcludingFee);
 	}
 
-	public FeeLookupResponse feeLookup(FeeLookupResponse feeLookupResponse) {
+	/**
+	 * @param feeLookupRequest
+	 * @return the Fee Amount
+	 */
+	public BigDecimal feeLookup(FeeLookupRequest feeLookupRequest) {
 
+		FeeLookupResponse feeLookupResponse = null;
 		try {
-
-			FeeLookupRequest feeLookupRequest = new FeeLookupRequest();
 
 			AC1211Manager ac1211Manager = new AC1211Impl(AGENT_CONNECT_URL,
 					DEFAULT_TIME_OUT);
@@ -152,7 +183,8 @@ public class AC1211Facade {
 			exception.printStackTrace();
 
 		}
-		return feeLookupResponse;
+		return feeLookupResponse.getFeeInfo()[0].getTotalAmount().subtract(
+				feeLookupRequest.getAmountExcludingFee());
 	}
 
 	/**
@@ -222,7 +254,8 @@ public class AC1211Facade {
 	public static List<String> getStateNames() {
 
 		if (dayIdentifier == null
-				|| dayIdentifier != Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) {
+				|| dayIdentifier != Calendar.getInstance().get(
+						Calendar.DAY_OF_WEEK)) {
 			dayIdentifier = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 
 			AC1211Facade ac1211Facade = new AC1211Facade();

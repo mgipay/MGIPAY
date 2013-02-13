@@ -27,6 +27,15 @@ public class Test {
 	 */
 	public static void main(String[] args) throws Exception {
 
+		System.setProperty("http.proxyHost", "proxy.tcs.com");
+		System.setProperty("http.proxyPort", "8080");
+		System.setProperty("http.proxyUser", "538540");
+		System.setProperty("http.proxyPassword", "Bala@Feb84");
+		
+		AC1211Facade ac1211Facade = new AC1211Facade();
+		System.err.println(ac1211Facade.getStateNames());
+		System.err.println(ac1211Facade.getStateNames());
+		
 		System.err.println(Calendar.getInstance().get(Calendar.MINUTE));
 
 		for (int k = 0; k < 10; k++) {
@@ -62,23 +71,26 @@ public class Test {
 		System.setProperty("http.proxyPort", "8080");
 		System.setProperty("http.proxyUser", "****");
 		System.setProperty("http.proxyPassword", "****");
-		CodeTableRequest codeTableRequest = new CodeTableRequest();
-
-		CodeTableResponse codeTableResponse = new CodeTableResponse();
-		codeTableRequest.setAgentAllowedOnly(true);
-		codeTableRequest.setApiVersion(MoneyGram_PayPal_Constants.API_VERSION);
-		codeTableRequest
-				.setClientSoftwareVersion(MoneyGram_PayPal_Constants.CLIENT_SOFTWARE_VERSION);
-		codeTableRequest
-				.setUnitProfileID(MoneyGram_PayPal_Constants.UNIT_PROFILE_ID);
-		codeTableRequest.setToken(MoneyGram_PayPal_Constants.TOKEN);
-		codeTableRequest
-				.setAgentSequence(MoneyGram_PayPal_Constants.AGENT_SEQUENCE_NUMBER);
-		codeTableRequest.setTimeStamp(Calendar.getInstance());
-		codeTableRequest.setLanguage(LanguageCode.ENGLISH.getLanguageCode());
-		AC1211Facade ac1211Facade = new AC1211Facade();
-		codeTableResponse = ac1211Facade.codeTable(codeTableRequest);
-		return codeTableResponse;
+//		CodeTableRequest codeTableRequest = new CodeTableRequest();
+//
+//		CodeTableResponse codeTableResponse = new CodeTableResponse();
+//		codeTableRequest.setAgentAllowedOnly(true);
+//		codeTableRequest.setApiVersion(MoneyGram_PayPal_Constants.API_VERSION);
+//		codeTableRequest
+//				.setClientSoftwareVersion(MoneyGram_PayPal_Constants.CLIENT_SOFTWARE_VERSION);
+//		codeTableRequest
+//				.setUnitProfileID(MoneyGram_PayPal_Constants.UNIT_PROFILE_ID);
+//		codeTableRequest.setToken(MoneyGram_PayPal_Constants.TOKEN);
+//		codeTableRequest
+//				.setAgentSequence(MoneyGram_PayPal_Constants.AGENT_SEQUENCE_NUMBER);
+//		codeTableRequest.setTimeStamp(Calendar.getInstance());
+//		codeTableRequest.setLanguage(LanguageCode.ENGLISH.getLanguageCode());
+	AC1211Facade ac1211Facade = new AC1211Facade();
+	System.err.println(ac1211Facade.getStateNames());
+	
+//		codeTableResponse = ac1211Facade.codeTable(codeTableRequest);
+//		return codeTableResponse;
+		return null;
 	}
 
 }
