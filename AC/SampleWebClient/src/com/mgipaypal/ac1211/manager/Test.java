@@ -33,8 +33,8 @@ public class Test {
 		System.setProperty("http.proxyPassword", "Bala@Feb84");
 		
 		AC1211Facade ac1211Facade = new AC1211Facade();
-		System.err.println(ac1211Facade.getStateNames());
-		System.err.println(ac1211Facade.getStateNames());
+		System.err.println(ac1211Facade.getStateCode());
+		System.err.println(ac1211Facade.getStateCode());
 		
 		System.err.println(Calendar.getInstance().get(Calendar.MINUTE));
 
@@ -86,7 +86,7 @@ public class Test {
 //		codeTableRequest.setTimeStamp(Calendar.getInstance());
 //		codeTableRequest.setLanguage(LanguageCode.ENGLISH.getLanguageCode());
 	AC1211Facade ac1211Facade = new AC1211Facade();
-	System.err.println(ac1211Facade.getStateNames());
+//	System.err.println(ac1211Facade.getStateNames());
 	
 //		codeTableResponse = ac1211Facade.codeTable(codeTableRequest);
 //		return codeTableResponse;

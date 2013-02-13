@@ -52,7 +52,7 @@ public class AC1211Facade {
 	private static Integer dayIdentifier = null;
 
 	private static List<String> stateCode = new ArrayList<String>();
-
+	
 	private CodeTableResponse codeTable(CodeTableRequest codeTableRequest) {
 		CodeTableResponse codeTableResponse = new CodeTableResponse();
 		try {
@@ -251,44 +251,43 @@ public class AC1211Facade {
 
 	}
 
-	public static List<String> getStateNames() {
+	private static CodeTableResponse retrieveCodeTable() {
+		AC1211Facade ac1211Facade = new AC1211Facade();
+
+		CodeTableRequest codeTableRequest = new CodeTableRequest();
+
+		codeTableRequest.setAgentAllowedOnly(true);
+		codeTableRequest.setApiVersion(MoneyGram_PayPal_Constants.API_VERSION);
+		codeTableRequest
+				.setClientSoftwareVersion(MoneyGram_PayPal_Constants.CLIENT_SOFTWARE_VERSION);
+		codeTableRequest
+				.setUnitProfileID(MoneyGram_PayPal_Constants.UNIT_PROFILE_ID);
+		codeTableRequest.setToken(MoneyGram_PayPal_Constants.TOKEN);
+		codeTableRequest
+				.setAgentSequence(MoneyGram_PayPal_Constants.AGENT_SEQUENCE_NUMBER);
+		codeTableRequest.setTimeStamp(Calendar.getInstance());
+		codeTableRequest.setLanguage(LanguageCode.ENGLISH.getLanguageCode());
+
+		
+		return ac1211Facade.codeTable(codeTableRequest);
+	}
+
+	public synchronized static List<String> getStateCode() {
 
 		if (dayIdentifier == null
 				|| dayIdentifier != Calendar.getInstance().get(
 						Calendar.DAY_OF_WEEK)) {
 			dayIdentifier = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 
-			AC1211Facade ac1211Facade = new AC1211Facade();
-
-			CodeTableRequest codeTableRequest = new CodeTableRequest();
-
-			codeTableRequest.setAgentAllowedOnly(true);
-			codeTableRequest
-					.setApiVersion(MoneyGram_PayPal_Constants.API_VERSION);
-			codeTableRequest
-					.setClientSoftwareVersion(MoneyGram_PayPal_Constants.CLIENT_SOFTWARE_VERSION);
-			codeTableRequest
-					.setUnitProfileID(MoneyGram_PayPal_Constants.UNIT_PROFILE_ID);
-			codeTableRequest.setToken(MoneyGram_PayPal_Constants.TOKEN);
-			codeTableRequest
-					.setAgentSequence(MoneyGram_PayPal_Constants.AGENT_SEQUENCE_NUMBER);
-			codeTableRequest.setTimeStamp(Calendar.getInstance());
-			codeTableRequest
-					.setLanguage(LanguageCode.ENGLISH.getLanguageCode());
-
-			CodeTableResponse codeTableResponse = ac1211Facade
-					.codeTable(codeTableRequest);
-
-			StateProvinceInfo[] stateProvinceInfos = codeTableResponse
+			StateProvinceInfo[] stateProvinceInfos = retrieveCodeTable()
 					.getStateProvinceInfo();
 
-			for (int i = 0; i <= stateProvinceInfos.length - 1; i++) {
-				if (stateProvinceInfos[i].getCountryCode().equals(
+			for (int index = 0; index <= stateProvinceInfos.length - 1; index++) {
+				if (stateProvinceInfos[index].getCountryCode().equals(
 						Country.AMERICA.getCountryCode())) {
-					stateCode.add(stateProvinceInfos[i].getStateProvinceName());
+					stateCode.add(stateProvinceInfos[index].getStateProvinceName());
 				}
 			}
-
 		}
 		return stateCode;
 	}
