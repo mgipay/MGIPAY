@@ -49,10 +49,10 @@ public class AC1211Facade {
 
 	public static Integer DEFAULT_TIME_OUT;
 
-	private static Integer dayIdentifier = null;
+	private static Integer DAY_IDENTIFIER = null;
 
 	private static List<String> stateCode = new ArrayList<String>();
-	
+
 	private CodeTableResponse codeTable(CodeTableRequest codeTableRequest) {
 		CodeTableResponse codeTableResponse = new CodeTableResponse();
 		try {
@@ -263,7 +263,7 @@ public class AC1211Facade {
 	 * @return Code Table Response
 	 */
 	private static CodeTableResponse retrieveCodeTable() {
-		
+
 		AC1211Facade ac1211Facade = new AC1211Facade();
 
 		CodeTableRequest codeTableRequest = new CodeTableRequest();
@@ -280,19 +280,18 @@ public class AC1211Facade {
 		codeTableRequest.setTimeStamp(Calendar.getInstance());
 		codeTableRequest.setLanguage(LanguageCode.ENGLISH.getLanguageCode());
 
-		
 		return ac1211Facade.codeTable(codeTableRequest);
 	}
 
 	/**
 	 * @return the List Of States In USA
 	 */
-	public synchronized  List<String> getStateCode() {
+	public static List<String> getStateCode() {
 
-		if (dayIdentifier == null
-				|| dayIdentifier != Calendar.getInstance().get(
+		if (DAY_IDENTIFIER == null
+				|| DAY_IDENTIFIER != Calendar.getInstance().get(
 						Calendar.DAY_OF_WEEK)) {
-			dayIdentifier = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+			DAY_IDENTIFIER = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 
 			StateProvinceInfo[] stateProvinceInfos = retrieveCodeTable()
 					.getStateProvinceInfo();
@@ -300,7 +299,8 @@ public class AC1211Facade {
 			for (int index = 0; index <= stateProvinceInfos.length - 1; index++) {
 				if (stateProvinceInfos[index].getCountryCode().equals(
 						Country.AMERICA.getCountryCode())) {
-					stateCode.add(stateProvinceInfos[index].getStateProvinceName());
+					stateCode.add(stateProvinceInfos[index]
+							.getStateProvinceName());
 				}
 			}
 		}
