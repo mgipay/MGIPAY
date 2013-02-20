@@ -5,15 +5,10 @@ package com.ac1211.client;
  * This class is not complete
  */
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
 
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
 /**
@@ -27,136 +22,32 @@ public final class AgentConnect_AgentConnect_Client {
 			"http://www.moneygram.com/AgentConnect1211", "AgentConnectService");
 
 	private AgentConnect_AgentConnect_Client() {
-		
+
 	}
 
-	public static void main(String args[]) throws java.lang.Exception {
-		System.setProperty("http.proxyHost", "proxy.tcs.com");
-		System.setProperty("http.proxyPort", "8080");
-		System.setProperty("http.proxyUser", "*****");
-		System.setProperty("http.proxyPassword", "****");
+	public static com.ac1211.client.FeeLookupResponse feeLookup(
+			com.ac1211.client.FeeLookupRequest feeLookupRequest)
+			throws Exception {
 
-		feeLookup();
-//		commitTransaction();
-		
-//		URL wsdlURL = new URL(
-//				"https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211");
-//
-//		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
-//		AgentConnect port = ss.getAgentConnect();
-//
-//		SendReversalRequest sendReversalRequest = new SendReversalRequest();
-//		sendReversalRequest.setAgentID("30014943");
-//		sendReversalRequest.setAgentSequence("9");
-//		sendReversalRequest.setToken("456");
-//
-//		XMLGregorianCalendar xgcal = DatatypeFactory.newInstance()
-//				.newXMLGregorianCalendar(new GregorianCalendar());
-//		sendReversalRequest.setTimeStamp(xgcal);
-//		sendReversalRequest.setApiVersion("1211");
-//		sendReversalRequest.setClientSoftwareVersion("v1");
-//		sendReversalRequest.setSendAmount(new BigDecimal(100));
-//		sendReversalRequest.setFeeAmount(new BigDecimal(12));
-//		sendReversalRequest.setSendCurrency("USA");
-//		sendReversalRequest.setReferenceNumber("3012228");
-//		sendReversalRequest
-//				.setReversalType(com.ac1211.client.SendReversalType.C);
-//		sendReversalRequest
-//				.setSendReversalReason(com.ac1211.client.SendReversalReasonCode.MS_NOT_USED);
-//		sendReversalRequest.setFeeRefund("Y");
-//
-//		System.out.println("Invoking sendReversal...");
-//		try {
-//			com.ac1211.client.SendReversalResponse _sendReversal__return = port
-//					.sendReversal(sendReversalRequest);
-//			System.out.println("sendReversal.result=" + _sendReversal__return);
-//
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			System.out.println("Expected exception: error has occurred.");
-//			System.out.println(e.toString());
-//		}
-
-		System.exit(0);
-	}
-
-	public static com.ac1211.client.FeeLookupResponse feeLookup() throws Exception {
-		
-		com.ac1211.client.FeeLookupRequest feeLookupRequest = new FeeLookupRequest();
 		URL wsdlURL = new URL(
 				"https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211");
 		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
 		AgentConnect port = ss.getAgentConnect();
-		feeLookupRequest.setAgentID("30014943");
-		feeLookupRequest.setAgentSequence("9");
-		feeLookupRequest.setToken("TEST");
-
-		XMLGregorianCalendar xgcal = DatatypeFactory.newInstance()
-				.newXMLGregorianCalendar(new GregorianCalendar());
-		feeLookupRequest.setTimeStamp(xgcal);
-
-		feeLookupRequest.setApiVersion("1211");
-		feeLookupRequest.setClientSoftwareVersion("v1");
-		feeLookupRequest.setAmountExcludingFee(new BigDecimal(100));
-		feeLookupRequest.setProductType(ProductType.SEND);
-		feeLookupRequest.setReceiveCountry("USA");
-		feeLookupRequest.setDeliveryOption("WILL_CALL");
-		feeLookupRequest.setReceiveCurrency("USD");
-		feeLookupRequest.setSendCurrency("USD");
-		feeLookupRequest.setAllOptions(false);
 		com.ac1211.client.FeeLookupResponse _feeLookup__return = port
 				.feeLookup(feeLookupRequest);
-		try {
-			
-			
-			System.out.println("feeLookup.result=" + _feeLookup__return);
-
-			if (_feeLookup__return != null) {
-				System.out.println("sessionId: "
-						+ _feeLookup__return.getMgiTransactionSessionID());
-				System.out.println("totalAmount: "
-						+ (_feeLookup__return.getFeeInfo().get(0)
-								.getTotalAmount()));
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Expected exception: error has occurred.");
-			System.out.println(e.toString());
-		}
 		return _feeLookup__return;
 	}
-	
-	
-	public static List<String> cadeTable() throws Exception {
+
+	public static List<String> cadeTable(
+			com.ac1211.client.CodeTableRequest codeTableRequest)
+			throws Exception {
 		URL wsdlURL = new URL(
 				"https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211");
 		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
 		AgentConnect port = ss.getAgentConnect();
 
-		com.ac1211.client.CodeTableRequest codeTableRequest = new CodeTableRequest();
-		codeTableRequest.setAgentAllowedOnly(true);
-		codeTableRequest.setApiVersion("1211");
-		codeTableRequest.setClientSoftwareVersion("v1");
-		codeTableRequest.setUnitProfileID(158178);
-		codeTableRequest.setToken("TEST");
-		codeTableRequest.setAgentSequence("9");
-		XMLGregorianCalendar xgcal = DatatypeFactory.newInstance()
-				.newXMLGregorianCalendar(new GregorianCalendar());
-		codeTableRequest.setTimeStamp(xgcal);
-		codeTableRequest.setLanguage("eng");
-		System.out.println("Invoking codeTable...");
 		com.ac1211.client.CodeTableResponse _codeTable__return = null;
-		try {
-			_codeTable__return = port.codeTable(codeTableRequest);
-			System.out.println("codeTable.result="
-					+ _codeTable__return.stateProvinceInfo.get(0)
-							.getStateProvinceName());
-
-		} catch (Exception e) {
-			System.out.println("Expected exception: error has occurred.");
-			System.out.println(e.toString());
-		}
+		_codeTable__return = port.codeTable(codeTableRequest);
 
 		List<String> stateCodeList = new ArrayList<String>();
 
@@ -165,167 +56,68 @@ public final class AgentConnect_AgentConnect_Client {
 				stateCodeList.add(stateProvinceInfo.getStateProvinceName());
 			}
 		}
-		System.err.println(stateCodeList);
 		return stateCodeList;
 	}
 
-	public static String commitTransaction()
+	public static com.ac1211.client.CommitTransactionResponse commitTransaction(
+			com.ac1211.client.CommitTransactionRequest commitTransactionRequest)
 			throws Exception {
+
+		URL wsdlURL = new URL(
+				"https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211");
+
+		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
+		AgentConnect port = ss.getAgentConnect();
+		com.ac1211.client.CommitTransactionResponse _commitTransaction__return = port
+				.commitTransaction(commitTransactionRequest);
+
+		return _commitTransaction__return;
+	}
+
+	public static com.ac1211.client.DetailLookupResponse detailLookup(
+			com.ac1211.client.DetailLookupRequest detailLookupRequest)
+			throws Exception {
+
+		URL wsdlURL = new URL(
+				"https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211");
+
+		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
+		AgentConnect port = ss.getAgentConnect();
+
+		com.ac1211.client.DetailLookupResponse _detailLookup__return = port
+				.detailLookup(detailLookupRequest);
+
+		return _detailLookup__return;
+	}
+
+	public static com.ac1211.client.SendReversalResponse sendReversal(
+			com.ac1211.client.SendReversalRequest sendReversalRequest)
+			throws Exception {
+		URL wsdlURL = new URL(
+				"https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211");
+
+		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
+		AgentConnect port = ss.getAgentConnect();
+
+		com.ac1211.client.SendReversalResponse _sendReversal__return = port
+				.sendReversal(sendReversalRequest);
+
+		return _sendReversal__return;
+	}
+
+	public static com.ac1211.client.SendValidationResponse sendValidation(
+			com.ac1211.client.SendValidationRequest sendValidationRequest)
+			throws Exception {
+
+		URL wsdlURL = new URL(
+				"https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211");
+
+		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
+		AgentConnect port = ss.getAgentConnect();
+
+		com.ac1211.client.SendValidationResponse _sendValidation__return = port
+				.sendValidation(sendValidationRequest);
 		
-		URL wsdlURL = new URL(
-				"https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211");
-
-		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
-		AgentConnect port = ss.getAgentConnect();
-
-		com.ac1211.client.CommitTransactionRequest commitTransactionRequest 
-		= new CommitTransactionRequest();
-
-		commitTransactionRequest.setAgentID("30014943");
-		commitTransactionRequest.setAgentSequence("9");
-		commitTransactionRequest.setToken("TEST");
-		XMLGregorianCalendar xgcal = DatatypeFactory.newInstance()
-				.newXMLGregorianCalendar(new GregorianCalendar());
-		commitTransactionRequest.setTimeStamp(xgcal);
-		commitTransactionRequest.setApiVersion("1211");
-		commitTransactionRequest.setClientSoftwareVersion("v1");
-		commitTransactionRequest.setMgiTransactionSessionID(feeLookup()
-				.getMgiTransactionSessionID());
-		commitTransactionRequest.setProductType(ProductType.SEND);
-
-		System.out.println("Invoking commitTransaction...");
-		try {
-			com.ac1211.client.CommitTransactionResponse _commitTransaction__return = port
-					.commitTransaction(commitTransactionRequest);
-			System.out.println("commitTransaction.result="
-					+ _commitTransaction__return);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Expected exception: error has occurred.");
-			System.out.println(e.toString());
-		}
-		return null;
-	}
-
-	public static String detailLookup() throws Exception {
-		
-		URL wsdlURL = new URL(
-				"https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211");
-
-		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
-		AgentConnect port = ss.getAgentConnect();
-
-		com.ac1211.client.DetailLookupRequest detailLookupRequest = new DetailLookupRequest();
-
-		detailLookupRequest.setAgentID("30014943");
-		detailLookupRequest.setAgentSequence("9");
-		detailLookupRequest.setApiVersion("1211");
-		detailLookupRequest.setClientSoftwareVersion("v1");
-		detailLookupRequest.setIncludeUseData(false);
-		detailLookupRequest.setLanguage("eng");
-		detailLookupRequest.setOperatorName("");
-		detailLookupRequest.setReferenceNumber("");
-
-		XMLGregorianCalendar xgcal = DatatypeFactory.newInstance()
-				.newXMLGregorianCalendar(new GregorianCalendar());
-		detailLookupRequest.setTimeStamp(xgcal);
-
-		detailLookupRequest.setToken("TEST");
-		detailLookupRequest.setUnitProfileID(157256);
-		detailLookupRequest.setUserID("");
-
-		System.out.println("Invoking detailLookup...");
-		try {
-			com.ac1211.client.DetailLookupResponse _detailLookup__return = port
-					.detailLookup(detailLookupRequest);
-			System.out.println("detailLookup.result=" + _detailLookup__return);
-
-		} catch (Exception e) {
-			System.out.println("Expected exception: error has occurred.");
-			System.out.println(e.toString());
-		}
-
-		return null;
-	}
-	
-	public static String sendReversal() throws Exception {
-		URL wsdlURL = new URL(
-				"https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211");
-
-		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
-		AgentConnect port = ss.getAgentConnect();
-
-		SendReversalRequest sendReversalRequest = new SendReversalRequest();
-		sendReversalRequest.setAgentID("");
-		sendReversalRequest.setAgentSequence("9");
-		sendReversalRequest.setToken("456");
-
-		XMLGregorianCalendar xgcal = DatatypeFactory.newInstance()
-				.newXMLGregorianCalendar(new GregorianCalendar());
-		sendReversalRequest.setTimeStamp(xgcal);
-		sendReversalRequest.setApiVersion("1211");
-		sendReversalRequest.setClientSoftwareVersion("v1");
-		sendReversalRequest.setSendAmount(new BigDecimal(100));
-		sendReversalRequest.setFeeAmount(new BigDecimal(12));
-		sendReversalRequest.setSendCurrency("USA");
-		sendReversalRequest.setReferenceNumber("3012228");
-		sendReversalRequest
-				.setReversalType(com.ac1211.client.SendReversalType.C);
-		sendReversalRequest
-				.setSendReversalReason(com.ac1211.client.SendReversalReasonCode.MS_NOT_USED);
-		sendReversalRequest.setFeeRefund("Y");
-
-		System.out.println("Invoking sendReversal...");
-		try {
-			com.ac1211.client.SendReversalResponse _sendReversal__return = port
-					.sendReversal(sendReversalRequest);
-			System.out.println("sendReversal.result=" + _sendReversal__return);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Expected exception: error has occurred.");
-			System.out.println(e.toString());
-		}
-		return null;
-	}
-
-	public static String sendValidation() throws Exception {
-		com.ac1211.client.SendValidationRequest sendValidationRequest 
-		= new com.ac1211.client.SendValidationRequest();
-
-		sendValidationRequest.setAgentID("30014943");
-		sendValidationRequest.setAgentSequence("9");
-		sendValidationRequest.setToken("TEST");
-		XMLGregorianCalendar xgcal = DatatypeFactory.newInstance()
-				.newXMLGregorianCalendar(new GregorianCalendar());
-
-		sendValidationRequest.setTimeStamp(xgcal);
-		sendValidationRequest.setApiVersion("1211");
-		sendValidationRequest.setClientSoftwareVersion("v1");
-		sendValidationRequest.setOperatorName("pgui");
-		sendValidationRequest.setAmount(new BigDecimal(100));
-		sendValidationRequest.setDestinationCountry("USA");
-		sendValidationRequest.setDestinationState("MN");
-		sendValidationRequest.setDeliveryOption("WILL_CALL");
-		sendValidationRequest.setReceiveCurrency("USD");
-		sendValidationRequest.setSenderFirstName("SF");
-		sendValidationRequest.setSenderLastName("SL");
-		sendValidationRequest.setSenderAddress("1351 H AVE S");
-		sendValidationRequest.setSenderCity("CHNMPLS");
-		sendValidationRequest.setSenderState("MN");
-		sendValidationRequest.setSenderZipCode("55416");
-		sendValidationRequest.setSenderCountry("USD");
-		sendValidationRequest.setSenderHomePhone("9522320253");
-		sendValidationRequest.setReceiverFirstName("N R F");
-		sendValidationRequest.setReceiverLastName("N R L");
-		sendValidationRequest.setSendCurrency("USA");
-		sendValidationRequest.setConsumerId("0");
-		sendValidationRequest.setFormFreeStaging(false);
-		sendValidationRequest.setTimeToLive(new BigInteger("30"));
-		sendValidationRequest.setPrimaryReceiptLanguage("eng");
-		sendValidationRequest.setSecondaryReceiptLanguage("spa");
-
-		return null;
+		return _sendValidation__return;
 	}
 }
