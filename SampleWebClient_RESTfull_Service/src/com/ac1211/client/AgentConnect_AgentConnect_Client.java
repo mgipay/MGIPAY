@@ -33,8 +33,8 @@ public final class AgentConnect_AgentConnect_Client {
 	public static void main(String args[]) throws java.lang.Exception {
 		System.setProperty("http.proxyHost", "proxy.tcs.com");
 		System.setProperty("http.proxyPort", "8080");
-		System.setProperty("http.proxyUser", "538540");
-		System.setProperty("http.proxyPassword", "Bala@Feb84");
+		System.setProperty("http.proxyUser", "*****");
+		System.setProperty("http.proxyPassword", "****");
 
 		feeLookup();
 //		commitTransaction();
