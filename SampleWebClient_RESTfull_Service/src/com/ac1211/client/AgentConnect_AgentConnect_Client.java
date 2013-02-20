@@ -5,6 +5,7 @@ package com.ac1211.client;
  * This class is not complete
  */
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,22 +30,28 @@ public final class AgentConnect_AgentConnect_Client {
 			com.ac1211.client.FeeLookupRequest feeLookupRequest)
 			throws Exception {
 
-		URL wsdlURL = new URL(
-				"https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211");
-		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
-		AgentConnect port = ss.getAgentConnect();
+		AgentConnect port = getPort();
 		com.ac1211.client.FeeLookupResponse _feeLookup__return = port
 				.feeLookup(feeLookupRequest);
 		return _feeLookup__return;
 	}
 
-	public static List<String> cadeTable(
-			com.ac1211.client.CodeTableRequest codeTableRequest)
-			throws Exception {
+	/**
+	 * @return
+	 * @throws MalformedURLException
+	 */
+	private static AgentConnect getPort() throws MalformedURLException {
 		URL wsdlURL = new URL(
 				"https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211");
 		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
 		AgentConnect port = ss.getAgentConnect();
+		return port;
+	}
+
+	public static List<String> cadeTable(
+			com.ac1211.client.CodeTableRequest codeTableRequest)
+			throws Exception {
+		AgentConnect port = getPort();
 
 		com.ac1211.client.CodeTableResponse _codeTable__return = null;
 		_codeTable__return = port.codeTable(codeTableRequest);
@@ -63,11 +70,7 @@ public final class AgentConnect_AgentConnect_Client {
 			com.ac1211.client.CommitTransactionRequest commitTransactionRequest)
 			throws Exception {
 
-		URL wsdlURL = new URL(
-				"https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211");
-
-		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
-		AgentConnect port = ss.getAgentConnect();
+		AgentConnect port = getPort();
 		com.ac1211.client.CommitTransactionResponse _commitTransaction__return = port
 				.commitTransaction(commitTransactionRequest);
 
@@ -78,11 +81,7 @@ public final class AgentConnect_AgentConnect_Client {
 			com.ac1211.client.DetailLookupRequest detailLookupRequest)
 			throws Exception {
 
-		URL wsdlURL = new URL(
-				"https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211");
-
-		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
-		AgentConnect port = ss.getAgentConnect();
+		AgentConnect port = getPort();
 
 		com.ac1211.client.DetailLookupResponse _detailLookup__return = port
 				.detailLookup(detailLookupRequest);
@@ -93,11 +92,7 @@ public final class AgentConnect_AgentConnect_Client {
 	public static com.ac1211.client.SendReversalResponse sendReversal(
 			com.ac1211.client.SendReversalRequest sendReversalRequest)
 			throws Exception {
-		URL wsdlURL = new URL(
-				"https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211");
-
-		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
-		AgentConnect port = ss.getAgentConnect();
+		AgentConnect port = getPort();
 
 		com.ac1211.client.SendReversalResponse _sendReversal__return = port
 				.sendReversal(sendReversalRequest);
@@ -109,11 +104,7 @@ public final class AgentConnect_AgentConnect_Client {
 			com.ac1211.client.SendValidationRequest sendValidationRequest)
 			throws Exception {
 
-		URL wsdlURL = new URL(
-				"https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211");
-
-		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
-		AgentConnect port = ss.getAgentConnect();
+		AgentConnect port = getPort();
 
 		com.ac1211.client.SendValidationResponse _sendValidation__return = port
 				.sendValidation(sendValidationRequest);

@@ -24,7 +24,7 @@ public interface AgentConnect1211Manager {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/getfeelookup")
+	@Path("/feeLookup")
 	com.ac1211.client.FeeLookupResponse feeLookup(
 			@Context HttpServletRequest request,
 			@Context HttpServletResponse response,
