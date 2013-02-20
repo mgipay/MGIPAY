@@ -36,46 +36,46 @@ public final class AgentConnect_AgentConnect_Client {
 		System.setProperty("http.proxyUser", "538540");
 		System.setProperty("http.proxyPassword", "Bala@Feb84");
 
+		feeLookup();
+//		commitTransaction();
 		
-		commitTransaction();
-		
-		URL wsdlURL = new URL(
-				"https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211");
-
-		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
-		AgentConnect port = ss.getAgentConnect();
-
-		SendReversalRequest sendReversalRequest = new SendReversalRequest();
-		sendReversalRequest.setAgentID("30014943");
-		sendReversalRequest.setAgentSequence("9");
-		sendReversalRequest.setToken("456");
-
-		XMLGregorianCalendar xgcal = DatatypeFactory.newInstance()
-				.newXMLGregorianCalendar(new GregorianCalendar());
-		sendReversalRequest.setTimeStamp(xgcal);
-		sendReversalRequest.setApiVersion("1211");
-		sendReversalRequest.setClientSoftwareVersion("v1");
-		sendReversalRequest.setSendAmount(new BigDecimal(100));
-		sendReversalRequest.setFeeAmount(new BigDecimal(12));
-		sendReversalRequest.setSendCurrency("USA");
-		sendReversalRequest.setReferenceNumber("3012228");
-		sendReversalRequest
-				.setReversalType(com.ac1211.client.SendReversalType.C);
-		sendReversalRequest
-				.setSendReversalReason(com.ac1211.client.SendReversalReasonCode.MS_NOT_USED);
-		sendReversalRequest.setFeeRefund("Y");
-
-		System.out.println("Invoking sendReversal...");
-		try {
-			com.ac1211.client.SendReversalResponse _sendReversal__return = port
-					.sendReversal(sendReversalRequest);
-			System.out.println("sendReversal.result=" + _sendReversal__return);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Expected exception: error has occurred.");
-			System.out.println(e.toString());
-		}
+//		URL wsdlURL = new URL(
+//				"https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211");
+//
+//		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
+//		AgentConnect port = ss.getAgentConnect();
+//
+//		SendReversalRequest sendReversalRequest = new SendReversalRequest();
+//		sendReversalRequest.setAgentID("30014943");
+//		sendReversalRequest.setAgentSequence("9");
+//		sendReversalRequest.setToken("456");
+//
+//		XMLGregorianCalendar xgcal = DatatypeFactory.newInstance()
+//				.newXMLGregorianCalendar(new GregorianCalendar());
+//		sendReversalRequest.setTimeStamp(xgcal);
+//		sendReversalRequest.setApiVersion("1211");
+//		sendReversalRequest.setClientSoftwareVersion("v1");
+//		sendReversalRequest.setSendAmount(new BigDecimal(100));
+//		sendReversalRequest.setFeeAmount(new BigDecimal(12));
+//		sendReversalRequest.setSendCurrency("USA");
+//		sendReversalRequest.setReferenceNumber("3012228");
+//		sendReversalRequest
+//				.setReversalType(com.ac1211.client.SendReversalType.C);
+//		sendReversalRequest
+//				.setSendReversalReason(com.ac1211.client.SendReversalReasonCode.MS_NOT_USED);
+//		sendReversalRequest.setFeeRefund("Y");
+//
+//		System.out.println("Invoking sendReversal...");
+//		try {
+//			com.ac1211.client.SendReversalResponse _sendReversal__return = port
+//					.sendReversal(sendReversalRequest);
+//			System.out.println("sendReversal.result=" + _sendReversal__return);
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			System.out.println("Expected exception: error has occurred.");
+//			System.out.println(e.toString());
+//		}
 
 		System.exit(0);
 	}
