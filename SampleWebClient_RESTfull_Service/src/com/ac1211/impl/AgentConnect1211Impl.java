@@ -36,6 +36,17 @@ public class AgentConnect1211Impl implements AgentConnect1211Manager {
 	public AgentConnect1211Impl() {
 	}
 
+	private AgentConnect_AgentConnect_Client agentConnect_AgentConnect_Client;
+
+	public AgentConnect_AgentConnect_Client getAgentConnect_AgentConnect_Client() {
+		return agentConnect_AgentConnect_Client;
+	}
+
+	public void setAgentConnect_AgentConnect_Client(
+			AgentConnect_AgentConnect_Client agentConnect_AgentConnect_Client) {
+		this.agentConnect_AgentConnect_Client = agentConnect_AgentConnect_Client;
+	}
+
 	@Override
 	public FeeLookupResponse feeLookup(@Context HttpServletRequest request,
 			@Context HttpServletResponse response,
@@ -59,9 +70,14 @@ public class AgentConnect1211Impl implements AgentConnect1211Manager {
 		feeLookupRequest.setSendCurrency("USD");
 		feeLookupRequest.setAllOptions(false);
 
-		System.err.println(com.ac1211.client.AgentConnect_AgentConnect_Client
+		/*System.err.println(agentConnect_AgentConnect_Client
 				.feeLookup(feeLookupRequest).getFeeInfo().get(0)
-				.getTotalAmount());
+				.getTotalAmount());*/
+		agentConnect_AgentConnect_Client
+		.feeLookup(feeLookupRequest);
+
+		// System.err.println("Dynamic");
+		// System.err.println(amount);
 		return null;
 	}
 
@@ -81,7 +97,7 @@ public class AgentConnect1211Impl implements AgentConnect1211Manager {
 		codeTableRequest.setTimeStamp(xgcal);
 		codeTableRequest.setLanguage("eng");
 		System.out.println("Invoking codeTable...");
-		List<String> stateCodeList = AgentConnect_AgentConnect_Client
+		List<String> stateCodeList = agentConnect_AgentConnect_Client
 				.cadeTable(codeTableRequest);
 
 		return stateCodeList;
@@ -91,8 +107,7 @@ public class AgentConnect1211Impl implements AgentConnect1211Manager {
 	public String commitTransaction(@Context HttpServletRequest request,
 			@Context HttpServletResponse response) throws Exception {
 
-		com.ac1211.client.CommitTransactionRequest commitTransactionRequest 
-		= new CommitTransactionRequest();
+		com.ac1211.client.CommitTransactionRequest commitTransactionRequest = new CommitTransactionRequest();
 
 		commitTransactionRequest.setAgentID("30014943");
 		commitTransactionRequest.setAgentSequence("9");
@@ -104,8 +119,7 @@ public class AgentConnect1211Impl implements AgentConnect1211Manager {
 		commitTransactionRequest.setClientSoftwareVersion("v1");
 		commitTransactionRequest.setMgiTransactionSessionID("");
 		commitTransactionRequest.setProductType(ProductType.SEND);
-		com.ac1211.client.CommitTransactionResponse commitTransactionResponse
-		= AgentConnect_AgentConnect_Client
+		com.ac1211.client.CommitTransactionResponse commitTransactionResponse = agentConnect_AgentConnect_Client
 				.commitTransaction(commitTransactionRequest);
 		return null;
 	}
@@ -133,7 +147,7 @@ public class AgentConnect1211Impl implements AgentConnect1211Manager {
 		detailLookupRequest.setUnitProfileID(157256);
 		detailLookupRequest.setUserID("");
 
-		com.ac1211.client.DetailLookupResponse detailLookupResponse = AgentConnect_AgentConnect_Client
+		com.ac1211.client.DetailLookupResponse detailLookupResponse = agentConnect_AgentConnect_Client
 				.detailLookup(detailLookupRequest);
 		System.out.println("Invoking detailLookup...");
 
@@ -164,7 +178,7 @@ public class AgentConnect1211Impl implements AgentConnect1211Manager {
 				.setSendReversalReason(com.ac1211.client.SendReversalReasonCode.MS_NOT_USED);
 		sendReversalRequest.setFeeRefund("Y");
 
-		com.ac1211.client.SendReversalResponse sendReversalResponse = AgentConnect_AgentConnect_Client
+		com.ac1211.client.SendReversalResponse sendReversalResponse = agentConnect_AgentConnect_Client
 				.sendReversal(sendReversalRequest);
 
 		System.out.println("Invoking sendReversal...");
@@ -174,8 +188,7 @@ public class AgentConnect1211Impl implements AgentConnect1211Manager {
 	@Override
 	public String sendValidation(@Context HttpServletRequest request,
 			@Context HttpServletResponse response) throws Exception {
-		com.ac1211.client.SendValidationRequest sendValidationRequest 
-		= new com.ac1211.client.SendValidationRequest();
+		com.ac1211.client.SendValidationRequest sendValidationRequest = new com.ac1211.client.SendValidationRequest();
 
 		sendValidationRequest.setAgentID("30014943");
 		sendValidationRequest.setAgentSequence("9");
@@ -208,7 +221,7 @@ public class AgentConnect1211Impl implements AgentConnect1211Manager {
 		sendValidationRequest.setTimeToLive(new BigInteger("30"));
 		sendValidationRequest.setPrimaryReceiptLanguage("eng");
 		sendValidationRequest.setSecondaryReceiptLanguage("spa");
-		com.ac1211.client.SendValidationResponse sendValidationResponse = AgentConnect_AgentConnect_Client
+		com.ac1211.client.SendValidationResponse sendValidationResponse = agentConnect_AgentConnect_Client
 				.sendValidation(sendValidationRequest);
 		return null;
 	}

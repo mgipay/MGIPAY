@@ -26,16 +26,6 @@ public final class AgentConnect_AgentConnect_Client {
 
 	}
 
-	public static com.ac1211.client.FeeLookupResponse feeLookup(
-			com.ac1211.client.FeeLookupRequest feeLookupRequest)
-			throws Exception {
-
-		AgentConnect port = getPort();
-		com.ac1211.client.FeeLookupResponse _feeLookup__return = port
-				.feeLookup(feeLookupRequest);
-		return _feeLookup__return;
-	}
-
 	/**
 	 * @return
 	 * @throws MalformedURLException
@@ -46,6 +36,17 @@ public final class AgentConnect_AgentConnect_Client {
 		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
 		AgentConnect port = ss.getAgentConnect();
 		return port;
+	}
+
+	public static com.ac1211.client.FeeLookupResponse feeLookup(
+			com.ac1211.client.FeeLookupRequest feeLookupRequest)
+			throws Exception {
+
+		System.err.println("agentConnect_AgentConnect_Client");
+		AgentConnect port = getPort();
+		com.ac1211.client.FeeLookupResponse _feeLookup__return = port
+				.feeLookup(feeLookupRequest);
+		return _feeLookup__return;
 	}
 
 	public static List<String> cadeTable(
@@ -108,7 +109,7 @@ public final class AgentConnect_AgentConnect_Client {
 
 		com.ac1211.client.SendValidationResponse _sendValidation__return = port
 				.sendValidation(sendValidationRequest);
-		
+
 		return _sendValidation__return;
 	}
 }

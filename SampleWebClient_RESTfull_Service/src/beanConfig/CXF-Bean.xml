@@ -19,9 +19,9 @@ http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd http://cxf.a
 			<ref bean="AgentConnect1211Impl" />
 		</jaxrs:serviceBeans>
 	</jaxrs:server>
-	<bean id="AgentConnect1211Impl" class="com.ac1211.facade.AgentConnect1211Impl">
-	<property name="agentConnect" ref="agentConnect"/>
+	<bean id="AgentConnect1211Impl" class="com.ac1211.impl.AgentConnect1211Impl">
+	<property name="agentConnect_AgentConnect_Client" ref="agentConnect_AgentConnect_Client"/>
 	</bean>
 	 <!-- DAO IMPLEMENTATION -->
-    <bean id="agentConnect" class="com.ac1211.client.AgentConnect_AgentConnect_Client_1"/>
+    <bean id="agentConnect_AgentConnect_Client" class="com.ac1211.client.AgentConnect_AgentConnect_Client"/>
 </beans>
