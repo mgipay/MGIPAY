@@ -51,6 +51,7 @@ public class AgentConnect1211Impl implements AgentConnect1211Manager {
 	public FeeLookupResponse feeLookup(@Context HttpServletRequest request,
 			@Context HttpServletResponse response,
 			@QueryParam("amount") String amount) throws Exception {
+		
 		com.ac1211.client.FeeLookupRequest feeLookupRequest = new com.ac1211.client.FeeLookupRequest();
 		feeLookupRequest.setAgentID("30014943");
 		feeLookupRequest.setAgentSequence("9");
