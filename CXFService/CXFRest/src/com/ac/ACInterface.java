@@ -10,20 +10,19 @@ import com.ac1211.client.SendValidationResponse;
 
 public interface ACInterface {
 
-	String getState(HttpServletRequest request,
-			HttpServletResponse response);
-
-	CommitTransactionResponse commitTransaction(HttpServletRequest request,
-			HttpServletResponse response);
-
 	DetailLookupResponse detailLookUp(HttpServletRequest request,
 			HttpServletResponse response);
 
-	SendReversalResponse sendReversal(HttpServletRequest request,
-			HttpServletResponse response);
-
-	SendValidationResponse sendValidation(HttpServletRequest request,
-			HttpServletResponse response);
-
 	String getFee(FeeRequestInputBean feeRequestInputBean);
+
+	CommitTransactionResponse commitTransaction(
+			CommitTransactionInputBean commitTransactionInputBean);
+
+	String getState();
+
+	SendReversalResponse sendReversal(
+			SendReversalInputBean sendReversalInputBean);
+
+	SendValidationResponse sendValidation(
+			SendValidationInputBean sendValidationInputBean);
 }

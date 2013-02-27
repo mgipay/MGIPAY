@@ -1,17 +1,19 @@
 package com.ac;
 
+import java.math.BigDecimal;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name="FeeRequestInputBean")
+@XmlRootElement(name = "FeeRequestInputBean")
 public class FeeRequestInputBean {
 
-	private String amount;
+	private BigDecimal amount;
 
-	public String getAmount() {
+	public BigDecimal getAmount() {
 		return amount;
 	}
 
-	public void setAmount(String amount) {
+	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
 

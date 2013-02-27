@@ -1,6 +1,5 @@
 package com.ac;
 
-import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -8,7 +7,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -26,7 +25,7 @@ public class ACImpl implements ACInterface {
 
 	private static Integer DAY_IDENTIFIER = null;
 
-	@GET
+	@POST
 	@Path("/getFee")
 	@Override
 	public String getFee(FeeRequestInputBean feeRequestInputBean) {
@@ -43,8 +42,8 @@ public class ACImpl implements ACInterface {
 			feeLookupRequest.setTimeStamp(getTimeStamp());
 			feeLookupRequest.setApiVersion("1211");
 			feeLookupRequest.setClientSoftwareVersion("v1");
-			feeLookupRequest.setAmountExcludingFee(new BigDecimal(
-					feeRequestInputBean.getAmount()));
+			feeLookupRequest.setAmountExcludingFee(feeRequestInputBean
+					.getAmount());
 			feeLookupRequest.setProductType(com.ac1211.client.ProductType.SEND);
 			feeLookupRequest.setReceiveCountry("USA");
 			feeLookupRequest.setDeliveryOption("WILL_CALL");
@@ -74,11 +73,10 @@ public class ACImpl implements ACInterface {
 		return xgcal;
 	}
 
-	@GET
+	@POST
 	@Path("/getStateCode")
 	@Override
-	public String getState(@Context HttpServletRequest request,
-			@Context HttpServletResponse response) {
+	public String getState() {
 		if (DAY_IDENTIFIER == null
 				|| DAY_IDENTIFIER != Calendar.getInstance().get(
 						Calendar.DAY_OF_WEEK)) {
@@ -109,12 +107,11 @@ public class ACImpl implements ACInterface {
 		return STATES_IN_USA;
 	}
 
-	@GET
+	@POST
 	@Path("/commitTransaction")
 	@Override
 	public com.ac1211.client.CommitTransactionResponse commitTransaction(
-			@Context HttpServletRequest request,
-			@Context HttpServletResponse response) {
+			CommitTransactionInputBean commitTransactionInputBean) {
 		setCredentials();
 		com.ac1211.client.CommitTransactionRequest commitTransactionRequest = new com.ac1211.client.CommitTransactionRequest();
 		com.ac1211.client.CommitTransactionResponse commitTransactionResponse = null;
@@ -125,7 +122,9 @@ public class ACImpl implements ACInterface {
 		commitTransactionRequest.setTimeStamp(getTimeStamp());
 		commitTransactionRequest.setApiVersion("1211");
 		commitTransactionRequest.setClientSoftwareVersion("v1");
-		commitTransactionRequest.setMgiTransactionSessionID("");
+		commitTransactionRequest
+				.setMgiTransactionSessionID(commitTransactionInputBean
+						.getMgiTransactionSessionID().trim());
 		commitTransactionRequest
 				.setProductType(com.ac1211.client.ProductType.SEND);
 		try {
@@ -139,7 +138,7 @@ public class ACImpl implements ACInterface {
 
 	}
 
-	@GET
+	@POST
 	@Path("/detailLookUp")
 	@Override
 	public com.ac1211.client.DetailLookupResponse detailLookUp(
@@ -173,12 +172,11 @@ public class ACImpl implements ACInterface {
 		return detailLookupResponse;
 	}
 
-	@GET
+	@POST
 	@Path("/sendReversal")
 	@Override
 	public com.ac1211.client.SendReversalResponse sendReversal(
-			@Context HttpServletRequest request,
-			@Context HttpServletResponse response) {
+			SendReversalInputBean sendReversalInputBean) {
 		setCredentials();
 		com.ac1211.client.SendReversalRequest sendReversalRequest = new com.ac1211.client.SendReversalRequest();
 		sendReversalRequest.setAgentID("");
@@ -188,10 +186,13 @@ public class ACImpl implements ACInterface {
 		sendReversalRequest.setTimeStamp(getTimeStamp());
 		sendReversalRequest.setApiVersion("1211");
 		sendReversalRequest.setClientSoftwareVersion("v1");
-		sendReversalRequest.setSendAmount(new BigDecimal(100));
-		sendReversalRequest.setFeeAmount(new BigDecimal(12));
-		sendReversalRequest.setSendCurrency("USA");
-		sendReversalRequest.setReferenceNumber("3012228");
+		sendReversalRequest
+				.setSendAmount(sendReversalInputBean.getSendAmount());
+		sendReversalRequest.setFeeAmount(sendReversalInputBean.getFeeAmount());
+		sendReversalRequest.setSendCurrency(sendReversalInputBean
+				.getSendCurrency());
+		sendReversalRequest.setReferenceNumber(sendReversalInputBean
+				.getReferenceNumber());
 		sendReversalRequest
 				.setReversalType(com.ac1211.client.SendReversalType.C);
 		sendReversalRequest
@@ -210,12 +211,11 @@ public class ACImpl implements ACInterface {
 		return sendReversalResponse;
 	}
 
-	@GET
+	@POST
 	@Path("/sendValidation")
 	@Override
 	public com.ac1211.client.SendValidationResponse sendValidation(
-			@Context HttpServletRequest request,
-			@Context HttpServletResponse response) {
+			SendValidationInputBean sendValidationInputBean) {
 		setCredentials();
 		com.ac1211.client.SendValidationRequest sendValidationRequest = new com.ac1211.client.SendValidationRequest();
 		sendValidationRequest.setAgentID("30014943");
@@ -225,22 +225,36 @@ public class ACImpl implements ACInterface {
 		sendValidationRequest.setApiVersion("1211");
 		sendValidationRequest.setClientSoftwareVersion("v1");
 		sendValidationRequest.setOperatorName("pgui");
-		sendValidationRequest.setAmount(new BigDecimal(100));
-		sendValidationRequest.setDestinationCountry("USA");
-		sendValidationRequest.setDestinationState("MN");
+		sendValidationRequest.setAmount(sendValidationInputBean.getAmount());
+		sendValidationRequest.setDestinationCountry(sendValidationInputBean
+				.getDestinationCountry());
+		sendValidationRequest.setDestinationState(sendValidationInputBean
+				.getDestinationState());
 		sendValidationRequest.setDeliveryOption("WILL_CALL");
-		sendValidationRequest.setReceiveCurrency("USD");
-		sendValidationRequest.setSenderFirstName("SF");
-		sendValidationRequest.setSenderLastName("SL");
-		sendValidationRequest.setSenderAddress("1351 H AVE S");
-		sendValidationRequest.setSenderCity("CHNMPLS");
-		sendValidationRequest.setSenderState("MN");
-		sendValidationRequest.setSenderZipCode("55416");
-		sendValidationRequest.setSenderCountry("USD");
-		sendValidationRequest.setSenderHomePhone("9522320253");
-		sendValidationRequest.setReceiverFirstName("N R F");
-		sendValidationRequest.setReceiverLastName("N R L");
-		sendValidationRequest.setSendCurrency("USA");
+		sendValidationRequest.setReceiveCurrency(sendValidationInputBean
+				.getReceiveCurrency());
+		sendValidationRequest.setSenderFirstName(sendValidationInputBean
+				.getSenderFirstName());
+		sendValidationRequest.setSenderLastName(sendValidationInputBean
+				.getSenderLastName());
+		sendValidationRequest.setSenderAddress(sendValidationInputBean
+				.getSenderAddress());
+		sendValidationRequest.setSenderCity(sendValidationInputBean
+				.getSenderCity());
+		sendValidationRequest.setSenderState(sendValidationInputBean
+				.getSenderState());
+		sendValidationRequest.setSenderZipCode(sendValidationInputBean
+				.getSenderZipCode());
+		sendValidationRequest.setSenderCountry(sendValidationInputBean
+				.getSenderCountry());
+		sendValidationRequest.setSenderHomePhone(sendValidationInputBean
+				.getSenderHomePhone());
+		sendValidationRequest.setReceiverFirstName(sendValidationInputBean
+				.getReceiverFirstName());
+		sendValidationRequest.setReceiverLastName(sendValidationInputBean
+				.getReceiverLastName());
+		sendValidationRequest.setSendCurrency(sendValidationInputBean
+				.getSendCurrency());
 		sendValidationRequest.setConsumerId("0");
 		sendValidationRequest.setFormFreeStaging(false);
 		sendValidationRequest.setTimeToLive(new java.math.BigInteger("30"));
