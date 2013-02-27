@@ -1,7 +1,5 @@
 package com.ac;
 
-import java.math.BigDecimal;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -11,9 +9,6 @@ import com.ac1211.client.SendReversalResponse;
 import com.ac1211.client.SendValidationResponse;
 
 public interface ACInterface {
-
-	String getFee(HttpServletRequest request, HttpServletResponse response,
-			BigDecimal amt);
 
 	String getState(HttpServletRequest request,
 			HttpServletResponse response);
@@ -29,4 +24,6 @@ public interface ACInterface {
 
 	SendValidationResponse sendValidation(HttpServletRequest request,
 			HttpServletResponse response);
+
+	String getFee(FeeRequestInputBean feeRequestInputBean);
 }

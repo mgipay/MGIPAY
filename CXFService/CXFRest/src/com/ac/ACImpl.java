@@ -11,7 +11,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -30,9 +29,7 @@ public class ACImpl implements ACInterface {
 	@GET
 	@Path("/getFee")
 	@Override
-	public String getFee(@Context HttpServletRequest request,
-			@Context HttpServletResponse response,
-			@QueryParam("amt") BigDecimal amt) {
+	public String getFee(FeeRequestInputBean feeRequestInputBean) {
 		com.ac1211.client.FeeLookupResponse feeLookupResponse = new com.ac1211.client.FeeLookupResponse();
 		Gson gson = new Gson();
 		String string = null;
@@ -46,9 +43,9 @@ public class ACImpl implements ACInterface {
 			feeLookupRequest.setTimeStamp(getTimeStamp());
 			feeLookupRequest.setApiVersion("1211");
 			feeLookupRequest.setClientSoftwareVersion("v1");
-			feeLookupRequest.setAmountExcludingFee(amt);
-			feeLookupRequest
-					.setProductType(com.ac1211.client.ProductType.SEND);
+			feeLookupRequest.setAmountExcludingFee(new BigDecimal(
+					feeRequestInputBean.getAmount()));
+			feeLookupRequest.setProductType(com.ac1211.client.ProductType.SEND);
 			feeLookupRequest.setReceiveCountry("USA");
 			feeLookupRequest.setDeliveryOption("WILL_CALL");
 			feeLookupRequest.setReceiveCurrency("USD");
@@ -119,8 +116,7 @@ public class ACImpl implements ACInterface {
 			@Context HttpServletRequest request,
 			@Context HttpServletResponse response) {
 		setCredentials();
-		com.ac1211.client.CommitTransactionRequest commitTransactionRequest = 
-				new com.ac1211.client.CommitTransactionRequest();
+		com.ac1211.client.CommitTransactionRequest commitTransactionRequest = new com.ac1211.client.CommitTransactionRequest();
 		com.ac1211.client.CommitTransactionResponse commitTransactionResponse = null;
 
 		commitTransactionRequest.setAgentID("30014943");
