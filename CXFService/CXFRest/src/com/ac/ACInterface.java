@@ -13,7 +13,7 @@ public interface ACInterface {
 	DetailLookupResponse detailLookUp(HttpServletRequest request,
 			HttpServletResponse response);
 
-	String getFee(FeeRequestInputBean feeRequestInputBean);
+	String getFee(FeeLookupInputBean feeLookupInputBean);
 
 	CommitTransactionResponse commitTransaction(
 			CommitTransactionInputBean commitTransactionInputBean);

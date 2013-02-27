@@ -28,7 +28,7 @@ public class ACImpl implements ACInterface {
 	@POST
 	@Path("/getFee")
 	@Override
-	public String getFee(FeeRequestInputBean feeRequestInputBean) {
+	public String getFee(FeeLookupInputBean feeLookupInputBean) {
 		com.ac1211.client.FeeLookupResponse feeLookupResponse = new com.ac1211.client.FeeLookupResponse();
 		Gson gson = new Gson();
 		String string = null;
@@ -42,7 +42,7 @@ public class ACImpl implements ACInterface {
 			feeLookupRequest.setTimeStamp(getTimeStamp());
 			feeLookupRequest.setApiVersion("1211");
 			feeLookupRequest.setClientSoftwareVersion("v1");
-			feeLookupRequest.setAmountExcludingFee(feeRequestInputBean
+			feeLookupRequest.setAmountExcludingFee(feeLookupInputBean
 					.getAmount());
 			feeLookupRequest.setProductType(com.ac1211.client.ProductType.SEND);
 			feeLookupRequest.setReceiveCountry("USA");
