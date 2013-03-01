@@ -1,5 +1,8 @@
 package com.ac;
 
+import java.io.InterruptedIOException;
+import java.net.MalformedURLException;
+import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -14,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.rpc.ServiceException;
 
 import com.google.gson.Gson;
 import com.paypal.AdaptivePayments_Client;
@@ -27,6 +31,7 @@ import com.paypal.svcs.types.common.RequestEnvelope;
 @Consumes("application/json")
 @Produces("application/JSON")
 public class ACImpl implements ACInterface {
+	int globalRetryCount = 3;
 
 	private static String STATES_IN_USA;
 
@@ -39,32 +44,54 @@ public class ACImpl implements ACInterface {
 		com.ac1211.client.FeeLookupResponse feeLookupResponse = new com.ac1211.client.FeeLookupResponse();
 		Gson gson = new Gson();
 		String string = null;
-		try {
-			setCredentials();
-			com.ac1211.client.FeeLookupRequest feeLookupRequest = new com.ac1211.client.FeeLookupRequest();
+		int retryCount = globalRetryCount;
+		String error;
+		do {
+			try {
+				setCredentials();
+				com.ac1211.client.FeeLookupRequest feeLookupRequest = new com.ac1211.client.FeeLookupRequest();
 
-			feeLookupRequest.setAgentID("30014943");
-			feeLookupRequest.setAgentSequence("9");
-			feeLookupRequest.setToken("TEST");
-			feeLookupRequest.setTimeStamp(getTimeStamp());
-			feeLookupRequest.setApiVersion("1211");
-			feeLookupRequest.setClientSoftwareVersion("v1");
-			feeLookupRequest.setAmountExcludingFee(feeLookupInputBean
-					.getAmount());
-			feeLookupRequest.setProductType(com.ac1211.client.ProductType.SEND);
-			feeLookupRequest.setReceiveCountry("USA");
-			feeLookupRequest.setDeliveryOption("WILL_CALL");
-			feeLookupRequest.setReceiveCurrency("USD");
-			feeLookupRequest.setSendCurrency("USD");
-			feeLookupRequest.setAllOptions(false);
+				feeLookupRequest.setAgentID("30014943");
+				feeLookupRequest.setAgentSequence("9");
+				feeLookupRequest.setToken("TEST");
+				feeLookupRequest.setTimeStamp(getTimeStamp());
+				feeLookupRequest.setApiVersion("1211");
+				feeLookupRequest.setClientSoftwareVersion("v1");
+				feeLookupRequest.setAmountExcludingFee(feeLookupInputBean
+						.getAmount());
+				feeLookupRequest
+						.setProductType(com.ac1211.client.ProductType.SEND);
+				feeLookupRequest.setReceiveCountry("USA");
+				feeLookupRequest.setDeliveryOption("WILL_CALL");
+				feeLookupRequest.setReceiveCurrency("USD");
+				feeLookupRequest.setSendCurrency("USD");
+				feeLookupRequest.setAllOptions(false);
 
-			feeLookupResponse = com.ac1211.client.AgentConnect_AgentConnect_Client
-					.feeLookup(feeLookupRequest);
-			string = gson.toJson(feeLookupResponse);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+				feeLookupResponse = com.ac1211.client.AgentConnect_AgentConnect_Client
+						.feeLookup(feeLookupRequest);
+				if (feeLookupResponse != null) {
+					// TODO This is where the successful response is handled
+					string = gson.toJson(feeLookupResponse);
+					break;
+				} else {
+					retryCount--;
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				error = handleException(e);// To check the type of Exception
+				if (error.equals("TimeoutException")
+						|| error.equals("RemoteException")) {
+					retryCount--; // Retry only for these 2 cases
+				} else {
+					System.out.println(error); // TODO Have to handle unknown
+												// exception here.
+					break; // Stops the loop and comes out of Retry loop (no
+							// retry for unknown exceptions)
+				}
+			}
+		} while ((retryCount > 0));
+
 		return string;
 	}
 
@@ -328,8 +355,42 @@ public class ACImpl implements ACInterface {
 		// TODO remove this method
 		System.setProperty("http.proxyHost", "proxy.tcs.com");
 		System.setProperty("http.proxyPort", "8080");
-		System.setProperty("http.proxyUser", "538540");
-		System.setProperty("http.proxyPassword", "Bala@Feb84");
+		System.setProperty("http.proxyUser", "****");
+		System.setProperty("http.proxyPassword", "*****");
+	}
+
+	public String handleException(Exception e) {
+
+		String errorMsg = null;
+		if (e instanceof MalformedURLException) {
+			errorMsg = e.getMessage();
+		}
+
+		else if (e instanceof ServiceException) {
+			errorMsg = e.getMessage();
+
+		} else if (e instanceof RemoteException) {
+			Throwable cause = e.getCause();
+
+			if (cause instanceof java.net.ConnectException // Connection not
+															// established
+					|| cause instanceof java.rmi.ConnectException) {
+				errorMsg = "RemoteException"; // Retry...
+			}
+
+			else // Client connection was established but:
+					// interrupted/timed_out/erred - on Remote site
+			if (cause instanceof InterruptedIOException) {
+				errorMsg = "TimeoutException";
+			} else {
+				errorMsg = "RemoteException";
+
+			}
+		} else {
+			errorMsg = "unknown error";
+		}
+
+		return errorMsg;
 	}
 
 }
