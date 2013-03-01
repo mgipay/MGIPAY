@@ -16,6 +16,13 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import com.google.gson.Gson;
+import com.paypal.AdaptivePayments_Client;
+import com.paypal.svcs.types.ap.GetUserLimitsRequest;
+import com.paypal.svcs.types.ap.GetUserLimitsResponse;
+import com.paypal.svcs.types.common.AccountIdentifier;
+import com.paypal.svcs.types.common.DetailLevelCode;
+import com.paypal.svcs.types.common.PhoneNumberType;
+import com.paypal.svcs.types.common.RequestEnvelope;
 
 @Consumes("application/json")
 @Produces("application/JSON")
@@ -271,14 +278,58 @@ public class ACImpl implements ACInterface {
 		return sendValidationResponse;
 	}
 
+	@POST
+	@Path("/getUserLimits")
+	@Override
+	public com.paypal.svcs.types.ap.GetUserLimitsResponse getUserLimits(
+			com.ac.UserLimitInputBean userLimitInputBean) {
+		setCredentials();
+		GetUserLimitsResponse getUserLimitsResponse = null;
+		try {
+			
+			GetUserLimitsRequest getUserLimitsRequest = new GetUserLimitsRequest();
+			String[] limitType = new String[1];
+			limitType[0] = "WITHDRAWAL";
+
+			final org.apache.axis.types.Token _ReturnAll = new org.apache.axis.types.Token(
+					"ReturnAll");
+			DetailLevelCode detailLevel = new DetailLevelCode(_ReturnAll);
+			RequestEnvelope requestEnvelope = new RequestEnvelope(detailLevel,
+					"NA", null);
+			PhoneNumberType phoneNumberType = new PhoneNumberType("1",
+					"6057100363", "4237");
+			AccountIdentifier user = new AccountIdentifier(
+					userLimitInputBean.getEmailID(), phoneNumberType, null);
+			getUserLimitsRequest.setCountry("US");
+			getUserLimitsRequest.setCurrencyCode("USD");
+			getUserLimitsRequest.setRequestEnvelope(requestEnvelope);
+			getUserLimitsRequest.setUser(user);
+			getUserLimitsRequest.setLimitType(limitType);
+			AdaptivePayments_Client adaptivePayments_Client= new AdaptivePayments_Client(
+					" https://svcs.sandbox.paypal.com/AdaptivePayments/GetUserLimits",
+					5000);
+			getUserLimitsResponse = adaptivePayments_Client
+					.Finduserlimits(getUserLimitsRequest);
+			//TODO remove sys.out
+			System.out.println("getUserLimitsResponse.getUserLimit="
+					+ getUserLimitsResponse.getUserLimit(0).getLimitAmount()
+							.getAmount());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return getUserLimitsResponse;
+
+	}
+
 	/**
 	 * 
 	 */
 	private void setCredentials() {
+		// TODO remove this method
 		System.setProperty("http.proxyHost", "proxy.tcs.com");
 		System.setProperty("http.proxyPort", "8080");
-		System.setProperty("http.proxyUser", "****");
-		System.setProperty("http.proxyPassword", "*****");
+		System.setProperty("http.proxyUser", "538540");
+		System.setProperty("http.proxyPassword", "Bala@Feb84");
 	}
 
 }

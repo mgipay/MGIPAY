@@ -22,7 +22,6 @@ public class Test {
 			OutputStream os = conn.getOutputStream();
 			os.write(inputJsonObject.getBytes());
 			os.flush();
-
 			Scanner scanner;
 			String response;
 			if (conn.getResponseCode() != 200) {
