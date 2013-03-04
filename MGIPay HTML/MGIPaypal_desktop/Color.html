@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Insert title here</title>
+<style type="text/css">
+.bgcolor {
+	background-color: #ccc;
+}
+
+#array ul li {
+	width: 10%;
+	height: 4%;
+}
+</style>
+<script src="js/jquery-1.9.1.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		var temp = " ";
+
+		for ( var i = 0; i <= 9; i++) {
+			$("#array").append("<ul><li id=\"pid"+i+"\">" + i + "</li></ul>");
+			
+		}
+
+		for ( var j = 0; j <= 9; j++) {
+
+			$("#pid" + j).click(function() {
+				$(this).addClass("bgcolor");
+				temp=j;
+			});
+			
+			if (j!=temp ) {
+				
+				$("#pid" + j).removeClass("bgcolor");
+			}
+		}
+
+	});
+</script>
+</head>
+<body>
+	<div id="array"></div>
+</body>
+</html>
