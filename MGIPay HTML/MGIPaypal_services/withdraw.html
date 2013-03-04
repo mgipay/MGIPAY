@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+   <head>
+      <meta name="viewport" content="width=device-width,height=device-height,target-densitydpi=device-dpi,user-scalable=no,initial-scale=1.0" />
+      <title>:: Money Gram ::</title>
+      <link href="css/MGI_styles.css" rel="stylesheet" type="text/css" />
+       <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+       <script type="text/javascript" src="js/validations.js"></script>
+       <script type="text/javascript" src="js/withdraw.js"></script>
+       <script type="text/javascript" src="js/global.js"></script>
+       <script type="text/javascript" src="js/service.js"></script>
+      <!--[if (gte IE 6)&(lte IE 8)]>
+          <script type="text/javascript" src="js/selectivizr.js"></script>
+          <noscript><link rel="stylesheet" href="[fallback css]" /></noscript>
+	  <![endif]-->
+      <!--[if gte IE 9]>
+      <style type="text/css">
+        .gradient {
+           filter: none;
+        }
+      </style>
+     <![endif]-->
+   </head>
+<body class="withdraw_page" onload='storeDefaultValues()'>
+	<div class="main_wrapper">
+<!-- Header/Menu -->
+        <header>
+        <ul>
+       <!-- <li><a onclick='javascript:history.go(-1)' href="#"/ onclick='javascript:history.go(-1)'>Back</a></li>-->
+       <li><a  href='javascript:history.back()' >Back</a>
+         <li><h4>Withdraw Cash @ MoneyGram</h4></li>
+         <li onclick="display()">Menu</li>
+         
+        </ul>
+        </header>
+<!-- Main Content -->
+
+        <div class="main_content">
+        	<div class="withdraw_content">
+            	<ul>
+                    <li>Amount available to withdraw</li>
+                    <li><p>200.00</p><span>USD</span></li>
+                    <li>Pick up location</li>
+                    <li><select class='pickup_location'></select></li>
+                    <li>Receive amount</li>
+                    <li><input id='recieveAmount' type="number" maxlength="3" onfocusout='currencyfocusout()' onfocusin='currencyfocusin()'></li>
+                    <li>Fee</li>
+                    <li><p id='fee'></p><span class='feeCrncy'>USD</span></li>
+                    <li>Total withdraw from account</li>
+                    <li><p id='totalAmount'></p><span class='totalCrncy'>USD</span></li>
+                 </ul>
+                 <div class="withdraw_terms_text">
+                   	<p>You may with draw upto $200.00 per transaction up to $500.00 per month including fees.</p>
+                    <p>The amount will be withdrawn from PayPal account.</p>
+                </div>
+                <div class="review_withdraw_btn"><button onclick="clearFeilds()">Clear</button><button onclick='reviewTransaction()'>Review</button></div>
+            </div>
+            </div>
+		<footer>
+            <p>&copy;2012 MoneyGram. All rights reserved.</p>
+        </footer>
+        
+               
+    </div>
+    <div class="slide_menu">
+      <ul>
+      	<li><a href='#'>FAQs</a></li>
+      	<li><a href='#'>Privacy Policy</a></li>
+      	<li><a href='#'>Terms and conditions</a></li>
+      	<li><a href='#'>Terms of use</a></li>
+      	<li><a href='#'>Logout</a></li>
+      	
+      	
+      	</ul>
+    </div>
+        
+    
+</body>
+</html>
+
+

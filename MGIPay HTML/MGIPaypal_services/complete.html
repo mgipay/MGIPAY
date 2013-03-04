@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+   <head>
+      <meta name="viewport" content="width=device-width,height=device-height,target-densitydpi=device-dpi,user-scalable=no,initial-scale=1.0" />
+      <title>:: Money Gram ::</title>
+      <link href="css/MGI_styles.css" rel="stylesheet" type="text/css" />
+       <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+       <script type="text/javascript" src="js/validations.js"></script>
+      <!--[if (gte IE 6)&(lte IE 8)]>
+          <script type="text/javascript" src="js/selectivizr.js"></script>
+          <noscript><link rel="stylesheet" href="[fallback css]" /></noscript>
+	  <![endif]-->
+      <!--[if gte IE 9]>
+      <style type="text/css">
+        .gradient {
+           filter: none;
+        }
+      </style>
+     <![endif]-->
+   </head>
+<body class="withdraw_page">
+	<div class="main_wrapper">
+<!-- Header/Menu -->
+        <header>
+        <ul>
+        <li><a href="javascript:history.back()">Back</a></li>
+         <li><h4>Withdraw Cash @ MoneyGram</h4></li>
+         <li><a href="#"/>Menu</a></li>
+        </ul>
+        </header>
+<!-- Main Content -->
+        <div class="main_content">
+        	<div class="review_content">
+            	<h3>Complete</h3>
+                        <div class="check_terms"><p>Thank You! Your money will be ready to be picked at a MoneyGram location in 10minutes.</p></div>
+                        <div class="reference_no"><p>MoneyGram reference number</p>:<span>123456</span></div>
+                        <ul>
+                        	<li>Sender/Receiver</li>
+                            <li>Jane Smith</li>
+                            <li>Destination Country</li>
+                            <li>United States</li>
+                            <li>Pickup location</li>
+                            <li>Minnesota</li>
+                            <li>Availability</li>
+                            <li>10minutes</li>
+                            <li>Recieve amount</li>
+                            <li><p>214.95</p><span>USD</span></li>
+                            <li>Fee</li>
+                            <li><p>5.95</p><span>USD</span></li>
+                            <li>Total withdraw from account</li>
+                            <li><p>208.95</p><span>USD</span></li>
+                            <li>Exchange Rate</li>
+                            <li><p>1USD</p><span>=</span><p>1USD</p></li>
+                        </ul>
+            </div>
+            <div class="complete_test">
+            	<ul>
+                	<li>Text/SMS</li>
+                    <li onclick='goToMoneygramMap()'>Locations</li>
+                    <li><p onclick='goToHomePage()'>Home</p></li>
+                </ul>
+            </div>
+            </div>
+		<footer>
+            <p>&copy;2012 MoneyGram. All rights reserved.</p>
+        </footer>
+    </div>
+    
+    <div id="light_complete" class="white_content_complete">
+        	
+        	<a href="#" class="cross-button" onclick="goToBackPage()"><img src="images/close.png" width="15" height="15" border="0" title="Click image to close this window"></a>
+        	
+        	<iframe src="http://mobile.where2getit.com/moneygram/en.html" id="map" width="90%" height="90%"></iframe>
+        	
+	
+	</div>
+        	
+        
+        <div id="fade_complete" class="black_overlay_complete"></div>
+        <!-- Pavani and Prasanna    Ends-->
+</body>
+</html>
