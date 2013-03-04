@@ -7,7 +7,7 @@ import com.ac1211.client.CommitTransactionResponse;
 import com.ac1211.client.DetailLookupResponse;
 import com.ac1211.client.SendReversalResponse;
 import com.ac1211.client.SendValidationResponse;
-import com.paypal.svcs.types.ap.GetUserLimitsResponse;
+import com.paypal.axis.svcs.types.ap.GetUserLimitsResponse;
 
 public interface ACInterface {
 

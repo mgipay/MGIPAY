@@ -20,13 +20,13 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.rpc.ServiceException;
 
 import com.google.gson.Gson;
-import com.paypal.AdaptivePayments_Client;
-import com.paypal.svcs.types.ap.GetUserLimitsRequest;
-import com.paypal.svcs.types.ap.GetUserLimitsResponse;
-import com.paypal.svcs.types.common.AccountIdentifier;
-import com.paypal.svcs.types.common.DetailLevelCode;
-import com.paypal.svcs.types.common.PhoneNumberType;
-import com.paypal.svcs.types.common.RequestEnvelope;
+import com.paypal.axis.AdaptivePayments_Client;
+import com.paypal.axis.svcs.types.ap.GetUserLimitsRequest;
+import com.paypal.axis.svcs.types.ap.GetUserLimitsResponse;
+import com.paypal.axis.svcs.types.common.AccountIdentifier;
+import com.paypal.axis.svcs.types.common.DetailLevelCode;
+import com.paypal.axis.svcs.types.common.PhoneNumberType;
+import com.paypal.axis.svcs.types.common.RequestEnvelope;
 
 @Consumes("application/json")
 @Produces("application/JSON")
@@ -308,7 +308,7 @@ public class ACImpl implements ACInterface {
 	@POST
 	@Path("/getUserLimits")
 	@Override
-	public com.paypal.svcs.types.ap.GetUserLimitsResponse getUserLimits(
+	public com.paypal.axis.svcs.types.ap.GetUserLimitsResponse getUserLimits(
 			com.ac.UserLimitInputBean userLimitInputBean) {
 		setCredentials();
 		GetUserLimitsResponse getUserLimitsResponse = null;
@@ -355,8 +355,8 @@ public class ACImpl implements ACInterface {
 		// TODO remove this method
 		System.setProperty("http.proxyHost", "proxy.tcs.com");
 		System.setProperty("http.proxyPort", "8080");
-		System.setProperty("http.proxyUser", "****");
-		System.setProperty("http.proxyPassword", "*****");
+		System.setProperty("http.proxyUser", "538540");
+		System.setProperty("http.proxyPassword", "Bala@Feb84");
 	}
 
 	public String handleException(Exception e) {
