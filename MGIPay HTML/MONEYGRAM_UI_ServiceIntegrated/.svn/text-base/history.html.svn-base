@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>History</title>
+<link href="css/moneygram.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<div class="mainwrapper">
+<div class="subwrapper">
+    <div class="header">
+    
+    <div class="logo">
+    	<img src="images/logo.png"  alt="MoneyGram" class="logo_moneygram">
+        <img src="images/logo_paypal.png"  alt="PayPal" class="logo_paypal">
+    </div>
+    <div class="topNav">
+    <a href="#">FAQ</a><a href="#">Contact Us</a><a href="#">History</a><a href="#">Log Out</a>
+    </div>
+              
+       
+    </div>
+    <div class="innercontainer">
+    		<div class="welcome">You are logged in as: <span>Username</span></div>
+        	<div class="breadcrumb"><a href="#">Home</a> > History</div>
+   	</div>
+  
+    <!-- Static Content Starts -->
+    <div class="staticcontainer">
+    <h1>History</h1>
+   <p>Thank you for using PayPal and MoneyGram. Below you will find the history of your cash withdrawn from your PayPal account with MoneyGram</p>
+
+<p>To see a history of cash added to your PayPal account, please log in to your <a href="#">PayPal account</a></p>
+    </div>
+   
+    <ul class="historyGrid">
+    	<li class="thead">
+        		<div><a href="#">Date</a></div>
+                <div>Name</div>
+                <div>Withdraw Amount</div>
+                <div>Fee</div>
+                <div>Receive Amount</div>
+                <div>Status/Reference Number</div>
+       </li>
+       
+       <li class="trow">
+       			<div>1/10/2013</div>
+                <div>John Doe</div>
+                <div>105.95 USD</div>
+                <div>5.95 USD</div>
+                <div>$100.00 USD</div>
+                <div><span>Collected:</span> XXXXXXX</div>
+       </li>
+       <li class="trow altrow">
+            	<div>21/10/2013</div>
+                <div>Anymanny Namer</div>
+                <div>105.95 USD</div>
+                <div>5.95 USD</div>
+                <div>$100.00 USD</div>
+                <div><span>Collected:</span> XXXXXXX</div>
+       </li>
+       
+    </ul>
+    <!-- Static Content End -->
+    
+   </div>
+   <div class="clear"></div>
+   <div class="footer">
+   <div>
+   <span>© 2013 MoneyGram. All rights reserved</span>
+  <a href="#">Privacy Policy</a> <a href="#">Terms of Use</a><a href="#">Terms and Conditions</a><a href="#">About MoneyGram</a>    
+   <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+   </div>
+   </div>
+</div>
+</body>
+</html>

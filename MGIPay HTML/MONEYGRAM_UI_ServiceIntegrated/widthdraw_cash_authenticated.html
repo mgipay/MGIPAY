@@ -1,0 +1,168 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Untitled Document</title>
+<link href="css/moneygram.css" rel="stylesheet" type="text/css">
+<script language="javascript" src="scripts/jquery.js" type="text/javascript"></script>
+<script type="text/javascript" src="scripts/withdraw.js"></script>
+<script type="text/javascript" src="scripts/global.js"></script>
+<script type="text/javascript" src="scripts/service.js"></script>
+<script language="javascript">
+$(document).ready(
+			function() {
+				$("#fee_tooltip").hide();
+				$("#fee").click(function() {
+					$('#fee_tooltip').slideDown("slow");
+				});
+				$("#fancybox-close").click(function() {
+					$('#fee_tooltip').hide("slow");
+				});
+});
+</script>
+<style>
+.review_content{ width:96%; margin:auto;}
+ul,li{ list-style:none;}
+.review_content h3{ text-align:center;}
+ .review_content ul{ width:100%; border:1px solid #333;border-radius:6px; padding:2%; display:table;}
+.review_content li:nth-child(1), .review_content li:nth-child(3), .review_content li:nth-child(5), .review_content li:nth-child(7), .review_content li:nth-child(9), .review_content li:nth-child(11), .review_content li:nth-child(13), .review_content li:nth-child(15){ width:60%; float:left;}
+.review_content li:nth-child(2), .review_content li:nth-child(4), .review_content li:nth-child(6), .review_content li:nth-child(8), .review_content li:nth-child(10), .review_content li:nth-child(12), .review_content li:nth-child(14), .review_content li:nth-child(16){ width:40%; float:left;}
+.review_content li:nth-child(10) p, .review_content li:nth-child(12) p, .review_content li:nth-child(14) p{ width:76%; text-align:right; float:left;}
+.review_content li:nth-child(10) span, .review_content li:nth-child(12) span, .review_content li:nth-child(14) span{ width:24%;text-align:right; float:left;}
+.review_content li:nth-child(16) p{ width:34%;float:left;}
+.review_content li:nth-child(16) span{ width:14%; float:left; text-align:center;}
+.check_terms{ width:100%; height:10%; padding:2%;}
+.check_terms input{ float:left;}
+.check_terms p{ font-size:90%; width:94%; float:left;}
+.check_terms span{ display:inline; text-decoration:underline;}
+.reference_no{ width:96%; margin:auto;}
+.reference_no p{ width:60%; float:left; font-size:90%;}
+.complete_test{ width:98%; margin: auto;}
+.complete_test{ width:100%; padding:4% 0;}
+.complete_test li{ width:33%; float:left; text-align:center;}
+</style>
+
+</head>
+
+<body>
+<div class="mainwrapper">
+  <div class="subwrapper">
+    <div class="header">
+      <div class="logo"> <img src="images/logo.png"  alt="MoneyGram" class="logo_moneygram"> <img src="images/logo_paypal.png"  alt="PayPal" class="logo_paypal"> </div>
+      <div class="topNav"> <a href="#">FAQ</a><a href="#">Contact Us</a><a href="#">History</a><a href="#">Log Out</a> </div>
+    </div>
+    <div class="innercontainer">
+      <div class="welcome">You are logged in as: <span>Username</span></div>
+      <div class="breadcrumb"><a href="#">Home</a> > Withdraw Cash</div>
+    </div>
+    <div class="WC_authentication_container">
+      <div class="left">
+        <h1>Withdraw Cash</h1>
+        <p>Now adding cash to your PayPal account is fast and easy with MoneyGram. You can add upto $xx per month for as low as $xx</p>
+        <div>
+          <h2><span>1</span>From your available balance </h2>
+          <ul>
+            <li>Select the state where you want to pick up your cash</li>
+            <li>Enter how much money you want to receive</li>
+            <li>A <a href="#" id="fee">fee</a> will be deducted from your withdraw and agree to the terms.</li>
+          </ul>
+          
+          <!-- Fee tooltip box --> 
+          
+         <div id="fee_tooltip">
+         	
+            <a href="#" id="fancybox-close"></a>
+                   
+         </div>
+          
+
+          
+          <!-- Fee tooltip end --> 
+        </div>
+        <div>
+          <h2><span>2</span>Review the details for your withdraw 
+            and agree to the terms </h2>
+        </div>
+        <div>
+          <h2><span>3</span>A MoneyGram Reference Number will 
+            be provided. </h2>
+          <ul>
+            <li>Take your MoneyGram Reference Number to a <a href="#">MoneyGram location.</a></li>
+            <li>At the location, complete a simple recieve form, and it in, and show your ID</li>
+          </ul>
+        </div>
+      </div>
+      <div class="right">
+        <p>Withdraw Cash in 3 simple steps</p>
+        <div class="WCsteps">
+          <div class="progressivesteps"> <a href="#" class="active" id="enter_amt">1. Enter Amount<span></span></a> <a href="#" id="review">2. Review<span></span></a><a href="#" id="get_conf">3. Get Confirmation<span></span></a> </div>
+          <div class="enteramount">
+            <div class="enteramountbox">
+              <p> You may withdraw up to <span>$200 per day, $500 per month,</span> including fees. </p>
+              <hr/>
+              <p>
+              <h3><span>Available balance:</span> xxx.xx USD</h3>
+              </p>
+            </div>
+            <ul>
+              <li>
+                <label>Pick Up Location</label>
+                <select name="" id="pickup_location">
+                  <!--<option value="Select your state">Select your state</option>-->
+                </select>
+              </li>
+              <li>
+                <label>Receive Amount</label>
+                <input name="" type="text" placeholder="USD" id="recieveAmount" onfocusout='currencyfocusout()'>
+              </li>
+              <li>
+                <label>Fee</label>
+                <input name="" type="text" value="USD" id="fee_value">
+              </li>
+            </ul>
+            <h3><span>Total withdraw from account:</span> <label id="totalAmount">xxx.xx </label>USD</h3>
+            <h6>The amount will be withdrawn from your PayPal balance</h6>
+            <input type="button" class="button" value="Next: Review >" onclick='reviewTransaction()'>
+          </div>
+          <div class="review_content" style="display:none">
+            	<h3>Review Transaction</h3>
+                        <ul>
+                        	<li>Sender/Receiver</li>
+                            <li id="sender_name">Jane Smith</li>
+                            <li>Destination Country</li>
+                            <li>United States</li>
+                            <li>Pickup location</li>
+                            <li id="pickup">Minnesota</li>
+                            <li>Availability</li>
+                            <li>10minutes</li>
+                            <li>Recieve amount</li>
+                            <li><p id="receive_amt">214.95</p><span>USD</span></li>
+                            <li>Fee</li>
+                            <li><p id="final_fee">5.95</p><span>USD</span></li>
+                            <li>Total withdraw from account</li>
+                            <li><p id="review_total">208.95</p><span>USD</span></li>
+                            <li>Exchange Rate</li>
+                            <li><p>1USD</p><span>=</span><p>1USD</p></li>
+                        </ul>
+                 <div class="check_terms"><input type="checkbox" id='ckeck' onchange="enableButton()"/><p>By Checking this box you agree to the <span>Terms & Conditions</span> and acknowledge the Fraud Warnings. </p></div>
+                   <div class="review_withdraw_btn"><button id='withdraw_button' onclick='completeTransaction()'>Withdraw Cash</button></div>
+                
+            </div>
+            <div id="complete" style="display:none">
+            	Your Reference Number: <label id="ref_num"></label>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="clear"></div>
+  <div class="footer">
+    <div> <span>© 2013 MoneyGram. All rights reserved</span> <a href="#">Privacy Policy</a> <a href="#">Terms of Use</a><a href="#">Terms and Conditions</a><a href="#">About MoneyGram</a>
+      <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>
