@@ -20,13 +20,13 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.rpc.ServiceException;
 
 import com.google.gson.Gson;
-import com.paypal.axis.AdaptivePayments_Client;
-import com.paypal.axis.svcs.types.ap.GetUserLimitsRequest;
-import com.paypal.axis.svcs.types.ap.GetUserLimitsResponse;
-import com.paypal.axis.svcs.types.common.AccountIdentifier;
-import com.paypal.axis.svcs.types.common.DetailLevelCode;
-import com.paypal.axis.svcs.types.common.PhoneNumberType;
-import com.paypal.axis.svcs.types.common.RequestEnvelope;
+import com.paypal.cfx.client.AccountIdentifier;
+import com.paypal.cfx.client.AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client;
+import com.paypal.cfx.client.DetailLevelCode;
+import com.paypal.cfx.client.GetUserLimitsRequest;
+import com.paypal.cfx.client.GetUserLimitsResponse;
+import com.paypal.cfx.client.PhoneNumberType;
+import com.paypal.cfx.client.RequestEnvelope;
 
 @Consumes("application/json")
 @Produces("application/JSON")
@@ -69,6 +69,7 @@ public class ACImpl implements ACInterface {
 
 				feeLookupResponse = com.ac1211.client.AgentConnect_AgentConnect_Client
 						.feeLookup(feeLookupRequest);
+
 				if (feeLookupResponse != null) {
 					// TODO This is where the successful response is handled
 					string = gson.toJson(feeLookupResponse);
@@ -251,7 +252,14 @@ public class ACImpl implements ACInterface {
 	public com.ac1211.client.SendValidationResponse sendValidation(
 			SendValidationInputBean sendValidationInputBean) {
 		setCredentials();
-		com.ac1211.client.SendValidationRequest sendValidationRequest = new com.ac1211.client.SendValidationRequest();
+		
+		com.ac1211.client.SendValidationRequest sendValidationRequest = 
+				new com.ac1211.client.SendValidationRequest();
+		sendValidationRequest.setConsumerId("0");
+		sendValidationRequest.setFormFreeStaging(false);
+		sendValidationRequest.setTimeToLive(new java.math.BigInteger("30"));
+		sendValidationRequest.setPrimaryReceiptLanguage("eng");
+		sendValidationRequest.setSecondaryReceiptLanguage("spa");
 		sendValidationRequest.setAgentID("30014943");
 		sendValidationRequest.setAgentSequence("9");
 		sendValidationRequest.setToken("TEST");
@@ -259,12 +267,17 @@ public class ACImpl implements ACInterface {
 		sendValidationRequest.setApiVersion("1211");
 		sendValidationRequest.setClientSoftwareVersion("v1");
 		sendValidationRequest.setOperatorName("pgui");
+		sendValidationRequest.setDeliveryOption("WILL_CALL");
 		sendValidationRequest.setAmount(sendValidationInputBean.getAmount());
+		sendValidationRequest
+				.setMgiTransactionSessionID(sendValidationInputBean
+						.getMgiTransactionSessionID());
+		sendValidationRequest.setFeeAmount(sendValidationInputBean.getFeeAmount());
 		sendValidationRequest.setDestinationCountry(sendValidationInputBean
 				.getDestinationCountry());
 		sendValidationRequest.setDestinationState(sendValidationInputBean
 				.getDestinationState());
-		sendValidationRequest.setDeliveryOption("WILL_CALL");
+		
 		sendValidationRequest.setReceiveCurrency(sendValidationInputBean
 				.getReceiveCurrency());
 		sendValidationRequest.setSenderFirstName(sendValidationInputBean
@@ -289,11 +302,7 @@ public class ACImpl implements ACInterface {
 				.getReceiverLastName());
 		sendValidationRequest.setSendCurrency(sendValidationInputBean
 				.getSendCurrency());
-		sendValidationRequest.setConsumerId("0");
-		sendValidationRequest.setFormFreeStaging(false);
-		sendValidationRequest.setTimeToLive(new java.math.BigInteger("30"));
-		sendValidationRequest.setPrimaryReceiptLanguage("eng");
-		sendValidationRequest.setSecondaryReceiptLanguage("spa");
+		
 		com.ac1211.client.SendValidationResponse sendValidationResponse = null;
 		try {
 			sendValidationResponse = com.ac1211.client.AgentConnect_AgentConnect_Client
@@ -308,42 +317,39 @@ public class ACImpl implements ACInterface {
 	@POST
 	@Path("/getUserLimits")
 	@Override
-	public com.paypal.axis.svcs.types.ap.GetUserLimitsResponse getUserLimits(
+	public com.paypal.cfx.client.GetUserLimitsResponse getUserLimits(
 			com.ac.UserLimitInputBean userLimitInputBean) {
-		setCredentials();
-		GetUserLimitsResponse getUserLimitsResponse = null;
-		try {
-			
-			GetUserLimitsRequest getUserLimitsRequest = new GetUserLimitsRequest();
-			String[] limitType = new String[1];
-			limitType[0] = "WITHDRAWAL";
 
-			final org.apache.axis.types.Token _ReturnAll = new org.apache.axis.types.Token(
-					"ReturnAll");
-			DetailLevelCode detailLevel = new DetailLevelCode(_ReturnAll);
-			RequestEnvelope requestEnvelope = new RequestEnvelope(detailLevel,
-					"NA", null);
-			PhoneNumberType phoneNumberType = new PhoneNumberType("1",
-					"6057100363", "4237");
-			AccountIdentifier user = new AccountIdentifier(
-					userLimitInputBean.getEmailID(), phoneNumberType, null);
-			getUserLimitsRequest.setCountry("US");
-			getUserLimitsRequest.setCurrencyCode("USD");
-			getUserLimitsRequest.setRequestEnvelope(requestEnvelope);
-			getUserLimitsRequest.setUser(user);
-			getUserLimitsRequest.setLimitType(limitType);
-			AdaptivePayments_Client adaptivePayments_Client= new AdaptivePayments_Client(
-					" https://svcs.sandbox.paypal.com/AdaptivePayments/GetUserLimits",
-					5000);
-			getUserLimitsResponse = adaptivePayments_Client
-					.Finduserlimits(getUserLimitsRequest);
-			//TODO remove sys.out
-			System.out.println("getUserLimitsResponse.getUserLimit="
-					+ getUserLimitsResponse.getUserLimit(0).getLimitAmount()
-							.getAmount());
+		setCredentials();
+		GetUserLimitsRequest getUserLimitsRequest = new GetUserLimitsRequest();
+
+		AccountIdentifier accountIdentifier = new AccountIdentifier();
+//		accountIdentifier.setEmail("vbalki@ebay.com");
+		accountIdentifier.setEmail(userLimitInputBean.getEmailID());
+		PhoneNumberType phoneNumberType = new PhoneNumberType();
+		phoneNumberType.setCountryCode("1");
+		phoneNumberType.setExtension("4237");
+		phoneNumberType.setPhoneNumber("6057100363");
+		accountIdentifier.setPhone(phoneNumberType);
+		getUserLimitsRequest.setUser(accountIdentifier);
+		RequestEnvelope requestEnvelope = new RequestEnvelope();
+		requestEnvelope.setDetailLevel(DetailLevelCode.RETURN_ALL);
+		requestEnvelope.setErrorLanguage("NA");
+		getUserLimitsRequest.setRequestEnvelope(requestEnvelope);
+		getUserLimitsRequest.setCountry("US");
+		getUserLimitsRequest.setCurrencyCode("USD");
+		getUserLimitsRequest.getLimitType().add("WITHDRAWAL");
+
+		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
+
+		try {
+			getUserLimitsResponse = AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client
+					.getUserLimit(getUserLimitsRequest);
 		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		return getUserLimitsResponse;
 
 	}
@@ -356,7 +362,7 @@ public class ACImpl implements ACInterface {
 		System.setProperty("http.proxyHost", "proxy.tcs.com");
 		System.setProperty("http.proxyPort", "8080");
 		System.setProperty("http.proxyUser", "538540");
-		System.setProperty("http.proxyPassword", "Bala@Feb84");
+		System.setProperty("http.proxyPassword", "Bala@Mar84");
 	}
 
 	public String handleException(Exception e) {
