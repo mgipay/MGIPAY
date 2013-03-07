@@ -335,7 +335,7 @@ public class ACImpl implements ACInterface {
 	@Override
 	public String getUserLimits(com.ac.UserLimitInputBean userLimitInputBean) {
 
-		setCredentials();
+//		setCredentials();
 		GetUserLimitsRequest getUserLimitsRequest = new GetUserLimitsRequest();
 
 		AccountIdentifier accountIdentifier = new AccountIdentifier();
