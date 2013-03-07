@@ -33,7 +33,7 @@ public enum DetailLevelCode {
      * 
      */
     @XmlEnumValue("ReturnAll")
-    RETURN_ALL("ReturnAll");
+    ReturnAll("ReturnAll");
     private final String value;
 
     DetailLevelCode(String v) {
