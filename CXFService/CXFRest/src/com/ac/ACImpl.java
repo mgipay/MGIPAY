@@ -7,18 +7,14 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.rpc.ServiceException;
-
 
 import com.google.gson.Gson;
 import com.paypal.cfx.client.AccountIdentifier;
@@ -74,7 +70,6 @@ public class ACImpl implements ACInterface {
 						.feeLookup(feeLookupRequest);
 
 				if (feeLookupResponse != null) {
-					// TODO This is where the successful response is handled
 					string = gson.toJson(feeLookupResponse);
 					//System.out.println(string);
 					break;
@@ -187,8 +182,7 @@ public class ACImpl implements ACInterface {
 	@POST
 	@Path("/detailLookUp")
 	@Override
-	public String detailLookUp(@Context HttpServletRequest request,
-			@Context HttpServletResponse response) {
+	public String detailLookUp(DetailLookupInputBean detailLookupInputBean) {
 		setCredentials();
 		com.ac1211.client.DetailLookupRequest detailLookupRequest 
 		= new com.ac1211.client.DetailLookupRequest();
@@ -200,7 +194,8 @@ public class ACImpl implements ACInterface {
 		detailLookupRequest.setIncludeUseData(false);
 		detailLookupRequest.setLanguage("eng");
 		detailLookupRequest.setOperatorName("");
-		detailLookupRequest.setReferenceNumber("");
+		detailLookupRequest.setReferenceNumber(detailLookupInputBean
+				.getReferenceNumber());
 
 		detailLookupRequest.setTimeStamp(getTimeStamp());
 

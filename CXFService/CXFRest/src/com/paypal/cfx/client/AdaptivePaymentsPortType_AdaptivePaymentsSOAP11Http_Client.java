@@ -52,7 +52,6 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 			System.out.println(objPpFaultMessage.toString());
 		}
 
-//		System.exit(0);
 		return _getUserLimits__return;
 	}
 

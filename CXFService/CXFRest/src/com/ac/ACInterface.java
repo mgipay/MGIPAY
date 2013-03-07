@@ -1,12 +1,9 @@
 package com.ac;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public interface ACInterface {
 
-	String detailLookUp(HttpServletRequest request,
-			HttpServletResponse response);
+	String detailLookUp(DetailLookupInputBean detailLookupInputBean);
 
 	String getFee(FeeLookupInputBean feeLookupInputBean);
 

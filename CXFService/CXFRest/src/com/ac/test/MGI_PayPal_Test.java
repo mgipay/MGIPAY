@@ -51,7 +51,7 @@ public class MGI_PayPal_Test {
 			}
 			scanner.useDelimiter("\\Z");
 			
-			System.out.println(scanner.next());
+			System.out.println(response + scanner.next());
 			
 			scanner.close();
 			conn.disconnect();
