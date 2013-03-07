@@ -3,29 +3,24 @@ package com.ac;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ac1211.client.CommitTransactionResponse;
-import com.ac1211.client.DetailLookupResponse;
-import com.ac1211.client.SendReversalResponse;
-import com.ac1211.client.SendValidationResponse;
-import com.paypal.cfx.client.GetUserLimitsResponse;
-
 public interface ACInterface {
 
-	DetailLookupResponse detailLookUp(HttpServletRequest request,
+	String detailLookUp(HttpServletRequest request,
 			HttpServletResponse response);
 
 	String getFee(FeeLookupInputBean feeLookupInputBean);
 
-	CommitTransactionResponse commitTransaction(
+	String commitTransaction(
 			CommitTransactionInputBean commitTransactionInputBean);
 
 	String getState();
 
-	SendReversalResponse sendReversal(
+	String sendReversal(
 			SendReversalInputBean sendReversalInputBean);
 
-	SendValidationResponse sendValidation(
+	String sendValidation(
 			SendValidationInputBean sendValidationInputBean);
 
-	GetUserLimitsResponse getUserLimits(UserLimitInputBean userLimitInputBean);
+	String getUserLimits(UserLimitInputBean userLimitInputBean);
+
 }

@@ -19,6 +19,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.rpc.ServiceException;
 
+
 import com.google.gson.Gson;
 import com.paypal.cfx.client.AccountIdentifier;
 import com.paypal.cfx.client.AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client;
@@ -41,7 +42,8 @@ public class ACImpl implements ACInterface {
 	@Path("/getFee")
 	@Override
 	public String getFee(FeeLookupInputBean feeLookupInputBean) {
-		com.ac1211.client.FeeLookupResponse feeLookupResponse = new com.ac1211.client.FeeLookupResponse();
+		com.ac1211.client.FeeLookupResponse feeLookupResponse 
+		= new com.ac1211.client.FeeLookupResponse();
 		Gson gson = new Gson();
 		String string = null;
 		int retryCount = globalRetryCount;
@@ -49,7 +51,8 @@ public class ACImpl implements ACInterface {
 		do {
 			try {
 				setCredentials();
-				com.ac1211.client.FeeLookupRequest feeLookupRequest = new com.ac1211.client.FeeLookupRequest();
+				com.ac1211.client.FeeLookupRequest feeLookupRequest 
+				= new com.ac1211.client.FeeLookupRequest();
 
 				feeLookupRequest.setAgentID("30014943");
 				feeLookupRequest.setAgentSequence("9");
@@ -73,6 +76,7 @@ public class ACImpl implements ACInterface {
 				if (feeLookupResponse != null) {
 					// TODO This is where the successful response is handled
 					string = gson.toJson(feeLookupResponse);
+					//System.out.println(string);
 					break;
 				} else {
 					retryCount--;
@@ -85,7 +89,7 @@ public class ACImpl implements ACInterface {
 						|| error.equals("RemoteException")) {
 					retryCount--; // Retry only for these 2 cases
 				} else {
-					System.out.println(error); // TODO Have to handle unknown
+					//System.out.println(error); // TODO Have to handle unknown
 												// exception here.
 					break; // Stops the loop and comes out of Retry loop (no
 							// retry for unknown exceptions)
@@ -120,7 +124,8 @@ public class ACImpl implements ACInterface {
 			Gson gson = new Gson();
 			try {
 				setCredentials();
-				com.ac1211.client.CodeTableRequest codeTableRequest = new com.ac1211.client.CodeTableRequest();
+				com.ac1211.client.CodeTableRequest codeTableRequest 
+				= new com.ac1211.client.CodeTableRequest();
 				codeTableRequest.setAgentAllowedOnly(true);
 				codeTableRequest.setApiVersion("1211");
 				codeTableRequest.setClientSoftwareVersion("v1");
@@ -145,10 +150,11 @@ public class ACImpl implements ACInterface {
 	@POST
 	@Path("/commitTransaction")
 	@Override
-	public com.ac1211.client.CommitTransactionResponse commitTransaction(
+	public String commitTransaction(
 			CommitTransactionInputBean commitTransactionInputBean) {
 		setCredentials();
-		com.ac1211.client.CommitTransactionRequest commitTransactionRequest = new com.ac1211.client.CommitTransactionRequest();
+		com.ac1211.client.CommitTransactionRequest commitTransactionRequest 
+		= new com.ac1211.client.CommitTransactionRequest();
 		com.ac1211.client.CommitTransactionResponse commitTransactionResponse = null;
 
 		commitTransactionRequest.setAgentID("30014943");
@@ -162,25 +168,30 @@ public class ACImpl implements ACInterface {
 						.getMgiTransactionSessionID().trim());
 		commitTransactionRequest
 				.setProductType(com.ac1211.client.ProductType.SEND);
+		Gson gson = new Gson();
+		String string = null;
 		try {
 			commitTransactionResponse = com.ac1211.client.AgentConnect_AgentConnect_Client
 					.commitTransaction(commitTransactionRequest);
+
+			string = gson.toJson(commitTransactionResponse);
+			//System.out.println(string);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return commitTransactionResponse;
+		return string;
 
 	}
 
 	@POST
 	@Path("/detailLookUp")
 	@Override
-	public com.ac1211.client.DetailLookupResponse detailLookUp(
-			@Context HttpServletRequest request,
+	public String detailLookUp(@Context HttpServletRequest request,
 			@Context HttpServletResponse response) {
 		setCredentials();
-		com.ac1211.client.DetailLookupRequest detailLookupRequest = new com.ac1211.client.DetailLookupRequest();
+		com.ac1211.client.DetailLookupRequest detailLookupRequest 
+		= new com.ac1211.client.DetailLookupRequest();
 
 		detailLookupRequest.setAgentID("30014943");
 		detailLookupRequest.setAgentSequence("9");
@@ -204,16 +215,16 @@ public class ACImpl implements ACInterface {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return detailLookupResponse;
+		return new Gson().toJson(detailLookupResponse);
 	}
 
 	@POST
 	@Path("/sendReversal")
 	@Override
-	public com.ac1211.client.SendReversalResponse sendReversal(
-			SendReversalInputBean sendReversalInputBean) {
+	public String sendReversal(SendReversalInputBean sendReversalInputBean) {
 		setCredentials();
-		com.ac1211.client.SendReversalRequest sendReversalRequest = new com.ac1211.client.SendReversalRequest();
+		com.ac1211.client.SendReversalRequest sendReversalRequest 
+		= new com.ac1211.client.SendReversalRequest();
 		sendReversalRequest.setAgentID("");
 		sendReversalRequest.setAgentSequence("9");
 		sendReversalRequest.setToken("456");
@@ -243,18 +254,17 @@ public class ACImpl implements ACInterface {
 			e.printStackTrace();
 		}
 
-		return sendReversalResponse;
+		return new Gson().toJson(sendReversalResponse);
 	}
 
 	@POST
 	@Path("/sendValidation")
 	@Override
-	public com.ac1211.client.SendValidationResponse sendValidation(
-			SendValidationInputBean sendValidationInputBean) {
+	public String sendValidation(SendValidationInputBean sendValidationInputBean) {
 		setCredentials();
-		
-		com.ac1211.client.SendValidationRequest sendValidationRequest = 
-				new com.ac1211.client.SendValidationRequest();
+
+		com.ac1211.client.SendValidationRequest sendValidationRequest 
+		= new com.ac1211.client.SendValidationRequest();
 		sendValidationRequest.setConsumerId("0");
 		sendValidationRequest.setFormFreeStaging(false);
 		sendValidationRequest.setTimeToLive(new java.math.BigInteger("30"));
@@ -272,12 +282,13 @@ public class ACImpl implements ACInterface {
 		sendValidationRequest
 				.setMgiTransactionSessionID(sendValidationInputBean
 						.getMgiTransactionSessionID());
-		sendValidationRequest.setFeeAmount(sendValidationInputBean.getFeeAmount());
+		sendValidationRequest.setFeeAmount(sendValidationInputBean
+				.getFeeAmount());
 		sendValidationRequest.setDestinationCountry(sendValidationInputBean
 				.getDestinationCountry());
 		sendValidationRequest.setDestinationState(sendValidationInputBean
 				.getDestinationState());
-		
+
 		sendValidationRequest.setReceiveCurrency(sendValidationInputBean
 				.getReceiveCurrency());
 		sendValidationRequest.setSenderFirstName(sendValidationInputBean
@@ -302,29 +313,33 @@ public class ACImpl implements ACInterface {
 				.getReceiverLastName());
 		sendValidationRequest.setSendCurrency(sendValidationInputBean
 				.getSendCurrency());
-		
+		Gson gson = new Gson();
+		String string = null;
 		com.ac1211.client.SendValidationResponse sendValidationResponse = null;
 		try {
 			sendValidationResponse = com.ac1211.client.AgentConnect_AgentConnect_Client
 					.sendValidation(sendValidationRequest);
+
+			string = gson.toJson(sendValidationResponse);
+			//System.out.println(string);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return sendValidationResponse;
+
+		return string;
 	}
 
 	@POST
 	@Path("/getUserLimits")
 	@Override
-	public com.paypal.cfx.client.GetUserLimitsResponse getUserLimits(
-			com.ac.UserLimitInputBean userLimitInputBean) {
+	public String getUserLimits(com.ac.UserLimitInputBean userLimitInputBean) {
 
 		setCredentials();
 		GetUserLimitsRequest getUserLimitsRequest = new GetUserLimitsRequest();
 
 		AccountIdentifier accountIdentifier = new AccountIdentifier();
-//		accountIdentifier.setEmail("vbalki@ebay.com");
+		// accountIdentifier.setEmail("vbalki@ebay.com");
 		accountIdentifier.setEmail(userLimitInputBean.getEmailID());
 		PhoneNumberType phoneNumberType = new PhoneNumberType();
 		phoneNumberType.setCountryCode("1");
@@ -333,7 +348,7 @@ public class ACImpl implements ACInterface {
 		accountIdentifier.setPhone(phoneNumberType);
 		getUserLimitsRequest.setUser(accountIdentifier);
 		RequestEnvelope requestEnvelope = new RequestEnvelope();
-		requestEnvelope.setDetailLevel(DetailLevelCode.RETURN_ALL);
+		requestEnvelope.setDetailLevel(DetailLevelCode.ReturnAll);
 		requestEnvelope.setErrorLanguage("NA");
 		getUserLimitsRequest.setRequestEnvelope(requestEnvelope);
 		getUserLimitsRequest.setCountry("US");
@@ -341,6 +356,7 @@ public class ACImpl implements ACInterface {
 		getUserLimitsRequest.getLimitType().add("WITHDRAWAL");
 
 		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
+		Gson gson = new Gson();
 
 		try {
 			getUserLimitsResponse = AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client
@@ -350,7 +366,7 @@ public class ACImpl implements ACInterface {
 			e.printStackTrace();
 		}
 
-		return getUserLimitsResponse;
+		return gson.toJson(getUserLimitsResponse);
 
 	}
 
