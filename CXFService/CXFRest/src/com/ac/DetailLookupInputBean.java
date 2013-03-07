@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class DetailLookupInputBean {
 
 	public DetailLookupInputBean() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	private String referenceNumber;

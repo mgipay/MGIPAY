@@ -10,7 +10,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.Scanner;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -98,8 +97,8 @@ public class MGI_PayPal_Test {
 		System.out.println(test);
 		scanner.useDelimiter("\\Z");
 		System.out.println(response + scanner.next());
-
 	}
+	
 	@Test
 	public void TestCommitTransaction() {
 		try {
@@ -135,8 +134,8 @@ public class MGI_PayPal_Test {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	
 	}
+	
 	@Test
 	public void TestUserLimit() {
 
@@ -171,31 +170,36 @@ public class MGI_PayPal_Test {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
-	@Ignore
+	@Test
 	public void TestCodeTable() {
-		try {
-			setCredentials();
-			com.ac1211.client.CodeTableRequest codeTableRequest = new com.ac1211.client.CodeTableRequest();
-			codeTableRequest.setAgentAllowedOnly(true);
-			codeTableRequest.setApiVersion("1211");
-			codeTableRequest.setClientSoftwareVersion("v1");
-			codeTableRequest.setUnitProfileID(158178);
-			codeTableRequest.setToken("TEST");
-			codeTableRequest.setAgentSequence("9");
-			codeTableRequest.setTimeStamp(getTimeStamp());
-			codeTableRequest.setLanguage("eng");
 
-			List<String> stateCodeList = com.ac1211.client.AgentConnect_AgentConnect_Client
-					.codeTable(codeTableRequest);
-			System.out.println(stateCodeList);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
+		try {
+			URL url = new URL(
+					"http://localhost:8092/CXFRest/rest/getStateCode");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-Type", "application/json");
+			Scanner scanner;
+			String response;
+			if (conn.getResponseCode() != 200) {
+				scanner = new Scanner(conn.getErrorStream());
+				response = "Error From Server \n\n";
+			} else {
+				scanner = new Scanner(conn.getInputStream());
+				response = "Response From Server \n\n";
+			}
+			scanner.useDelimiter("\\Z");
+			System.out.println(response + scanner.next());
+			scanner.close();
+			conn.disconnect();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	
@@ -213,9 +217,7 @@ public class MGI_PayPal_Test {
 		detailLookupRequest.setLanguage("eng");
 		detailLookupRequest.setOperatorName("");
 		detailLookupRequest.setReferenceNumber("");
-
 		detailLookupRequest.setTimeStamp(getTimeStamp());
-
 		detailLookupRequest.setToken("TEST");
 		detailLookupRequest.setUnitProfileID(157256);
 		detailLookupRequest.setUserID("");
@@ -261,48 +263,6 @@ public class MGI_PayPal_Test {
 			e.printStackTrace();
 		}
 		System.out.println(sendReversalResponse);
-	}
-
-	public void TestSendValidation1() {
-		setCredentials();
-		com.ac1211.client.SendValidationRequest sendValidationRequest = new com.ac1211.client.SendValidationRequest();
-		sendValidationRequest.setAgentID("30014943");
-		sendValidationRequest.setAgentSequence("9");
-		sendValidationRequest.setToken("TEST");
-		sendValidationRequest.setTimeStamp(getTimeStamp());
-		sendValidationRequest.setApiVersion("1211");
-		sendValidationRequest.setClientSoftwareVersion("v1");
-		sendValidationRequest.setOperatorName("pgui");
-		sendValidationRequest.setAmount(new BigDecimal(100));
-		sendValidationRequest.setDestinationCountry("USA");
-		sendValidationRequest.setDestinationState("MN");
-		sendValidationRequest.setDeliveryOption("WILL_CALL");
-		sendValidationRequest.setReceiveCurrency("USD");
-		sendValidationRequest.setSenderFirstName("SF");
-		sendValidationRequest.setSenderLastName("SL");
-		sendValidationRequest.setSenderAddress("1351 H AVE S");
-		sendValidationRequest.setSenderCity("CHNMPLS");
-		sendValidationRequest.setSenderState("MN");
-		sendValidationRequest.setSenderZipCode("55416");
-		sendValidationRequest.setSenderCountry("USD");
-		sendValidationRequest.setSenderHomePhone("9522320253");
-		sendValidationRequest.setReceiverFirstName("N R F");
-		sendValidationRequest.setReceiverLastName("N R L");
-		sendValidationRequest.setSendCurrency("USA");
-		sendValidationRequest.setConsumerId("0");
-		sendValidationRequest.setFormFreeStaging(false);
-		sendValidationRequest.setTimeToLive(new java.math.BigInteger("30"));
-		sendValidationRequest.setPrimaryReceiptLanguage("eng");
-		sendValidationRequest.setSecondaryReceiptLanguage("spa");
-		com.ac1211.client.SendValidationResponse sendValidationResponse = null;
-		try {
-			sendValidationResponse = com.ac1211.client.AgentConnect_AgentConnect_Client
-					.sendValidation(sendValidationRequest);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println(sendValidationResponse);
 	}
 
 	private static XMLGregorianCalendar getTimeStamp() {

@@ -12,11 +12,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name="UserLimitInputBean")
 public class UserLimitInputBean {
 
-	/**
-	 * 
-	 */
 	public UserLimitInputBean() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	private String emailID;

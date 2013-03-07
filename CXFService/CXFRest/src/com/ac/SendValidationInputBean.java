@@ -7,6 +7,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "SendValidationInputBean")
 public class SendValidationInputBean {
 
+	public SendValidationInputBean() {
+
+	}
+
 	private BigDecimal amount;
 	private BigDecimal feeAmount;
 	private String destinationCountry;

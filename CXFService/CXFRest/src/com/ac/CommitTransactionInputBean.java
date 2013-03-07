@@ -4,6 +4,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "CommitTransactionInputBean")
 public class CommitTransactionInputBean {
+	
+	public CommitTransactionInputBean() {
+
+	}
 
 	private String mgiTransactionSessionID;
 

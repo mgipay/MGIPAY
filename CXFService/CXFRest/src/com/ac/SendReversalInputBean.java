@@ -6,6 +6,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="SendReversalInputBean")
 public class SendReversalInputBean {
+
+	public SendReversalInputBean() {
+
+	}
 	
 	private BigDecimal sendAmount;
 
