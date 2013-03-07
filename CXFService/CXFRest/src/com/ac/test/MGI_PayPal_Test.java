@@ -137,10 +137,11 @@ public class MGI_PayPal_Test {
 		}
 	
 	}
-	@Ignore
+	@Test
 	public void TestUserLimit() {
 
 		try {
+			
 			URL url = new URL("http://localhost:8092/CXFRest/rest/getUserLimits");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);

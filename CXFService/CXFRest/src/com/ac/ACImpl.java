@@ -19,6 +19,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.rpc.ServiceException;
 
+
 import com.google.gson.Gson;
 import com.paypal.cfx.client.AccountIdentifier;
 import com.paypal.cfx.client.AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client;
@@ -334,7 +335,7 @@ public class ACImpl implements ACInterface {
 	@Override
 	public String getUserLimits(com.ac.UserLimitInputBean userLimitInputBean) {
 
-		setCredentials();
+//		setCredentials();
 		GetUserLimitsRequest getUserLimitsRequest = new GetUserLimitsRequest();
 
 		AccountIdentifier accountIdentifier = new AccountIdentifier();
