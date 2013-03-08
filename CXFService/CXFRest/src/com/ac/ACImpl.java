@@ -5,7 +5,6 @@ import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -28,21 +27,23 @@ import com.paypal.cfx.client.RequestEnvelope;
 @Consumes("application/json")
 @Produces("application/JSON")
 public class ACImpl implements ACInterface {
-	int globalRetryCount = 3;
+	
+	private byte globalRetryCountThree = 3;
 
 	private static String STATES_IN_USA;
 
 	private static Integer DAY_IDENTIFIER = null;
-
+	
 	@POST
 	@Path("/getFee")
 	@Override
 	public String getFee(FeeLookupInputBean feeLookupInputBean) {
+		
 		com.ac1211.client.FeeLookupResponse feeLookupResponse 
 		= new com.ac1211.client.FeeLookupResponse();
 		Gson gson = new Gson();
 		String string = null;
-		int retryCount = globalRetryCount;
+		byte retryCount = globalRetryCountThree;
 		String error;
 		do {
 			try {
@@ -114,13 +115,13 @@ public class ACImpl implements ACInterface {
 		if (DAY_IDENTIFIER == null
 				|| DAY_IDENTIFIER != Calendar.getInstance().get(
 						Calendar.DAY_OF_WEEK)) {
-			DAY_IDENTIFIER = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-			List<String> stateCodeList = null;
-			Gson gson = new Gson();
+			synchronized (DAY_IDENTIFIER) {
+				DAY_IDENTIFIER = Calendar.getInstance().get(
+						Calendar.DAY_OF_WEEK);
+			}
 			try {
 				setCredentials();
-				com.ac1211.client.CodeTableRequest codeTableRequest 
-				= new com.ac1211.client.CodeTableRequest();
+				com.ac1211.client.CodeTableRequest codeTableRequest = new com.ac1211.client.CodeTableRequest();
 				codeTableRequest.setAgentAllowedOnly(true);
 				codeTableRequest.setApiVersion("1211");
 				codeTableRequest.setClientSoftwareVersion("v1");
@@ -130,14 +131,14 @@ public class ACImpl implements ACInterface {
 				codeTableRequest.setTimeStamp(getTimeStamp());
 				codeTableRequest.setLanguage("eng");
 
-				stateCodeList = com.ac1211.client.AgentConnect_AgentConnect_Client
-						.codeTable(codeTableRequest);
+				STATES_IN_USA = new Gson()
+						.toJson(com.ac1211.client.AgentConnect_AgentConnect_Client
+								.codeTable(codeTableRequest));
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
-			STATES_IN_USA = gson.toJson(stateCodeList);
 		}
 		return STATES_IN_USA;
 	}
@@ -170,7 +171,6 @@ public class ACImpl implements ACInterface {
 					.commitTransaction(commitTransactionRequest);
 
 			string = gson.toJson(commitTransactionResponse);
-			//System.out.println(string);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -316,7 +316,6 @@ public class ACImpl implements ACInterface {
 					.sendValidation(sendValidationRequest);
 
 			string = gson.toJson(sendValidationResponse);
-			//System.out.println(string);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -328,22 +327,40 @@ public class ACImpl implements ACInterface {
 	@POST
 	@Path("/getUserLimits")
 	@Override
-	public String getUserLimits(com.ac.UserLimitInputBean userLimitInputBean) {
+	public String getUserLimits(UserLimitInputBean userLimitInputBean) {
 
-//		setCredentials();
+		// PhoneNumberType phoneNumberType = new PhoneNumberType();
+		// phoneNumberType.setCountryCode(userLimitInputBean.getCountryCode());
+		// phoneNumberType.setExtension(userLimitInputBean.getExtension());
+		// phoneNumberType.setPhoneNumber(userLimitInputBean.getPhoneNumber());
+		//
+		// AccountIdentifier accountIdentifier = new AccountIdentifier();
+		// accountIdentifier.setEmail(userLimitInputBean.getEmailID());
+		// accountIdentifier.setPhone(phoneNumberType);
+		//
+		// RequestEnvelope requestEnvelope = new RequestEnvelope();
+		// requestEnvelope.setDetailLevel(DetailLevelCode.fromValue("ReturnAll"));
+		// requestEnvelope.setErrorLanguage("NA");
+		//
+		// GetUserLimitsRequest getUserLimitsRequest = new
+		// GetUserLimitsRequest();
+		// getUserLimitsRequest.setUser(accountIdentifier);
+		// getUserLimitsRequest.setRequestEnvelope(requestEnvelope);
+		// getUserLimitsRequest.setCountry(userLimitInputBean.getCountry());
+		// getUserLimitsRequest.setCurrencyCode(userLimitInputBean
+		// .getCurrencyCode());
+		// getUserLimitsRequest.getLimitType().add("WITHDRAWAL");
 		GetUserLimitsRequest getUserLimitsRequest = new GetUserLimitsRequest();
-
-		AccountIdentifier accountIdentifier = new AccountIdentifier();
-		// accountIdentifier.setEmail("vbalki@ebay.com");
-		accountIdentifier.setEmail(userLimitInputBean.getEmailID());
 		PhoneNumberType phoneNumberType = new PhoneNumberType();
+		AccountIdentifier accountIdentifier = new AccountIdentifier();
 		phoneNumberType.setCountryCode("1");
 		phoneNumberType.setExtension("4237");
 		phoneNumberType.setPhoneNumber("6057100363");
 		accountIdentifier.setPhone(phoneNumberType);
 		getUserLimitsRequest.setUser(accountIdentifier);
+		accountIdentifier.setEmail(userLimitInputBean.getEmailID());
 		RequestEnvelope requestEnvelope = new RequestEnvelope();
-		requestEnvelope.setDetailLevel(DetailLevelCode.ReturnAll);
+		requestEnvelope.setDetailLevel(DetailLevelCode.RETURN_ALL);
 		requestEnvelope.setErrorLanguage("NA");
 		getUserLimitsRequest.setRequestEnvelope(requestEnvelope);
 		getUserLimitsRequest.setCountry("US");
@@ -376,18 +393,18 @@ public class ACImpl implements ACInterface {
 		System.setProperty("http.proxyPassword", "Bala@Mar84");
 	}
 
-	public String handleException(Exception e) {
+	public String handleException(Exception exception) {
 
 		String errorMsg = null;
-		if (e instanceof MalformedURLException) {
-			errorMsg = e.getMessage();
+		if (exception instanceof MalformedURLException) {
+			errorMsg = exception.getMessage();
 		}
 
-		else if (e instanceof ServiceException) {
-			errorMsg = e.getMessage();
+		else if (exception instanceof ServiceException) {
+			errorMsg = exception.getMessage();
 
-		} else if (e instanceof RemoteException) {
-			Throwable cause = e.getCause();
+		} else if (exception instanceof RemoteException) {
+			Throwable cause = exception.getCause();
 
 			if (cause instanceof java.net.ConnectException // Connection not
 															// established

@@ -67,7 +67,7 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 		accountIdentifier.setPhone(phoneNumberType);
 		getUserLimitsRequest.setUser(accountIdentifier);
 		RequestEnvelope requestEnvelope = new RequestEnvelope();
-		requestEnvelope.setDetailLevel(DetailLevelCode.ReturnAll);
+		requestEnvelope.setDetailLevel(DetailLevelCode.RETURN_ALL);
 		requestEnvelope.setErrorLanguage("error_US");
 		getUserLimitsRequest.setRequestEnvelope(requestEnvelope);
 		getUserLimitsRequest.setCountry("US");

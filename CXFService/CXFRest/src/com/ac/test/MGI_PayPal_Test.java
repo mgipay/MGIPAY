@@ -19,6 +19,10 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.paypal.cfx.client.DetailLevelCode;
+import com.paypal.cfx.client.RequestEnvelope;
+
+
 /**
  * @author 538540
  * 
@@ -28,6 +32,12 @@ public class MGI_PayPal_Test {
 	@Test
 	public void TestFeeLookUp() {
 		try {
+
+			RequestEnvelope requestEnvelope = new RequestEnvelope();
+			requestEnvelope.setDetailLevel(DetailLevelCode.fromValue("ReturnAll"));
+			System.out.println(requestEnvelope.getDetailLevel());
+		
+			
 			URL url = new URL("http://localhost:8092/CXFRest/rest/getFee");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
@@ -62,7 +72,7 @@ public class MGI_PayPal_Test {
 	}
 
 	
-	@Test
+	@Ignore
 	public void TestSendValidation() throws Exception {
 		URL url = new URL("http://localhost:8092/CXFRest/rest/sendValidation");
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -99,7 +109,7 @@ public class MGI_PayPal_Test {
 		System.out.println(response + scanner.next());
 	}
 	
-	@Test
+	@Ignore
 	public void TestCommitTransaction() {
 		try {
 			URL url = new URL("http://localhost:8092/CXFRest/rest/commitTransaction");
@@ -140,7 +150,6 @@ public class MGI_PayPal_Test {
 	public void TestUserLimit() {
 
 		try {
-			
 			URL url = new URL("http://localhost:8092/CXFRest/rest/getUserLimits");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
@@ -172,7 +181,7 @@ public class MGI_PayPal_Test {
 		}
 	}
 
-	@Test
+	@Ignore
 	public void TestCodeTable() {
 
 		try {
@@ -206,7 +215,7 @@ public class MGI_PayPal_Test {
 
 	@Ignore
 	public void TestDetailLookup() {
-		setCredentials();
+//		setCredentials();
 		com.ac1211.client.DetailLookupRequest detailLookupRequest = new com.ac1211.client.DetailLookupRequest();
 
 		detailLookupRequest.setAgentID("30014943");
@@ -235,7 +244,7 @@ public class MGI_PayPal_Test {
 
 	@Ignore
 	public void TestSendReversal() {
-		setCredentials();
+//		setCredentials();
 		com.ac1211.client.SendReversalRequest sendReversalRequest = new com.ac1211.client.SendReversalRequest();
 		sendReversalRequest.setAgentID("");
 		sendReversalRequest.setAgentSequence("9");
@@ -266,24 +275,14 @@ public class MGI_PayPal_Test {
 	}
 
 	private static XMLGregorianCalendar getTimeStamp() {
-		XMLGregorianCalendar xgcal = null;
+		XMLGregorianCalendar xmlGregorianCalendar = null;
 		try {
-			xgcal = DatatypeFactory.newInstance().newXMLGregorianCalendar(
+			xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(
 					new GregorianCalendar());
 		} catch (DatatypeConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return xgcal;
-	}
-
-	/**
-	 * 
-	 */
-	private void setCredentials() {
-		System.setProperty("http.proxyHost", "proxy.tcs.com");
-		System.setProperty("http.proxyPort", "8080");
-		System.setProperty("http.proxyUser", "538540");
-		System.setProperty("http.proxyPassword", "Bala@Feb84");
+		return xmlGregorianCalendar;
 	}
 }
