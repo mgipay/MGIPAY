@@ -16,7 +16,6 @@ import com.paypal.cfx.client.GetUserLimitsRequest;
 import com.paypal.cfx.client.GetUserLimitsResponse;
 import com.paypal.cfx.client.PhoneNumberType;
 import com.paypal.cfx.client.RequestEnvelope;
-import com.thoughtworks.xstream.XStream;
 
 public class Test {
 
@@ -48,9 +47,6 @@ public class Test {
 		 getUserLimitsRequest.setCurrencyCode("USD");
 		 getUserLimitsRequest.getLimitType().add("WITHDRAWAL");
 
-		 XStream xStream = new XStream();
-		 System.out.println(xStream.toXML(getUserLimitsRequest));
-		 
 		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
 		Gson gson = new Gson();
 
