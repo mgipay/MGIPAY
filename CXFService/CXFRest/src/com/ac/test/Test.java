@@ -7,6 +7,9 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
+
 import com.ac1211.client.FeeLookupResponse;
 import com.google.gson.Gson;
 import com.paypal.cfx.client.AccountIdentifier;
@@ -18,17 +21,19 @@ import com.paypal.cfx.client.PhoneNumberType;
 import com.paypal.cfx.client.RequestEnvelope;
 
 public class Test {
+	
+	private static Logger logger = Logger.getLogger(Test.class);
 
 	public static void main(String[] args) {
-		// TODO remove this method
-//		System.setProperty("http.proxyHost", "proxy.tcs.com");
-//		System.setProperty("http.proxyPort", "8080");
-//		System.setProperty("http.proxyUser", "538540");
-//		System.setProperty("http.proxyPassword", "Bala@Mar84");
-//	
+//BasicConfigurator.configure();
+		logger.debug("debug.");
+		logger.error("error");
+		logger.info("info");
+		logger.warn("warn");
+//		logg
 		
 		
-		
+		// TODO delete this class
 		GetUserLimitsRequest getUserLimitsRequest = new GetUserLimitsRequest();
 		PhoneNumberType phoneNumberType = new PhoneNumberType();
 		AccountIdentifier accountIdentifier = new AccountIdentifier();
@@ -39,7 +44,6 @@ public class Test {
 		 getUserLimitsRequest.setUser(accountIdentifier);
 		 accountIdentifier.setEmail("vbalki@ebay.com");
 		 RequestEnvelope requestEnvelope = new RequestEnvelope();
-//		 requestEnvelope.setDetailLevel(DetailLevelCode.fromValue("ReturnAll"));
 		 requestEnvelope.setDetailLevel(DetailLevelCode.RETURN_ALL);
 		 requestEnvelope.setErrorLanguage("NA");
 		 getUserLimitsRequest.setRequestEnvelope(requestEnvelope);
@@ -58,11 +62,7 @@ public class Test {
 			e.printStackTrace();
 		}
 
-//		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
 		System.out.println(getUserLimitsResponse.getUserLimit().get(0).getLimitAmount().getAmount());
-		
-		
-//		Gson gson = new Gson();
 		try {
 			com.ac1211.client.FeeLookupRequest feeLookupRequest = new com.ac1211.client.FeeLookupRequest();
 
@@ -80,25 +80,13 @@ public class Test {
 			feeLookupRequest.setSendCurrency("USD");
 			feeLookupRequest.setAllOptions(false);
 
-//			Gson gson = new Gson();
 			System.out.println(gson.toJson(feeLookupRequest));
 
-
-			
-			
 			FeeLookupResponse feeLookupResponse = com.ac1211.client.AgentConnect_AgentConnect_Client
 					.feeLookup(feeLookupRequest);
-
-			
 			XMLGregorianCalendar xmlGregorianCalendar = getTimeStamp();
 			com.ac1211.client.SendValidationResponse sendValidationResponse = sendValidation(
 					gson, feeLookupResponse, xmlGregorianCalendar);
-			com.ac1211.client.SendValidationResponse sendValidationResponse2 = sendValidation(
-					gson, feeLookupResponse, xmlGregorianCalendar);
-			if(sendValidationResponse.equals(sendValidationResponse2)){
-				System.out.println("same response");
-			}
-
 			com.ac1211.client.CommitTransactionRequest commitTransactionRequest = new com.ac1211.client.CommitTransactionRequest();
 			com.ac1211.client.CommitTransactionResponse commitTransactionResponse = null;
 
