@@ -1,6 +1,7 @@
 package com.ac;
 
 import java.io.InterruptedIOException;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.util.Calendar;
@@ -52,141 +53,106 @@ public class ACImpl implements ACInterface {
 	private static Integer DAY_IDENTIFIER = null;
 
 	private static Logger LOGGER = Logger.getLogger(ACImpl.class);
-	
+
 	@POST
 	@Path("/getFee")
 	@Override
 	public String getFee(FeeLookupInputBean feeLookupInputBean) {
 
 		LOGGER.debug("Enter getFee.");
-		
-		FeeLookupResponse feeLookupResponse = new FeeLookupResponse();
-		Gson gson = new Gson();
-		String string = null;
+
+		String jsonResponse = null;
+		FeeLookupResponse feeLookupResponse = null;
+		FeeLookupRequest feeLookupRequest = createFeeLookupInput(feeLookupInputBean
+				.getAmount());
+
 		byte retryCount = globalRetryCountThree;
-		String error;
-		do {
+		while (retryCount >= 1) {
+
 			try {
-				setCredentials();
-				FeeLookupRequest feeLookupRequest = new FeeLookupRequest();
-
-				feeLookupRequest.setAgentID(MGI_Constants.AGENT_ID);
-				feeLookupRequest.setAgentSequence(MGI_Constants.AGENT_SEQUENCE);
-				feeLookupRequest.setToken(MGI_Constants.TOKEN);
-				feeLookupRequest.setTimeStamp(getTimeStamp());
-				feeLookupRequest.setApiVersion(MGI_Constants.API_VERSION);
-				feeLookupRequest
-						.setClientSoftwareVersion(MGI_Constants.CLIENT_SOFTWARE_VERSION);
-				feeLookupRequest.setAmountExcludingFee(feeLookupInputBean
-						.getAmount());
-				feeLookupRequest.setProductType(ProductType.SEND);
-				feeLookupRequest
-						.setReceiveCountry(MGI_Constants.COUNTRY_CODE_USA);
-				feeLookupRequest
-						.setDeliveryOption(MGI_Constants.DELIVER_OPTION_WILL_CALL);
-				feeLookupRequest
-						.setReceiveCurrency(MGI_Constants.CURRENCY_CODE_USA);
-				feeLookupRequest
-						.setSendCurrency(MGI_Constants.CURRENCY_CODE_USA);
-				feeLookupRequest.setAllOptions(false);
-
 				feeLookupResponse = AgentConnect_AgentConnect_Client
 						.feeLookup(feeLookupRequest);
-
-				if (feeLookupResponse != null) {
-					string = gson.toJson(feeLookupResponse);
-					// System.out.println(string);
-					break;
-				} else {
-					retryCount--;
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace();
-				error = handleException(e);// To check the type of Exception
-				if (error.equals("TimeoutException")
-						|| error.equals("RemoteException")) {
-					retryCount--; // Retry only for these 2 cases
-				} else {
-					// System.out.println(error); // TODO Have to handle unknown
-					// exception here.
-					break; // Stops the loop and comes out of Retry loop (no
-							// retry for unknown exceptions)
-				}
+			} catch (Exception exception) {
+				// TODO retry only for timeoutexception
+				retryCount--;
 			}
-		} while ((retryCount > 0));
-		
+			if (feeLookupResponse != null) {
+				break;
+			}
+		}
+		if (feeLookupResponse != null) {
+			jsonResponse = new Gson().toJson(feeLookupResponse);
+		} else {
+			// TODO set error message in string
+			jsonResponse = "";
+		}
 		LOGGER.debug("Exit getFee.");
-		
-		return string;
+
+		return jsonResponse;
+	}
+
+	private FeeLookupRequest createFeeLookupInput(BigDecimal amount) {
+
+		LOGGER.debug("Enter callFeeLookup.");
+
+		FeeLookupRequest feeLookupRequest = new FeeLookupRequest();
+
+		feeLookupRequest.setAgentID(MGI_Constants.AGENT_ID);
+		feeLookupRequest.setAgentSequence(MGI_Constants.AGENT_SEQUENCE);
+		feeLookupRequest.setToken(MGI_Constants.TOKEN);
+		feeLookupRequest.setTimeStamp(getTimeStamp());
+		feeLookupRequest.setApiVersion(MGI_Constants.API_VERSION);
+		feeLookupRequest
+				.setClientSoftwareVersion(MGI_Constants.CLIENT_SOFTWARE_VERSION);
+		feeLookupRequest.setAmountExcludingFee(amount);
+		feeLookupRequest.setProductType(ProductType.SEND);
+		feeLookupRequest.setReceiveCountry(MGI_Constants.COUNTRY_CODE_USA);
+		feeLookupRequest
+				.setDeliveryOption(MGI_Constants.DELIVER_OPTION_WILL_CALL);
+		feeLookupRequest.setReceiveCurrency(MGI_Constants.CURRENCY_CODE_USA);
+		feeLookupRequest.setSendCurrency(MGI_Constants.CURRENCY_CODE_USA);
+		feeLookupRequest.setAllOptions(false);
+
+		LOGGER.debug("Exit callFeeLookup.");
+
+		return feeLookupRequest;
 	}
 
 	@POST
 	@Path("/getFeeForTwoHundred")
 	@Override
 	public String getFeeForTwoHundred() {
-		
-		LOGGER.debug("Enter getFeeForTwoHundred.");
-		
-		FeeLookupResponse feeLookupResponse = new FeeLookupResponse();
-		Gson gson = new Gson();
-		String string = null;
-		byte retryCount = globalRetryCountThree;
-		String error;
-		do {
-			try {
-				setCredentials();
-				FeeLookupRequest feeLookupRequest = new FeeLookupRequest();
 
-				feeLookupRequest.setAgentID(MGI_Constants.AGENT_ID);
-				feeLookupRequest.setAgentSequence(MGI_Constants.AGENT_SEQUENCE);
-				feeLookupRequest.setToken(MGI_Constants.TOKEN);
-				feeLookupRequest.setTimeStamp(getTimeStamp());
-				feeLookupRequest.setApiVersion(MGI_Constants.API_VERSION);
-				feeLookupRequest
-						.setClientSoftwareVersion(MGI_Constants.CLIENT_SOFTWARE_VERSION);
-				feeLookupRequest
-						.setAmountExcludingFee(MGI_Constants.TWO_HUNDRED_US_DOLLARS);
-				feeLookupRequest.setProductType(ProductType.SEND);
-				feeLookupRequest
-						.setReceiveCountry(MGI_Constants.COUNTRY_CODE_USA);
-				feeLookupRequest
-						.setDeliveryOption(MGI_Constants.DELIVER_OPTION_WILL_CALL);
-				feeLookupRequest
-						.setReceiveCurrency(MGI_Constants.CURRENCY_CODE_USA);
-				feeLookupRequest
-						.setSendCurrency(MGI_Constants.CURRENCY_CODE_USA);
-				feeLookupRequest.setAllOptions(false);
+		LOGGER.debug("Enter getFeeForTwoHundred.");
+
+		String jsonResponse = null;
+		FeeLookupResponse feeLookupResponse = null;
+		FeeLookupRequest feeLookupRequest = createFeeLookupInput(MGI_Constants.TWO_HUNDRED_US_DOLLARS);
+
+		byte retryCount = globalRetryCountThree;
+		while (retryCount >= 1) {
+
+			try {
 
 				feeLookupResponse = AgentConnect_AgentConnect_Client
 						.feeLookup(feeLookupRequest);
-
-				if (feeLookupResponse != null) {
-					string = gson.toJson(feeLookupResponse);
-					// System.out.println(string);
-					break;
-				} else {
-					retryCount--;
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace();
-				error = handleException(e);// To check the type of Exception
-				if (error.equals("TimeoutException")
-						|| error.equals("RemoteException")) {
-					retryCount--; // Retry only for these 2 cases
-				} else {
-					// System.out.println(error); // TODO Have to handle unknown
-					// exception here.
-					break; // Stops the loop and comes out of Retry loop (no
-							// retry for unknown exceptions)
-				}
+			} catch (Exception exception) {
+				retryCount--;
 			}
-		} while ((retryCount > 0));
-		
+			if (feeLookupResponse != null) {
+				break;
+			}
+		}
+		if (feeLookupResponse != null) {
+			jsonResponse = new Gson().toJson(feeLookupResponse);
+		} else {
+			// TODO set error message in string
+			jsonResponse = "";
+		}
+
 		LOGGER.debug("Exit getFeeForTwoHundred.");
-		
-		return string;
+
+		return jsonResponse;
 	}
 
 	@POST
@@ -195,66 +161,35 @@ public class ACImpl implements ACInterface {
 	public String getFeeForFiveHundred() {
 
 		LOGGER.debug("Enter getFeeForFiveHundred.");
-		
-		FeeLookupResponse feeLookupResponse = new FeeLookupResponse();
-		Gson gson = new Gson();
-		String string = null;
+
+		String jsonResponse = null;
+		FeeLookupResponse feeLookupResponse = null;
+		FeeLookupRequest feeLookupRequest = createFeeLookupInput(
+				MGI_Constants.FIVE_HUNDRED_US_DOLLARS);
+
 		byte retryCount = globalRetryCountThree;
-		String error;
-		do {
+		while (retryCount >= 1) {
+
 			try {
-				setCredentials();
-				FeeLookupRequest feeLookupRequest = new FeeLookupRequest();
-
-				feeLookupRequest.setAgentID(MGI_Constants.AGENT_ID);
-				feeLookupRequest.setAgentSequence(MGI_Constants.AGENT_SEQUENCE);
-				feeLookupRequest.setToken(MGI_Constants.TOKEN);
-				feeLookupRequest.setTimeStamp(getTimeStamp());
-				feeLookupRequest.setApiVersion(MGI_Constants.API_VERSION);
-				feeLookupRequest
-						.setClientSoftwareVersion(MGI_Constants.CLIENT_SOFTWARE_VERSION);
-				feeLookupRequest
-						.setAmountExcludingFee(MGI_Constants.FIVE_HUNDRED_US_DOLLARS);
-				feeLookupRequest.setProductType(ProductType.SEND);
-				feeLookupRequest
-						.setReceiveCountry(MGI_Constants.COUNTRY_CODE_USA);
-				feeLookupRequest
-						.setDeliveryOption(MGI_Constants.DELIVER_OPTION_WILL_CALL);
-				feeLookupRequest
-						.setReceiveCurrency(MGI_Constants.CURRENCY_CODE_USA);
-				feeLookupRequest
-						.setSendCurrency(MGI_Constants.CURRENCY_CODE_USA);
-				feeLookupRequest.setAllOptions(false);
-
 				feeLookupResponse = AgentConnect_AgentConnect_Client
 						.feeLookup(feeLookupRequest);
-
-				if (feeLookupResponse != null) {
-					string = gson.toJson(feeLookupResponse);
-					// System.out.println(string);
-					break;
-				} else {
-					retryCount--;
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace();
-				error = handleException(e);// To check the type of Exception
-				if (error.equals("TimeoutException")
-						|| error.equals("RemoteException")) {
-					retryCount--; // Retry only for these 2 cases
-				} else {
-					// System.out.println(error); // TODO Have to handle unknown
-					// exception here.
-					break; // Stops the loop and comes out of Retry loop (no
-							// retry for unknown exceptions)
-				}
+			} catch (Exception exception) {
+				retryCount--;
 			}
-		} while ((retryCount > 0));
+			if (feeLookupResponse != null) {
+				break;
+			}
+		}
+		if (feeLookupResponse != null) {
+			jsonResponse = new Gson().toJson(feeLookupResponse);
+		} else {
+			// TODO set error message in string
+			jsonResponse = "";
+		}
 
 		LOGGER.debug("Exit getFeeForFiveHundred.");
-		
-		return string;
+
+		return jsonResponse;
 	}
 
 	private static XMLGregorianCalendar getTimeStamp() {
@@ -273,9 +208,9 @@ public class ACImpl implements ACInterface {
 	@Path("/getStateCode")
 	@Override
 	public String getState() {
-		
+
 		LOGGER.debug("Enter getStateCode.");
-		
+
 		if (DAY_IDENTIFIER == null
 				|| DAY_IDENTIFIER != Calendar.getInstance().get(
 						Calendar.DAY_OF_WEEK)) {
@@ -296,18 +231,21 @@ public class ACImpl implements ACInterface {
 				codeTableRequest.setTimeStamp(getTimeStamp());
 				codeTableRequest.setLanguage("eng");
 
-				STATES_IN_USA = new Gson()
-						.toJson(AgentConnect_AgentConnect_Client
-								.codeTable(codeTableRequest));
+				synchronized (STATES_IN_USA) {
+					STATES_IN_USA = new Gson()
+							.toJson(AgentConnect_AgentConnect_Client
+									.codeTable(codeTableRequest));
+				}
+
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
 		}
-		
+
 		LOGGER.debug("Exit getStateCode.");
-		
+
 		return STATES_IN_USA;
 	}
 
@@ -316,9 +254,9 @@ public class ACImpl implements ACInterface {
 	@Override
 	public String commitTransaction(
 			CommitTransactionInputBean commitTransactionInputBean) {
-		
+
 		LOGGER.debug("Enter commitTransaction.");
-		
+
 		setCredentials();
 		CommitTransactionRequest commitTransactionRequest = new CommitTransactionRequest();
 		CommitTransactionResponse commitTransactionResponse = null;
@@ -345,9 +283,9 @@ public class ACImpl implements ACInterface {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		LOGGER.debug("Exit commitTransaction.");
-		
+
 		return string;
 	}
 
@@ -355,9 +293,9 @@ public class ACImpl implements ACInterface {
 	@Path("/detailLookUp")
 	@Override
 	public String detailLookUp(DetailLookupInputBean detailLookupInputBean) {
-		
+
 		LOGGER.debug("Enter detailLookUp.");
-		
+
 		setCredentials();
 		DetailLookupRequest detailLookupRequest = new DetailLookupRequest();
 
@@ -385,9 +323,9 @@ public class ACImpl implements ACInterface {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		LOGGER.debug("Exit detailLookUp.");
-		
+
 		return new Gson().toJson(detailLookupResponse);
 	}
 
@@ -395,9 +333,9 @@ public class ACImpl implements ACInterface {
 	@Path("/sendReversal")
 	@Override
 	public String sendReversal(SendReversalInputBean sendReversalInputBean) {
-		
+
 		LOGGER.debug("Enter sendReversal.");
-		
+
 		setCredentials();
 		SendReversalRequest sendReversalRequest = new SendReversalRequest();
 		sendReversalRequest.setAgentID(MGI_Constants.AGENT_ID);
@@ -430,7 +368,7 @@ public class ACImpl implements ACInterface {
 		}
 
 		LOGGER.debug("Exit sendReversal.");
-		
+
 		return new Gson().toJson(sendReversalResponse);
 	}
 
@@ -438,10 +376,40 @@ public class ACImpl implements ACInterface {
 	@Path("/sendValidation")
 	@Override
 	public String sendValidation(SendValidationInputBean sendValidationInputBean) {
-		
+
 		LOGGER.debug("Enter sendValidation.");
-		
+
 		setCredentials();
+		SendValidationResponse sendValidationResponse = null;
+		byte retryCount = globalRetryCountThree;
+		String mgiTranscationId = null;
+		while (retryCount >= 1) {
+			try {
+				sendValidationResponse = callSendValidation(
+						sendValidationInputBean, mgiTranscationId);
+			} catch (Exception exception) {
+				retryCount--;
+			}
+			if (sendValidationResponse != null) {
+				break;
+			}
+		}
+		
+		LOGGER.debug("Exit sendValidation.");
+		
+		if (sendValidationResponse != null) {
+			return new Gson().toJson(sendValidationResponse);
+		} else {
+			// TODO return error message to UI
+			return null;
+		}
+	}
+
+	private SendValidationResponse callSendValidation(
+			SendValidationInputBean sendValidationInputBean,
+			String mgiTransactionId) throws Exception {
+
+		LOGGER.debug("Enter callSendValidation.");
 
 		SendValidationRequest sendValidationRequest = new SendValidationRequest();
 		sendValidationRequest.setConsumerId("0");
@@ -462,9 +430,13 @@ public class ACImpl implements ACInterface {
 		sendValidationRequest
 				.setDeliveryOption(MGI_Constants.DELIVER_OPTION_WILL_CALL);
 		sendValidationRequest.setAmount(sendValidationInputBean.getAmount());
-		sendValidationRequest
-				.setMgiTransactionSessionID(sendValidationInputBean
-						.getMgiTransactionSessionID());
+		if (mgiTransactionId != null) {
+			sendValidationRequest.setMgiTransactionSessionID(mgiTransactionId);
+		} else {
+			sendValidationRequest
+					.setMgiTransactionSessionID(sendValidationInputBean
+							.getMgiTransactionSessionID());
+		}
 		sendValidationRequest.setFeeAmount(sendValidationInputBean
 				.getFeeAmount());
 		sendValidationRequest.setDestinationCountry(sendValidationInputBean
@@ -496,22 +468,13 @@ public class ACImpl implements ACInterface {
 				.getReceiverLastName());
 		sendValidationRequest.setSendCurrency(sendValidationInputBean
 				.getSendCurrency());
-		Gson gson = new Gson();
-		String string = null;
 		SendValidationResponse sendValidationResponse = null;
-		try {
-			sendValidationResponse = AgentConnect_AgentConnect_Client
-					.sendValidation(sendValidationRequest);
+		sendValidationResponse = AgentConnect_AgentConnect_Client
+				.sendValidation(sendValidationRequest);
 
-			string = gson.toJson(sendValidationResponse);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		LOGGER.debug("Exit callSendValidation.");
 
-		LOGGER.debug("Exit sendValidation.");
-		
-		return string;
+		return sendValidationResponse;
 	}
 
 	@POST
@@ -520,7 +483,7 @@ public class ACImpl implements ACInterface {
 	public String getUserLimits(UserLimitInputBean userLimitInputBean) {
 
 		LOGGER.debug("Enter getUserLimits.");
-		
+
 		PhoneNumberType phoneNumberType = new PhoneNumberType();
 		phoneNumberType.setCountryCode(userLimitInputBean.getCountryCode());
 		phoneNumberType.setExtension(userLimitInputBean.getExtension());
@@ -554,7 +517,7 @@ public class ACImpl implements ACInterface {
 		}
 
 		LOGGER.debug("Exit getUserLimits.");
-		
+
 		return gson.toJson(getUserLimitsResponse);
 	}
 
@@ -569,10 +532,10 @@ public class ACImpl implements ACInterface {
 		System.setProperty("http.proxyPassword", "Bala@Mar84");
 	}
 
-	public String handleException(Exception exception) {
+	private String handleException(Exception exception) {
 
 		LOGGER.debug("Enter handleException.");
-		
+
 		String errorMsg = null;
 		if (exception instanceof MalformedURLException) {
 			errorMsg = exception.getMessage();
@@ -603,7 +566,7 @@ public class ACImpl implements ACInterface {
 		}
 
 		LOGGER.debug("Exit handleException.");
-		
+
 		return errorMsg;
 	}
 

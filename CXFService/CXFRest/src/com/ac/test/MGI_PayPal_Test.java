@@ -63,6 +63,81 @@ public class MGI_PayPal_Test {
 		}
 	}
 
+	
+	@Test
+	public void TestSendValidation() throws Exception {
+		URL url = new URL("http://localhost:8092/CXFRest/rest/sendValidation");
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setDoOutput(true);
+		conn.setRequestMethod("POST");
+		conn.setRequestProperty("Content-Type", "application/json");
+ 
+		String inputJsonObject = "{\"SendValidationInputBean\":{\"amount\":100,\"feeA" +
+				"mount\":12.00,\"destinationCountry\":\"USA\",\"destinationState\":\"MN\",\"receiv" +
+				"eCurrency\":\"USD\",\"senderFirstName\":\"SF\",\"senderLastName\":\"SL\",\"senderAd" +
+				"dress\":\"1351 H AVE S\",\"senderCity\":\"CHNMPLS\",\"senderState\":\"MN\",\"sender" +
+				"ZipCode\":\"55416\",\"senderCountry\":\"USA\",\"senderHomePhone\":\"9522320253\",\"rece" +
+				"iverFirstName\":\"N R F\",\"receiverLastName\":\"N R L\",\"sendCurrency\":\"USD\",\"mgiT" +
+				"ransactionSessionID\":\"" +
+				"9708729E1572561363079352487" +
+				"\"}}";
+
+		OutputStream os = conn.getOutputStream();
+		os.write(inputJsonObject.getBytes());
+		os.flush();
+		Scanner scanner;
+		String response;
+//		Scanner test;
+		if (conn.getResponseCode() != 200) {
+			scanner = new Scanner(conn.getErrorStream());
+			response = "Error From Server \n\n";
+		} else {
+			scanner = new Scanner(conn.getInputStream());
+			response = "Response From Server \n\n";
+		}
+//		test = new Scanner(conn.getInputStream());
+//		System.out.println(test);
+		scanner.useDelimiter("\\Z");
+		System.out.println(response + scanner.next());
+	}
+	
+	@Test
+	public void TestCommitTransaction() {
+		try {
+			URL url = new URL("http://localhost:8092/CXFRest/rest/commitTransaction");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-Type", "application/json");
+
+			String inputJsonObject = "{\"CommitTransactionInputBean\":{\"mgiTransactionSessionID\":\"" +
+					"9708729E1572561363079352487" +
+					"\"}}";
+
+			OutputStream os = conn.getOutputStream();
+			os.write(inputJsonObject.getBytes());
+			os.flush();
+			Scanner scanner;
+			String response;
+			if (conn.getResponseCode() != 200) {
+				scanner = new Scanner(conn.getErrorStream());
+				response = "Error From Server \n\n";
+			} else {
+				scanner = new Scanner(conn.getInputStream());
+				response = "Response From Server \n\n";
+			}
+			scanner.useDelimiter("\\Z");
+			
+			System.out.println(response + scanner.next());
+			scanner.close();
+			conn.disconnect();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Test
 	public void TestFeeLookUpForTwoHundred() {
 
@@ -123,81 +198,6 @@ public class MGI_PayPal_Test {
 		}
 	}
 
-	
-	@Test
-	public void TestSendValidation() throws Exception {
-		URL url = new URL("http://localhost:8092/CXFRest/rest/sendValidation");
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setDoOutput(true);
-		conn.setRequestMethod("POST");
-		conn.setRequestProperty("Content-Type", "application/json");
- 
-		String inputJsonObject = "{\"SendValidationInputBean\":{\"amount\":100,\"feeA" +
-				"mount\":12.00,\"destinationCountry\":\"USA\",\"destinationState\":\"MN\",\"receiv" +
-				"eCurrency\":\"USD\",\"senderFirstName\":\"SF\",\"senderLastName\":\"SL\",\"senderAd" +
-				"dress\":\"1351 H AVE S\",\"senderCity\":\"CHNMPLS\",\"senderState\":\"MN\",\"sender" +
-				"ZipCode\":\"55416\",\"senderCountry\":\"USA\",\"senderHomePhone\":\"9522320253\",\"rece" +
-				"iverFirstName\":\"N R F\",\"receiverLastName\":\"N R L\",\"sendCurrency\":\"USD\",\"mgiT" +
-				"ransactionSessionID\":\"" +
-				"9708729E1572561362996301620" +
-				"\"}}";
-
-		OutputStream os = conn.getOutputStream();
-		os.write(inputJsonObject.getBytes());
-		os.flush();
-		Scanner scanner;
-		String response;
-//		Scanner test;
-		if (conn.getResponseCode() != 200) {
-			scanner = new Scanner(conn.getErrorStream());
-			response = "Error From Server \n\n";
-		} else {
-			scanner = new Scanner(conn.getInputStream());
-			response = "Response From Server \n\n";
-		}
-//		test = new Scanner(conn.getInputStream());
-//		System.out.println(test);
-		scanner.useDelimiter("\\Z");
-		System.out.println(response + scanner.next());
-	}
-	
-	@Test
-	public void TestCommitTransaction() {
-		try {
-			URL url = new URL("http://localhost:8092/CXFRest/rest/commitTransaction");
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Content-Type", "application/json");
-
-			String inputJsonObject = "{\"CommitTransactionInputBean\":{\"mgiTransactionSessionID\":\"" +
-					"9708729E1572561362996301620" +
-					"\"}}";
-
-			OutputStream os = conn.getOutputStream();
-			os.write(inputJsonObject.getBytes());
-			os.flush();
-			Scanner scanner;
-			String response;
-			if (conn.getResponseCode() != 200) {
-				scanner = new Scanner(conn.getErrorStream());
-				response = "Error From Server \n\n";
-			} else {
-				scanner = new Scanner(conn.getInputStream());
-				response = "Response From Server \n\n";
-			}
-			scanner.useDelimiter("\\Z");
-			
-			System.out.println(response + scanner.next());
-			scanner.close();
-			conn.disconnect();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	@Test
 	public void TestUserLimit() {
 

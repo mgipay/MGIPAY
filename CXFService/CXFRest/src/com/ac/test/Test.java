@@ -7,7 +7,6 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
 import com.ac1211.client.FeeLookupResponse;
@@ -26,12 +25,11 @@ public class Test {
 
 	public static void main(String[] args) {
 //BasicConfigurator.configure();
-		logger.debug("debug.");
-		logger.error("error");
-		logger.info("info");
-		logger.warn("warn");
-//		logg
-		
+//		logger.debug("debug.");
+//		logger.error("error");
+//		logger.info("info");
+//		logger.warn("warn");
+////		logg
 		
 		// TODO delete this class
 		GetUserLimitsRequest getUserLimitsRequest = new GetUserLimitsRequest();
