@@ -61,7 +61,7 @@ public class ACImpl implements ACInterface {
 
 		LOGGER.debug("Enter getFee.");
 
-		String jsonResponse = null;
+		setCredentials();
 		FeeLookupResponse feeLookupResponse = null;
 		FeeLookupRequest feeLookupRequest = createFeeLookupInput(feeLookupInputBean
 				.getAmount());
@@ -72,28 +72,35 @@ public class ACImpl implements ACInterface {
 			try {
 				feeLookupResponse = AgentConnect_AgentConnect_Client
 						.feeLookup(feeLookupRequest);
-			} catch (Exception exception) {
-				// TODO retry only for timeoutexception
+			} catch (java.rmi.RemoteException remoteException) {
 				retryCount--;
+				if (retryCount == 0) {
+					MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
+					// TODO message should be specific.
+					mgi_PayPal_Error.setErroMessage("Error occurred.");
+					
+					return new Gson().toJson(mgi_PayPal_Error);
+				}
+			} catch (Exception exception) {
+				MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
+				// TODO message should be specific.
+				mgi_PayPal_Error.setErroMessage("Error occurred");
+				
+				return new Gson().toJson(mgi_PayPal_Error);
 			}
 			if (feeLookupResponse != null) {
 				break;
 			}
 		}
-		if (feeLookupResponse != null) {
-			jsonResponse = new Gson().toJson(feeLookupResponse);
-		} else {
-			// TODO set error message in string
-			jsonResponse = "";
-		}
+
 		LOGGER.debug("Exit getFee.");
 
-		return jsonResponse;
+		return new Gson().toJson(feeLookupResponse);
 	}
 
 	private FeeLookupRequest createFeeLookupInput(BigDecimal amount) {
 
-		LOGGER.debug("Enter callFeeLookup.");
+		LOGGER.debug("Enter createFeeLookupInput.");
 
 		FeeLookupRequest feeLookupRequest = new FeeLookupRequest();
 
@@ -113,7 +120,7 @@ public class ACImpl implements ACInterface {
 		feeLookupRequest.setSendCurrency(MGI_Constants.CURRENCY_CODE_USA);
 		feeLookupRequest.setAllOptions(false);
 
-		LOGGER.debug("Exit callFeeLookup.");
+		LOGGER.debug("Exit createFeeLookupInput.");
 
 		return feeLookupRequest;
 	}
@@ -125,7 +132,7 @@ public class ACImpl implements ACInterface {
 
 		LOGGER.debug("Enter getFeeForTwoHundred.");
 
-		String jsonResponse = null;
+		setCredentials();
 		FeeLookupResponse feeLookupResponse = null;
 		FeeLookupRequest feeLookupRequest = createFeeLookupInput(MGI_Constants.TWO_HUNDRED_US_DOLLARS);
 
@@ -136,23 +143,28 @@ public class ACImpl implements ACInterface {
 
 				feeLookupResponse = AgentConnect_AgentConnect_Client
 						.feeLookup(feeLookupRequest);
-			} catch (Exception exception) {
+			} catch (java.rmi.RemoteException remoteException) {
 				retryCount--;
+				if (retryCount == 0) {
+					MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
+					// TODO message should be specific.
+					mgi_PayPal_Error.setErroMessage("Error occurred.remoteException");
+					return new Gson().toJson(mgi_PayPal_Error);
+				}
+			} catch (Exception exception) {
+				MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
+				// TODO message should be specific.
+				mgi_PayPal_Error.setErroMessage("Error occurred");
+				return new Gson().toJson(mgi_PayPal_Error);
 			}
 			if (feeLookupResponse != null) {
 				break;
 			}
 		}
-		if (feeLookupResponse != null) {
-			jsonResponse = new Gson().toJson(feeLookupResponse);
-		} else {
-			// TODO set error message in string
-			jsonResponse = "";
-		}
 
 		LOGGER.debug("Exit getFeeForTwoHundred.");
 
-		return jsonResponse;
+		return new Gson().toJson(feeLookupResponse);
 	}
 
 	@POST
@@ -161,11 +173,9 @@ public class ACImpl implements ACInterface {
 	public String getFeeForFiveHundred() {
 
 		LOGGER.debug("Enter getFeeForFiveHundred.");
-
-		String jsonResponse = null;
+		setCredentials();
 		FeeLookupResponse feeLookupResponse = null;
-		FeeLookupRequest feeLookupRequest = createFeeLookupInput(
-				MGI_Constants.FIVE_HUNDRED_US_DOLLARS);
+		FeeLookupRequest feeLookupRequest = createFeeLookupInput(MGI_Constants.FIVE_HUNDRED_US_DOLLARS);
 
 		byte retryCount = globalRetryCountThree;
 		while (retryCount >= 1) {
@@ -173,23 +183,30 @@ public class ACImpl implements ACInterface {
 			try {
 				feeLookupResponse = AgentConnect_AgentConnect_Client
 						.feeLookup(feeLookupRequest);
-			} catch (Exception exception) {
+			} catch (java.rmi.RemoteException remoteException) {
 				retryCount--;
+				if (retryCount == 0) {
+					MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
+					// TODO message should be specific.
+					mgi_PayPal_Error.setErroMessage("Error occurred.remoteException");
+					
+					return new Gson().toJson(mgi_PayPal_Error);
+				}
+			} catch (Exception exception) {
+				MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
+				// TODO message should be specific.
+				mgi_PayPal_Error.setErroMessage("Error occurred");
+				
+				return new Gson().toJson(mgi_PayPal_Error);
 			}
 			if (feeLookupResponse != null) {
 				break;
 			}
 		}
-		if (feeLookupResponse != null) {
-			jsonResponse = new Gson().toJson(feeLookupResponse);
-		} else {
-			// TODO set error message in string
-			jsonResponse = "";
-		}
 
 		LOGGER.debug("Exit getFeeForFiveHundred.");
 
-		return jsonResponse;
+		return new Gson().toJson(feeLookupResponse);
 	}
 
 	private static XMLGregorianCalendar getTimeStamp() {
@@ -197,9 +214,9 @@ public class ACImpl implements ACInterface {
 		try {
 			xgcal = DatatypeFactory.newInstance().newXMLGregorianCalendar(
 					new GregorianCalendar());
-		} catch (DatatypeConfigurationException e) {
+		} catch (DatatypeConfigurationException datatypeConfigurationException) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			datatypeConfigurationException.printStackTrace();
 		}
 		return xgcal;
 	}
@@ -212,6 +229,7 @@ public class ACImpl implements ACInterface {
 		LOGGER.debug("Enter getStateCode.");
 
 		if (DAY_IDENTIFIER != Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) {
+			int yesterday = DAY_IDENTIFIER;
 			synchronized (DAY_IDENTIFIER) {
 				DAY_IDENTIFIER = Calendar.getInstance().get(
 						Calendar.DAY_OF_WEEK);
@@ -239,8 +257,24 @@ public class ACImpl implements ACInterface {
 										.codeTable(codeTableRequest));
 						responseRecived = true;
 					}
-				} catch (Exception exception) {
+				} catch (java.rmi.RemoteException remoteException) {
 					retryCount--;
+					if (retryCount == 0) {
+						DAY_IDENTIFIER = yesterday;
+					}
+					MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
+					mgi_PayPal_Error
+							.setErroMessage("Error message.remoteException");
+					
+					return new Gson().toJson(mgi_PayPal_Error);
+					
+				} catch (Exception exception) {
+					DAY_IDENTIFIER = yesterday;
+					MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
+					mgi_PayPal_Error.setErroMessage("Error message");
+					
+					return new Gson().toJson(mgi_PayPal_Error);
+
 				}
 				if (responseRecived) {
 					break;
@@ -276,21 +310,34 @@ public class ACImpl implements ACInterface {
 				.setMgiTransactionSessionID(commitTransactionInputBean
 						.getMgiTransactionSessionID().trim());
 		commitTransactionRequest.setProductType(ProductType.SEND);
-		Gson gson = new Gson();
-		String string = null;
-		try {
-			commitTransactionResponse = AgentConnect_AgentConnect_Client
-					.commitTransaction(commitTransactionRequest);
-
-			string = gson.toJson(commitTransactionResponse);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		byte retryCount = globalRetryCountThree;
+		while (retryCount >= 1) {
+			try {
+				commitTransactionResponse = AgentConnect_AgentConnect_Client
+						.commitTransaction(commitTransactionRequest);
+			} catch (java.rmi.RemoteException remoteException) {
+				retryCount--;
+				if (retryCount == 0) {
+					MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
+					mgi_PayPal_Error
+							.setErroMessage("Error Message.remoteException");
+					
+					return new Gson().toJson(mgi_PayPal_Error);
+				}
+			} catch (Exception exception) {
+				MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
+				mgi_PayPal_Error.setErroMessage("Error Message.");
+				
+				return new Gson().toJson(mgi_PayPal_Error);
+			}
+			if (commitTransactionResponse != null) {
+				break;
+			}
 		}
 
 		LOGGER.debug("Exit commitTransaction.");
 
-		return string;
+		return new Gson().toJson(commitTransactionResponse);
 	}
 
 	@POST
@@ -385,35 +432,6 @@ public class ACImpl implements ACInterface {
 
 		setCredentials();
 		SendValidationResponse sendValidationResponse = null;
-		byte retryCount = globalRetryCountThree;
-		String mgiTranscationId = null;
-		while (retryCount >= 1) {
-			try {
-				sendValidationResponse = callSendValidation(
-						sendValidationInputBean, mgiTranscationId);
-			} catch (Exception exception) {
-				retryCount--;
-			}
-			if (sendValidationResponse != null) {
-				break;
-			}
-		}
-		
-		LOGGER.debug("Exit sendValidation.");
-		
-		if (sendValidationResponse != null) {
-			return new Gson().toJson(sendValidationResponse);
-		} else {
-			// TODO return error message to UI
-			return null;
-		}
-	}
-
-	private SendValidationResponse callSendValidation(
-			SendValidationInputBean sendValidationInputBean,
-			String mgiTransactionId) throws Exception {
-
-		LOGGER.debug("Enter callSendValidation.");
 
 		SendValidationRequest sendValidationRequest = new SendValidationRequest();
 		sendValidationRequest.setConsumerId("0");
@@ -434,13 +452,9 @@ public class ACImpl implements ACInterface {
 		sendValidationRequest
 				.setDeliveryOption(MGI_Constants.DELIVER_OPTION_WILL_CALL);
 		sendValidationRequest.setAmount(sendValidationInputBean.getAmount());
-		if (mgiTransactionId != null) {
-			sendValidationRequest.setMgiTransactionSessionID(mgiTransactionId);
-		} else {
-			sendValidationRequest
-					.setMgiTransactionSessionID(sendValidationInputBean
-							.getMgiTransactionSessionID());
-		}
+		sendValidationRequest
+				.setMgiTransactionSessionID(sendValidationInputBean
+						.getMgiTransactionSessionID());
 		sendValidationRequest.setFeeAmount(sendValidationInputBean
 				.getFeeAmount());
 		sendValidationRequest.setDestinationCountry(sendValidationInputBean
@@ -472,13 +486,27 @@ public class ACImpl implements ACInterface {
 				.getReceiverLastName());
 		sendValidationRequest.setSendCurrency(sendValidationInputBean
 				.getSendCurrency());
-		SendValidationResponse sendValidationResponse = null;
-		sendValidationResponse = AgentConnect_AgentConnect_Client
-				.sendValidation(sendValidationRequest);
+		byte retryCount = globalRetryCountThree;
+		while (retryCount >= 1) {
+			try {
+				sendValidationResponse = AgentConnect_AgentConnect_Client
+						.sendValidation(sendValidationRequest);
+			} catch (Exception exception) {
+				retryCount--;
+			}
+			if (sendValidationResponse != null) {
+				break;
+			}
+		}
 
-		LOGGER.debug("Exit callSendValidation.");
+		LOGGER.debug("Exit sendValidation.");
 
-		return sendValidationResponse;
+		if (sendValidationResponse != null) {
+			return new Gson().toJson(sendValidationResponse);
+		} else {
+			// TODO return error message to UI
+			return null;
+		}
 	}
 
 	@POST
@@ -512,12 +540,28 @@ public class ACImpl implements ACInterface {
 		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
 		Gson gson = new Gson();
 
-		try {
-			getUserLimitsResponse = AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client
-					.getUserLimit(getUserLimitsRequest);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		byte retryCount = globalRetryCountThree;
+		while (retryCount >= 1) {
+			try {
+				getUserLimitsResponse = AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client
+						.getUserLimit(getUserLimitsRequest);
+			} catch (java.rmi.RemoteException remoteException) {
+				retryCount--;
+				if (retryCount == 0) {
+					MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
+					mgi_PayPal_Error.setErroMessage("remoteException");
+					
+					return new Gson().toJson(mgi_PayPal_Error);
+				}
+			} catch (Exception exception) {
+				MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
+				mgi_PayPal_Error.setErroMessage("exception");
+				
+				return new Gson().toJson(mgi_PayPal_Error);
+			}
+			if (getUserLimitsResponse != null) {
+				break;
+			}
 		}
 
 		LOGGER.debug("Exit getUserLimits.");
@@ -534,6 +578,8 @@ public class ACImpl implements ACInterface {
 		System.setProperty("http.proxyPort", "8080");
 		System.setProperty("http.proxyUser", "538540");
 		System.setProperty("http.proxyPassword", "Bala@Mar84");
+		/*System.setProperty("http.proxyUser", "****");
+		System.setProperty("http.proxyPassword", "****");*/
 	}
 
 	private String handleException(Exception exception) {

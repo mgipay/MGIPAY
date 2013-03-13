@@ -16,15 +16,17 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
-
 
 /**
  * @author TCS
  * 
  */
 public class MGI_PayPal_Test {
+	
+	private static Logger LOGGER = Logger.getLogger(MGI_PayPal_Test.class);
 
 	@Ignore
 	public void TestFeeLookUp() {
@@ -51,9 +53,9 @@ public class MGI_PayPal_Test {
 				response = "Response From Server \n\n";
 			}
 			scanner.useDelimiter("\\Z");
-			
-			System.out.println(response + scanner.next());
-			
+
+			LOGGER.debug(response + scanner.next());
+
 			scanner.close();
 			conn.disconnect();
 		} catch (MalformedURLException e) {
@@ -63,7 +65,6 @@ public class MGI_PayPal_Test {
 		}
 	}
 
-	
 	@Test
 	public void TestSendValidation() throws Exception {
 		URL url = new URL("http://localhost:8092/CXFRest/rest/sendValidation");
@@ -71,23 +72,23 @@ public class MGI_PayPal_Test {
 		conn.setDoOutput(true);
 		conn.setRequestMethod("POST");
 		conn.setRequestProperty("Content-Type", "application/json");
- 
-		String inputJsonObject = "{\"SendValidationInputBean\":{\"amount\":100,\"feeA" +
-				"mount\":12.00,\"destinationCountry\":\"USA\",\"destinationState\":\"MN\",\"receiv" +
-				"eCurrency\":\"USD\",\"senderFirstName\":\"SF\",\"senderLastName\":\"SL\",\"senderAd" +
-				"dress\":\"1351 H AVE S\",\"senderCity\":\"CHNMPLS\",\"senderState\":\"MN\",\"sender" +
-				"ZipCode\":\"55416\",\"senderCountry\":\"USA\",\"senderHomePhone\":\"9522320253\",\"rece" +
-				"iverFirstName\":\"N R F\",\"receiverLastName\":\"N R L\",\"sendCurrency\":\"USD\",\"mgiT" +
-				"ransactionSessionID\":\"" +
-				"9708729E1572561363079352487" +
-				"\"}}";
+
+		String inputJsonObject = "{\"SendValidationInputBean\":{\"amount\":100,\"feeA"
+				+ "mount\":12.00,\"destinationCountry\":\"USA\",\"destinationState\":\"MN\",\"receiv"
+				+ "eCurrency\":\"USD\",\"senderFirstName\":\"SF\",\"senderLastName\":\"SL\",\"senderAd"
+				+ "dress\":\"1351 H AVE S\",\"senderCity\":\"CHNMPLS\",\"senderState\":\"MN\",\"sender"
+				+ "ZipCode\":\"55416\",\"senderCountry\":\"USA\",\"senderHomePhone\":\"9522320253\",\"rece"
+				+ "iverFirstName\":\"N R F\",\"receiverLastName\":\"N R L\",\"sendCurrency\":\"USD\",\"mgiT"
+				+ "ransactionSessionID\":\""
+				+ "9708729E1572561363183427665"
+				+ "\"}}";
 
 		OutputStream os = conn.getOutputStream();
 		os.write(inputJsonObject.getBytes());
 		os.flush();
 		Scanner scanner;
 		String response;
-//		Scanner test;
+		// Scanner test;
 		if (conn.getResponseCode() != 200) {
 			scanner = new Scanner(conn.getErrorStream());
 			response = "Error From Server \n\n";
@@ -95,24 +96,24 @@ public class MGI_PayPal_Test {
 			scanner = new Scanner(conn.getInputStream());
 			response = "Response From Server \n\n";
 		}
-//		test = new Scanner(conn.getInputStream());
-//		System.out.println(test);
+		// test = new Scanner(conn.getInputStream());
+		// System.out.println(test);
 		scanner.useDelimiter("\\Z");
-		System.out.println(response + scanner.next());
+		LOGGER.debug(response + scanner.next());
 	}
-	
+
 	@Test
 	public void TestCommitTransaction() {
 		try {
-			URL url = new URL("http://localhost:8092/CXFRest/rest/commitTransaction");
+			URL url = new URL(
+					"http://localhost:8092/CXFRest/rest/commitTransaction");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");
 			conn.setRequestProperty("Content-Type", "application/json");
 
-			String inputJsonObject = "{\"CommitTransactionInputBean\":{\"mgiTransactionSessionID\":\"" +
-					"9708729E1572561363079352487" +
-					"\"}}";
+			String inputJsonObject = "{\"CommitTransactionInputBean\":{\"mgiTransactionSessionID\":\""
+					+ "9708729E1572561363171002270" + "\"}}";
 
 			OutputStream os = conn.getOutputStream();
 			os.write(inputJsonObject.getBytes());
@@ -127,8 +128,8 @@ public class MGI_PayPal_Test {
 				response = "Response From Server \n\n";
 			}
 			scanner.useDelimiter("\\Z");
-			
-			System.out.println(response + scanner.next());
+
+			LOGGER.debug(response + scanner.next());
 			scanner.close();
 			conn.disconnect();
 		} catch (MalformedURLException e) {
@@ -158,7 +159,7 @@ public class MGI_PayPal_Test {
 				response = "Response From Server \n\n";
 			}
 			scanner.useDelimiter("\\Z");
-			System.out.println(response + scanner.next());
+			LOGGER.debug(response + scanner.next());
 			scanner.close();
 			conn.disconnect();
 		} catch (MalformedURLException e) {
@@ -188,7 +189,7 @@ public class MGI_PayPal_Test {
 				response = "Response From Server \n\n";
 			}
 			scanner.useDelimiter("\\Z");
-			System.out.println(response + scanner.next());
+			LOGGER.debug(response + scanner.next());
 			scanner.close();
 			conn.disconnect();
 		} catch (MalformedURLException e) {
@@ -202,14 +203,15 @@ public class MGI_PayPal_Test {
 	public void TestUserLimit() {
 
 		try {
-			URL url = new URL("http://localhost:8092/CXFRest/rest/getUserLimits");
+			URL url = new URL(
+					"http://localhost:8092/CXFRest/rest/getUserLimits");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");
 			conn.setRequestProperty("Content-Type", "application/json");
-			
-			String inputJsonObject = "{\"UserLimitInputBean\":{\"emailID\":\"vbalki@ebay.com\",\"phone" +
-			"Number\":\"6057100363\",\"countryCode\":\"1\",\"extension\":\"4237\"}}";
+
+			String inputJsonObject = "{\"UserLimitInputBean\":{\"emailID\":\"vbalki@ebay.com\",\"phone"
+					+ "Number\":\"6057100363\",\"countryCode\":\"1\",\"extension\":\"4237\"}}";
 
 			OutputStream os = conn.getOutputStream();
 			os.write(inputJsonObject.getBytes());
@@ -224,7 +226,7 @@ public class MGI_PayPal_Test {
 				response = "Response From Server \n\n";
 			}
 			scanner.useDelimiter("\\Z");
-			System.out.println(response + scanner.next());
+			LOGGER.debug(response + scanner.next());
 			scanner.close();
 			conn.disconnect();
 		} catch (MalformedURLException e) {
@@ -238,8 +240,7 @@ public class MGI_PayPal_Test {
 	public void TestCodeTable() {
 
 		try {
-			URL url = new URL(
-					"http://localhost:8092/CXFRest/rest/getStateCode");
+			URL url = new URL("http://localhost:8092/CXFRest/rest/getStateCode");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");
@@ -254,7 +255,7 @@ public class MGI_PayPal_Test {
 				response = "Response From Server \n\n";
 			}
 			scanner.useDelimiter("\\Z");
-			System.out.println(response + scanner.next());
+			LOGGER.debug(response + scanner.next());
 			scanner.close();
 			conn.disconnect();
 		} catch (MalformedURLException e) {
@@ -264,11 +265,9 @@ public class MGI_PayPal_Test {
 		}
 	}
 
-	
-
 	@Ignore
 	public void TestDetailLookup() {
-//		setCredentials();
+		// setCredentials();
 		com.ac1211.client.DetailLookupRequest detailLookupRequest = new com.ac1211.client.DetailLookupRequest();
 
 		detailLookupRequest.setAgentID("30014943");
@@ -291,13 +290,13 @@ public class MGI_PayPal_Test {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(detailLookupResponse);
+		LOGGER.debug(detailLookupResponse);
 
 	}
 
 	@Ignore
 	public void TestSendReversal() {
-//		setCredentials();
+		// setCredentials();
 		com.ac1211.client.SendReversalRequest sendReversalRequest = new com.ac1211.client.SendReversalRequest();
 		sendReversalRequest.setAgentID("");
 		sendReversalRequest.setAgentSequence("9");
@@ -324,14 +323,14 @@ public class MGI_PayPal_Test {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(sendReversalResponse);
+		LOGGER.debug(sendReversalResponse);
 	}
 
 	private static XMLGregorianCalendar getTimeStamp() {
 		XMLGregorianCalendar xmlGregorianCalendar = null;
 		try {
-			xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(
-					new GregorianCalendar());
+			xmlGregorianCalendar = DatatypeFactory.newInstance()
+					.newXMLGregorianCalendar(new GregorianCalendar());
 		} catch (DatatypeConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
