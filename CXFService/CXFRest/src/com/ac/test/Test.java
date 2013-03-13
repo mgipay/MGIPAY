@@ -1,7 +1,14 @@
 package com.ac.test;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -23,7 +30,44 @@ public class Test {
 	
 	private static Logger logger = Logger.getLogger(Test.class);
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
+		BigDecimal total =new BigDecimal("0");
+		List<String> lines = new ArrayList<String>();
+		BufferedReader br = new BufferedReader(
+				new FileReader(
+						"C:\\Documents and Settings\\538540\\Desktop\\All_Deliimited.txt"));
+		String line = br.readLine();
+		try {
+			while (line != null) {
+				String subString = line.substring(165, 183).trim();
+//				if (new BigDecimal(subString.trim()).compareTo(new BigDecimal(
+//						5000)) <= 0) {
+//					if (line.contains("RAILWAY") || line.contains("IRCTC")) {
+						total = total.add(new BigDecimal(subString));
+						lines.add(line);
+//					}
+//				}
+
+				line = br.readLine();
+			}
+		} catch (Exception exception) {
+			System.out.println();
+		}
+		try {
+			BufferedWriter out = new BufferedWriter(
+					new FileWriter(
+							"C:\\Documents and Settings\\538540\\Desktop\\outPut_railWay.txt"));
+//			for (String lineString : lines) {
+//				out.write(lineString.concat(System.getProperty("line.separator")));
+//			}
+			out.write(total.toString());
+			out.close();
+		} catch (IOException e) {
+		}
+
+	}
+
+	public static void main1(String[] args) {
 //BasicConfigurator.configure();
 //		logger.debug("debug.");
 //		logger.error("error");
@@ -112,14 +156,17 @@ public class Test {
 			Gson gson, FeeLookupResponse feeLookupResponse,
 			XMLGregorianCalendar xmlGregorianCalendar) throws Exception {
 		com.ac1211.client.SendValidationRequest sendValidationRequest = new com.ac1211.client.SendValidationRequest();
-		sendValidationRequest.setMgiTransactionSessionID(feeLookupResponse
-				.getMgiTransactionSessionID());
-		sendValidationRequest.setFeeAmount(feeLookupResponse.getFeeInfo()
-				.get(0).getTotalAmount().subtract(new BigDecimal(100)));
+//		sendValidationRequest.setMgiTransactionSessionID(feeLookupResponse
+//				.getMgiTransactionSessionID());
+//		sendValidationRequest.setFeeAmount(feeLookupResponse.getFeeInfo()
+//				.get(0).getTotalAmount().subtract(new BigDecimal(100)));
+		
+		
+		sendValidationRequest.setMgiTransactionSessionID("");
+		sendValidationRequest.setFeeAmount(new BigDecimal(12));
 		sendValidationRequest.setAgentID("30014943");
 		sendValidationRequest.setAgentSequence("9");
 		sendValidationRequest.setToken("TEST");
-//			sendValidationRequest.setTimeStamp(getTimeStamp());
 		sendValidationRequest.setTimeStamp(xmlGregorianCalendar);
 		sendValidationRequest.setApiVersion("1211");
 		sendValidationRequest.setClientSoftwareVersion("v1");

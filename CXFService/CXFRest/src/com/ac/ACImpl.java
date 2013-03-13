@@ -48,9 +48,9 @@ public class ACImpl implements ACInterface {
 
 	private byte globalRetryCountThree = 3;
 
-	private static String STATES_IN_USA;
+	private static String STATES_IN_USA = "";
 
-	private static Integer DAY_IDENTIFIER = null;
+	private static Integer DAY_IDENTIFIER = 7;
 
 	private static Logger LOGGER = Logger.getLogger(ACImpl.class);
 
@@ -211,37 +211,41 @@ public class ACImpl implements ACInterface {
 
 		LOGGER.debug("Enter getStateCode.");
 
-		if (DAY_IDENTIFIER == null
-				|| DAY_IDENTIFIER != Calendar.getInstance().get(
-						Calendar.DAY_OF_WEEK)) {
+		if (DAY_IDENTIFIER != Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) {
 			synchronized (DAY_IDENTIFIER) {
 				DAY_IDENTIFIER = Calendar.getInstance().get(
 						Calendar.DAY_OF_WEEK);
 			}
-			try {
-				setCredentials();
-				CodeTableRequest codeTableRequest = new CodeTableRequest();
-				codeTableRequest.setAgentAllowedOnly(true);
-				codeTableRequest.setApiVersion(MGI_Constants.API_VERSION);
-				codeTableRequest
-						.setClientSoftwareVersion(MGI_Constants.CLIENT_SOFTWARE_VERSION);
-				codeTableRequest.setUnitProfileID(158178);
-				codeTableRequest.setToken(MGI_Constants.TOKEN);
-				codeTableRequest.setAgentSequence(MGI_Constants.AGENT_SEQUENCE);
-				codeTableRequest.setTimeStamp(getTimeStamp());
-				codeTableRequest.setLanguage("eng");
 
-				synchronized (STATES_IN_USA) {
-					STATES_IN_USA = new Gson()
-							.toJson(AgentConnect_AgentConnect_Client
-									.codeTable(codeTableRequest));
+			setCredentials();
+			CodeTableRequest codeTableRequest = new CodeTableRequest();
+			codeTableRequest.setAgentAllowedOnly(true);
+			codeTableRequest.setApiVersion(MGI_Constants.API_VERSION);
+			codeTableRequest
+					.setClientSoftwareVersion(MGI_Constants.CLIENT_SOFTWARE_VERSION);
+			codeTableRequest.setUnitProfileID(158178);
+			codeTableRequest.setToken(MGI_Constants.TOKEN);
+			codeTableRequest.setAgentSequence(MGI_Constants.AGENT_SEQUENCE);
+			codeTableRequest.setTimeStamp(getTimeStamp());
+			codeTableRequest.setLanguage("eng");
+			byte retryCount = globalRetryCountThree;
+			boolean responseRecived = false;
+			while (retryCount >= 1) {
+
+				try {
+					synchronized (STATES_IN_USA) {
+						STATES_IN_USA = new Gson()
+								.toJson(AgentConnect_AgentConnect_Client
+										.codeTable(codeTableRequest));
+						responseRecived = true;
+					}
+				} catch (Exception exception) {
+					retryCount--;
 				}
-
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				if (responseRecived) {
+					break;
+				}
 			}
-
 		}
 
 		LOGGER.debug("Exit getStateCode.");

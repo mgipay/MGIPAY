@@ -234,7 +234,7 @@ public class MGI_PayPal_Test {
 		}
 	}
 
-	@Ignore
+	@Test
 	public void TestCodeTable() {
 
 		try {
