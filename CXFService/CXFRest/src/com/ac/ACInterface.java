@@ -21,4 +21,6 @@ public interface ACInterface {
 
 	String getFeeForFiveHundred();
 
+	String sendMail(SendMailInputBean sendMailInputBean);
+
 }

@@ -28,7 +28,7 @@ public class MGI_PayPal_Test {
 	
 	private static Logger LOGGER = Logger.getLogger(MGI_PayPal_Test.class);
 
-	@Ignore
+	@Test
 	public void TestFeeLookUp() {
 		try {
 
@@ -80,7 +80,7 @@ public class MGI_PayPal_Test {
 				+ "ZipCode\":\"55416\",\"senderCountry\":\"USA\",\"senderHomePhone\":\"9522320253\",\"rece"
 				+ "iverFirstName\":\"N R F\",\"receiverLastName\":\"N R L\",\"sendCurrency\":\"USD\",\"mgiT"
 				+ "ransactionSessionID\":\""
-				+ "9708729E1572561363183427665"
+				+ "9708729E1572561363250752521"
 				+ "\"}}";
 
 		OutputStream os = conn.getOutputStream();
@@ -113,7 +113,7 @@ public class MGI_PayPal_Test {
 			conn.setRequestProperty("Content-Type", "application/json");
 
 			String inputJsonObject = "{\"CommitTransactionInputBean\":{\"mgiTransactionSessionID\":\""
-					+ "9708729E1572561363171002270" + "\"}}";
+					+ "9708729E1572561363250752521" + "\"}}";
 
 			OutputStream os = conn.getOutputStream();
 			os.write(inputJsonObject.getBytes());
@@ -138,8 +138,43 @@ public class MGI_PayPal_Test {
 			e.printStackTrace();
 		}
 	}
-
 	@Test
+	public void TestDetailLookup() {
+		try {
+			URL url = new URL(
+					"http://localhost:8092/CXFRest/rest/detailLookUp");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-Type", "application/json");
+
+			String inputJsonObject = "{\"DetailLookupInputBean\":{\"referenceNumber\":\""
+					+ "97957451" + "\"}}";
+
+			OutputStream os = conn.getOutputStream();
+			os.write(inputJsonObject.getBytes());
+			os.flush();
+			Scanner scanner;
+			String response;
+			if (conn.getResponseCode() != 200) {
+				scanner = new Scanner(conn.getErrorStream());
+				response = "Error From Server \n\n";
+			} else {
+				scanner = new Scanner(conn.getInputStream());
+				response = "Response From Server \n\n";
+			}
+			scanner.useDelimiter("\\Z");
+
+			LOGGER.debug(response + scanner.next());
+			scanner.close();
+			conn.disconnect();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	@Ignore
 	public void TestFeeLookUpForTwoHundred() {
 
 		try {
@@ -169,7 +204,7 @@ public class MGI_PayPal_Test {
 		}
 	}
 
-	@Test
+	@Ignore
 	public void TestFeeLookUpForFiveHundred() {
 
 		try {
@@ -199,7 +234,7 @@ public class MGI_PayPal_Test {
 		}
 	}
 
-	@Test
+	@Ignore
 	public void TestUserLimit() {
 
 		try {
@@ -236,7 +271,7 @@ public class MGI_PayPal_Test {
 		}
 	}
 
-	@Test
+	@Ignore
 	public void TestCodeTable() {
 
 		try {
@@ -265,34 +300,7 @@ public class MGI_PayPal_Test {
 		}
 	}
 
-	@Ignore
-	public void TestDetailLookup() {
-		// setCredentials();
-		com.ac1211.client.DetailLookupRequest detailLookupRequest = new com.ac1211.client.DetailLookupRequest();
-
-		detailLookupRequest.setAgentID("30014943");
-		detailLookupRequest.setAgentSequence("9");
-		detailLookupRequest.setApiVersion("1211");
-		detailLookupRequest.setClientSoftwareVersion("v1");
-		detailLookupRequest.setIncludeUseData(false);
-		detailLookupRequest.setLanguage("eng");
-		detailLookupRequest.setOperatorName("");
-		detailLookupRequest.setReferenceNumber("");
-		detailLookupRequest.setTimeStamp(getTimeStamp());
-		detailLookupRequest.setToken("TEST");
-		detailLookupRequest.setUnitProfileID(157256);
-		detailLookupRequest.setUserID("");
-		com.ac1211.client.DetailLookupResponse detailLookupResponse = null;
-		try {
-			detailLookupResponse = com.ac1211.client.AgentConnect_AgentConnect_Client
-					.detailLookup(detailLookupRequest);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		LOGGER.debug(detailLookupResponse);
-
-	}
+	
 
 	@Ignore
 	public void TestSendReversal() {

@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "FeeLookupInputBean")
 public class FeeLookupInputBean {
-	
+
 	public FeeLookupInputBean() {
 
 	}

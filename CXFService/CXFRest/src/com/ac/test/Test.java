@@ -1,14 +1,7 @@
 package com.ac.test;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -27,71 +20,26 @@ import com.paypal.cfx.client.PhoneNumberType;
 import com.paypal.cfx.client.RequestEnvelope;
 
 public class Test {
-	
-	private static Logger logger = Logger.getLogger(Test.class);
-
-	public static void main(String[] args) throws Exception {
-		BigDecimal total =new BigDecimal("0");
-		List<String> lines = new ArrayList<String>();
-		BufferedReader br = new BufferedReader(
-				new FileReader(
-						"C:\\Documents and Settings\\538540\\Desktop\\All_Deliimited.txt"));
-		String line = br.readLine();
-		try {
-			while (line != null) {
-				String subString = line.substring(165, 183).trim();
-//				if (new BigDecimal(subString.trim()).compareTo(new BigDecimal(
-//						5000)) <= 0) {
-//					if (line.contains("RAILWAY") || line.contains("IRCTC")) {
-						total = total.add(new BigDecimal(subString));
-						lines.add(line);
-//					}
-//				}
-
-				line = br.readLine();
-			}
-		} catch (Exception exception) {
-			System.out.println();
-		}
-		try {
-			BufferedWriter out = new BufferedWriter(
-					new FileWriter(
-							"C:\\Documents and Settings\\538540\\Desktop\\outPut_railWay.txt"));
-//			for (String lineString : lines) {
-//				out.write(lineString.concat(System.getProperty("line.separator")));
-//			}
-			out.write(total.toString());
-			out.close();
-		} catch (IOException e) {
-		}
-
-	}
 
 	public static void main1(String[] args) {
-//BasicConfigurator.configure();
-//		logger.debug("debug.");
-//		logger.error("error");
-//		logger.info("info");
-//		logger.warn("warn");
-////		logg
-		
+
 		// TODO delete this class
 		GetUserLimitsRequest getUserLimitsRequest = new GetUserLimitsRequest();
 		PhoneNumberType phoneNumberType = new PhoneNumberType();
 		AccountIdentifier accountIdentifier = new AccountIdentifier();
-		 phoneNumberType.setCountryCode("1");
-		 phoneNumberType.setExtension("4237");
-		 phoneNumberType.setPhoneNumber("6057100363");
-		 accountIdentifier.setPhone(phoneNumberType);
-		 getUserLimitsRequest.setUser(accountIdentifier);
-		 accountIdentifier.setEmail("vbalki@ebay.com");
-		 RequestEnvelope requestEnvelope = new RequestEnvelope();
-		 requestEnvelope.setDetailLevel(DetailLevelCode.RETURN_ALL);
-		 requestEnvelope.setErrorLanguage("NA");
-		 getUserLimitsRequest.setRequestEnvelope(requestEnvelope);
-		 getUserLimitsRequest.setCountry("US");
-		 getUserLimitsRequest.setCurrencyCode("USD");
-		 getUserLimitsRequest.getLimitType().add("WITHDRAWAL");
+		phoneNumberType.setCountryCode("1");
+		phoneNumberType.setExtension("4237");
+		phoneNumberType.setPhoneNumber("6057100363");
+		accountIdentifier.setPhone(phoneNumberType);
+		getUserLimitsRequest.setUser(accountIdentifier);
+		accountIdentifier.setEmail("vbalki@ebay.com");
+		RequestEnvelope requestEnvelope = new RequestEnvelope();
+		requestEnvelope.setDetailLevel(DetailLevelCode.RETURN_ALL);
+		requestEnvelope.setErrorLanguage("NA");
+		getUserLimitsRequest.setRequestEnvelope(requestEnvelope);
+		getUserLimitsRequest.setCountry("US");
+		getUserLimitsRequest.setCurrencyCode("USD");
+		getUserLimitsRequest.getLimitType().add("WITHDRAWAL");
 
 		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
 		Gson gson = new Gson();
@@ -104,7 +52,8 @@ public class Test {
 			e.printStackTrace();
 		}
 
-		System.out.println(getUserLimitsResponse.getUserLimit().get(0).getLimitAmount().getAmount());
+		System.out.println(getUserLimitsResponse.getUserLimit().get(0)
+				.getLimitAmount().getAmount());
 		try {
 			com.ac1211.client.FeeLookupRequest feeLookupRequest = new com.ac1211.client.FeeLookupRequest();
 
@@ -151,17 +100,17 @@ public class Test {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-}
+	}
+
 	private static com.ac1211.client.SendValidationResponse sendValidation(
 			Gson gson, FeeLookupResponse feeLookupResponse,
 			XMLGregorianCalendar xmlGregorianCalendar) throws Exception {
 		com.ac1211.client.SendValidationRequest sendValidationRequest = new com.ac1211.client.SendValidationRequest();
-//		sendValidationRequest.setMgiTransactionSessionID(feeLookupResponse
-//				.getMgiTransactionSessionID());
-//		sendValidationRequest.setFeeAmount(feeLookupResponse.getFeeInfo()
-//				.get(0).getTotalAmount().subtract(new BigDecimal(100)));
-		
-		
+		// sendValidationRequest.setMgiTransactionSessionID(feeLookupResponse
+		// .getMgiTransactionSessionID());
+		// sendValidationRequest.setFeeAmount(feeLookupResponse.getFeeInfo()
+		// .get(0).getTotalAmount().subtract(new BigDecimal(100)));
+
 		sendValidationRequest.setMgiTransactionSessionID("");
 		sendValidationRequest.setFeeAmount(new BigDecimal(12));
 		sendValidationRequest.setAgentID("30014943");
@@ -199,6 +148,7 @@ public class Test {
 		System.out.println(sendValidationResponse);
 		return sendValidationResponse;
 	}
+
 	private static XMLGregorianCalendar getTimeStamp() {
 		XMLGregorianCalendar xgcal = null;
 		try {

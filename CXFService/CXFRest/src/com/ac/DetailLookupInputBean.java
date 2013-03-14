@@ -2,7 +2,7 @@ package com.ac;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "SendValidationInputBean")
+@XmlRootElement(name = "DetailLookupInputBean")
 public class DetailLookupInputBean {
 
 	public DetailLookupInputBean() {

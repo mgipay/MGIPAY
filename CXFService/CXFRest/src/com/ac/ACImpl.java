@@ -46,7 +46,7 @@ import com.paypal.cfx.client.RequestEnvelope;
 @Produces("application/JSON")
 public class ACImpl implements ACInterface {
 
-	private byte globalRetryCountThree = 3;
+	private final byte globalRetryCountThree = 3;
 
 	private static String STATES_IN_USA = "";
 
@@ -72,22 +72,16 @@ public class ACImpl implements ACInterface {
 			try {
 				feeLookupResponse = AgentConnect_AgentConnect_Client
 						.feeLookup(feeLookupRequest);
-			} catch (java.rmi.RemoteException remoteException) {
+			} catch (Exception exception) {
 				retryCount--;
 				if (retryCount == 0) {
 					MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
 					// TODO message should be specific.
-					mgi_PayPal_Error.setErroMessage("Error occurred.");
-					
+					mgi_PayPal_Error.setErroMessage(exception.getLocalizedMessage());
+
 					return new Gson().toJson(mgi_PayPal_Error);
 				}
-			} catch (Exception exception) {
-				MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
-				// TODO message should be specific.
-				mgi_PayPal_Error.setErroMessage("Error occurred");
-				
-				return new Gson().toJson(mgi_PayPal_Error);
-			}
+			} 
 			if (feeLookupResponse != null) {
 				break;
 			}
@@ -134,29 +128,17 @@ public class ACImpl implements ACInterface {
 
 		setCredentials();
 		FeeLookupResponse feeLookupResponse = null;
-		FeeLookupRequest feeLookupRequest = createFeeLookupInput(MGI_Constants.TWO_HUNDRED_US_DOLLARS);
+		FeeLookupRequest feeLookupRequest = createFeeLookupInput(
+				MGI_Constants.TWO_HUNDRED_US_DOLLARS);
 
 		byte retryCount = globalRetryCountThree;
 		while (retryCount >= 1) {
-
 			try {
-
 				feeLookupResponse = AgentConnect_AgentConnect_Client
 						.feeLookup(feeLookupRequest);
-			} catch (java.rmi.RemoteException remoteException) {
-				retryCount--;
-				if (retryCount == 0) {
-					MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
-					// TODO message should be specific.
-					mgi_PayPal_Error.setErroMessage("Error occurred.remoteException");
-					return new Gson().toJson(mgi_PayPal_Error);
-				}
 			} catch (Exception exception) {
-				MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
-				// TODO message should be specific.
-				mgi_PayPal_Error.setErroMessage("Error occurred");
-				return new Gson().toJson(mgi_PayPal_Error);
-			}
+				retryCount--;
+			} 
 			if (feeLookupResponse != null) {
 				break;
 			}
@@ -173,31 +155,18 @@ public class ACImpl implements ACInterface {
 	public String getFeeForFiveHundred() {
 
 		LOGGER.debug("Enter getFeeForFiveHundred.");
+		
 		setCredentials();
 		FeeLookupResponse feeLookupResponse = null;
-		FeeLookupRequest feeLookupRequest = createFeeLookupInput(MGI_Constants.FIVE_HUNDRED_US_DOLLARS);
-
+		FeeLookupRequest feeLookupRequest = createFeeLookupInput(
+				MGI_Constants.FIVE_HUNDRED_US_DOLLARS);
 		byte retryCount = globalRetryCountThree;
 		while (retryCount >= 1) {
-
 			try {
 				feeLookupResponse = AgentConnect_AgentConnect_Client
 						.feeLookup(feeLookupRequest);
-			} catch (java.rmi.RemoteException remoteException) {
-				retryCount--;
-				if (retryCount == 0) {
-					MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
-					// TODO message should be specific.
-					mgi_PayPal_Error.setErroMessage("Error occurred.remoteException");
-					
-					return new Gson().toJson(mgi_PayPal_Error);
-				}
 			} catch (Exception exception) {
-				MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
-				// TODO message should be specific.
-				mgi_PayPal_Error.setErroMessage("Error occurred");
-				
-				return new Gson().toJson(mgi_PayPal_Error);
+				retryCount--;
 			}
 			if (feeLookupResponse != null) {
 				break;
@@ -257,22 +226,15 @@ public class ACImpl implements ACInterface {
 										.codeTable(codeTableRequest));
 						responseRecived = true;
 					}
-				} catch (java.rmi.RemoteException remoteException) {
+				} catch (Exception exception) {
 					retryCount--;
 					if (retryCount == 0) {
 						DAY_IDENTIFIER = yesterday;
 					}
 					MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
 					mgi_PayPal_Error
-							.setErroMessage("Error message.remoteException");
-					
-					return new Gson().toJson(mgi_PayPal_Error);
-					
-				} catch (Exception exception) {
-					DAY_IDENTIFIER = yesterday;
-					MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
-					mgi_PayPal_Error.setErroMessage("Error message");
-					
+							.setErroMessage("Session Expired.Please Retry.");
+
 					return new Gson().toJson(mgi_PayPal_Error);
 
 				}
@@ -315,20 +277,15 @@ public class ACImpl implements ACInterface {
 			try {
 				commitTransactionResponse = AgentConnect_AgentConnect_Client
 						.commitTransaction(commitTransactionRequest);
-			} catch (java.rmi.RemoteException remoteException) {
+			} catch (Exception exception) {
 				retryCount--;
 				if (retryCount == 0) {
 					MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
 					mgi_PayPal_Error
-							.setErroMessage("Error Message.remoteException");
-					
+							.setErroMessage("Session Expired.Please Retry.");
+
 					return new Gson().toJson(mgi_PayPal_Error);
 				}
-			} catch (Exception exception) {
-				MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
-				mgi_PayPal_Error.setErroMessage("Error Message.");
-				
-				return new Gson().toJson(mgi_PayPal_Error);
 			}
 			if (commitTransactionResponse != null) {
 				break;
@@ -356,8 +313,7 @@ public class ACImpl implements ACInterface {
 		detailLookupRequest
 				.setClientSoftwareVersion(MGI_Constants.CLIENT_SOFTWARE_VERSION);
 		detailLookupRequest.setIncludeUseData(false);
-		detailLookupRequest.setLanguage("eng");
-		detailLookupRequest.setOperatorName("");
+		detailLookupRequest.setLanguage(MGI_Constants.LANGUAGE_CODE_ENGLISH);
 		detailLookupRequest.setReferenceNumber(detailLookupInputBean
 				.getReferenceNumber());
 
@@ -365,7 +321,6 @@ public class ACImpl implements ACInterface {
 
 		detailLookupRequest.setToken(MGI_Constants.TOKEN);
 		detailLookupRequest.setUnitProfileID(157256);
-		detailLookupRequest.setUserID("");
 		DetailLookupResponse detailLookupResponse = null;
 		try {
 			detailLookupResponse = AgentConnect_AgentConnect_Client
@@ -545,19 +500,14 @@ public class ACImpl implements ACInterface {
 			try {
 				getUserLimitsResponse = AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client
 						.getUserLimit(getUserLimitsRequest);
-			} catch (java.rmi.RemoteException remoteException) {
+			} catch (Exception exception) {
 				retryCount--;
 				if (retryCount == 0) {
 					MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
-					mgi_PayPal_Error.setErroMessage("remoteException");
-					
+					mgi_PayPal_Error.setErroMessage("Session Expired.Please Retry.");
+
 					return new Gson().toJson(mgi_PayPal_Error);
 				}
-			} catch (Exception exception) {
-				MGI_PayPal_Error mgi_PayPal_Error = new MGI_PayPal_Error();
-				mgi_PayPal_Error.setErroMessage("exception");
-				
-				return new Gson().toJson(mgi_PayPal_Error);
 			}
 			if (getUserLimitsResponse != null) {
 				break;
@@ -569,6 +519,16 @@ public class ACImpl implements ACInterface {
 		return gson.toJson(getUserLimitsResponse);
 	}
 
+	@POST
+	@Path("/sendMail")
+	@Override
+	public String sendMail(SendMailInputBean sendMailInputBean){
+		
+		MGI_PayPal_Mail mGI_PayPal_Mail = new MGI_PayPal_Mail();
+		mGI_PayPal_Mail.sendMail(sendMailInputBean);
+		
+		return null;
+	}
 	/**
 	 * 
 	 */
@@ -578,8 +538,10 @@ public class ACImpl implements ACInterface {
 		System.setProperty("http.proxyPort", "8080");
 		System.setProperty("http.proxyUser", "538540");
 		System.setProperty("http.proxyPassword", "Bala@Mar84");
-		/*System.setProperty("http.proxyUser", "****");
-		System.setProperty("http.proxyPassword", "****");*/
+		/*
+		 * System.setProperty("http.proxyUser", "****");
+		 * System.setProperty("http.proxyPassword", "****");
+		 */
 	}
 
 	private String handleException(Exception exception) {
