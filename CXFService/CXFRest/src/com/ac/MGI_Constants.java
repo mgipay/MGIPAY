@@ -43,4 +43,6 @@ public class MGI_Constants {
 	public static final String LANGUAGE_CODE_ENGLISH = "eng";
 
 	public static final String LANGUAGE_CODE_SPANISH = "spa";
+	
+	public static final Integer UNIT_PROFILE_ID = 157256;
 }

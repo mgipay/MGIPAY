@@ -20,6 +20,8 @@ public class SendMailInputBean {
 
 	private String customerEmailId;
 
+	private Integer phoneNumber;
+
 	public String getSubject() {
 		return subject;
 	}
@@ -50,6 +52,14 @@ public class SendMailInputBean {
 
 	public void setCustomerEmailId(String customerEmailId) {
 		this.customerEmailId = customerEmailId;
+	}
+
+	public Integer getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(Integer phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 }

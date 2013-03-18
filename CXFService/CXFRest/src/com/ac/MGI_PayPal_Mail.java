@@ -28,20 +28,16 @@ public class MGI_PayPal_Mail {
 		});
 	}
 
-	public void sendMail(SendMailInputBean sendMailInputBean) {
-		try {
-			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("**@gmail.com"));
-			message.addRecipient(Message.RecipientType.TO, new InternetAddress(
-					"ranjini1.s@tcs.com"));
-			message.setSubject(sendMailInputBean.getSubject());
-			message.setText(sendMailInputBean.getText());
-			Transport.send(message);
+	public void sendMail(SendMailInputBean sendMailInputBean)
+			throws MessagingException {
+		Message message = new MimeMessage(session);
+		message.setFrom(new InternetAddress("**@gmail.com"));
+		message.addRecipient(Message.RecipientType.TO, new InternetAddress(
+				"ranjini1.s@tcs.com"));
+		message.setSubject(sendMailInputBean.getSubject());
+		message.setText(sendMailInputBean.getText());
+		Transport.send(message);
 
-		} catch (MessagingException e) {
-			System.out.println("Mail is not sent");
-			e.printStackTrace();
-		}
 	}
 
 }
