@@ -140,7 +140,8 @@ public class ACImpl implements ACInterface {
 
 		setCredentials();
 		FeeLookupResponse feeLookupResponse = null;
-		FeeLookupRequest feeLookupRequest = createFeeLookupInput(MGI_Constants.TWO_HUNDRED_US_DOLLARS);
+		FeeLookupRequest feeLookupRequest = createFeeLookupInput(
+				MGI_Constants.TWO_HUNDRED_US_DOLLARS);
 
 		byte retryCount = globalRetryCountThree;
 		while (retryCount >= 1) {
@@ -168,7 +169,8 @@ public class ACImpl implements ACInterface {
 		LOGGER.debug("Enter getFeeForFiveHundred.");
 
 		setCredentials();
-		FeeLookupRequest feeLookupRequest = createFeeLookupInput(MGI_Constants.FIVE_HUNDRED_US_DOLLARS);
+		FeeLookupRequest feeLookupRequest = createFeeLookupInput(
+				MGI_Constants.FIVE_HUNDRED_US_DOLLARS);
 		byte retryCount = globalRetryCountThree;
 		FeeLookupOutputBean feeLookupOutputBean = new FeeLookupOutputBean();
 		while (retryCount >= 1) {
@@ -456,29 +458,29 @@ public class ACImpl implements ACInterface {
 				.getReceiverLastName());
 		sendValidationRequest.setSendCurrency(sendValidationInputBean
 				.getSendCurrency());
-		byte retryCount = globalRetryCountThree;
+		// byte retryCount = globalRetryCountThree;
 		SendValidationOutputBean sendValidationOutputBean = new SendValidationOutputBean();
-		while (retryCount >= 1) {
-			try {
-				sendValidationResponse = AgentConnect_AgentConnect_Client
-						.sendValidation(sendValidationRequest);
-			} catch (Exception exception) {
-				retryCount--;
-				sendValidationOutputBean.setTransactionSuccess(false);
-				sendValidationOutputBean.setErrorMessage(exception
-						.getLocalizedMessage().concat(
-								"Transaction Failed.Please try again."));
-				return new Gson().toJson(sendValidationOutputBean);
-			}
-			if (sendValidationResponse != null) {
-
-				sendValidationOutputBean
-						.setMgiTransactionSessionID(sendValidationResponse
-								.getMgiTransactionSessionID());
-				sendValidationOutputBean.setTransactionSuccess(true);
-
-			}
+		// while (retryCount >= 1) {
+		try {
+			sendValidationResponse = AgentConnect_AgentConnect_Client
+					.sendValidation(sendValidationRequest);
+		} catch (Exception exception) {
+			// retryCount--;
+			sendValidationOutputBean.setTransactionSuccess(false);
+			sendValidationOutputBean.setErrorMessage(exception
+					.getLocalizedMessage().concat(
+							"Transaction Failed.Please try again."));
+			return new Gson().toJson(sendValidationOutputBean);
 		}
+		if (sendValidationResponse != null) {
+
+			sendValidationOutputBean
+					.setMgiTransactionSessionID(sendValidationResponse
+							.getMgiTransactionSessionID());
+			sendValidationOutputBean.setTransactionSuccess(true);
+
+		}
+		// }
 		return new Gson().toJson(sendValidationOutputBean);
 	}
 
@@ -574,11 +576,8 @@ public class ACImpl implements ACInterface {
 		// TODO remove this method
 		System.setProperty("http.proxyHost", "proxy.tcs.com");
 		System.setProperty("http.proxyPort", "8080");
-		System.setProperty("http.proxyUser", "538540");
-		System.setProperty("http.proxyPassword", "Bala@Mar84");
-		/*
-		 * System.setProperty("http.proxyUser", "****");
-		 * System.setProperty("http.proxyPassword", "****");
-		 */
+		System.setProperty("http.proxyUser", "****");
+		System.setProperty("http.proxyPassword", "****");
+		 
 	}
 }
