@@ -32,7 +32,7 @@ public class MGI_PayPal_Test {
 	public void TestFeeLookUp() {
 		try {
 
-			URL url = new URL("http://localhost:8092/CXFRest/rest/getFee");
+			URL url = new URL("http://localhost:8080/CXFRest/rest/getFee");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");
@@ -65,7 +65,7 @@ public class MGI_PayPal_Test {
 		}
 	}
 
-	@Test
+	@Ignore
 	public void TestSendValidation() throws Exception {
 		URL url = new URL("http://localhost:8092/CXFRest/rest/sendValidation");
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -102,7 +102,7 @@ public class MGI_PayPal_Test {
 		LOGGER.debug(response + scanner.next());
 	}
 
-	@Test
+	@Ignore
 	public void TestCommitTransaction() {
 		try {
 			URL url = new URL(
@@ -138,7 +138,7 @@ public class MGI_PayPal_Test {
 			e.printStackTrace();
 		}
 	}
-	@Test
+	@Ignore
 	public void TestDetailLookup() {
 		try {
 			URL url = new URL(

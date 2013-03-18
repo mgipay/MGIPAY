@@ -7,10 +7,13 @@ import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -57,9 +60,11 @@ public class ACImpl implements ACInterface {
 	@POST
 	@Path("/getFee")
 	@Override
-	public String getFee(FeeLookupInputBean feeLookupInputBean) {
+	public String getFee(@Context HttpServletRequest request, 
+			   @Context HttpServletResponse response, FeeLookupInputBean feeLookupInputBean) {
 
 		LOGGER.debug("Enter getFee.");
+		LOGGER.debug(request.getRemoteAddr());
 
 		setCredentials();
 		FeeLookupResponse feeLookupResponse = null;

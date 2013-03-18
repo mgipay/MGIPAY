@@ -1,10 +1,15 @@
 package com.ac;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Context;
+
 public interface ACInterface {
 
 	String detailLookUp(DetailLookupInputBean detailLookupInputBean);
 
-	String getFee(FeeLookupInputBean feeLookupInputBean);
+	String getFee(@Context HttpServletRequest request, 
+			   @Context HttpServletResponse response,FeeLookupInputBean feeLookupInputBean);
 
 	String commitTransaction(
 			CommitTransactionInputBean commitTransactionInputBean);
