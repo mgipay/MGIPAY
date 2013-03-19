@@ -68,7 +68,7 @@ public class ACImpl implements ACInterface {
 
 		FeeLookupRequest feeLookupRequest = createFeeLookupInput(feeLookupInputBean
 				.getAmount());
-		FeeLookupOutputBean feeLookupOutputBean = new FeeLookupOutputBean();
+		com.ac.FeeLookupOutputBean feeLookupResponseReturn = new com.ac.FeeLookupOutputBean();
 
 		byte retryCount = globalRetryCountThree;
 		while (retryCount >= 1) {
@@ -79,21 +79,21 @@ public class ACImpl implements ACInterface {
 			} catch (Exception exception) {
 				retryCount--;
 				if (retryCount == 0) {
-					feeLookupOutputBean
+					feeLookupResponseReturn
 							.setErrorMessage(exception.getLocalizedMessage()
 									.concat(". Please Try Again"));
-					feeLookupOutputBean.setTransactionSuccess(false);
+					feeLookupResponseReturn.setTransactionSuccess(false);
 
-					return new Gson().toJson(feeLookupOutputBean);
+					return new Gson().toJson(feeLookupResponse);
 				}
 			}
 			if (feeLookupResponse != null) {
-				feeLookupOutputBean.setTransactionSuccess(true);
+				feeLookupResponseReturn.setTransactionSuccess(true);
 
-				feeLookupOutputBean
+				feeLookupResponseReturn
 						.setMgiTransactionSessionID(feeLookupResponse
 								.getMgiTransactionSessionID());
-				feeLookupOutputBean.setTotalAmount(feeLookupResponse
+				feeLookupResponseReturn.setTotalAmount(feeLookupResponse
 						.getFeeInfo().get(0).getTotalAmount());
 				break;
 			}
@@ -101,7 +101,7 @@ public class ACImpl implements ACInterface {
 
 		LOGGER.debug("Exit getFee.");
 
-		return new Gson().toJson(feeLookupOutputBean);
+		return new Gson().toJson(feeLookupResponseReturn);
 	}
 
 	private FeeLookupRequest createFeeLookupInput(BigDecimal amount) {
@@ -172,7 +172,7 @@ public class ACImpl implements ACInterface {
 		FeeLookupRequest feeLookupRequest = createFeeLookupInput(
 				MGI_Constants.FIVE_HUNDRED_US_DOLLARS);
 		byte retryCount = globalRetryCountThree;
-		FeeLookupOutputBean feeLookupOutputBean = new FeeLookupOutputBean();
+		com.ac.FeeLookupOutputBean feeLookupResponseReturn = new com.ac.FeeLookupOutputBean();
 		while (retryCount >= 1) {
 			FeeLookupResponse feeLookupResponse = null;
 
@@ -183,10 +183,10 @@ public class ACImpl implements ACInterface {
 				retryCount--;
 			}
 			if (feeLookupResponse != null) {
-				feeLookupOutputBean
+				feeLookupResponseReturn
 						.setMgiTransactionSessionID(feeLookupResponse
 								.getMgiTransactionSessionID());
-				feeLookupOutputBean.setTotalAmount(feeLookupResponse
+				feeLookupResponseReturn.setTotalAmount(feeLookupResponse
 						.getFeeInfo().get(0).getTotalAmount());
 				break;
 			}
@@ -194,7 +194,7 @@ public class ACImpl implements ACInterface {
 
 		LOGGER.debug("Exit getFeeForFiveHundred.");
 
-		return new Gson().toJson(feeLookupOutputBean);
+		return new Gson().toJson(feeLookupResponseReturn);
 	}
 
 	private static XMLGregorianCalendar getTimeStamp() {
@@ -232,7 +232,7 @@ public class ACImpl implements ACInterface {
 			codeTableRequest.setToken(MGI_Constants.TOKEN);
 			codeTableRequest.setAgentSequence(MGI_Constants.AGENT_SEQUENCE);
 			codeTableRequest.setTimeStamp(getTimeStamp());
-			codeTableRequest.setLanguage("eng");
+			codeTableRequest.setLanguage(MGI_Constants.LANGUAGE_CODE_ENGLISH);
 			byte retryCount = globalRetryCountThree;
 			boolean responseRecived = false;
 			while (retryCount >= 1) {
@@ -342,9 +342,9 @@ public class ACImpl implements ACInterface {
 		try {
 			detailLookupResponse = AgentConnect_AgentConnect_Client
 					.detailLookup(detailLookupRequest);
-		} catch (Exception e) {
+		} catch (Exception exception) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			exception.printStackTrace();
 		}
 
 		LOGGER.debug("Exit detailLookUp.");
@@ -385,9 +385,9 @@ public class ACImpl implements ACInterface {
 		try {
 			sendReversalResponse = AgentConnect_AgentConnect_Client
 					.sendReversal(sendReversalRequest);
-		} catch (Exception e) {
+		} catch (Exception exception) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			exception.printStackTrace();
 		}
 
 		LOGGER.debug("Exit sendReversal.");
@@ -556,8 +556,8 @@ public class ACImpl implements ACInterface {
 
 		} catch (MessagingException exception) {
 			sendMailOutputBean.setTransactionSuccess(false);
-			sendMailOutputBean.setMailSubject(sendMailInputBean.getSubject());
-			sendMailOutputBean.setMailText(sendMailInputBean.getText());
+			sendMailOutputBean.setMailSubject(sendMailInputBean.getMailSubject());
+			sendMailOutputBean.setMailText(sendMailInputBean.getMailText());
 			sendMailOutputBean.setCustomerEmailId(sendMailInputBean
 					.getCustomerEmailId());
 			sendMailOutputBean.setMessageToUser("Please Re-send your mail.");

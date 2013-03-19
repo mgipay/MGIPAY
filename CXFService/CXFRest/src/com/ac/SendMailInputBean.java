@@ -4,7 +4,7 @@
 package com.ac;
 
 /**
- * @author 538540
+ * @author TCS
  * 
  */
 public class SendMailInputBean {
@@ -12,9 +12,9 @@ public class SendMailInputBean {
 	public SendMailInputBean() {
 	}
 
-	private String subject;
+	private String mailSubject;
 
-	private String text;
+	private String mailText;
 
 	private String referenceNumber;
 
@@ -22,20 +22,20 @@ public class SendMailInputBean {
 
 	private Integer phoneNumber;
 
-	public String getSubject() {
-		return subject;
+	public String getMailSubject() {
+		return mailSubject;
 	}
 
-	public void setSubject(String subject) {
-		this.subject = subject;
+	public void setMailSubject(String mailSubject) {
+		this.mailSubject = mailSubject;
 	}
 
-	public String getText() {
-		return text;
+	public String getMailText() {
+		return mailText;
 	}
 
-	public void setText(String message) {
-		this.text = message;
+	public void setMailText(String mailText) {
+		this.mailText = mailText;
 	}
 
 	public String getReferenceNumber() {

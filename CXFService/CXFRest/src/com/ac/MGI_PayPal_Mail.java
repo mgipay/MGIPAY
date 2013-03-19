@@ -34,8 +34,8 @@ public class MGI_PayPal_Mail {
 		message.setFrom(new InternetAddress("**@gmail.com"));
 		message.addRecipient(Message.RecipientType.TO, new InternetAddress(
 				"ranjini1.s@tcs.com"));
-		message.setSubject(sendMailInputBean.getSubject());
-		message.setText(sendMailInputBean.getText());
+		message.setSubject(sendMailInputBean.getMailSubject());
+		message.setText(sendMailInputBean.getMailText());
 		Transport.send(message);
 
 	}
