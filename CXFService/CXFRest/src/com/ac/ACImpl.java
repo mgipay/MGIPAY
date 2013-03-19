@@ -84,7 +84,7 @@ public class ACImpl implements ACInterface {
 									.concat(". Please Try Again"));
 					feeLookupResponseReturn.setTransactionSuccess(false);
 
-					return new Gson().toJson(feeLookupResponse);
+					return new Gson().toJson(feeLookupResponseReturn);
 				}
 			}
 			if (feeLookupResponse != null) {
@@ -311,7 +311,7 @@ public class ACImpl implements ACInterface {
 
 		LOGGER.debug("Exit commitTransaction.");
 
-		return new Gson().toJson(commitTransactionResponse);
+		return new Gson().toJson(commitTransactionResponse2);
 	}
 
 	@POST
@@ -481,7 +481,7 @@ public class ACImpl implements ACInterface {
 
 		}
 		// }
-		return new Gson().toJson(sendValidationResponse);
+		return new Gson().toJson(sendValidationResponse2);
 	}
 
 	@POST

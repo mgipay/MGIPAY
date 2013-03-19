@@ -65,7 +65,7 @@ public class MGI_PayPal_Test {
 		}
 	}
 
-	@Ignore
+	@Test
 	public void TestSendValidation() throws Exception {
 		URL url = new URL("http://localhost:8092/CXFRest/rest/sendValidation");
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -80,7 +80,7 @@ public class MGI_PayPal_Test {
 				+ "ZipCode\":\"55416\",\"senderCountry\":\"USA\",\"senderHomePhone\":\"9522320253\",\"rece"
 				+ "iverFirstName\":\"N R F\",\"receiverLastName\":\"N R L\",\"sendCurrency\":\"USD\",\"mgiT"
 				+ "ransactionSessionID\":\""
-				+ "9708729E1572561363250752521"
+				+ "9708729E1572561363686298379"
 				+ "\"}}";
 
 		OutputStream os = conn.getOutputStream();
@@ -102,7 +102,7 @@ public class MGI_PayPal_Test {
 		LOGGER.debug(response + scanner.next());
 	}
 
-	@Ignore
+	@Test
 	public void TestCommitTransaction() {
 		try {
 			URL url = new URL(
@@ -234,7 +234,7 @@ public class MGI_PayPal_Test {
 		}
 	}
 
-	@Ignore
+	@Test
 	public void TestUserLimit() {
 
 		try {
