@@ -8,8 +8,9 @@ public interface ACInterface {
 
 	String detailLookUp(DetailLookupInputBean detailLookupInputBean);
 
-	String getFee(@Context HttpServletRequest request, 
-			   @Context HttpServletResponse response,FeeLookupInputBean feeLookupInputBean);
+	String getFee(@Context HttpServletRequest request,
+			@Context HttpServletResponse response,
+			FeeLookupInputBean feeLookupInputBean);
 
 	String commitTransaction(
 			CommitTransactionInputBean commitTransactionInputBean);
@@ -22,10 +23,10 @@ public interface ACInterface {
 
 	String getUserLimits(UserLimitInputBean userLimitInputBean);
 
-	String getFeeForTwoHundred();
-
-	String getFeeForFiveHundred();
-
 	String sendMail(SendMailInputBean sendMailInputBean);
+
+	String getFeeLinkValue();
+
+	String getHistoryDetails(HistroyLookupInputBean histroyLookupInputBean);
 
 }

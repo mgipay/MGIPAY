@@ -1,8 +1,10 @@
 package com.ac;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
@@ -51,6 +53,8 @@ public class ACImpl implements ACInterface {
 	private static String STATES_IN_USA = "";
 
 	private static Integer DAY_IDENTIFIER = 7;
+	
+	private static Integer DAY_IDENTIFIER_FOR_FEELINK = 7;
 
 	private static Logger LOGGER = Logger.getLogger(ACImpl.class);
 
@@ -63,7 +67,6 @@ public class ACImpl implements ACInterface {
 
 		LOGGER.debug("Enter getFee.");
 
-		LOGGER.debug(request.getRemoteAddr());
 		setCredentials();
 
 		FeeLookupRequest feeLookupRequest = createFeeLookupInput(feeLookupInputBean
@@ -131,72 +134,115 @@ public class ACImpl implements ACInterface {
 		return feeLookupRequest;
 	}
 
-	@POST
-	@Path("/getFeeForTwoHundred")
-	@Override
-	public String getFeeForTwoHundred() {
+	
+	private BigDecimal getFeeForFeeLink(BigDecimal amount) {
 
-		LOGGER.debug("Enter getFeeForTwoHundred.");
+		LOGGER.debug("Enter getFeeForFeeLink.");
 
 		setCredentials();
-		FeeLookupResponse feeLookupResponse = null;
-		FeeLookupRequest feeLookupRequest = createFeeLookupInput(
-				MGI_Constants.TWO_HUNDRED_US_DOLLARS);
 
 		byte retryCount = globalRetryCountThree;
-		while (retryCount >= 1) {
-			try {
-				feeLookupResponse = AgentConnect_AgentConnect_Client
-						.feeLookup(feeLookupRequest);
-			} catch (Exception exception) {
-				retryCount--;
-			}
-			if (feeLookupResponse != null) {
-				break;
-			}
-		}
-
-		LOGGER.debug("Exit getFeeForTwoHundred.");
-
-		return new Gson().toJson(feeLookupResponse);
-	}
-
-	@POST
-	@Path("/getFeeForFiveHundred")
-	@Override
-	public String getFeeForFiveHundred() {
-
-		LOGGER.debug("Enter getFeeForFiveHundred.");
-
-		setCredentials();
-		FeeLookupRequest feeLookupRequest = createFeeLookupInput(
-				MGI_Constants.FIVE_HUNDRED_US_DOLLARS);
-		byte retryCount = globalRetryCountThree;
-		com.ac.FeeLookupResponse feeLookupResponseReturn = new com.ac.FeeLookupResponse();
 		while (retryCount >= 1) {
 			FeeLookupResponse feeLookupResponse = null;
-
 			try {
 				feeLookupResponse = AgentConnect_AgentConnect_Client
-						.feeLookup(feeLookupRequest);
+						.feeLookup(createFeeLookupInput(amount));
 			} catch (Exception exception) {
 				retryCount--;
 			}
 			if (feeLookupResponse != null) {
-				feeLookupResponseReturn
-						.setMgiTransactionSessionID(feeLookupResponse
-								.getMgiTransactionSessionID());
-				feeLookupResponseReturn.setTotalAmount(feeLookupResponse
-						.getFeeInfo().get(0).getTotalAmount());
-				break;
+				return feeLookupResponse.getFeeInfo().get(0).getTotalAmount()
+						.subtract(amount);
 			}
 		}
 
-		LOGGER.debug("Exit getFeeForFiveHundred.");
+		LOGGER.debug("Exit getFeeForFeeLink.");
 
-		return new Gson().toJson(feeLookupResponseReturn);
+		return new BigDecimal(0);
+
 	}
 
+	
+	@POST
+	@Path("/getFeeLinkValue")
+	@Override
+	public String getFeeLinkValue() {
+
+		LOGGER.debug("Enter getFeeLinkValue.");
+
+		setCredentials();
+
+		// FeeLinkTable feeLinkTable = new FeeLinkTable();
+		// String feeDetails = "";
+		// try {
+		// feeDetails = feeLinkTable.selectFromFeelink();
+		// } catch (ClassNotFoundException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// } catch (SQLException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		
+//		if (DAY_IDENTIFIER_FOR_FEELINK != Calendar.getInstance().get(
+//				Calendar.DAY_OF_WEEK)) {
+//			synchronized (DAY_IDENTIFIER_FOR_FEELINK) {
+//				DAY_IDENTIFIER_FOR_FEELINK = Calendar.getInstance().get(
+//						Calendar.DAY_OF_WEEK);
+//			}
+//			
+//			
+//		}
+		
+		
+		
+
+		FeeLinkValues feeLinkValues = new FeeLinkValues();
+		feeLinkValues
+				.setFeeForTwoHundred(getFeeForFeeLink(MGI_Constants.TWO_HUNDRED_US_DOLLARS));
+		feeLinkValues
+				.setFeeForFiveHundred(getFeeForFeeLink(MGI_Constants.FIVE_HUNDRED_US_DOLLARS));
+
+		LOGGER.debug("Exit getFeeLinkValue.");
+
+		return new Gson().toJson(feeLinkValues);
+	}
+	
+	@POST
+	@Path("/getHistoryDetails")
+	@Override
+	public String getHistoryDetails(HistroyLookupInputBean histroyLookupInputBean) {
+
+		LOGGER.debug("Enter getHistoryDetails.");
+
+		setCredentials();
+
+		List<HistoryDetails> historyDetailsList = new ArrayList<HistoryDetails>();
+		int i = 2;
+		while (i >= 1) {
+			HistoryDetails historyDetails = new HistoryDetails();
+			historyDetails.setCustomerEmail(histroyLookupInputBean.getCustomerEmailId());
+			historyDetails.setCustomerName("AAAAAA");
+			historyDetails.setCustomerPhone(12346789);
+			historyDetails.setMgiReferenceNumber("987987987");
+			historyDetails.setPaypalTransactionID("456456456");
+			historyDetails.setTransactionAmount(new BigDecimal(100));
+			historyDetails.setTransactionFee(new BigDecimal(12));
+			historyDetails.setTransactionID(new BigDecimal(987456321));
+			historyDetails.setTransactionStatus("S");
+			historyDetails.setTransactionDate("19-03-2013");
+			historyDetailsList.add(historyDetails);
+			i--;
+		}
+
+		HistroyLookupResponse histroyLookupResponse = new HistroyLookupResponse();
+		histroyLookupResponse.setTransactionSuccess(true);
+		histroyLookupResponse.setHistoryDetailsList(historyDetailsList);
+		LOGGER.debug("Exit getHistoryDetails.");
+
+		return new Gson().toJson(histroyLookupResponse);
+	}
+	
 	private static XMLGregorianCalendar getTimeStamp() {
 		XMLGregorianCalendar xgcal = null;
 		try {
