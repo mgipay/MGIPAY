@@ -7,9 +7,9 @@ package com.ac;
  * @author TCS
  * 
  */
-public class SendValidationOutputBean {
+public class SendValidationResponse {
 
-	public SendValidationOutputBean() {
+	public SendValidationResponse() {
 
 	}
 

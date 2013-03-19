@@ -7,9 +7,9 @@ package com.ac;
  * @author TCS
  * 
  */
-public class CommitTransactionOutputBean {
+public class CommitTransactionResponse {
 
-	public CommitTransactionOutputBean() {
+	public CommitTransactionResponse() {
 
 	}
 

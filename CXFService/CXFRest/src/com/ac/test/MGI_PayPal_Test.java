@@ -32,7 +32,7 @@ public class MGI_PayPal_Test {
 	public void TestFeeLookUp() {
 		try {
 
-			URL url = new URL("http://localhost:8080/CXFRest/rest/getFee");
+			URL url = new URL("http://localhost:8092/CXFRest/rest/getFee");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");
@@ -174,7 +174,7 @@ public class MGI_PayPal_Test {
 			e.printStackTrace();
 		}
 	}
-	@Ignore
+	@Test
 	public void TestFeeLookUpForTwoHundred() {
 
 		try {
@@ -204,7 +204,7 @@ public class MGI_PayPal_Test {
 		}
 	}
 
-	@Ignore
+	@Test
 	public void TestFeeLookUpForFiveHundred() {
 
 		try {
@@ -271,7 +271,7 @@ public class MGI_PayPal_Test {
 		}
 	}
 
-	@Ignore
+	@Test
 	public void TestCodeTable() {
 
 		try {

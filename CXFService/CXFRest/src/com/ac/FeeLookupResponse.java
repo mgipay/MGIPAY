@@ -2,9 +2,9 @@ package com.ac;
 
 import java.math.BigDecimal;
 
-public class FeeLookupOutputBean {
+public class FeeLookupResponse {
 
-	public FeeLookupOutputBean() {
+	public FeeLookupResponse() {
 	}
 
 	private String mgiTransactionSessionID;

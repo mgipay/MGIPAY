@@ -68,7 +68,7 @@ public class ACImpl implements ACInterface {
 
 		FeeLookupRequest feeLookupRequest = createFeeLookupInput(feeLookupInputBean
 				.getAmount());
-		com.ac.FeeLookupOutputBean feeLookupResponseReturn = new com.ac.FeeLookupOutputBean();
+		com.ac.FeeLookupResponse feeLookupResponseReturn = new com.ac.FeeLookupResponse();
 
 		byte retryCount = globalRetryCountThree;
 		while (retryCount >= 1) {
@@ -172,7 +172,7 @@ public class ACImpl implements ACInterface {
 		FeeLookupRequest feeLookupRequest = createFeeLookupInput(
 				MGI_Constants.FIVE_HUNDRED_US_DOLLARS);
 		byte retryCount = globalRetryCountThree;
-		com.ac.FeeLookupOutputBean feeLookupResponseReturn = new com.ac.FeeLookupOutputBean();
+		com.ac.FeeLookupResponse feeLookupResponseReturn = new com.ac.FeeLookupResponse();
 		while (retryCount >= 1) {
 			FeeLookupResponse feeLookupResponse = null;
 
@@ -284,7 +284,7 @@ public class ACImpl implements ACInterface {
 				.setMgiTransactionSessionID(commitTransactionInputBean
 						.getMgiTransactionSessionID().trim());
 		commitTransactionRequest.setProductType(ProductType.SEND);
-		CommitTransactionOutputBean commitTransactionOutputBean = new CommitTransactionOutputBean();
+		com.ac.CommitTransactionResponse commitTransactionResponse2 = new com.ac.CommitTransactionResponse();
 		byte retryCount = globalRetryCountThree;
 		while (retryCount >= 1) {
 			try {
@@ -293,16 +293,16 @@ public class ACImpl implements ACInterface {
 			} catch (Exception exception) {
 				retryCount--;
 				if (retryCount == 0) {
-					commitTransactionOutputBean.setErrorMessage(exception
+					commitTransactionResponse2.setErrorMessage(exception
 							.getLocalizedMessage());
-					commitTransactionOutputBean.setTransactionSuccess(false);
+					commitTransactionResponse2.setTransactionSuccess(false);
 
-					return new Gson().toJson(commitTransactionOutputBean);
+					return new Gson().toJson(commitTransactionResponse);
 				}
 			}
 			if (commitTransactionResponse != null) {
-				commitTransactionOutputBean.setTransactionSuccess(true);
-				commitTransactionOutputBean
+				commitTransactionResponse2.setTransactionSuccess(true);
+				commitTransactionResponse2
 						.setReferenceNumber(commitTransactionResponse
 								.getReferenceNumber());
 				break;
@@ -311,7 +311,7 @@ public class ACImpl implements ACInterface {
 
 		LOGGER.debug("Exit commitTransaction.");
 
-		return new Gson().toJson(commitTransactionOutputBean);
+		return new Gson().toJson(commitTransactionResponse);
 	}
 
 	@POST
@@ -459,29 +459,29 @@ public class ACImpl implements ACInterface {
 		sendValidationRequest.setSendCurrency(sendValidationInputBean
 				.getSendCurrency());
 		// byte retryCount = globalRetryCountThree;
-		SendValidationOutputBean sendValidationOutputBean = new SendValidationOutputBean();
+		com.ac.SendValidationResponse sendValidationResponse2 = new com.ac.SendValidationResponse();
 		// while (retryCount >= 1) {
 		try {
 			sendValidationResponse = AgentConnect_AgentConnect_Client
 					.sendValidation(sendValidationRequest);
 		} catch (Exception exception) {
 			// retryCount--;
-			sendValidationOutputBean.setTransactionSuccess(false);
-			sendValidationOutputBean.setErrorMessage(exception
+			sendValidationResponse2.setTransactionSuccess(false);
+			sendValidationResponse2.setErrorMessage(exception
 					.getLocalizedMessage().concat(
 							"Transaction Failed.Please try again."));
-			return new Gson().toJson(sendValidationOutputBean);
+			return new Gson().toJson(sendValidationResponse);
 		}
 		if (sendValidationResponse != null) {
 
-			sendValidationOutputBean
+			sendValidationResponse2
 					.setMgiTransactionSessionID(sendValidationResponse
 							.getMgiTransactionSessionID());
-			sendValidationOutputBean.setTransactionSuccess(true);
+			sendValidationResponse2.setTransactionSuccess(true);
 
 		}
 		// }
-		return new Gson().toJson(sendValidationOutputBean);
+		return new Gson().toJson(sendValidationResponse);
 	}
 
 	@POST
@@ -515,7 +515,7 @@ public class ACImpl implements ACInterface {
 		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
 		Gson gson = new Gson();
 
-		UserLimitOutputBean userLimitOutputBean = new UserLimitOutputBean();
+		com.ac.GetUserLimitsResponse getUserLimitsResponse2 = new com.ac.GetUserLimitsResponse();
 		byte retryCount = globalRetryCountThree;
 		while (retryCount >= 1) {
 			try {
@@ -524,16 +524,16 @@ public class ACImpl implements ACInterface {
 			} catch (Exception exception) {
 				retryCount--;
 				if (retryCount == 0) {
-					userLimitOutputBean.setTransactionSuccess(false);
-					userLimitOutputBean
+					getUserLimitsResponse2.setTransactionSuccess(false);
+					getUserLimitsResponse2
 							.setErrorMessage("Session Expired.Please Retry.");
 
-					return new Gson().toJson(userLimitOutputBean);
+					return new Gson().toJson(getUserLimitsResponse);
 				}
 			}
 			if (getUserLimitsResponse != null) {
-				userLimitOutputBean.setTransactionSuccess(true);
-				userLimitOutputBean.setCurrencyType(getUserLimitsResponse
+				getUserLimitsResponse2.setTransactionSuccess(true);
+				getUserLimitsResponse2.setCurrencyType(getUserLimitsResponse
 						.getUserLimit().get(0).getLimitAmount());
 				break;
 			}
@@ -541,7 +541,7 @@ public class ACImpl implements ACInterface {
 
 		LOGGER.debug("Exit getUserLimits.");
 
-		return gson.toJson(userLimitOutputBean);
+		return gson.toJson(getUserLimitsResponse2);
 	}
 
 	@POST

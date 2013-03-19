@@ -9,9 +9,9 @@ import com.paypal.cfx.client.CurrencyType;
  * @author TCS
  * 
  */
-public class UserLimitOutputBean {
+public class GetUserLimitsResponse {
 
-	public UserLimitOutputBean() {
+	public GetUserLimitsResponse() {
 
 	}
 
