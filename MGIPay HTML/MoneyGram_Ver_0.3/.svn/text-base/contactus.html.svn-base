@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Contact Us</title>
+<link href="css/moneygram.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script> 
+<script type="text/javascript" src="scripts/contact.js"></script>
+<script type="text/javascript" src="scripts/genric.js"></script>
+
+
+</head>
+
+<body>
+<div class="mainwrapper" id="mainwrapper">
+<div class="subwrapper">
+    <div class="header">
+    
+    <div class="logo">
+    	<img src="images/logo.png"  alt="MoneyGram" class="logo_moneygram">
+        <img src="images/logo_paypal.png"  alt="PayPal" class="logo_paypal">
+    </div>
+    <div class="topNav">
+						<a href="FAQS.html">FAQ</a><a href="#">Contact Us</a><a href="history.html">History</a><a href="home.html" class="logout">Log Out</a>
+					</div>
+    </div>
+    <div class="innercontainer">
+    		<div class="welcome">You are logged in as: <span>Username</span></div>
+        	<div class="breadcrumb"><a href="home.html">Home</a> >Contact Us</div>
+   	</div>
+  
+    <!-- Static Content Starts -->
+    <div class="staticcontainer">
+    <h1>Contact Us</h1>
+    <p>Thank you for using MoneyGram. Feel free to contact us anytime by phone or email. It is our policy to reply to all email requests within 48 hours. You may also want to see if your question is already answered in our <a href="FAQS.html">Frequently Asked Questions/FAQ section</a></p>
+    
+    <div class="contact_us">
+		<ul id="contact_us_tab">
+			<li class="active"><a href="#contact_us_byPhone" class="tabphone">By Phone</a></li>
+			<li><a href="#contact_us_byEmail" class="tabemail">By Email</a></li>
+
+		</ul>
+		<div class="contact_us_container">
+			<div id="contact_us_byPhone" class="contact_us_content">
+				<div class="contact_us_byPhone">
+
+					<p>
+						MoneyGram International in the United States</P>
+						
+						
+						 <p class="countrylbl">English </p>
+						<span>1-800-MoneyGram(800-666-3947)</span> 
+						<p class="countrylbl">Spanish </p>
+						<span>1-800-955-7777</span> 
+					
+						<span>World Headquaters</span>
+							
+                      <div class="contactAddress">      
+                    <h1>World Headquarters</h1>        
+					<p>2828 North Harwood Street, Floor 15,</p>
+					<p> Dallers TX7555</p>
+					</div>
+
+				</div>
+
+			</div>
+
+			<div id="contact_us_byEmail" class="contact_us_content">
+				<div class="contact_us_byEmail">
+					<p>Bold Fields are required</p>
+					<ul>
+						<li><label class="txtbold">First Name</label></li>
+						<li><input type="text" /></li>
+					</ul>
+					<ul>
+						<li><label class="txtbold">Last Name</label></li>
+						<li><input type="text" /></li>
+					</ul>
+					<ul>
+						<li><label>Email Address</label></li>
+						<li><input type="text" /></li>
+					</ul>
+					<ul>
+						<li><label>Phone Number</label></li>
+						<li><input type="text" /></li>
+					</ul>
+					<ul>
+						<li><label>Reference Number</label></li>
+						<li><input type="text" /></li>
+					</ul>
+					<ul>
+						<li><label class="txtbold">Message</label></li>
+						<li><textarea cols="37" rows="6"></textarea></li>
+					</ul>
+
+				</div>
+				<input type="button" value="Send Message >" class="button">
+
+
+			</div>
+
+		</div>
+	</div>
+    </div>
+    <!-- Static Content End -->
+    
+   </div>
+   <div class="clear"></div>
+   <div class="footer">
+				<div>
+					<span>© 2013 MoneyGram. All rights reserved<a href="#" class="backtotop"></a></span><a href="privacypolicy.html">Privacy Policy</a> <a href="termsofuse.html">Terms of Use</a><a href="terms_conditions.html">Terms and Conditions</a><a href="aboutmoneygram.html" class="aboutlink">About MoneyGram</a>
+					<p>
+						Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+					</p>
+				</div>
+			</div>
+</div>
+</body>
+</html>
