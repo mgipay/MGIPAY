@@ -1,6 +1,14 @@
 var initialPrice = '';
 $(document).ready(function() {
 	
+	
+	$("#fee_tooltip").hide();
+				$("#fee").click(function() {
+					$('#fee_tooltip').slideDown("slow");
+				});
+				$("#fancybox-close").click(function() {
+					$('#fee_tooltip').hide("slow");
+				});
 	$('#chk_box').click(function(){
 		if($('#chk_box').is(':checked')){
    			$("#withdraw_button").removeAttr("disabled");
@@ -11,7 +19,7 @@ $(document).ready(function() {
 	  $.fancybox({
     	   autoDimensions: false,
     	 'width'             : "60%",
-          'height'            : "60%",
+          'height'           : "60%",
     	  content: $('#termsAndCondition_iframe').clone()
 
 
@@ -24,7 +32,8 @@ $(document).ready(function() {
 	var getLimitObj = new Object();
 	getLimitObj.UserLimitInputBean = getLimit;	
     callService(methods.CodeTable[0], methods.CodeTable[1], "", "","" , locationSuccessHandler, locationFailureHandler);
-    //callService(methods.GetUserLimits[0], methods.GetUserLimits[1], "", "", getLimitObj, getLimitSuccessHandler, getLimitFailureHandler);
+    callService(methods.GetUserLimits[0], methods.GetUserLimits[1], "", "", getLimitObj, getLimitSuccessHandler, getLimitFailureHandler);
+	callService(methods.GetFeeLinkValue[0], methods.GetFeeLinkValue[1], "", "", null, withdrawFeeSuccessHandler, withdrawFeeFailureHandler);
    
    /*** receive amount text box validations ****/
 $("#recieveAmount").focusin(function() {
@@ -72,6 +81,17 @@ var sessionId = '';
 var ddValue = '';
 var sendValidationResponse = '';
 
+var withdrawFeeSuccessHandler = function(response){
+	alert(JSON.stringify(response));
+	var feeDetails = '';
+	feeDetails = '<li class="thead"><div>Amount</div><div>Fee</div></li><li class="trow"><div>$0.00 - $200.00 USD</div><div>$'+ response.feeForTwoHundred +' USD</div></li><li class="trow altrow"><div>$200.01 - $500.00 USD</div> <div>$'+ response.feeForFiveHundred +' USD</div></li><li> There is a limit to how much cash can with withdrawn: </li>';
+	$('#feeWithdraw').append(feeDetails);
+};
+	
+var withdrawFeeFailureHandler = function(response){
+	alert(response);
+};
+
 /**** method to get fee and total amount *****/
 var feeSuccessHandler = function(response){
 	 $("#preview").hide();
@@ -89,6 +109,7 @@ var feeFailureHandler = function(response){
 	
 /**** method to get pick up locations *****/	
 var locationSuccessHandler = function(response){
+	$("#preview").hide();
 		var locationsDropdown = '';
 		locationsDropdown += '<option value="Select your state">Select your state</option>';
 		for(var i=0;i<response.length;i++){

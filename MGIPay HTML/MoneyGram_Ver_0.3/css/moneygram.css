@@ -279,7 +279,8 @@ a {
 	padding-right: 10px;
 }
 .WC_authentication_container .left ul {
-	margin-left: 15%;
+	margin-left: 0%;
+	width:100%;
 }
 .WC_authentication_container .left li {
 	list-style: none;
@@ -442,7 +443,9 @@ a.button {
 	display: table;
 	background: #dddddc;
 	border: 1px solid #dddddc;
+	border-bottom:0;
 	border-left: 0;
+	background:url(../images/history_gridBg.gif) repeat top left;
 }
 .historyGrid li {
 	list-style: none;
@@ -470,18 +473,20 @@ a.button {
 .historyGrid .trow {
 	width: 100%;
 	display: table-row;
-	background: #dddddc;
+	/*background: #dddddc;*/
 }
 .historyGrid .trow div {
 	display: table-cell;
 	white-space: normal;
-	padding: 1%;
-	background: #fff;
+	padding:1%;
+	/*background: #fff;
+	border-top: 1px solid #dddddc;
+	*/
 	border-left: 1px solid #dddddc;
-	border-top: 1px solid #dddddc
+	
 }
 .historyGrid .altrow div {
-	background: #e0f3fb !important
+	/*background: #e0f3fb !important*/
 }
 /*** FAQs ***/
 
@@ -536,6 +541,9 @@ h2.active {
 	background: #ddd;
 	border: 1px solid #ccc;
 }
+.toggle_container .historyGrid{width:50%;margin-left:0}
+.toggle_container .historyGrid .trow div{border-bottom:1px solid #DDDDDC}
+.toggle_container .historyGrid .thead{height:35px; line-height:35px}
 .expand_all {
 	width: 116px;
 	height: 29px;
@@ -546,6 +554,12 @@ h2.active {
 .expanded {
 	background-position: bottom left;
 }
+/***** For getting bullets for FAQ page start*****/
+.list_bullets ul li
+{
+	list-style:disc;
+}
+/***** For getting bullets for FAQ page end*****/
 .faqs_container .expand_wrapper h5{ font-family:"Omnes Medium" !important;font-size:20px; font-weight:normal; margin:2% 5% 1% 5%}
 /*** Toggle end ***/
 
@@ -630,14 +644,14 @@ h2.active {
 
 .tabbed_area .content {
 	/*background:#FCFBFB;*/
-	padding-bottom:20px;
+	padding-bottom:0px;
 	float:left;
 	background:url(../images/tab_contentBG.jpg) repeat-y left 10px;
 	}
 
 .tabbed_area .content1 {
 	/*background:#FCFBFB;*/
-	padding-bottom:20px;
+	padding-bottom:0px;
 	float:left;
 	background:none !important;
 	width:971px; /*bvv*/
@@ -663,7 +677,7 @@ h2.active {
 
 /*** CONTENT 2,3 ***/
 .tabbed_area #content_2 .left, .tabbed_area #content_3 left{width:45%; float:left;margin:0 0 0 5%}
-.tabbed_area #content_2 .left ul, .tabbed_area #content_3 .left ul {margin-left: 0%;width:100%}
+.tabbed_area #content_2 .left ul, .tabbed_area #content_3 .left ul {margin-left: 4%;width:100%}
 .tabbed_area #content_2 #all_elements{margin-left:0;margin-top:-1px;margin-right:1px;}
 .tabbed_area #content_2 .left li, .tabbed_area #content_3 .left li {
 	list-style: none;

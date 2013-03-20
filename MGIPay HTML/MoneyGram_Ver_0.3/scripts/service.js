@@ -8,21 +8,22 @@ function callService(methodName, requestType, sessionId, getMethodQueryParams, p
 	
 	$.ajax(
 	{
-		url : serviceUrl,
+		url  : serviceUrl,
 		data : postMethodJsonString,
 		type : requestType,
-		processData: true,
+		cache   : "false",
         crossDomain: true,
 		contentType:"application/json",
-		dataType:"jsonp",
+		dataType:"json",
 		success : function (data, successCode, jqXhr)
 		{
+			//alert(data);
 			successHandler(data);
 		},
 		error : function(jqXHR, errorType, exceptionObject)
 		{
 			
-			//$("#preview").hide();
+			$("#preview").hide();
 			alert("Service call failed");
 			//errorHandler(jqXHR, errorType, exceptionObject);
 		}

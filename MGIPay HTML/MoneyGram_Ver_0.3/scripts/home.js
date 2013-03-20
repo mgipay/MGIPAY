@@ -13,7 +13,10 @@
    
 }
 
-$(function() {
+$(document).ready(function() {
+	
+				callService(methods.GetFeeLinkValue[0], methods.GetFeeLinkValue[1], "", "", null, homeFeeSuccessHandler, homeFeeFailureHandler);
+				
 				$('#slides').slides({
 					preload : true,
 					preloadImage : 'images/loading.gif',
@@ -128,4 +131,17 @@ $(".tabContainer").css("margin-top", "240px");
 		
 	});
 				
-		
+	var homeFeeSuccessHandler = function(response){
+	alert(JSON.stringify(response));
+	var addFeeDetails = '';
+	addFeeDetails = '<li class="thead"><div>Amount</div><div>Fee</div></li><li class="trow"><div>$0.00 - $200.00 USD</div><div>$'+ response.feeForTwoHundred +' USD</div></li><li class="trow altrow"><div>$200.01 - $500.00 USD</div> <div>$'+ response.feeForFiveHundred +' USD</div></li>';
+	$('#addCashFee').append(addFeeDetails);
+	var withdrawFeeDetails = '';
+	withdrawFeeDetails = '<li class="thead"> <div>Withdrawal Amount</div><div>Fee Amount</div></li><li class="trow"><div>$0.00 - $200.00 USD</div><div>$'+ response.feeForTwoHundred +' USD</div></li>';
+	$('#withdrawCashFee').append(withdrawFeeDetails);
+	
+	};
+	
+	var homeFeeFailureHandler = function(response){
+	alert(response);
+	};
