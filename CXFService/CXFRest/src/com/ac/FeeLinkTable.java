@@ -1,73 +1,61 @@
 package com.ac;
 
-import java.io.*;
 import java.math.BigDecimal;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import com.google.gson.Gson;
 
 public class FeeLinkTable {
+	
+	public FeeLinkTable() {
+		
+	}
 
-	public void insertFeeForFiveHundred(BigDecimal feeAmount) {
-		Connection con = null;
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
+	public void insertFee(BigDecimal lowerLimit, BigDecimal upperLimit,
+			BigDecimal feeCharge, String fundsType)
+			throws ClassNotFoundException, SQLException {
+		Class.forName("oracle.jdbc.OracleDriver");
+		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+		Connection connection = DriverManager.getConnection(
+				"jdbc:oracle:thin:@10.0.1.167:1521:devdb", "devdb",
+				"devdbdevdb");
 
-			con = DriverManager.getConnection("DBURL:"
-					+ "jdbc:mysql://localhost:3306/LocalDB", "root", "root");
-
-			String strQuery = "INSERT INTO FeeLookUpTable (CountryCode, LowRange, Upper"
-					+ "Range, FundInFee, FundOutFee) VALUES (?,?,?,?,?,?);";
-			PreparedStatement prest = con.prepareStatement(strQuery);
-			BufferedReader bf = new BufferedReader(new InputStreamReader(
-					System.in));
-			System.out.println("Enter  CountryCode:");
-			String CountryCode;
-			CountryCode = bf.readLine();
-
-			prest.setString(1, CountryCode);
-			System.out.println("Enter LowRange :");
-			BigDecimal LowRange = new BigDecimal(bf.readLine());
-			prest.setBigDecimal(2, LowRange);
-			int count = prest.executeUpdate();
-			System.out.println(count + "row(s) affected");
-			con.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		String dbName = "LocalDB";
+		String strQuery = "INSERT INTO MGI_PAYPAL_FEE_DTL (country_CODE, LOWER_LIMIT, UPPER_LIMIT"
+				+ ", FEE_CHARGES, FUNDS_TYPE) VALUES (?,?,?,?,?,?);";
+		PreparedStatement preparedStatement = connection
+				.prepareStatement(strQuery);
+		preparedStatement.setString(1, "usa");
+		preparedStatement.setBigDecimal(2, lowerLimit);
+		preparedStatement.setBigDecimal(3, upperLimit);
+		preparedStatement.setBigDecimal(4, feeCharge);
+		preparedStatement.setString(5, fundsType);
+		preparedStatement.executeUpdate();
+		connection.close();
 	}
 
 	public String selectFromFeelink() throws ClassNotFoundException,
 			SQLException {
 
-		Connection con = null;
-
 		Class.forName("oracle.jdbc.OracleDriver");
-		 DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-		con = DriverManager.getConnection(
+		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+		Connection connection = DriverManager.getConnection(
 				"jdbc:oracle:thin:@10.0.1.167:1521:devdb", "devdb",
 				"devdbdevdb");
 		String strQuery = "Select * from MGI_PAYPAL_FEE_DTL";
 
-		PreparedStatement statement = con.prepareStatement(strQuery);
-		ResultSet resultSet = statement.executeQuery();
-
-		// UPPER_LIMIT FEE_CHARGES
+		PreparedStatement preparedStatement = connection
+				.prepareStatement(strQuery);
+		ResultSet resultSet = preparedStatement.executeQuery();
 		BigDecimal feeForTwoHundred = null;
 		BigDecimal feeForFiveHundred = null;
 		while (resultSet.next()) {
 			BigDecimal upperLimit = resultSet.getBigDecimal("UPPER_LIMIT");
 			if (upperLimit.compareTo(new BigDecimal(200)) == 0) {
 				feeForTwoHundred = resultSet.getBigDecimal("FEE_CHARGES");
-
 			} else {
 				feeForFiveHundred = resultSet.getBigDecimal("FEE_CHARGES");
 			}
@@ -83,40 +71,5 @@ public class FeeLinkTable {
 			SQLException {
 		FeeLinkTable feeLinkTable = new FeeLinkTable();
 		feeLinkTable.selectFromFeelink();
-	}
-
-	public static void main1(String[] args) {
-		System.out.println("Insert records example using prepared statement!");
-		Connection con = null;
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			con = DriverManager.getConnection("DBURL:"
-					+ "jdbc:mysql://localhost:3306/LocalDB", "root", "root");
-			String dbName = "LocalDB";
-			// try {
-			// String updateString = "update " + dbName + ".COFFEES "
-			// +"set SALES = ? where COF_NAME = ?";
-			// String strQuery =
-			// "INSERT INTO FeeLookUpTable (CountryCode, LowRange, UpperRange, FundInFee, FundOutFee) VALUES (?,?,?,?,?,?);";
-			String strQuery = "Select * from MGI_PAYPAL_FEE_DTL";
-			// String sql = "INSERT FeeLookUpTable VALUES(?,?,?,?,?)";
-			PreparedStatement preparedStatement = con
-					.prepareStatement(strQuery);
-			BufferedReader bf = new BufferedReader(new InputStreamReader(
-					System.in));
-			System.out.println("Enter  CountryCode:");
-			String CountryCode = bf.readLine();
-			preparedStatement.setString(1, CountryCode);
-			System.out.println("Enter LowRange :");
-			BigDecimal LowRange = new BigDecimal(bf.readLine());
-			preparedStatement.setBigDecimal(2, LowRange);
-			int count = preparedStatement.executeUpdate();
-			System.out.println(count + "row(s) affected");
-			con.close();
-		} catch (SQLException s) {
-			System.out.println("SQL statement is not executed!");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 }

@@ -1,6 +1,7 @@
 package com.ac;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -54,7 +55,7 @@ public class ACImpl implements ACInterface {
 
 	private static Integer DAY_IDENTIFIER = 7;
 	
-	private static Integer DAY_IDENTIFIER_FOR_FEELINK = 7;
+	private static boolean FEELINK_FLAG;
 
 	private static Logger LOGGER = Logger.getLogger(ACImpl.class);
 
@@ -96,8 +97,11 @@ public class ACImpl implements ACInterface {
 				feeLookupResponseReturn
 						.setMgiTransactionSessionID(feeLookupResponse
 								.getMgiTransactionSessionID());
-				feeLookupResponseReturn.setTotalAmount(feeLookupResponse
-						.getFeeInfo().get(0).getTotalAmount());
+				BigDecimal totalAmount = feeLookupResponse.getFeeInfo().get(0)
+						.getTotalAmount();
+				feeLookupResponseReturn.setTotalAmount(totalAmount);
+				feeLookupResponseReturn.setFeeAmount(totalAmount
+						.subtract(feeLookupInputBean.getAmount()));
 				break;
 			}
 		}
@@ -162,7 +166,26 @@ public class ACImpl implements ACInterface {
 
 	}
 
-	
+	private void updateFeeLink() {
+		BigDecimal feeForTwoHundred = getFeeForFeeLink(MGI_Constants.TWO_HUNDRED_US_DOLLARS);
+		BigDecimal feeForFiveHundred = getFeeForFeeLink(MGI_Constants.FIVE_HUNDRED_US_DOLLARS);
+		FeeLinkTable feeLinkTable = new FeeLinkTable();
+		try {
+			feeLinkTable.insertFee(new BigDecimal(0),
+					MGI_Constants.TWO_HUNDRED_US_DOLLARS, feeForTwoHundred, "");
+			feeLinkTable.insertFee(new BigDecimal(201),
+					MGI_Constants.FIVE_HUNDRED_US_DOLLARS, feeForFiveHundred,
+					"");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
 	@POST
 	@Path("/getFeeLinkValue")
 	@Override
@@ -170,33 +193,14 @@ public class ACImpl implements ACInterface {
 
 		LOGGER.debug("Enter getFeeLinkValue.");
 
-		setCredentials();
-
-		// FeeLinkTable feeLinkTable = new FeeLinkTable();
-		// String feeDetails = "";
-		// try {
-		// feeDetails = feeLinkTable.selectFromFeelink();
-		// } catch (ClassNotFoundException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (SQLException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
+		// if(FEELINK_FLAG){
+		// retrive from db
+		// }else {
+		// send message to UI : "please try after few minutes."
 		// }
 		
-//		if (DAY_IDENTIFIER_FOR_FEELINK != Calendar.getInstance().get(
-//				Calendar.DAY_OF_WEEK)) {
-//			synchronized (DAY_IDENTIFIER_FOR_FEELINK) {
-//				DAY_IDENTIFIER_FOR_FEELINK = Calendar.getInstance().get(
-//						Calendar.DAY_OF_WEEK);
-//			}
-//			
-//			
-//		}
 		
 		
-		
-
 		FeeLinkValues feeLinkValues = new FeeLinkValues();
 		feeLinkValues
 				.setFeeForTwoHundred(getFeeForFeeLink(MGI_Constants.TWO_HUNDRED_US_DOLLARS));
@@ -211,7 +215,8 @@ public class ACImpl implements ACInterface {
 	@POST
 	@Path("/getHistoryDetails")
 	@Override
-	public String getHistoryDetails(HistroyLookupInputBean histroyLookupInputBean) {
+	public String getHistoryDetails(
+			HistroyLookupInputBean histroyLookupInputBean) {
 
 		LOGGER.debug("Enter getHistoryDetails.");
 
@@ -221,7 +226,8 @@ public class ACImpl implements ACInterface {
 		int i = 2;
 		while (i >= 1) {
 			HistoryDetails historyDetails = new HistoryDetails();
-			historyDetails.setCustomerEmail(histroyLookupInputBean.getCustomerEmailId());
+			historyDetails.setCustomerEmail(histroyLookupInputBean
+					.getCustomerEmailId());
 			historyDetails.setCustomerName("AAAAAA");
 			historyDetails.setCustomerPhone(12346789);
 			historyDetails.setMgiReferenceNumber("987987987");
@@ -238,6 +244,23 @@ public class ACImpl implements ACInterface {
 		HistroyLookupResponse histroyLookupResponse = new HistroyLookupResponse();
 		histroyLookupResponse.setTransactionSuccess(true);
 		histroyLookupResponse.setHistoryDetailsList(historyDetailsList);
+
+		// HistoryTable historyTable = new HistoryTable();
+		// List<HistoryDetails> historyDetailsList = new
+		// ArrayList<HistoryDetails>();
+		// try {
+		// historyDetailsList = historyTable
+		// .retrieveHistroyDetails(histroyLookupInputBean
+		// .getCustomerEmailId());
+		// } catch (Exception exception) {
+		// exception.printStackTrace();
+		// histroyLookupResponse.setTransactionSuccess(false);
+		// histroyLookupResponse.setErrorMessage("Please try again.");
+		// return new Gson().toJson(histroyLookupResponse);
+		// }
+		// histroyLookupResponse.setHistoryDetailsList(historyDetailsList);
+		// histroyLookupResponse.setTransactionSuccess(true);
+
 		LOGGER.debug("Exit getHistoryDetails.");
 
 		return new Gson().toJson(histroyLookupResponse);
@@ -262,6 +285,7 @@ public class ACImpl implements ACInterface {
 		LOGGER.debug("Enter getStateCode.");
 
 		if (DAY_IDENTIFIER != Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) {
+//			FEELINK_FLAG = false;
 			int yesterday = DAY_IDENTIFIER;
 			synchronized (DAY_IDENTIFIER) {
 				DAY_IDENTIFIER = Calendar.getInstance().get(
@@ -300,6 +324,8 @@ public class ACImpl implements ACInterface {
 					break;
 				}
 			}
+//			updateFeeLink();
+//			FEELINK_FLAG = true;
 		}
 
 		LOGGER.debug("Exit getStateCode.");
