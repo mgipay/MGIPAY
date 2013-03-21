@@ -564,10 +564,10 @@ public class ACImpl implements ACInterface {
 		LOGGER.debug("Enter getUserLimits.");
 
 		PhoneNumberType phoneNumberType = new PhoneNumberType();
-		phoneNumberType.setCountryCode(userLimitInputBean.getCountryCode());
-		phoneNumberType.setExtension(userLimitInputBean.getExtension());
-		phoneNumberType.setPhoneNumber(userLimitInputBean.getPhoneNumber());
 
+		phoneNumberType.setCountryCode("1");
+		phoneNumberType.setExtension("4237");
+		phoneNumberType.setPhoneNumber("6057100363");
 		AccountIdentifier accountIdentifier = new AccountIdentifier();
 		accountIdentifier.setEmail(userLimitInputBean.getEmailID());
 		accountIdentifier.setPhone(phoneNumberType);
