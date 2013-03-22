@@ -28,7 +28,7 @@ public class MGI_PayPal_Test {
 	
 	private static Logger LOGGER = Logger.getLogger(MGI_PayPal_Test.class);
 
-	@Test
+	@Ignore
 	public void TestFeeLookUp() {
 		try {
 
@@ -38,7 +38,7 @@ public class MGI_PayPal_Test {
 			conn.setRequestMethod("POST");
 			conn.setRequestProperty("Content-Type", "application/json");
 
-			String inputJsonObject = "{\"FeeLookupInputBean\":{\"amount\":\"100\"}}";
+			String inputJsonObject = "{\"FeeLookupInputBean\":{\"amount\":\"170\"}}";
 
 			OutputStream os = conn.getOutputStream();
 			os.write(inputJsonObject.getBytes());
@@ -80,7 +80,7 @@ public class MGI_PayPal_Test {
 				+ "ZipCode\":\"55416\",\"senderCountry\":\"USA\",\"senderHomePhone\":\"9522320253\",\"rece"
 				+ "iverFirstName\":\"N R F\",\"receiverLastName\":\"N R L\",\"sendCurrency\":\"USD\",\"mgiT"
 				+ "ransactionSessionID\":\""
-				+ "9708729E1572561363790577000"
+				+ "9708729E1572561363963347097"
 				+ "\"}}";
 
 		OutputStream os = conn.getOutputStream();
@@ -113,7 +113,7 @@ public class MGI_PayPal_Test {
 			conn.setRequestProperty("Content-Type", "application/json");
 
 			String inputJsonObject = "{\"CommitTransactionInputBean\":{\"mgiTransactionSessionID\":\""
-					+ "9708729E1572561363790577000" + "\"}}";
+					+ "9708729E1572561363963347097" + "\"}}";
 
 			OutputStream os = conn.getOutputStream();
 			os.write(inputJsonObject.getBytes());
@@ -174,36 +174,6 @@ public class MGI_PayPal_Test {
 			e.printStackTrace();
 		}
 	}
-	@Test
-	public void TestGetFeeLinkValue() {
-
-		try {
-			URL url = new URL(
-					"http://localhost:8092/CXFRest/rest/getFeeLinkValue");
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Content-Type", "application/json");
-			Scanner scanner;
-			String response;
-			if (conn.getResponseCode() != 200) {
-				scanner = new Scanner(conn.getErrorStream());
-				response = "Error From Server \n\n";
-			} else {
-				scanner = new Scanner(conn.getInputStream());
-				response = "Response From Server \n\n";
-			}
-			scanner.useDelimiter("\\Z");
-			LOGGER.debug(response + scanner.next());
-			scanner.close();
-			conn.disconnect();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
 	
 
 	@Test
@@ -298,8 +268,48 @@ public class MGI_PayPal_Test {
 			e.printStackTrace();
 		}
 	}
-	
 	@Test
+	public void TestSendMail() {
+
+		try {
+
+			URL url = new URL("http://localhost:8092/CXFRest/rest/sendMail");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-Type", "application/json");
+
+			String inputJsonObject = 
+			"{\"SendMailInputBean\":{\"mailSubject\":\"subject of the mail\",\"mailT" +
+			"ext\":\"body of the mail\",\"referenceNumber\":\"45321456\",\"customerEm" +
+			"ailId\":\"TestAccmgipay@gmail.com\",\"phoneNumber\":567456897}}";
+
+			OutputStream os = conn.getOutputStream();
+			os.write(inputJsonObject.getBytes());
+			os.flush();
+			Scanner scanner;
+			String response;
+			if (conn.getResponseCode() != 200) {
+				scanner = new Scanner(conn.getErrorStream());
+				response = "Error From Server \n\n";
+			} else {
+				scanner = new Scanner(conn.getInputStream());
+				response = "Response From Server \n\n";
+			}
+			scanner.useDelimiter("\\Z");
+
+			LOGGER.debug(response + scanner.next());
+
+			scanner.close();
+			conn.disconnect();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Ignore
 	public void TestGetHistoryDetails() {
 
 		try {

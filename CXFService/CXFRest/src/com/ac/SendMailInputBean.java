@@ -3,10 +3,13 @@
  */
 package com.ac;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * @author TCS
  * 
  */
+@XmlRootElement(name="SendMailInputBean")
 public class SendMailInputBean {
 
 	public SendMailInputBean() {

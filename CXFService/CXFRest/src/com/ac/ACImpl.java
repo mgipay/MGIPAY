@@ -54,7 +54,7 @@ public class ACImpl implements ACInterface {
 	private static String STATES_IN_USA = "";
 
 	private static Integer DAY_IDENTIFIER = 7;
-	
+
 	private static boolean FEELINK_FLAG;
 
 	private static Logger LOGGER = Logger.getLogger(ACImpl.class);
@@ -92,16 +92,30 @@ public class ACImpl implements ACInterface {
 				}
 			}
 			if (feeLookupResponse != null) {
-				feeLookupResponseReturn.setTransactionSuccess(true);
-
-				feeLookupResponseReturn
-						.setMgiTransactionSessionID(feeLookupResponse
-								.getMgiTransactionSessionID());
 				BigDecimal totalAmount = feeLookupResponse.getFeeInfo().get(0)
 						.getTotalAmount();
-				feeLookupResponseReturn.setTotalAmount(totalAmount);
-				feeLookupResponseReturn.setFeeAmount(totalAmount
-						.subtract(feeLookupInputBean.getAmount()));
+
+				if (totalAmount.compareTo(MGI_Constants.TWO_HUNDRED_US_DOLLARS) <= 0) {
+
+					feeLookupResponseReturn.setTransactionSuccess(true);
+
+					feeLookupResponseReturn
+							.setMgiTransactionSessionID(feeLookupResponse
+									.getMgiTransactionSessionID());
+
+					feeLookupResponseReturn.setTotalAmount(totalAmount);
+					feeLookupResponseReturn.setFeeAmount(totalAmount
+							.subtract(feeLookupInputBean.getAmount()));
+				} else {
+					feeLookupResponseReturn
+							.setErrorMessage("WithDrawl amount including Fee is : "
+									+ totalAmount.toString()
+									+ ". Cannot withdraw more the 200 dollars incl"
+									+ "uding fee per Transaction."
+									+ "Please try again");
+					feeLookupResponseReturn.setTransactionSuccess(false);
+				}
+
 				break;
 			}
 		}
@@ -138,7 +152,6 @@ public class ACImpl implements ACInterface {
 		return feeLookupRequest;
 	}
 
-	
 	private BigDecimal getFeeForFeeLink(BigDecimal amount) {
 
 		LOGGER.debug("Enter getFeeForFeeLink.");
@@ -198,21 +211,19 @@ public class ACImpl implements ACInterface {
 		// }else {
 		// send message to UI : "please try after few minutes."
 		// }
-		
-		
-		
+
 		FeeLinkValues feeLinkValues = new FeeLinkValues();
 		feeLinkValues
 				.setFeeForTwoHundred(getFeeForFeeLink(MGI_Constants.TWO_HUNDRED_US_DOLLARS));
 		feeLinkValues
 				.setFeeForFiveHundred(getFeeForFeeLink(MGI_Constants.FIVE_HUNDRED_US_DOLLARS));
 		feeLinkValues.setTransactionSuccess(true);
-		
+
 		LOGGER.debug("Exit getFeeLinkValue.");
 
 		return new Gson().toJson(feeLinkValues);
 	}
-	
+
 	@POST
 	@Path("/getHistoryDetails")
 	@Override
@@ -266,7 +277,7 @@ public class ACImpl implements ACInterface {
 
 		return new Gson().toJson(histroyLookupResponse);
 	}
-	
+
 	private static XMLGregorianCalendar getTimeStamp() {
 		XMLGregorianCalendar xgcal = null;
 		try {
@@ -286,7 +297,7 @@ public class ACImpl implements ACInterface {
 		LOGGER.debug("Enter getStateCode.");
 
 		if (DAY_IDENTIFIER != Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) {
-//			FEELINK_FLAG = false;
+			// FEELINK_FLAG = false;
 			int yesterday = DAY_IDENTIFIER;
 			synchronized (DAY_IDENTIFIER) {
 				DAY_IDENTIFIER = Calendar.getInstance().get(
@@ -325,8 +336,8 @@ public class ACImpl implements ACInterface {
 					break;
 				}
 			}
-//			updateFeeLink();
-//			FEELINK_FLAG = true;
+			// updateFeeLink();
+			// FEELINK_FLAG = true;
 		}
 
 		LOGGER.debug("Exit getStateCode.");
@@ -381,7 +392,7 @@ public class ACImpl implements ACInterface {
 				break;
 			}
 		}
-
+		// call insert method of histroy
 		LOGGER.debug("Exit commitTransaction.");
 
 		return new Gson().toJson(commitTransactionResponse2);
@@ -509,10 +520,25 @@ public class ACImpl implements ACInterface {
 
 		sendValidationRequest.setReceiveCurrency(sendValidationInputBean
 				.getReceiveCurrency());
+		// TODO check length of string and get substring to AVOID exception
+
+		// String firstname,middleName,lastNme;
+		//
+		// firstname = sendValidationInputBean.getSenderFirstName().substring(0,
+		// 20);
+		// middleName =
+		// sendValidationInputBean.getSenderFirstName().substring(21, 40);
+		// lastNme = sendValidationInputBean.getSenderLastName().substring(0,
+		// 30);
+		//
+		// sendValidationRequest.setSenderFirstName(firstname);
+		// sendValidationRequest.setSenderMiddleName(middleName);
+		// sendValidationRequest.setSenderLastName(lastNme);
 		sendValidationRequest.setSenderFirstName(sendValidationInputBean
 				.getSenderFirstName());
 		sendValidationRequest.setSenderLastName(sendValidationInputBean
 				.getSenderLastName());
+
 		sendValidationRequest.setSenderAddress(sendValidationInputBean
 				.getSenderAddress());
 		sendValidationRequest.setSenderCity(sendValidationInputBean
@@ -608,6 +634,7 @@ public class ACImpl implements ACInterface {
 				getUserLimitsResponse2.setTransactionSuccess(true);
 				getUserLimitsResponse2.setCurrencyType(getUserLimitsResponse
 						.getUserLimit().get(0).getLimitAmount());
+
 				break;
 			}
 		}
@@ -621,7 +648,7 @@ public class ACImpl implements ACInterface {
 	@Path("/sendMail")
 	@Override
 	public String sendMail(SendMailInputBean sendMailInputBean) {
-
+		setCredentials();
 		MGI_PayPal_Mail mGI_PayPal_Mail = new MGI_PayPal_Mail();
 		SendMailOutputBean sendMailOutputBean = new SendMailOutputBean();
 		try {
@@ -629,7 +656,8 @@ public class ACImpl implements ACInterface {
 
 		} catch (MessagingException exception) {
 			sendMailOutputBean.setTransactionSuccess(false);
-			sendMailOutputBean.setMailSubject(sendMailInputBean.getMailSubject());
+			sendMailOutputBean.setMailSubject(sendMailInputBean
+					.getMailSubject());
 			sendMailOutputBean.setMailText(sendMailInputBean.getMailText());
 			sendMailOutputBean.setCustomerEmailId(sendMailInputBean
 					.getCustomerEmailId());
@@ -651,6 +679,6 @@ public class ACImpl implements ACInterface {
 		System.setProperty("http.proxyPort", "8080");
 		System.setProperty("http.proxyUser", "****");
 		System.setProperty("http.proxyPassword", "****");
-		 
+
 	}
 }

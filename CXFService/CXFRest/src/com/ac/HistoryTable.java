@@ -60,12 +60,13 @@ class HistoryTable {
 
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+		int tansactionId = 0;
 		Connection connection = DriverManager.getConnection(
 				"jdbc:oracle:thin:@10.0.1.167:1521:devdb", "devdb",
 				"devdbdevdb");
 
 		String strQuery = "INSERT INTO MGI_PAYPAL_TRAN_HIST (CUST_EMAIL, CUST_NAME, CUST_PHONE"
-				+ ", MGI_REF_NUM, PAYPAL_TRAN_ID,TRAN_AMT,TRAN_FEE,TRAN_STATUS) VALUES (?,?,?,?,?,?,?,?);";
+				+ ", MGI_REF_NUM, PAYPAL_TRAN_ID,TRAN_AMT,TRAN_FEE,TRAN_STATUS,TRAN_ID) VALUES (?,?,?,?,?,?,?,?);";
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1, customerEmail);
@@ -76,6 +77,7 @@ class HistoryTable {
 		preparedStatement.setBigDecimal(6, transactionAmount);
 		preparedStatement.setBigDecimal(7, transactionFee);
 		preparedStatement.setString(8, transactionStatus);
+		preparedStatement.setInt(9, tansactionId);
 		preparedStatement.executeUpdate();
 		connection.close();
 	}

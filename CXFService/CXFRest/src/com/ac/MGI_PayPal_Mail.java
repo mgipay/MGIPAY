@@ -23,7 +23,7 @@ public class MGI_PayPal_Mail {
 
 		session = Session.getInstance(props, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication("**@gmail.com", "$#");
+				return new PasswordAuthentication("TestAccmgipay@gmail.com", "Test@1234");
 			}
 		});
 	}
@@ -31,9 +31,9 @@ public class MGI_PayPal_Mail {
 	public void sendMail(SendMailInputBean sendMailInputBean)
 			throws MessagingException {
 		Message message = new MimeMessage(session);
-		message.setFrom(new InternetAddress("**@gmail.com"));
+		message.setFrom(new InternetAddress("TestAccmgipay@gmail.com"));
 		message.addRecipient(Message.RecipientType.TO, new InternetAddress(
-				"ranjini1.s@tcs.com"));
+				"kirankumar.todupunoori@tcs.com"));
 		message.setSubject(sendMailInputBean.getMailSubject());
 		message.setText(sendMailInputBean.getMailText());
 		Transport.send(message);
