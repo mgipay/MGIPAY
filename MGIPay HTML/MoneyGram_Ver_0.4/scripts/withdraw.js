@@ -13,7 +13,11 @@ $(document).ready(function() {
 	$('#chk_box').click(function(){
 		if($('#chk_box').is(':checked')){
    			$("#withdraw_button").removeAttr("disabled");
-			$("#withdraw_button").css("opacity","1")
+			$("#withdraw_button").css("opacity","1");
+		}
+		else{
+			$("#withdraw_button").attr("disabled","disabled");
+			$("#withdraw_button").css("opacity","0.5")
 		}
 	});
 	$('#termsAndConditionsForWidthdraw').click(function(){

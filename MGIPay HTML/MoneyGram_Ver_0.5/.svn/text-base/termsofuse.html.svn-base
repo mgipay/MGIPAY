@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Terms of Use</title>
+<link href="css/moneygram.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script> 
+<script type="text/javascript" src="scripts/genric.js"></script>
+</head>
+
+<body>
+<div class="mainwrapper" id="mainwrapper">
+<div class="subwrapper">
+    <div class="header">
+    
+    <div class="logo">
+    	<img src="images/logo.png"  alt="MoneyGram" class="logo_moneygram">
+        <img src="images/logo_paypal.png"  alt="PayPal" class="logo_paypal">
+    </div>
+    <div class="topNav">
+						<a href="FAQS.html">FAQ</a><a href="contactus.html">Contact Us</a><a href="history.html">History</a><a href="home.html" class="logout">Log Out</a>
+					</div>
+    </div>
+    <div class="innercontainer">
+    		<div class="welcome">You are logged in as: <span>Username</span></div>
+        	<div class="breadcrumb"><a href="home.html">Home</a> > Terms of Use</div>
+   	</div>
+  
+    <!-- Static Content Starts -->
+    <div class="staticcontainer">
+    <h1>Terms of Use</h1>
+    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nam cursus. Morbi ut mi. Nullam enim leo, egestas id, condimentum at, laoreet mattis, massa. Sed eleifend nonummy diam.</p>
+    
+    <p><h2>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nam cursus. Morbi ut mi</h2>
+    Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nam cursus. Morbi ut mi. Nullam enim leo, egestas id, condimentum at, laoreet mattis, massa. Sed eleifend nonummy diam.Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nam cursus. Morbi ut mi. Nullam enim leo, egestas id, condimentum at, laoreet mattis, massa. Sed eleifend nonummy diam.</p>
+    
+    <p><h2>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nam cursus. Morbi ut mi</h2>
+    Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nam cursus. Morbi ut mi. Nullam enim leo, egestas id, condimentum at, laoreet mattis, massa. Sed eleifend nonummy diam.Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nam cursus. Morbi ut mi. Nullam enim leo, egestas id, condimentum at, laoreet mattis, massa. Sed eleifend nonummy diam.</p>
+    
+    <p><h2>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nam cursus. Morbi ut mi</h2>
+    Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nam cursus. Morbi ut mi. Nullam enim leo, egestas id, condimentum at, laoreet mattis, massa. Sed eleifend nonummy diam.Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nam cursus. Morbi ut mi. Nullam enim leo, egestas id, condimentum at, laoreet mattis, massa. Sed eleifend nonummy diam.</p>
+    </div>
+    <!-- Static Content End -->
+    
+   </div>
+   <div class="clear"></div>
+   <div class="footer">
+				<div>
+					<span>© 2013 MoneyGram. All rights reserved<a href="#" class="backtotop"></a></span><a href="privacypolicy.html">Privacy Policy</a> <a href="#">Terms of Use</a><a href="terms_conditions.html">Terms and Conditions</a><a href="aboutmoneygram.html" class="aboutlink">About MoneyGram</a>
+					<p>
+						Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+					</p>
+				</div>
+			</div>
+</div>
+</body>
+</html>
