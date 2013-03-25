@@ -111,7 +111,7 @@ public class ACImpl implements ACInterface {
 							.setErrorMessage("WithDrawl amount including Fee is : "
 									+ totalAmount.toString()
 									+ ". Cannot withdraw more the 200 dollars incl"
-									+ "uding fee per Transaction."
+									+ "uding fee, per Transaction."
 									+ "Please try again");
 					feeLookupResponseReturn.setTransactionSuccess(false);
 				}
@@ -233,45 +233,20 @@ public class ACImpl implements ACInterface {
 		LOGGER.debug("Enter getHistoryDetails.");
 
 		setCredentials();
-
-		List<HistoryDetails> historyDetailsList = new ArrayList<HistoryDetails>();
-		int i = 2;
-		while (i >= 1) {
-			HistoryDetails historyDetails = new HistoryDetails();
-			historyDetails.setCustomerEmail(histroyLookupInputBean
-					.getCustomerEmailId());
-			historyDetails.setCustomerName("AAAAAA");
-			historyDetails.setCustomerPhone(12346789);
-			historyDetails.setMgiReferenceNumber("987987987");
-			historyDetails.setPaypalTransactionID("456456456");
-			historyDetails.setTransactionAmount(new BigDecimal(100));
-			historyDetails.setTransactionFee(new BigDecimal(12));
-			historyDetails.setTransactionID(new BigDecimal(987456321));
-			historyDetails.setTransactionStatus("S");
-			historyDetails.setTransactionDate("19-03-2013");
-			historyDetailsList.add(historyDetails);
-			i--;
-		}
-
 		HistroyLookupResponse histroyLookupResponse = new HistroyLookupResponse();
-		histroyLookupResponse.setTransactionSuccess(true);
+		HistoryTable historyTable = new HistoryTable();
+		List<HistoryDetails> historyDetailsList = new ArrayList<HistoryDetails>();
+		try {
+			historyDetailsList = historyTable
+					.retrieveHistroyDetails(histroyLookupInputBean
+							.getCustomerEmailId());
+		} catch (Exception exception) {
+			histroyLookupResponse.setTransactionSuccess(false);
+			histroyLookupResponse.setErrorMessage("Please try again.");
+			return new Gson().toJson(histroyLookupResponse);
+		}
 		histroyLookupResponse.setHistoryDetailsList(historyDetailsList);
-
-		// HistoryTable historyTable = new HistoryTable();
-		// List<HistoryDetails> historyDetailsList = new
-		// ArrayList<HistoryDetails>();
-		// try {
-		// historyDetailsList = historyTable
-		// .retrieveHistroyDetails(histroyLookupInputBean
-		// .getCustomerEmailId());
-		// } catch (Exception exception) {
-		// exception.printStackTrace();
-		// histroyLookupResponse.setTransactionSuccess(false);
-		// histroyLookupResponse.setErrorMessage("Please try again.");
-		// return new Gson().toJson(histroyLookupResponse);
-		// }
-		// histroyLookupResponse.setHistoryDetailsList(historyDetailsList);
-		// histroyLookupResponse.setTransactionSuccess(true);
+		histroyLookupResponse.setTransactionSuccess(true);
 
 		LOGGER.debug("Exit getHistoryDetails.");
 
@@ -392,7 +367,25 @@ public class ACImpl implements ACInterface {
 				break;
 			}
 		}
-		// call insert method of histroy
+		/*HistoryTable historyTable = new HistoryTable();
+		try {
+			historyTable.insertHistoryDetails(
+					commitTransactionInputBean.getCustomerEmail(),
+					commitTransactionInputBean.getCustomerName(),
+					commitTransactionInputBean.getCustomerPhoneNumber(),
+					commitTransactionResponse.getReferenceNumber(),
+					commitTransactionInputBean.getPaypalTransactionID(),
+					commitTransactionInputBean.getTransactionAmount(),
+					commitTransactionInputBean.getTransactionFee(),
+					commitTransactionInputBean.getTransactionStatus());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+
 		LOGGER.debug("Exit commitTransaction.");
 
 		return new Gson().toJson(commitTransactionResponse2);
@@ -520,25 +513,8 @@ public class ACImpl implements ACInterface {
 
 		sendValidationRequest.setReceiveCurrency(sendValidationInputBean
 				.getReceiveCurrency());
-		// TODO check length of string and get substring to AVOID exception
-
-		// String firstname,middleName,lastNme;
-		//
-		// firstname = sendValidationInputBean.getSenderFirstName().substring(0,
-		// 20);
-		// middleName =
-		// sendValidationInputBean.getSenderFirstName().substring(21, 40);
-		// lastNme = sendValidationInputBean.getSenderLastName().substring(0,
-		// 30);
-		//
-		// sendValidationRequest.setSenderFirstName(firstname);
-		// sendValidationRequest.setSenderMiddleName(middleName);
-		// sendValidationRequest.setSenderLastName(lastNme);
-		sendValidationRequest.setSenderFirstName(sendValidationInputBean
-				.getSenderFirstName());
-		sendValidationRequest.setSenderLastName(sendValidationInputBean
-				.getSenderLastName());
-
+		
+		setSenderName(sendValidationInputBean, sendValidationRequest);
 		sendValidationRequest.setSenderAddress(sendValidationInputBean
 				.getSenderAddress());
 		sendValidationRequest.setSenderCity(sendValidationInputBean
@@ -581,6 +557,31 @@ public class ACImpl implements ACInterface {
 		}
 		// }
 		return new Gson().toJson(sendValidationResponse2);
+	}
+	
+	private void setSenderName(SendValidationInputBean sendValidationInputBean,
+			SendValidationRequest sendValidationRequest) {
+		
+		LOGGER.debug("Enter setSenderName.");
+		
+		String firstName = sendValidationInputBean.getSenderFirstName();
+		String lastName = sendValidationInputBean.getSenderLastName();
+		if (firstName.length() < 40) {
+			firstName = firstName.concat("                                        ")
+					.substring(0, 40);
+		}
+		if(lastName.length() < 60){
+			lastName = lastName.concat(
+					"                                                            ")
+					.substring(0, 60);
+		}
+
+		sendValidationRequest.setSenderFirstName(firstName.substring(0, 20));
+		sendValidationRequest.setSenderMiddleName(firstName.substring(21, 40));
+		sendValidationRequest.setSenderLastName(lastName.substring(0, 30));
+		sendValidationRequest.setSenderLastName2(lastName.substring(31, 60));
+		
+		LOGGER.debug("Exit setSenderName.");
 	}
 
 	@POST

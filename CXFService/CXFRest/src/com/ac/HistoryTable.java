@@ -7,6 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 class HistoryTable {
@@ -47,8 +49,11 @@ class HistoryTable {
 			historyDetails.setTransactionID(resultSet.getBigDecimal("TRAN_ID"));
 			historyDetails.setTransactionStatus(resultSet
 					.getString("TRAN_STATUS"));
+			Date transactionDate = resultSet
+					.getDate(("TRAN_DATE"));
 			historyDetailsList.add(historyDetails);
 		}
+		
 		return historyDetailsList;
 	}
 
@@ -66,7 +71,8 @@ class HistoryTable {
 				"devdbdevdb");
 
 		String strQuery = "INSERT INTO MGI_PAYPAL_TRAN_HIST (CUST_EMAIL, CUST_NAME, CUST_PHONE"
-				+ ", MGI_REF_NUM, PAYPAL_TRAN_ID,TRAN_AMT,TRAN_FEE,TRAN_STATUS,TRAN_ID) VALUES (?,?,?,?,?,?,?,?);";
+				+ ", MGI_REF_NUM, PAYPAL_TRAN_ID,TRAN_AMT,TRAN_FEE,TRAN_ST" +
+				"ATUS,TRAN_ID) VALUES (?,?,?,?,?,?,?,?,?);";
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1, customerEmail);

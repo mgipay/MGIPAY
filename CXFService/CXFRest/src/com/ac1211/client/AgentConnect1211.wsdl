@@ -2618,6 +2618,7 @@
                 <xs:element minOccurs="1" name="senderFirstName" type="ac:fNameLong"/>
                 <xs:element minOccurs="0" name="senderMiddleName" type="ac:mNameLong"/>
                 <xs:element minOccurs="1" name="senderLastName" type="ac:lNameLong"/>
+                <xs:element minOccurs="0" name="senderLastName2" type="ac:lNameLong"/>
                 <xs:element minOccurs="1" name="senderAddress" type="ac:addressTypeXLong"/>
                 <xs:element minOccurs="0" name="senderAddress2" type="ac:addressTypeXLong"/>
                 <xs:element minOccurs="0" name="senderAddress3" type="ac:addressTypeXLong"/>
@@ -2656,6 +2657,7 @@
                 <xs:element minOccurs="0" name="thirdPartyFirstName" type="ac:fNameLong"/>
                 <xs:element minOccurs="0" name="thirdPartyMiddleName" type="ac:mNameLong"/>
                 <xs:element minOccurs="0" name="thirdPartyLastName" type="ac:lNameLong"/>
+                <xs:element minOccurs="0" name="thirdPartyLastName2" type="ac:lNameLong"/>
                 <xs:element minOccurs="0" name="thirdPartyAddress" type="ac:addressTypeXLong"/>
                 <xs:element minOccurs="0" name="thirdPartyAddress2" type="ac:addressTypeXLong"/>
                 <xs:element minOccurs="0" name="thirdPartyAddress3" type="ac:addressTypeXLong"/>
@@ -2780,6 +2782,7 @@
               <xs:element minOccurs="0" name="receiverOccupation" type="ac:stringMax30"/>
               <xs:element minOccurs="0" name="thirdPartyFirstName" type="ac:fNameLong"/>
               <xs:element minOccurs="0" name="thirdPartyMiddleName" type="ac:mNameLong"/>
+              <xs:element minOccurs="0" name="thirdPartyLastName2" type="ac:lNameLong"/>
               <xs:element minOccurs="0" name="thirdPartyLastName" type="ac:lNameLong"/>
               <xs:element minOccurs="0" name="thirdPartyAddress" type="ac:addressTypeXLong"/>
               <xs:element minOccurs="0" name="thirdPartyAddress2" type="ac:addressTypeXLong"/>
@@ -2867,6 +2870,7 @@
 				<xs:element minOccurs="0" name="senderFirstName" type="ac:fNameLong"/>
 				<xs:element minOccurs="0" name="senderMiddleName" type="ac:mNameLong"/>
 				<xs:element minOccurs="0" name="senderLastName" type="ac:lNameLong"/>
+				<xs:element minOccurs="0" name="senderLastName2" type="ac:lNameLong"/>
 				<xs:element minOccurs="0" name="senderAddress" type="ac:addressTypeXLong"/>
 				<xs:element minOccurs="0" name="senderAddress2" type="ac:addressTypeXLong"/>
 				<xs:element minOccurs="0" name="senderAddress3" type="ac:addressTypeXLong"/>
@@ -2893,6 +2897,7 @@
 				<xs:element minOccurs="0" name="thirdPartyFirstName" type="ac:fNameLong"/>
 				<xs:element minOccurs="0" name="thirdPartyMiddleName" type="ac:mNameLong"/>
 				<xs:element minOccurs="0" name="thirdPartyLastName" type="ac:lNameLong"/>
+				<xs:element minOccurs="0" name="thirdPartyLastName2" type="ac:lNameLong"/>
 				<xs:element minOccurs="0" name="thirdPartyAddress" type="ac:addressTypeXLong"/>
 				<xs:element minOccurs="0" name="thirdPartyAddress2" type="ac:addressTypeXLong"/>
 				<xs:element minOccurs="0" name="thirdPartyAddress3" type="ac:addressTypeXLong"/>
@@ -5532,7 +5537,7 @@
 	<!-- This URL points to localhost. Use the appropriate WSDL file for your environment. -->
 	<service name="AgentConnectService">
 		<port binding="tns:AgentConnectBinding" name="AgentConnect">
-			<soap:address location="https://extws.moneygram.com/extws/services/AgentConnect1211" />
+			<soap:address location="http://q2ws.qa.moneygram.com/ac2/services/AgentConnect1211" />
 		</port>
 	</service>
 </definitions>

@@ -10,7 +10,7 @@ import javax.xml.namespace.QName;
 /**
  * This object contains factory methods for each 
  * Java content interface and Java element interface 
- * generated in the com.ac1211.client package. 
+ * generated in the com.ac1211.updated.client package. 
  * <p>An ObjectFactory allows you to programatically 
  * construct new instances of the Java representation 
  * for XML content. The Java representation of XML 
@@ -24,6 +24,7 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
+    private final static QName _RewardsFieldInfoEnumeratedValues_QNAME = new QName("http://www.moneygram.com/AgentConnect1211", "enumeratedValues");
     private final static QName _BillPaymentConsumerLookupResponse_QNAME = new QName("http://www.moneygram.com/AgentConnect1211", "billPaymentConsumerLookupResponse");
     private final static QName _QueryRegistrationByNamesResponse_QNAME = new QName("http://www.moneygram.com/AgentConnect1211", "queryRegistrationByNamesResponse");
     private final static QName _IndustryResponse_QNAME = new QName("http://www.moneygram.com/AgentConnect1211", "industryResponse");
@@ -129,12 +130,11 @@ public class ObjectFactory {
     private final static QName _CurrencyInfoRequest_QNAME = new QName("http://www.moneygram.com/AgentConnect1211", "currencyInfoRequest");
     private final static QName _FQDOsForCountryRequest_QNAME = new QName("http://www.moneygram.com/AgentConnect1211", "fQDOsForCountryRequest");
     private final static QName _GetFQDOByCustomerReceiveNumberRequest_QNAME = new QName("http://www.moneygram.com/AgentConnect1211", "getFQDOByCustomerReceiveNumberRequest");
-    private final static QName _DynamicFieldInfoEnumeratedValues_QNAME = new QName("http://www.moneygram.com/AgentConnect1211", "enumeratedValues");
     private final static QName _FQDOInfoSpeedOfDeliveryText_QNAME = new QName("http://www.moneygram.com/AgentConnect1211", "speedOfDeliveryText");
     private final static QName _KeyValuePairFieldValue_QNAME = new QName("http://www.moneygram.com/AgentConnect1211", "fieldValue");
 
     /**
-     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.ac1211.client
+     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.ac1211.updated.client
      * 
      */
     public ObjectFactory() {
@@ -1573,6 +1573,15 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link RewardsFieldInfo.EnumeratedValues }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.moneygram.com/AgentConnect1211", name = "enumeratedValues", scope = RewardsFieldInfo.class)
+    public JAXBElement<RewardsFieldInfo.EnumeratedValues> createRewardsFieldInfoEnumeratedValues(RewardsFieldInfo.EnumeratedValues value) {
+        return new JAXBElement<RewardsFieldInfo.EnumeratedValues>(_RewardsFieldInfoEnumeratedValues_QNAME, RewardsFieldInfo.EnumeratedValues.class, RewardsFieldInfo.class, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link BillPaymentConsumerLookupResponse }{@code >}}
      * 
      */
@@ -2523,7 +2532,16 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "http://www.moneygram.com/AgentConnect1211", name = "enumeratedValues", scope = DynamicFieldInfo.class)
     public JAXBElement<DynamicFieldInfo.EnumeratedValues> createDynamicFieldInfoEnumeratedValues(DynamicFieldInfo.EnumeratedValues value) {
-        return new JAXBElement<DynamicFieldInfo.EnumeratedValues>(_DynamicFieldInfoEnumeratedValues_QNAME, DynamicFieldInfo.EnumeratedValues.class, DynamicFieldInfo.class, value);
+        return new JAXBElement<DynamicFieldInfo.EnumeratedValues>(_RewardsFieldInfoEnumeratedValues_QNAME, DynamicFieldInfo.EnumeratedValues.class, DynamicFieldInfo.class, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link RegistrationFieldInfo.EnumeratedValues }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.moneygram.com/AgentConnect1211", name = "enumeratedValues", scope = RegistrationFieldInfo.class)
+    public JAXBElement<RegistrationFieldInfo.EnumeratedValues> createRegistrationFieldInfoEnumeratedValues(RegistrationFieldInfo.EnumeratedValues value) {
+        return new JAXBElement<RegistrationFieldInfo.EnumeratedValues>(_RewardsFieldInfoEnumeratedValues_QNAME, RegistrationFieldInfo.EnumeratedValues.class, RegistrationFieldInfo.class, value);
     }
 
     /**
@@ -2536,15 +2554,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link ProductFieldInfo.EnumeratedValues }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://www.moneygram.com/AgentConnect1211", name = "enumeratedValues", scope = ProductFieldInfo.class)
-    public JAXBElement<ProductFieldInfo.EnumeratedValues> createProductFieldInfoEnumeratedValues(ProductFieldInfo.EnumeratedValues value) {
-        return new JAXBElement<ProductFieldInfo.EnumeratedValues>(_DynamicFieldInfoEnumeratedValues_QNAME, ProductFieldInfo.EnumeratedValues.class, ProductFieldInfo.class, value);
-    }
-
-    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
      * 
      */
@@ -2554,21 +2563,12 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link RegistrationFieldInfo.EnumeratedValues }{@code >}}
+     * Create an instance of {@link JAXBElement }{@code <}{@link ProductFieldInfo.EnumeratedValues }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.moneygram.com/AgentConnect1211", name = "enumeratedValues", scope = RegistrationFieldInfo.class)
-    public JAXBElement<RegistrationFieldInfo.EnumeratedValues> createRegistrationFieldInfoEnumeratedValues(RegistrationFieldInfo.EnumeratedValues value) {
-        return new JAXBElement<RegistrationFieldInfo.EnumeratedValues>(_DynamicFieldInfoEnumeratedValues_QNAME, RegistrationFieldInfo.EnumeratedValues.class, RegistrationFieldInfo.class, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link RewardsFieldInfo.EnumeratedValues }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://www.moneygram.com/AgentConnect1211", name = "enumeratedValues", scope = RewardsFieldInfo.class)
-    public JAXBElement<RewardsFieldInfo.EnumeratedValues> createRewardsFieldInfoEnumeratedValues(RewardsFieldInfo.EnumeratedValues value) {
-        return new JAXBElement<RewardsFieldInfo.EnumeratedValues>(_DynamicFieldInfoEnumeratedValues_QNAME, RewardsFieldInfo.EnumeratedValues.class, RewardsFieldInfo.class, value);
+    @XmlElementDecl(namespace = "http://www.moneygram.com/AgentConnect1211", name = "enumeratedValues", scope = ProductFieldInfo.class)
+    public JAXBElement<ProductFieldInfo.EnumeratedValues> createProductFieldInfoEnumeratedValues(ProductFieldInfo.EnumeratedValues value) {
+        return new JAXBElement<ProductFieldInfo.EnumeratedValues>(_RewardsFieldInfoEnumeratedValues_QNAME, ProductFieldInfo.EnumeratedValues.class, ProductFieldInfo.class, value);
     }
 
 }

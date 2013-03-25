@@ -50,6 +50,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *         &lt;element name="receiverOccupation" type="{http://www.moneygram.com/AgentConnect1211}stringMax30" minOccurs="0"/>
  *         &lt;element name="thirdPartyFirstName" type="{http://www.moneygram.com/AgentConnect1211}fNameLong" minOccurs="0"/>
  *         &lt;element name="thirdPartyMiddleName" type="{http://www.moneygram.com/AgentConnect1211}mNameLong" minOccurs="0"/>
+ *         &lt;element name="thirdPartyLastName2" type="{http://www.moneygram.com/AgentConnect1211}lNameLong" minOccurs="0"/>
  *         &lt;element name="thirdPartyLastName" type="{http://www.moneygram.com/AgentConnect1211}lNameLong" minOccurs="0"/>
  *         &lt;element name="thirdPartyAddress" type="{http://www.moneygram.com/AgentConnect1211}addressTypeXLong" minOccurs="0"/>
  *         &lt;element name="thirdPartyAddress2" type="{http://www.moneygram.com/AgentConnect1211}addressTypeXLong" minOccurs="0"/>
@@ -137,6 +138,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "receiverOccupation",
     "thirdPartyFirstName",
     "thirdPartyMiddleName",
+    "thirdPartyLastName2",
     "thirdPartyLastName",
     "thirdPartyAddress",
     "thirdPartyAddress2",
@@ -212,6 +214,7 @@ public class ReceiveValidationRequest
     protected String receiverOccupation;
     protected String thirdPartyFirstName;
     protected String thirdPartyMiddleName;
+    protected String thirdPartyLastName2;
     protected String thirdPartyLastName;
     protected String thirdPartyAddress;
     protected String thirdPartyAddress2;
@@ -903,6 +906,30 @@ public class ReceiveValidationRequest
      */
     public void setThirdPartyMiddleName(String value) {
         this.thirdPartyMiddleName = value;
+    }
+
+    /**
+     * Gets the value of the thirdPartyLastName2 property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getThirdPartyLastName2() {
+        return thirdPartyLastName2;
+    }
+
+    /**
+     * Sets the value of the thirdPartyLastName2 property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setThirdPartyLastName2(String value) {
+        this.thirdPartyLastName2 = value;
     }
 
     /**

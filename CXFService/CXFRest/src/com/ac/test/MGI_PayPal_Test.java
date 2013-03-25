@@ -38,7 +38,7 @@ public class MGI_PayPal_Test {
 			conn.setRequestMethod("POST");
 			conn.setRequestProperty("Content-Type", "application/json");
 
-			String inputJsonObject = "{\"FeeLookupInputBean\":{\"amount\":\"170\"}}";
+			String inputJsonObject = "{\"FeeLookupInputBean\":{\"amount\":\"180\"}}";
 
 			OutputStream os = conn.getOutputStream();
 			os.write(inputJsonObject.getBytes());
@@ -80,7 +80,7 @@ public class MGI_PayPal_Test {
 				+ "ZipCode\":\"55416\",\"senderCountry\":\"USA\",\"senderHomePhone\":\"9522320253\",\"rece"
 				+ "iverFirstName\":\"N R F\",\"receiverLastName\":\"N R L\",\"sendCurrency\":\"USD\",\"mgiT"
 				+ "ransactionSessionID\":\""
-				+ "9708729E1572561363963347097"
+				+ "9708729E1572561364217281214"
 				+ "\"}}";
 
 		OutputStream os = conn.getOutputStream();
@@ -113,7 +113,7 @@ public class MGI_PayPal_Test {
 			conn.setRequestProperty("Content-Type", "application/json");
 
 			String inputJsonObject = "{\"CommitTransactionInputBean\":{\"mgiTransactionSessionID\":\""
-					+ "9708729E1572561363963347097" + "\"}}";
+					+ "9708729E1572561364217281214" + "\"}}";
 
 			OutputStream os = conn.getOutputStream();
 			os.write(inputJsonObject.getBytes());

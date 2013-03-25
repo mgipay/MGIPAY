@@ -40,6 +40,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *         &lt;element name="senderFirstName" type="{http://www.moneygram.com/AgentConnect1211}fNameLong"/>
  *         &lt;element name="senderMiddleName" type="{http://www.moneygram.com/AgentConnect1211}mNameLong" minOccurs="0"/>
  *         &lt;element name="senderLastName" type="{http://www.moneygram.com/AgentConnect1211}lNameLong"/>
+ *         &lt;element name="senderLastName2" type="{http://www.moneygram.com/AgentConnect1211}lNameLong" minOccurs="0"/>
  *         &lt;element name="senderAddress" type="{http://www.moneygram.com/AgentConnect1211}addressTypeXLong"/>
  *         &lt;element name="senderAddress2" type="{http://www.moneygram.com/AgentConnect1211}addressTypeXLong" minOccurs="0"/>
  *         &lt;element name="senderAddress3" type="{http://www.moneygram.com/AgentConnect1211}addressTypeXLong" minOccurs="0"/>
@@ -78,6 +79,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
  *         &lt;element name="thirdPartyFirstName" type="{http://www.moneygram.com/AgentConnect1211}fNameLong" minOccurs="0"/>
  *         &lt;element name="thirdPartyMiddleName" type="{http://www.moneygram.com/AgentConnect1211}mNameLong" minOccurs="0"/>
  *         &lt;element name="thirdPartyLastName" type="{http://www.moneygram.com/AgentConnect1211}lNameLong" minOccurs="0"/>
+ *         &lt;element name="thirdPartyLastName2" type="{http://www.moneygram.com/AgentConnect1211}lNameLong" minOccurs="0"/>
  *         &lt;element name="thirdPartyAddress" type="{http://www.moneygram.com/AgentConnect1211}addressTypeXLong" minOccurs="0"/>
  *         &lt;element name="thirdPartyAddress2" type="{http://www.moneygram.com/AgentConnect1211}addressTypeXLong" minOccurs="0"/>
  *         &lt;element name="thirdPartyAddress3" type="{http://www.moneygram.com/AgentConnect1211}addressTypeXLong" minOccurs="0"/>
@@ -166,6 +168,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "senderFirstName",
     "senderMiddleName",
     "senderLastName",
+    "senderLastName2",
     "senderAddress",
     "senderAddress2",
     "senderAddress3",
@@ -204,6 +207,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "thirdPartyFirstName",
     "thirdPartyMiddleName",
     "thirdPartyLastName",
+    "thirdPartyLastName2",
     "thirdPartyAddress",
     "thirdPartyAddress2",
     "thirdPartyAddress3",
@@ -272,6 +276,7 @@ public class SendValidationRequest
     protected String senderMiddleName;
     @XmlElement(required = true)
     protected String senderLastName;
+    protected String senderLastName2;
     @XmlElement(required = true)
     protected String senderAddress;
     protected String senderAddress2;
@@ -317,6 +322,7 @@ public class SendValidationRequest
     protected String thirdPartyFirstName;
     protected String thirdPartyMiddleName;
     protected String thirdPartyLastName;
+    protected String thirdPartyLastName2;
     protected String thirdPartyAddress;
     protected String thirdPartyAddress2;
     protected String thirdPartyAddress3;
@@ -727,6 +733,30 @@ public class SendValidationRequest
      */
     public void setSenderLastName(String value) {
         this.senderLastName = value;
+    }
+
+    /**
+     * Gets the value of the senderLastName2 property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getSenderLastName2() {
+        return senderLastName2;
+    }
+
+    /**
+     * Sets the value of the senderLastName2 property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setSenderLastName2(String value) {
+        this.senderLastName2 = value;
     }
 
     /**
@@ -1639,6 +1669,30 @@ public class SendValidationRequest
      */
     public void setThirdPartyLastName(String value) {
         this.thirdPartyLastName = value;
+    }
+
+    /**
+     * Gets the value of the thirdPartyLastName2 property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getThirdPartyLastName2() {
+        return thirdPartyLastName2;
+    }
+
+    /**
+     * Sets the value of the thirdPartyLastName2 property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setThirdPartyLastName2(String value) {
+        this.thirdPartyLastName2 = value;
     }
 
     /**
