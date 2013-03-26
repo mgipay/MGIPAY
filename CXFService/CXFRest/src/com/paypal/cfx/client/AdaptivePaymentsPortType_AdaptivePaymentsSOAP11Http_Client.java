@@ -55,31 +55,6 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 		return _getUserLimits__return;
 	}
 
-	public static void main(String[] args) {
-		GetUserLimitsRequest getUserLimitsRequest = new GetUserLimitsRequest();
-
-		AccountIdentifier accountIdentifier = new AccountIdentifier();
-		accountIdentifier.setEmail("vbalki@ebay.com");
-		PhoneNumberType phoneNumberType = new PhoneNumberType();
-		phoneNumberType.setCountryCode("1");
-		phoneNumberType.setExtension("4237");
-		phoneNumberType.setPhoneNumber("6057100363");
-		accountIdentifier.setPhone(phoneNumberType);
-		getUserLimitsRequest.setUser(accountIdentifier);
-		RequestEnvelope requestEnvelope = new RequestEnvelope();
-		requestEnvelope.setDetailLevel(DetailLevelCode.RETURN_ALL);
-		requestEnvelope.setErrorLanguage("error_US");
-		getUserLimitsRequest.setRequestEnvelope(requestEnvelope);
-		getUserLimitsRequest.setCountry("US");
-		getUserLimitsRequest.setCurrencyCode("USD");
-		try {
-			getUserLimit(getUserLimitsRequest);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 	private static AdaptivePaymentsPortType getPort() {
 		setCredentials();
 		String wsdlURL = "https://svcs.sandbox.paypal.com/AdaptivePayments/GetUserLimits";
@@ -100,10 +75,10 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 		Security.setProperty("ssl.ServerSocketFactory.provider",
 				"com.ibm.jsse2.SSLServerSocketFactoryImpl");
 
-		System.setProperty("http.proxyHost", "proxy.tcs.com");
+	/*	System.setProperty("http.proxyHost", "proxy.tcs.com");
 		System.setProperty("http.proxyPort", "8080");
 		System.setProperty("http.proxyUser", "538540");
-		System.setProperty("http.proxyPassword", "Bala@Feb84");
+		System.setProperty("http.proxyPassword", "Bala@Mar84");*/
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

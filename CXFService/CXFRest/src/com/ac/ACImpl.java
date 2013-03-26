@@ -39,11 +39,13 @@ import com.ac1211.client.SendValidationResponse;
 import com.google.gson.Gson;
 import com.paypal.cfx.client.AccountIdentifier;
 import com.paypal.cfx.client.AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client;
+import com.paypal.cfx.client.CurrencyType;
 import com.paypal.cfx.client.DetailLevelCode;
 import com.paypal.cfx.client.GetUserLimitsRequest;
 import com.paypal.cfx.client.GetUserLimitsResponse;
 import com.paypal.cfx.client.PhoneNumberType;
 import com.paypal.cfx.client.RequestEnvelope;
+import com.paypal.cfx.client.UserLimit;
 
 @Consumes("application/json")
 @Produces("application/JSON")
@@ -515,6 +517,10 @@ public class ACImpl implements ACInterface {
 				.getReceiveCurrency());
 		
 		setSenderName(sendValidationInputBean, sendValidationRequest);
+		
+		
+//		sendValidationRequest.setSenderFirstName(sendValidationInputBean.getSenderFirstName());
+//		sendValidationRequest.setSenderLastName(sendValidationInputBean.getSenderLastName());
 		sendValidationRequest.setSenderAddress(sendValidationInputBean
 				.getSenderAddress());
 		sendValidationRequest.setSenderCity(sendValidationInputBean
@@ -541,6 +547,7 @@ public class ACImpl implements ACInterface {
 					.sendValidation(sendValidationRequest);
 		} catch (Exception exception) {
 			// retryCount--;
+			exception.printStackTrace();
 			sendValidationResponse2.setTransactionSuccess(false);
 			sendValidationResponse2.setErrorMessage(exception
 					.getLocalizedMessage().concat(
@@ -556,6 +563,9 @@ public class ACImpl implements ACInterface {
 
 		}
 		// }
+		
+		LOGGER.debug("Exit sendValidation.");
+				
 		return new Gson().toJson(sendValidationResponse2);
 	}
 	
@@ -568,18 +578,18 @@ public class ACImpl implements ACInterface {
 		String lastName = sendValidationInputBean.getSenderLastName();
 		if (firstName.length() < 40) {
 			firstName = firstName.concat("                                        ")
-					.substring(0, 40);
+					.substring(0, 39);
 		}
 		if(lastName.length() < 60){
 			lastName = lastName.concat(
 					"                                                            ")
-					.substring(0, 60);
+					.substring(0, 59);
 		}
 
-		sendValidationRequest.setSenderFirstName(firstName.substring(0, 20));
-		sendValidationRequest.setSenderMiddleName(firstName.substring(21, 40));
-		sendValidationRequest.setSenderLastName(lastName.substring(0, 30));
-		sendValidationRequest.setSenderLastName2(lastName.substring(31, 60));
+		sendValidationRequest.setSenderFirstName(firstName.substring(0, 14));
+		sendValidationRequest.setSenderMiddleName(firstName.substring(0, 1));
+		sendValidationRequest.setSenderLastName(lastName.substring(0, 20));
+		sendValidationRequest.setSenderLastName2(lastName.substring(0, 5));
 		
 		LOGGER.debug("Exit setSenderName.");
 	}
@@ -633,8 +643,20 @@ public class ACImpl implements ACInterface {
 			}
 			if (getUserLimitsResponse != null) {
 				getUserLimitsResponse2.setTransactionSuccess(true);
-				getUserLimitsResponse2.setCurrencyType(getUserLimitsResponse
-						.getUserLimit().get(0).getLimitAmount());
+
+				List<UserLimit> userLimitList = getUserLimitsResponse
+						.getUserLimit();
+				if (userLimitList != null && !userLimitList.isEmpty()) {
+					LOGGER.debug("userLimitList is not empty");
+					getUserLimitsResponse2.setCurrencyType(userLimitList.get(0)
+							.getLimitAmount());
+				} else {
+					LOGGER.debug("userLimitList is empty");
+					CurrencyType currencyType = new CurrencyType();
+					currencyType.setAmount(new BigDecimal(0));
+					currencyType.setCode("Invalid Code");
+					getUserLimitsResponse2.setCurrencyType(currencyType);
+				}
 
 				break;
 			}
@@ -676,10 +698,10 @@ public class ACImpl implements ACInterface {
 	 */
 	private void setCredentials() {
 		// TODO remove this method
-		System.setProperty("http.proxyHost", "proxy.tcs.com");
+		/*System.setProperty("http.proxyHost", "proxy.tcs.com");
 		System.setProperty("http.proxyPort", "8080");
 		System.setProperty("http.proxyUser", "****");
 		System.setProperty("http.proxyPassword", "****");
-
+*/
 	}
 }

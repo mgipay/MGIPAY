@@ -28,7 +28,7 @@ public class MGI_PayPal_Test {
 	
 	private static Logger LOGGER = Logger.getLogger(MGI_PayPal_Test.class);
 
-	@Ignore
+	@Test
 	public void TestFeeLookUp() {
 		try {
 
@@ -80,7 +80,7 @@ public class MGI_PayPal_Test {
 				+ "ZipCode\":\"55416\",\"senderCountry\":\"USA\",\"senderHomePhone\":\"9522320253\",\"rece"
 				+ "iverFirstName\":\"N R F\",\"receiverLastName\":\"N R L\",\"sendCurrency\":\"USD\",\"mgiT"
 				+ "ransactionSessionID\":\""
-				+ "9708729E1572561364217281214"
+				+ "9708729E1572561364289186424"
 				+ "\"}}";
 
 		OutputStream os = conn.getOutputStream();
@@ -113,7 +113,7 @@ public class MGI_PayPal_Test {
 			conn.setRequestProperty("Content-Type", "application/json");
 
 			String inputJsonObject = "{\"CommitTransactionInputBean\":{\"mgiTransactionSessionID\":\""
-					+ "9708729E1572561364217281214" + "\"}}";
+					+ "9708729E1572561364220198548" + "\"}}";
 
 			OutputStream os = conn.getOutputStream();
 			os.write(inputJsonObject.getBytes());
@@ -175,10 +175,15 @@ public class MGI_PayPal_Test {
 		}
 	}
 	
-
+private void setCredentials(){
+	System.setProperty("http.proxyHost", "proxy.tcs.com");
+	System.setProperty("http.proxyPort", "8080");
+	System.setProperty("http.proxyUser", "****");
+	System.setProperty("http.proxyPassword", "*****");
+}
 	@Test
 	public void TestUserLimit() {
-
+		setCredentials();
 		try {
 			URL url = new URL(
 					"http://localhost:8092/CXFRest/rest/getUserLimits");
