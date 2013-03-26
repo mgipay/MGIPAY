@@ -34,6 +34,11 @@ import com.ac1211.client.SendReversalReasonCode;
 import com.ac1211.client.SendReversalRequest;
 import com.ac1211.client.SendReversalResponse;
 import com.ac1211.client.SendReversalType;
+<<<<<<< HEAD
+=======
+import com.ac1211.client.SendValidationRequest;
+import com.ac1211.client.SendValidationResponse;
+>>>>>>> Committed contact us client and modified code in acimpl.java.
 import com.ac1211.mail.client.ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client;
 import com.ac1211.mail.client.InsertRecsIntoCRMExtWebFormRequest;
 import com.ac1211.mail.client.InsertRecsIntoCRMExtWebFormResponse;
@@ -502,6 +507,10 @@ setCredentials();
 
 		LOGGER.debug("Enter sendValidation.");
 
+<<<<<<< HEAD
+=======
+		setCredentials();
+>>>>>>> Committed contact us client and modified code in acimpl.java.
 		com.ac1211.client.SendValidationResponse sendValidationResponse = null;
 
 		com.ac1211.client.SendValidationRequest sendValidationRequest 
@@ -689,10 +698,18 @@ setCredentials();
 	@Path("/sendMail")
 	@Override
 	public String sendMail(SendMailInputBean sendMailInputBean) {
+<<<<<<< HEAD
 
 		
 		SendMailOutputBean sendMailOutputBean = new SendMailOutputBean();
 		try {
+=======
+		setCredentials();
+		
+		SendMailOutputBean sendMailOutputBean = new SendMailOutputBean();
+		try {
+			// mGI_PayPal_Mail.sendMail(sendMailInputBean);
+>>>>>>> Committed contact us client and modified code in acimpl.java.
 			InsertRecsIntoCRMExtWebFormRequest insertRecsIntoCRMExtWebFormRequest = new InsertRecsIntoCRMExtWebFormRequest();
 			insertRecsIntoCRMExtWebFormRequest
 					.setWhoCompletingForm("MoneyGram Consumer");
@@ -716,4 +733,18 @@ setCredentials();
 		return new Gson().toJson(sendMailOutputBean);
 	}
 
+<<<<<<< HEAD
+=======
+	/**
+	 * 
+	 */
+	private void setCredentials() {
+		// TODO remove this method
+		System.setProperty("http.proxyHost", "proxy.tcs.com");
+		System.setProperty("http.proxyPort", "8080");
+		System.setProperty("http.proxyUser", "****");
+		System.setProperty("http.proxyPassword", "****");
+
+	}
+>>>>>>> Committed contact us client and modified code in acimpl.java.
 }

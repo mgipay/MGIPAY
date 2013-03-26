@@ -84,7 +84,11 @@ public class MGI_PayPal_Test {
 				+ "ZipCode\":\"55416\",\"senderCountry\":\"USA\",\"senderHomePhone\":\"9522320253\",\"rece"
 				+ "iverFirstName\":\"N R F\",\"receiverLastName\":\"N R L\",\"sendCurrency\":\"USD\",\"mgiT"
 				+ "ransactionSessionID\":\""
+<<<<<<< HEAD
 				+ "9708729E1572561364383618664"
+=======
+				+ "9708729E1572561364307992141"
+>>>>>>> Committed contact us client and modified code in acimpl.java.
 				+ "\"}}";
 
 		OutputStream os = conn.getOutputStream();
