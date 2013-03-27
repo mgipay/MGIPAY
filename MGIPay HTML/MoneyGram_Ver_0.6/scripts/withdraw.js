@@ -2,15 +2,12 @@ var initialPrice = '';
 var feeResponse = '';
 $(document).ready(function() {
 	
-	
-
 				$("#fee_withdraw").click(function() {
 				callFeeResponse();
 					$('#feetooltip_withdraw').slideDown(20);
 				});
 				$("#fancyboxclose_withdraw").click(function() {
 					$('#feetooltip_withdraw').hide(20);
-
 
 
 });  	
@@ -241,6 +238,8 @@ var recieveAmount = $("#recieveAmount").val();
   			alert("Please enter valid Receive Amount");
   			document.getElementById('recieveAmount').value='';
 			initialPrice='';
+			$("#fee_value").val("USD");
+			$("#totalAmount").html("");
 			return false;
 		} 
 		else if(recieveAmount>0)

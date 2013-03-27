@@ -80,10 +80,10 @@ $(document).ready(function() {
 		var scrollTop=win.scrollTop();
 		if(scrollTop < btnPosTop){
 			$(".tabContainer").css("margin-top", "240px");
-			$('html,body').animate({ scrollTop: $(this.hash).offset().top-500}, 1000);
+			$('html,body').animate({ scrollTop: $(this.hash).offset().top-500}, 200);
 		}
 		else{
-			$('html,body').animate({ scrollTop: $(this.hash).offset().top-210 }, 1000);
+			$('html,body').animate({ scrollTop: $(this.hash).offset().top-210 }, 200);
 		}
 	});
 	$(".tab3 a").click(function(){
@@ -91,10 +91,10 @@ $(document).ready(function() {
 		var scrollTop=win.scrollTop();
 		if(scrollTop < btnPosTop){
 			$(".tabContainer").css("margin-top", "240px");
-			$('html,body').animate({ scrollTop: $(this.hash).offset().top-650}, 1000);
+			$('html,body').animate({ scrollTop: $(this.hash).offset().top-500}, 200);
 		}
 		else{
-			$('html,body').animate({ scrollTop: $(this.hash).offset().top-210 }, 1000);
+			$('html,body').animate({ scrollTop: $(this.hash).offset().top-210 }, 200);
 		}
 	});
 	if(faqAddCash == 'yes'){
@@ -156,11 +156,11 @@ $(document).ready(function() {
 	if(scrollTop < btnPosTop){
 	
 	$(".tabContainer").css("margin-top", "240px");
-	$('html,body').animate({ scrollTop: $(this.hash).offset().top-500}, 1000);
+	$('html,body').animate({ scrollTop: $(this.hash).offset().top-500}, 200);
 	}
 	else{
 	
-	$('html,body').animate({ scrollTop: $(this.hash).offset().top-210 }, 1000);
+	$('html,body').animate({ scrollTop: $(this.hash).offset().top-210 }, 200);
 	
 	}
 	});
