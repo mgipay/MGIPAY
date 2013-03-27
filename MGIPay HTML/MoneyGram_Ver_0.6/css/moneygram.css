@@ -123,12 +123,13 @@ a {
 .mainwrapper {
 	width: 100%
 }
-.homewrapper{width:100%margin:auto;}
+.homewrapper{width:100%;margin:auto;}
 .homewrapper .header{width:1004px;margin:auto;}
 .subwrapper {
 	width: 1004px;
 	margin: auto;
-	display: table
+	/*display: table;*/
+	min-height:700px;
 }
 .header {
 	width: 100%;
@@ -168,6 +169,7 @@ a {
 	margin-left: 10px;
 	
 }
+#header .topNav  {margin-top:7.4% !important}
 /*** Home Slider ***/
 .shadow{background: url(../images/header_shadow.png) no-repeat top center;width:100%;height:26px;border-top:1px solid #e9e9e9; margin:auto}
 .slider{background:url(../images/sliderbg.gif) repeat left; height:421px}
@@ -1060,7 +1062,7 @@ font-weight:bold;
         
 /**** For display popup window ****/
 
-#fee, #fee2, #fee_withdraw, #loaction_map, #map_location, #fee2Faq, #feeFaq, #locationsFaq, #termsAndConditionsForWidthdraw, .printerImg{cursor:pointer}
+#fee, #fee2, #fee_withdraw, #loaction_map, #map_location, #fee2Faq, #feeFaq, #locationsFaq, #termsAndConditionsForWidthdraw, .printerImg{cursor:pointer; width:16px; height:16px;}
 #historyGridDiv{width:50%;}
 .displaynone{display:none !important}
 .displayblock{display:block}

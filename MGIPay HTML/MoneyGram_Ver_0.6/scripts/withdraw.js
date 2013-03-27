@@ -95,6 +95,7 @@ var feeFlag = 2;
 
 /**** method to get fee and total amount *****/
 var feeSuccessHandler = function(response){
+	//alert(JSON.stringify(response));
 	feeResponse = response;
 	 $("#preview").hide();
 	 feeAmt = numberToCurrency(response.feeAmount);

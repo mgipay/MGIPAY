@@ -48,18 +48,26 @@ $(document).ready(function() {
 
 var historySuccessHandler = function(response){
 	$('#preview').hide();
-	$('.thead').removeClass('displaynone');
 	var historyDetails = '';
 	var className = '';
-	for(var i=0;i<response.historyDetailsList.length;i++)
+	if(response.transactionSuccess == true)
 	{
-		if((i%2) == 0)
-			className = "";
-		else 
-			className = "altrow";
-			
-		historyDetails = '<li class="trow '+ className +'"><div class="year">'+ response.historyDetailsList[i].transactionDate +'</div><div>'+ response.historyDetailsList[i].customerName +'</div><div>'+ response.historyDetailsList[i].transactionAmount +'</div><div>'+ response.historyDetailsList[i].transactionFee +'</div><div><span>Collected:</span>'+ response.historyDetailsList[i].mgiReferenceNumber +'</div></li>';
-	$('#all_elements').append(historyDetails);
+		$('.thead').removeClass('displaynone').addClass('displayblock');
+		for(var i=0;i<response.historyDetailsList.length;i++)
+		{
+			if((i%2) == 0)
+				className = "";
+			else 
+				className = "altrow";
+
+			historyDetails = '<li class="trow '+ className +'"><div class="year">'+ response.historyDetailsList[i].transactionDate +'</div><div>'+ response.historyDetailsList[i].customerName +'</div><div>'+ response.historyDetailsList[i].transactionAmount +'</div><div>'+ response.historyDetailsList[i].transactionFee +'</div><div><span>Collected:</span>'+ response.historyDetailsList[i].mgiReferenceNumber +'</div></li>';
+		$('#all_elements').append(historyDetails);
+		}
+	}
+	else
+	{
+		$('.thead').addClass('displaynone').removeClass('displayblock');
+		alert(response.errorMessage);
 	}
 	};
 
@@ -68,10 +76,10 @@ var historyFailureHandler = function(response){
 
 function sortDescending(a, b) {
 	var date_first  = $(a).find(".year").text();
-	date_first = date_first.split('-');
+	date_first = date_first.split('/');
 	date_first = new Date(date_first[2], date_first[1] -1, date_first[0]);
 	var date_second  = $(b).find(".year").text();
-	date_second= date_second.split('-');
+	date_second= date_second.split('/');
 	date_second= new Date(date_second[2], date_second[1] -1, date_second[0]);
 	
 	return date_first < date_second ? 1 : -1;
@@ -79,10 +87,10 @@ function sortDescending(a, b) {
 	
 function sortAscending(a, b) {
 	var date_first  = $(a).find(".year").text();
-	date_first = date_first.split('-');
+	date_first = date_first.split('/');
 	date_first = new Date(date_first[2], date_first[1] -1, date_first[0]);
 	var date_second  = $(b).find(".year").text();
-	date_second= date_second.split('-');
+	date_second= date_second.split('/');
 	date_second= new Date(date_second[2], date_second[1] -1, date_second[0]);
 	
 	return date_first > date_second ? 1 : -1;

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>MoneyGram</title>
 <link href="css/moneygram.css" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="css/fancybox.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="css/fancybox.css" type="text/css" media="screen"/>
 <script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script> 
 <script type="text/javascript" src="scripts/withdraw.js"></script>
 <script type="text/javascript" src="scripts/global.js"></script>
@@ -13,6 +13,19 @@
 <script type="text/javascript" src="scripts/spinmin.js"></script>
 <script type="text/javascript" src="scripts/genric.js"></script>
 <script language="javascript">
+/***** Google Analytics Code Start*******/
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-38945408-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+/***** Google Analytics Code Start*******/
 
 </script>
 </head>
@@ -164,7 +177,7 @@
           <!-- Review Div End -->
          <!-- Get Confirmation Div -->
      <div class="getconfirmation" id="complete" style="display:none">
-     <img class="printerImg" src="images/printer.jpg" onclick="javascript:window.print(); return false;"/>
+     <img class="printerImg" src="images/printer_icon.gif" onclick="javascript:window.print(); return false;"/>
      	<p>Done! Thank you!</p>
 	 	<p>Your money will be ready to be picked up at a MoneyGram location in 10 minutes.</p>
         <h5>MoneyGram Reference Number: <label class="ref_num"></label></h5>
@@ -207,7 +220,7 @@
        
     </ul>
         <h5>MoneyGram Reference Number: <label class="ref_num"></label></h5>
-        <p ><a href="#" id='map_location'  onclick='mapToLocations()'>Find a MoneyGram location</a></p>
+        <p ><a id='map_location'  onclick='mapToLocations()'>Find a MoneyGram location</a></p>
         <p>Note: Your money will be available to be picked up for 45 days</p>
     </div>
      <!-- Get Confirmation Div End-->

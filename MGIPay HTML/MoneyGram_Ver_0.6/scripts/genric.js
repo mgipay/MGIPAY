@@ -11,7 +11,7 @@ $(document).ready(function(){
 		});
 		
 		// Adding year dynamically in footer
-		$(".year").text( (new Date).getFullYear() );
+		$(".footer_year").text( (new Date).getFullYear() );
 });
 
 var feeLinkResponse;

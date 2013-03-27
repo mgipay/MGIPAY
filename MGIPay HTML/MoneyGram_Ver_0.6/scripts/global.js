@@ -1,7 +1,7 @@
 /** This file contains global constants like service urls/ service method names */
-
-var baseUrl = "http://172.25.156.88:8080/CXFRest/rest/";
-//var baseUrl = "http://localhost:8080/CXFRest/rest/"; 
+//54.236.98.103/
+//var baseUrl = "http://172.25.156.88:8080/CXFRest/rest/";
+var baseUrl = "http://54.236.98.103/services/CXFRest/rest/"; 
 
 var methods = {
 	GetFees : ["getFee", "POST"],
