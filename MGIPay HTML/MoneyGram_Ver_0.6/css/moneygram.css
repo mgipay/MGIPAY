@@ -17,6 +17,13 @@ body {
 	margin:auto !important;
 	width:100% !important;
 }
+/*** IE BROWSER CSS HACKS ***/
+.abc{border: 2px solid #f00\9; }/* IE8 and below - red border */
+.abc{border: 2px solid #f00\0; }/* IE8 only - red border */
+
+/* Hack CSS IE9 */
+.csshackie9 {color:#f00\9\0\;}
+
 /*** FONTS ***/
 /*
 @font-face {
@@ -64,6 +71,7 @@ body {
 	width: 100%;
 	height: 100%;
 	opacity: 0.6;
+	filter:alpha(opacity=40); /* For IE8 and earlier */
 	position: fixed;
 	top:0%;
 	z-index:2;
@@ -212,7 +220,7 @@ a {
 	width:70px;
 	float:left;
 	position:absolute;
-	z-index:99999;
+	z-index:99;
 }
 
 .pagination li {
@@ -305,8 +313,8 @@ a {
 	padding-right: 10px;
 }
 .WC_authentication_container .left ul {
-	margin-left: 0%;
-	width:100%;
+	margin-left:15%;
+	width:85%;
 }
 .WC_authentication_container .left li {
 	list-style: none;
@@ -328,7 +336,7 @@ a {
 	height: 41px;
 	display: inline-block;
 	color: #fff;
-	font-size: 20px;
+	font-size: 24px;
 	font-weight: normal;
 	text-align: center;
 	line-height: 41px;
@@ -390,7 +398,8 @@ a {
 	margin: 3% 0
 }
 .enteramount li {
-	list-style: none
+	list-style: none;
+	margin-bottom:5%;
 }
 .enteramount li label {
 	clear: both;
@@ -483,7 +492,7 @@ a.button {
 
 /*** tooltip end ***/
 /*** Review container ***/
-.reviewcontainer{margin-left: -5%;margin-top: 5%;}
+.reviewcontainer{width:96%;margin-top: 5%;}
 .reviewcontainer a{color: #0079C1;text-decoration: underline;}
 /*** Get Confirmation ***/
 .getconfirmation a{color: #0079C1;text-decoration: underline; text-align:right; }
@@ -542,8 +551,9 @@ a.button {
 	/*background: #e0f3fb !important*/
 }
 .historyGrid {
-	width: 90%;
+	width: 100% !important;
 	margin: auto;
+	margin-left:0 !important;
 	display: table;
 	background: #dddddc;
 	border: 1px solid #dddddc;
@@ -585,7 +595,8 @@ a.button {
 	padding: 1%;
 	background: #fff;
 	border-left: 1px solid #dddddc;
-	border-top: 1px solid #dddddc
+	border-top: 1px solid #dddddc;
+	font-size:13px;
 }
 .historyGrid .altrow div {
 	background: #e0f3fb !important
@@ -643,7 +654,7 @@ h2.active {
 	background: #ddd;
 	border: 1px solid #ccc;
 }
-.toggle_container .historyGrid{width:100%;margin-left:0}
+.toggle_container .historyGrid{width:100% !important;margin-left:0 !important;}
 .toggle_container .historyGrid .trow div{border-bottom:1px solid #DDDDDC}
 .toggle_container .historyGrid .thead{height:35px; line-height:35px}
 .expand_all {
@@ -805,10 +816,10 @@ h2.active {
 	height: 41px;
 	display: inline-block;
 	color: #fff;
-	font-size: 20px;
+	font-size: 24px;
 	font-weight: normal;
 	text-align: center;
-	line-height: 41px;
+	line-height: 44px;
 	padding-right: 12px;
 	float: left;
 	margin-top: -2%
@@ -835,7 +846,7 @@ h2.active {
 .tabbed_area #content_2 .right .captionbg a, .tabbed_area #content_3 .right .captionbg a{color:#0079C1; text-decoration:underline}
 /*** CONTENT 2,3 END ***/
 .btnpaypal{background:url(../images/btn_paypalaccess.jpg) no-repeat;border:0;width:256px; height:42px;margin:auto; display:table; cursor:pointer}
-.paypal_login{ cursor:pointer}
+.paypal_login { cursor:pointer}
 
 /*** CONTENT 4 ***/
 
@@ -997,7 +1008,7 @@ a.tabemail{background:url(../images/contact_byemail_icon.png) no-repeat left; pa
 	line-height:24px;
 	margin-bottom:4%;
 }
-.contact_us_byEmail label{line-height:24px;}
+.contact_us_byEmail label{line-height:22px;}
 .contact_us_byEmail .txtbold{ font-weight:bold}
 .contact_us_byEmail textarea{border:1px solid #9a9a9a;}
 .contact_us_content .button{margin-left:5%}
@@ -1026,7 +1037,7 @@ font-weight:bold;
 
 #location_iframe{
 	width:98%;
-	height:98%
+	height:98%;
 }
 
 #light
@@ -1066,3 +1077,12 @@ font-weight:bold;
 #historyGridDiv{width:50%;}
 .displaynone{display:none !important}
 .displayblock{display:block}
+.content .mleft{margin-left:12% !important}
+.content .ULmleft{margin-left:20% !important}
+
+/*** ie fixes ***/
+.IEfix_span {
+  margin-top:20px\0/IE8+9; /* IE8 + 9 + IE10pp4  */
+}
+
+:root .IEfix_span {margin-top:20px\0/IE9; }  /* IE9 + IE10pp4 */

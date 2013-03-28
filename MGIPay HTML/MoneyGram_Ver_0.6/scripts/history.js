@@ -13,12 +13,12 @@ $(document).ready(function() {
 	$("#dateSort").click(function(){
 		if(sortFlag)
 		{
-			$('#all_elements .trow').sort(sortDescending).appendTo('#all_elements');
+			$('#all_elements .trow').sort(sortAscending).appendTo('#all_elements');
 			sortFlag = false;
 		}
 		else 
 		{
-			$('#all_elements .trow').sort(sortAscending).appendTo('#all_elements');
+			$('#all_elements .trow').sort(sortDescending).appendTo('#all_elements');
 			sortFlag = true;
 		}
 	});
@@ -52,16 +52,25 @@ var historySuccessHandler = function(response){
 	var className = '';
 	if(response.transactionSuccess == true)
 	{
-		$('.thead').removeClass('displaynone').addClass('displayblock');
-		for(var i=0;i<response.historyDetailsList.length;i++)
+		if(response.historyDetailsList != undefined || response.historyDetailsList != null || response.historyDetailsList != "")
 		{
-			if((i%2) == 0)
-				className = "";
-			else 
-				className = "altrow";
+			$(".staticcontainer p:eq(1)").addClass("displayblock").removeClass("displaynone");
+			$('.thead').removeClass('displaynone').addClass('displayblock');
+			for(var i=0;i<response.historyDetailsList.length;i++)
+			{
+				if((i%2) == 0)
+					className = "";
+				else 
+					className = "altrow";
 
-			historyDetails = '<li class="trow '+ className +'"><div class="year">'+ response.historyDetailsList[i].transactionDate +'</div><div>'+ response.historyDetailsList[i].customerName +'</div><div>'+ response.historyDetailsList[i].transactionAmount +'</div><div>'+ response.historyDetailsList[i].transactionFee +'</div><div><span>Collected:</span>'+ response.historyDetailsList[i].mgiReferenceNumber +'</div></li>';
-		$('#all_elements').append(historyDetails);
+				historyDetails = '<li class="trow '+ className +'"><div class="year">'+ response.historyDetailsList[i].transactionDate +'</div><div>'+ response.historyDetailsList[i].customerName +'</div><div>'+ response.historyDetailsList[i].transactionAmount +'</div><div>'+ response.historyDetailsList[i].transactionFee +'</div><div><span>Collected:</span>'+ response.historyDetailsList[i].mgiReferenceNumber +'</div></li>';
+			$('#all_elements').append(historyDetails);
+			}
+		}
+		else
+		{
+			$(".staticcontainer p:eq(0)").addClass("displayblock").removeClass("displaynone");
+			$('.thead').addClass('displaynone').removeClass('displayblock');
 		}
 	}
 	else
@@ -69,7 +78,7 @@ var historySuccessHandler = function(response){
 		$('.thead').addClass('displaynone').removeClass('displayblock');
 		alert(response.errorMessage);
 	}
-	};
+};
 
 var historyFailureHandler = function(response){
 	};

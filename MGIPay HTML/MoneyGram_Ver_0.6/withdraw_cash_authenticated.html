@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>MoneyGram</title>
+<title>Withdraw</title>
 <link href="css/moneygram.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="css/fancybox.css" type="text/css" media="screen"/>
 <script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script> 
@@ -42,7 +42,7 @@
 <div class="mainwrapper" id="mainwrapper">
   <div class="subwrapper">
     <div class="header">
-      <div class="logo"> <a href="home.html"><img src="images/logo.png"  alt="MoneyGram" class="logo_moneygram"></a> <img src="images/logo_paypal.png"  alt="PayPal" class="logo_paypal"> </div>
+      <div class="logo"> <a href="home.html"><img src="images/logo.png"  alt="MoneyGram" class="logo_moneygram"></a> <a href="home.html"><img src="images/logo_paypal.png"  alt="PayPal" class="logo_paypal"></a> </div>
       
       <div class="topNav">
 						<a href="FAQS.html">FAQ</a><a href="contactus.html">Contact Us</a><a href="history.html">History</a><a href="home.html" class="logout">Log Out</a>
@@ -96,7 +96,11 @@
         <div class="WCsteps">
           <div class="progressivesteps"> 
           <div class="step1" id="enter_amt"></div>
-          <div class="step2" id="review"></div>
+          <div class="step22" id="review" style="display:none"><img src="images/wc_review_active.png" width="400" height="32" usemap="#Map" style="border:0">
+            <map name="Map" id="Map">
+  				<area shape="rect" coords="0,0,137,32" href="#" style="border:0" id="back_enteramt"/>
+			</map>
+          </div>
           <div class="step3" id="get_conf"></div>
 
       
@@ -221,7 +225,6 @@
     </ul>
         <h5>MoneyGram Reference Number: <label class="ref_num"></label></h5>
         <p ><a id='map_location'  onclick='mapToLocations()'>Find a MoneyGram location</a></p>
-        <p>Note: Your money will be available to be picked up for 45 days</p>
     </div>
      <!-- Get Confirmation Div End-->
           
@@ -232,7 +235,7 @@
   <div class="clear"></div>
   <div class="footer">
 				<div>
-					<span>© <label class="year"></label> MoneyGram. All rights reserved<a href="#" class="backtotop"></a></span><a href="privacypolicy.html">Privacy Policy</a> <a href="termsofuse.html">Terms of Use</a><a href="terms_conditions.html">Terms and Conditions</a><a href="aboutmoneygram.html" class="aboutlink">About MoneyGram</a>
+					<span>© <label class="footer_year"></label> MoneyGram. All rights reserved<a href="#" class="backtotop"></a></span><a href="privacypolicy.html">Privacy Policy</a> <a href="termsofuse.html">Terms of Use</a><a href="terms_conditions.html">Terms and Conditions</a><a href="aboutmoneygram.html" class="aboutlink">About MoneyGram</a>
 					<p>
 						Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
 					</p>

@@ -15,7 +15,6 @@
     	 				}
      	 
     });
-   
 }
 
 var feeFlag = 0;
@@ -23,11 +22,12 @@ var feeFlag = 0;
 $(document).ready(function() {
 	
 	/*** script for activating a particular tab, when scroll position in the related div position *****/
-	var div_content1= $("#content_1").position().top-0;
-	var div_content2=$("#content_2").position().top-290;
-	var div_content3=$("#content_3").position().top-500;
-	var div_content4=$("#content_4").position().top-620;
+	
 	$(window).scroll(function () { 
+		var div_content1= $("#content_1").offset().top-0;
+		var div_content2=$("#content_2").offset().top-280;
+		var div_content3=$("#content_3").offset().top-290;
+		var div_content4=$("#content_4").offset().top-300;
 		var winscroll=$(window).scrollTop();
 		//alert(winscroll);
 		if( winscroll <= div_content2){

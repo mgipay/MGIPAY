@@ -5,6 +5,7 @@ function callService(methodName, requestType, sessionId, getMethodQueryParams, p
 		var postMethodJsonString = JSON.stringify(postMethodJsonObject);
 		var serviceUrl = baseUrl + methodName;
 		$("#preview").show();
+		$.support.cors = true;
 		$.ajax(
 		{
 			url  : serviceUrl,

@@ -1,14 +1,15 @@
 var initialPrice = '';
 var feeResponse = '';
 $(document).ready(function() {
-	
+		$("#fee_value").val("USD");
+		$("#recieveAmount").val("USD");
+				callService(methods.GetFeeLinkValue[0], methods.GetFeeLinkValue[1], "", "", null, feeWithdrawSuccessHandler, feeWithdrawFailureHandler);
 				$("#fee_withdraw").click(function() {
-				callFeeResponse();
+					$("#feetooltip_withdraw").removeClass('displaynone');
 					$('#feetooltip_withdraw').slideDown(20);
 				});
 				$("#fancyboxclose_withdraw").click(function() {
 					$('#feetooltip_withdraw').hide(20);
-
 
 });  	
 $('#chk_box').click(function(){
@@ -37,11 +38,16 @@ $('#chk_box').click(function(){
 });
 
    });
-    	
+    $("#back_enteramt").click(function(){
+			$(".enteramount").css("display","block");
+			$(".reviewcontainer").css("display","none");
+			$("#review").hide();
+			$(".step1").css("display","block");
+		});	
 	var getLimit = new Object();
 	getLimit.emailID = "vbalki@ebay.com";
 	var getLimitObj = new Object();
-	getLimitObj.UserLimitInputBean = getLimit;	
+	getLimitObj.UserLimitInputBean = getLimit;
     callService(methods.GetUserLimits[0], methods.GetUserLimits[1], "", "", getLimitObj, getLimitSuccessHandler, getLimitFailureHandler);
 	callService(methods.CodeTable[0], methods.CodeTable[1], "", "","" , locationSuccessHandler, locationFailureHandler);
    
@@ -131,7 +137,7 @@ var commitSuccessHandler = function(response){
 		$("#preview").hide();
 		sendValidationResponse = response;
 		$(".step1").css("display","none");
-		$(".step2").css("display","block");
+		$("#review").css("display","block");
 		$(".step3").css("display","none");
 		ddValue = $("#pickup_location option:selected").html();
 		$(".enteramount").css("display","none");
@@ -234,6 +240,7 @@ function changeDecimalSymbol(s, symbol) {
 /*** method to call getFee service call *****/
 function currencyfocusout()
 {
+var feeAmount = parseFloat(feeLinkResponse.feeForTwoHundred);
 var recieveAmount = $("#recieveAmount").val();
   if (recieveAmount<=0 || isNaN(recieveAmount)) {
   			alert("Please enter valid Receive Amount");
@@ -243,22 +250,20 @@ var recieveAmount = $("#recieveAmount").val();
 			$("#totalAmount").html("");
 			return false;
 		} 
-		else if(recieveAmount>0)
+		else if(recieveAmount>0 && recieveAmount<feeAmount)
 		{ 
+			alert("Receive amount should not be lessthan fee amount : " + feeAmount.toFixed(2) + " USD");
+		}
+		else{
             initialPrice=recieveAmount;
-			/*if(recieveAmount>200){
-				alert('Withdraw amount should be less than 200');
-				return false;
-				}*/
-            
 			document.getElementById('recieveAmount').value = parseFloat(recieveAmount).toFixed(2);	
-					  withdrawAmt = $("#recieveAmount").val();
-					  var sendFee = new Object();
-						  sendFee.amount = withdrawAmt;
-					  var sendFeeObj = new Object();
-					      sendFeeObj.FeeLookupInputBean = sendFee;	 
-					callService(methods.GetFees[0], methods.GetFees[1], "", "",sendFeeObj , feeSuccessHandler, feeFailureHandler);	   
-             }    
+			withdrawAmt = $("#recieveAmount").val();
+			var sendFee = new Object();
+			sendFee.amount = withdrawAmt;
+			var sendFeeObj = new Object();
+			sendFeeObj.FeeLookupInputBean = sendFee;	 
+			callService(methods.GetFees[0], methods.GetFees[1], "", "",sendFeeObj , feeSuccessHandler, feeFailureHandler);	   
+           }    
 }
 
 /*** method to call sendValidations service call *****/	
@@ -268,7 +273,7 @@ function reviewTransaction()
 			alert("Please select Pick Up Location");
 			return false;
 		}
-	else if($("#recieveAmount").val() == ""){
+	else if(isNaN($("#recieveAmount").val())){
 		alert("Please enter valid receive amount");
 		return false;
 	}
@@ -294,18 +299,30 @@ function reviewTransaction()
 	 session.mgiTransactionSessionID = sessionId;
 	 var sessionObj = new Object();
 	 sessionObj.SendValidationInputBean = session;
-	 if(totalAmt > 200){
-			alert('Total withdraw amount should not exceed 200.00 USD');
-			return false;
-		}
-		else
-			callService(methods.SendValidation[0], methods.SendValidation[1], "", "",sessionObj , commitSuccessHandler, commitFailureHandler);
+	 if(feeResponse.transactionSuccess == false){
+		 if(totalAmt > 200){
+				alert(feeResponse.errorMessage);
+				return false;
+			}
+		 else{
+				alert(feeResponse.errorMessage); 
+				return false;
+			}	
+	 }
+	else
+		callService(methods.SendValidation[0], methods.SendValidation[1], "", "",sessionObj , commitSuccessHandler, commitFailureHandler);
 }		
 
 /*** method to call CommitTransaction service call *****/
 function completeTransaction(){
 		var commitSessionId = new Object();
 		commitSessionId.mgiTransactionSessionID = sessionId;
+		commitSessionId.customerEmail = "vbalki@ebay.com";
+		commitSessionId.customerName = "VIJAY BALAKRISHNAN";
+		commitSessionId.customerPhoneNumber = "6057100363";
+		commitSessionId.paypalTransactionID = "58965687";
+		commitSessionId.transactionAmount = withdrawAmt;
+		commitSessionId.transactionFee = $("#fee_value").val();
 		var commitObj = new Object();
 	    commitObj.CommitTransactionInputBean = commitSessionId;
 		callService(methods.CommitTransaction[0], methods.CommitTransaction[1], "", "",commitObj , withdrawSuccessHandler, withdrawFailureHandler);

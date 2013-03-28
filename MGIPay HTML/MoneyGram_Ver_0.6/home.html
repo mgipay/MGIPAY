@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>About MoneyGram</title>
+		<title>Home</title>
 		<link href="css/moneygram.css" rel="stylesheet" type="text/css">
 		<link rel="stylesheet" href="css/fancybox.css" type="text/css" media="screen" />
 	 	<script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script> 
@@ -49,7 +49,7 @@
 			<div class="homewrapper" id="header">
 
 				<div class="header">
-					<div class="logo"> <a href="home.html"><img src="images/logo.png"  alt="MoneyGram" class="logo_moneygram"></a><img src="images/logo_paypal.png"  alt="PayPal" class="logo_paypal">
+					<div class="logo"> <a href="home.html"><img src="images/logo.png"  alt="MoneyGram" class="logo_moneygram"></a><a href="home.html"><img src="images/logo_paypal.png"  alt="PayPal" class="logo_paypal"></a>
 					</div>
 					<div class="topNav">
 						<a href="withdraw_cash_authenticated.html">Withdraw Cash</a><a href="FAQS.html">FAQ</a><a href="contactus.html">Contact Us</a><a href="history.html" style="border-right:0">History</a><a href="home.html" class="logout displaynone">Log Out</a>
@@ -61,7 +61,7 @@
 					<!-- slider animation -->
 
 					<div id="slides">
-						<div class="slider_login"><img src="images/slider_login.png" width="322" height="257" usemap="#Map">
+						<div class="slider_login displaynone"><img src="images/slider_login.png" width="322" height="257" usemap="#Map">
 							<map name="Map" >
 								<area href="#" class='paypal_login' shape="rect" coords="35,84,297,129" target="new">
 							</map>
@@ -97,16 +97,16 @@
                         
 							<ul class="tabs">
 								<li class="tab1">
-									<a href="#content_1" title="content_1" name="" class="tab active"></a>
+									<a href="#content_1" title="MoneyGram & PayPal" name="" class="tab active"></a>
 								</li>
 								<li class="tab2">
-									<a href="#content_2" title="content_2" name="" class="tab"></a>
+									<a href="#content_2" title="Add Cash" name="" class="tab"></a>
 								</li>
 								<li class="tab3">
-									<a href="#content_3" title="content_3" name="" class="tab" ></a>
+									<a href="#content_3" title="Withdraw Cash" name="" class="tab" ></a>
 								</li>
 								<li class="tab4">
-									<a href="#content_4" title="content_4" name="" class="tab" ></a>
+									<a href="#content_4" title="Find a Location" name="" class="tab" ></a>
 								</li>
 							</ul>
 						</div>
@@ -196,15 +196,15 @@
 									</p>
 									<div>
 										<h2><span>1</span>Enroll the PayPal account </h2>
-										<p>
+										<p class="mleft">
 											Make sure your account, or your friend’s account, is ready.   <a class='paypal_login' href="#"> Log into PayPal</a> and verify that it’s enrolled.  If you don’t see the enroll screen, then you’re already set.  If you see the enroll screen, you’ll need to follow the steps to getting your account enrolled.  
 
 
 										</p>
-										<p>
+										<h3 class="mleft">
 											You’ll need to provide:
-										</p>
-										<ul>
+										</h3>
+										<ul class="ULmleft">
 											<li>
 													Account holder’s name and contact information
 											</li>
@@ -213,7 +213,7 @@
 											</li>
 											
 										</ul>
-										<p>
+										<p class="mleft">
 											Once enrolled, you’re ready to use participating <a id='loaction_map' onclick='openLocation()'>MoneyGram location to add cash </a> to your, or someone else’s, PayPal account.
 If you’re adding cash to someone else’s account, just ask them to follow these simple steps.  Once that account is enrolled, you’ll be ready to add cash using MoneyGram.  
 
@@ -221,10 +221,10 @@ If you’re adding cash to someone else’s account, just ask them to follow the
 									</div>
 									<div>
 										<h2><span>2</span>Find your nearest <a id='loaction_map' onclick='openLocation()'>MoneyGram location to add cash </a></h2>
-										<p>
+										<p class="mleft">
 											Currently available in selected MoneyGram locations in New York City, San Francisco, and Dallas.  We’re adding more and more locations, so check to see if there is a participating <a id='loaction_map' onclick='openLocation()'>MoneyGram location to add cash </a> near you.  
 										</p>
-										<ul>
+										<ul class="ULmleft">
 											<li>
 													Take in your cash and <a id="fee2">fee</a>
 										<!-- Fee tooltip box -->
@@ -247,9 +247,9 @@ If you’re adding cash to someone else’s account, just ask them to follow the
 										</ul>
 										
 									</div>
-									<div>
+									<div class="IEfix_span">
 										<h2><span>3</span>Your cash will be added to the PayPal balance within minutes </h2>
-										<p>
+										<p class="mleft">
 											Now you’re free… to shop, pay, or gift away!
 										</p>
 									</div>
@@ -278,7 +278,7 @@ If you’re adding cash to someone else’s account, just ask them to follow the
 									</p>
 									<div>
 										<h2><span>1</span>Log in with PayPal Access </h2>
-										<p>
+										<p class="mleft">
 											From this website or a mobile device, set up your cash withdrawal.  Start with logging in – this step allows you to securely access your PayPal account for withdrawals from your computer or mobile device.  
 										</p>
 										
@@ -286,7 +286,7 @@ If you’re adding cash to someone else’s account, just ask them to follow the
 									<div>
 										<h2><span>2</span>Select your withdrawal amount and city </h2>
 										
-										<ul>
+										<ul class="mleft">
 											<li>
 													Once you’ve entered the amount you want to withdraw from your available balance and choose a location (US locations only) to pick up your cash, a transaction  <a id="fee">fee</a> will be deducted and a MoneyGram Reference Number provided.  
 													<!-- Fee tooltip box -->
@@ -305,7 +305,7 @@ If you’re adding cash to someone else’s account, just ask them to follow the
 									<div>
 										<h2><span>3</span>Visit MoneyGram to get your cash </h2>
 										
-										<p>
+										<p class="mleft">
 											Take your MoneyGram Reference Number, complete the “receive” form and hand it in.  Be ready to show your ID.  The service is currently available at about 47,000 convenient MoneyGram locations in the US – find a <a id='loaction_map' onclick='openLocation()'>MoneyGram location to withdraw cash  </a> today!
 										</p>
 									</div>
@@ -373,7 +373,7 @@ If you’re adding cash to someone else’s account, just ask them to follow the
 			<div class="clear"></div>
 			<div class="footer">
 				<div>
-					<span>© <label class="year"></label> MoneyGram. All rights reserved<a href="#" class="backtotop"></a></span><a href="privacypolicy.html">Privacy Policy</a> <a href="termsofuse.html">Terms of Use</a><a href="terms_conditions.html">Terms and Conditions</a><a href="aboutmoneygram.html" class="aboutlink">About MoneyGram</a>
+					<span>© <label class="footer_year"></label> MoneyGram. All rights reserved<a href="#" title="Back to Top" class="backtotop"></a></span><a href="privacypolicy.html">Privacy Policy</a> <a href="termsofuse.html">Terms of Use</a><a href="terms_conditions.html">Terms and Conditions</a><a href="aboutmoneygram.html" class="aboutlink">About MoneyGram</a>
 					<p>
 						Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
 					</p>
