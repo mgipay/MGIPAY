@@ -20,6 +20,9 @@ import org.apache.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.ac.CommitTransactionInputBean;
+import com.google.gson.Gson;
+
 /**
  * @author TCS
  * 
@@ -29,7 +32,7 @@ public class MGI_PayPal_Test {
 	private static Logger LOGGER = Logger.getLogger(MGI_PayPal_Test.class);
 
 	@Test
-	public void TestFeeLookUp() {
+	public void TestFeeLookUp() { setCredentials();
 		try {
 
 			URL url = new URL("http://localhost:8092/CXFRest/rest/getFee");
@@ -38,7 +41,7 @@ public class MGI_PayPal_Test {
 			conn.setRequestMethod("POST");
 			conn.setRequestProperty("Content-Type", "application/json");
 
-			String inputJsonObject = "{\"FeeLookupInputBean\":{\"amount\":\"180\"}}";
+			String inputJsonObject = "{\"FeeLookupInputBean\":{\"amount\":\"100\"}}";
 
 			OutputStream os = conn.getOutputStream();
 			os.write(inputJsonObject.getBytes());
@@ -67,6 +70,7 @@ public class MGI_PayPal_Test {
 
 	@Test
 	public void TestSendValidation() throws Exception {
+		
 		URL url = new URL("http://localhost:8092/CXFRest/rest/sendValidation");
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		conn.setDoOutput(true);
@@ -80,7 +84,7 @@ public class MGI_PayPal_Test {
 				+ "ZipCode\":\"55416\",\"senderCountry\":\"USA\",\"senderHomePhone\":\"9522320253\",\"rece"
 				+ "iverFirstName\":\"N R F\",\"receiverLastName\":\"N R L\",\"sendCurrency\":\"USD\",\"mgiT"
 				+ "ransactionSessionID\":\""
-				+ "9708729E1572561364289186424"
+				+ "9708729E1572561364383618664"
 				+ "\"}}";
 
 		OutputStream os = conn.getOutputStream();
@@ -103,7 +107,7 @@ public class MGI_PayPal_Test {
 	}
 
 	@Test
-	public void TestCommitTransaction() {
+	public void TestCommitTransaction() { setCredentials();
 		try {
 			URL url = new URL(
 					"http://localhost:8092/CXFRest/rest/commitTransaction");
@@ -111,9 +115,24 @@ public class MGI_PayPal_Test {
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");
 			conn.setRequestProperty("Content-Type", "application/json");
+			
+			CommitTransactionInputBean commitTransactionInputBean = new CommitTransactionInputBean();
+			commitTransactionInputBean.setCustomerEmail("vbalki@ebay.com");
+			commitTransactionInputBean.setCustomerName("VIJAY BALAKRISHNAN");
+			commitTransactionInputBean.setCustomerPhoneNumber("6057100363");
+			commitTransactionInputBean
+					.setMgiTransactionSessionID("9708729E1572561364383618664");
+			commitTransactionInputBean.setPaypalTransactionID("58965687");
+			commitTransactionInputBean
+					.setTransactionAmount(new BigDecimal(100));
+			commitTransactionInputBean.setTransactionFee(new BigDecimal(12));
+//			commitTransactionInputBean.setTransactionStatus("PENDING");
+			
 
+			LOGGER.debug(new Gson().toJson(commitTransactionInputBean));
+			
 			String inputJsonObject = "{\"CommitTransactionInputBean\":{\"mgiTransactionSessionID\":\""
-					+ "9708729E1572561364220198548" + "\"}}";
+					+ "9708729E1572561364383618664" + "\"}}";
 
 			OutputStream os = conn.getOutputStream();
 			os.write(inputJsonObject.getBytes());
@@ -139,7 +158,7 @@ public class MGI_PayPal_Test {
 		}
 	}
 	@Ignore
-	public void TestDetailLookup() {
+	public void TestDetailLookup() { setCredentials();
 		try {
 			URL url = new URL(
 					"http://localhost:8092/CXFRest/rest/detailLookUp");
@@ -178,8 +197,8 @@ public class MGI_PayPal_Test {
 private void setCredentials(){
 	System.setProperty("http.proxyHost", "proxy.tcs.com");
 	System.setProperty("http.proxyPort", "8080");
-	System.setProperty("http.proxyUser", "****");
-	System.setProperty("http.proxyPassword", "*****");
+	System.setProperty("http.proxyUser", "538540");
+	System.setProperty("http.proxyPassword", "Bala@Apr84");
 }
 	@Test
 	public void TestUserLimit() {
@@ -191,8 +210,10 @@ private void setCredentials(){
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");
 			conn.setRequestProperty("Content-Type", "application/json");
-
 			String inputJsonObject = "{\"UserLimitInputBean\":{\"emailID\":\"vbalki@ebay.com\"}}";
+			
+//			String inputJsonObject = "{\"UserLimitInputBean\":{\"emailID\":\"mgi_consumer_tes" +
+//					"t@moneygram.com\"}}";
 
 			OutputStream os = conn.getOutputStream();
 			os.write(inputJsonObject.getBytes());
@@ -218,7 +239,7 @@ private void setCredentials(){
 	}
 
 	@Test
-	public void TestCodeTable() {
+	public void TestCodeTable() { setCredentials();
 
 		try {
 			URL url = new URL("http://localhost:8092/CXFRest/rest/getStateCode");
@@ -246,7 +267,7 @@ private void setCredentials(){
 		}
 	}
 	@Test
-	public void TestFeeLinkValue() {
+	public void TestFeeLinkValue() { setCredentials();
 
 		try {
 			URL url = new URL("http://localhost:8092/CXFRest/rest/getFeeLinkValue");
@@ -273,8 +294,8 @@ private void setCredentials(){
 			e.printStackTrace();
 		}
 	}
-	@Test
-	public void TestSendMail() {
+	@Ignore
+	public void TestSendMail() { setCredentials();
 
 		try {
 
@@ -315,7 +336,7 @@ private void setCredentials(){
 	}
 	
 	@Ignore
-	public void TestGetHistoryDetails() {
+	public void TestGetHistoryDetails() { setCredentials();
 
 		try {
 
@@ -352,7 +373,7 @@ private void setCredentials(){
 		}
 	}
 	@Ignore
-	public void TestSendReversal() {
+	public void TestSendReversal() { setCredentials();
 		// setCredentials();
 		com.ac1211.client.SendReversalRequest sendReversalRequest = new com.ac1211.client.SendReversalRequest();
 		sendReversalRequest.setAgentID("");
