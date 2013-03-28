@@ -247,13 +247,20 @@ setCredentials();
 	
 		List<HistoryDetails> historyDetailsList = new ArrayList<HistoryDetails>();
 		try {
+<<<<<<< HEAD
 			MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
+=======
+>>>>>>> MOdified for History Details
 			/*historyDetailsList = historyTable
 					.retrieveHistroyDetails(histroyLookupInputBean
 							.getCustomerEmailId());
 			*/
 			//TODO delete below code
+<<<<<<< HEAD
 			historyDetailsList = moneyGramPayPalDAO
+=======
+			historyDetailsList = historyTable
+>>>>>>> MOdified for History Details
 					.retrieveHistroyDetails("Test@MgiMail.com");
 			
 		} catch (Exception exception) {
@@ -385,10 +392,16 @@ setCredentials();
 				commitTransactionInputBean
 						.setMgiReferenceNumber(commitTransactionResponse
 								.getReferenceNumber());
+<<<<<<< HEAD
 				
 				try {
 					MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
 					moneyGramPayPalDAO
+=======
+				HistoryTable historyTable = new HistoryTable();
+				try {
+					historyTable
+>>>>>>> MOdified for History Details
 							.insertHistoryDetails(commitTransactionInputBean);
 				} catch (Exception exception) {
 					LOGGER.error(exception.getLocalizedMessage());

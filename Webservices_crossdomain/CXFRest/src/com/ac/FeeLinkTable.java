@@ -23,6 +23,13 @@ public class FeeLinkTable {
 		Connection connection = DriverManager.getConnection(
 				"jdbc:oracle:thin:@10.0.1.167:1521:devdb", "devdb",
 				"devdbdevdb");
+		/*
+		 * create table devdb.MGI_PAYPAL_FEE_DTL ( country_CODE VARCHAR2(10) not
+		 * null, LOWER_LIMIT NUMBER(10,2), UPPER_LIMIT NUMBER(10,2), FEE_CHARGES
+		 * NUMBER(10,2), FUNDS_TYPE VARCHAR2(50) not null, CREATION_DATE
+		 * TIMESTAMP(6) default systimestamp, LAST_UPDATE_DATE TIMESTAMP(6)
+		 * default systimestamp
+		 */
 
 		String strQuery = "INSERT INTO MGI_PAYPAL_FEE_DTL (country_CODE, LOWER_LIMIT, UPPER_LIMIT"
 				+ ", FEE_CHARGES, FUNDS_TYPE) VALUES (?,?,?,?,?,?);";
