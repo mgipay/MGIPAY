@@ -3,6 +3,10 @@
  */
 package com.ac.test;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
@@ -10,6 +14,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.GregorianCalendar;
+import java.util.Properties;
 import java.util.Scanner;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -30,10 +35,28 @@ import com.google.gson.Gson;
 public class MGI_PayPal_Test {
 	
 	private static Logger LOGGER = Logger.getLogger(MGI_PayPal_Test.class);
-
+	@Test
+	public void test() throws FileNotFoundException, IOException {
+		Properties properties = new Properties();
+		properties.load(new FileInputStream("Constants.properties"));
+		String name = properties.getProperty("TWO_HUNDRED_US_DOLLARS");
+		System.err.println(properties.getProperty("AGENT_ID"));
+		System.out.println(name);
+	}
 	@Test
 	public void TestFeeLookUp() { setCredentials();
 		try {
+			
+			
+			
+//			Properties properties = new Properties();
+//			properties.load(new FileInputStream("Constants.properties"));
+//			String name = properties.getProperty("AgentId");
+//			System.out.println(name);
+			
+			
+			
+			
 
 			URL url = new URL("http://localhost:8092/CXFRest/rest/getFee");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -84,11 +107,7 @@ public class MGI_PayPal_Test {
 				+ "ZipCode\":\"55416\",\"senderCountry\":\"USA\",\"senderHomePhone\":\"9522320253\",\"rece"
 				+ "iverFirstName\":\"N R F\",\"receiverLastName\":\"N R L\",\"sendCurrency\":\"USD\",\"mgiT"
 				+ "ransactionSessionID\":\""
-<<<<<<< HEAD
-				+ "9708729E1572561364383618664"
-=======
-				+ "9708729E1572561364307992141"
->>>>>>> Committed contact us client and modified code in acimpl.java.
+				+ "9708729E1572561364808310118"
 				+ "\"}}";
 
 		OutputStream os = conn.getOutputStream();
@@ -136,7 +155,7 @@ public class MGI_PayPal_Test {
 			LOGGER.debug(new Gson().toJson(commitTransactionInputBean));
 			
 			String inputJsonObject = "{\"CommitTransactionInputBean\":{\"mgiTransactionSessionID\":\""
-					+ "9708729E1572561364383618664" + "\"}}";
+					+ "9708729E1572561364808310118" + "\"}}";
 
 			OutputStream os = conn.getOutputStream();
 			os.write(inputJsonObject.getBytes());

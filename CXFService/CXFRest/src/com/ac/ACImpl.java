@@ -1,8 +1,8 @@
 package com.ac;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -34,11 +34,6 @@ import com.ac1211.client.SendReversalReasonCode;
 import com.ac1211.client.SendReversalRequest;
 import com.ac1211.client.SendReversalResponse;
 import com.ac1211.client.SendReversalType;
-<<<<<<< HEAD
-=======
-import com.ac1211.client.SendValidationRequest;
-import com.ac1211.client.SendValidationResponse;
->>>>>>> Committed contact us client and modified code in acimpl.java.
 import com.ac1211.mail.client.ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client;
 import com.ac1211.mail.client.InsertRecsIntoCRMExtWebFormRequest;
 import com.ac1211.mail.client.InsertRecsIntoCRMExtWebFormResponse;
@@ -56,21 +51,37 @@ import com.paypal.cfx.client.UserLimit;
 @Consumes("application/json")
 @Produces("application/JSON")
 public class ACImpl implements ACInterface {
+	
+	public ACImpl() {
+		
+	}
 
 	private static String STATES_IN_USA = "";
 
-	private static Integer DAY_IDENTIFIER = 7;
+	private static Integer CODETABLE_DAY_IDENTIFIER = 7;
 
-	private static boolean FEELINK_FLAG;
+	private static Integer FEELINK_DAY_IDENTIFIER = 7;
+
+	private static BigDecimal FEE_FOR_TWO_HUNDRED = BigDecimal.ZERO;
+
+	private static BigDecimal FEE_FOR_FIVE_HUNDRED = BigDecimal.ZERO;
 
 	private static Logger LOGGER = Logger.getLogger(ACImpl.class);
 
-private void setCredentials(){
-	System.setProperty("http.proxyHost", "proxy.tcs.com");
-	System.setProperty("http.proxyPort", "8080");
-	System.setProperty("http.proxyUser", "538540");
-	System.setProperty("http.proxyPassword", "Bala@Apr84");
-}
+//	private  String constantFilePath = 
+//			"C:\\Documents and Settings\\538540\\28_03_2013_New\\MGI"
+//					+ "PAY\\CXFService\\CXFRest\\Constants.properties";
+//
+//	private  String messageFilePath = 
+//			"C:\\Documents and Settings\\538540\\28_03_2013_New\\MGI"
+//					+ "PAY\\CXFService\\CXFRest\\Message.properties";
+//	
+	 private void setCredentials(){
+//	 System.setProperty("http.proxyHost", "proxy.tcs.com");
+//	 System.setProperty("http.proxyPort", "8080");
+//	 System.setProperty("http.proxyUser", "538540");
+//	 System.setProperty("http.proxyPassword", "Bala@Apr84");
+	 }
 	@POST
 	@Path("/getFee")
 	@Override
@@ -79,10 +90,21 @@ private void setCredentials(){
 			FeeLookupInputBean feeLookupInputBean) {
 
 		LOGGER.debug("Enter getFee.");
-setCredentials();
-
-		FeeLookupRequest feeLookupRequest = createFeeLookupInput(feeLookupInputBean
-				.getAmount());
+		
+		 setCredentials();
+//		Properties messageProperties = new Properties();
+//		Properties constantProperties = new Properties();
+		FeeLookupRequest feeLookupRequest = null;
+//		try {
+//			messageProperties.load(new FileInputStream(messageFilePath));
+//			constantProperties
+//					.load(new FileInputStream(constantFilePath));
+			feeLookupRequest = createFeeLookupInput(feeLookupInputBean
+					.getAmount());
+//		} catch (IOException ioException) {
+//			LOGGER.error(ioException.getLocalizedMessage());
+//			LOGGER.error(System.getProperty("line.separator"));
+//		}
 		com.ac.FeeLookupResponse feeLookupResponseReturn = new com.ac.FeeLookupResponse();
 
 		byte retryCount = 3;
@@ -94,9 +116,16 @@ setCredentials();
 			} catch (Exception exception) {
 				retryCount--;
 				if (retryCount == 0) {
+//					feeLookupResponseReturn
+//							.setErrorMessage(exception
+//									.getLocalizedMessage()
+//									.concat(messageProperties
+//											.getProperty("PLEASE_TRY_AFTER_FEW_MINUTES")));
+					
 					feeLookupResponseReturn
-							.setErrorMessage(exception.getLocalizedMessage()
-									.concat(". Please Try Again"));
+					.setErrorMessage("PLEASE_TRY_AFTER_FEW_MINUTES");
+					
+					
 					feeLookupResponseReturn.setTransactionSuccess(false);
 
 					return new Gson().toJson(feeLookupResponseReturn);
@@ -106,8 +135,9 @@ setCredentials();
 				BigDecimal totalAmount = feeLookupResponse.getFeeInfo().get(0)
 						.getTotalAmount();
 
-				if (totalAmount.compareTo(MGI_Constants.TWO_HUNDRED_US_DOLLARS) <= 0) {
-
+//				if (totalAmount.compareTo(new BigDecimal(constantProperties
+//						.getProperty("TWO_HUNDRED_US_DOLLARS"))) <= 0) {
+					if (totalAmount.compareTo(MGI_Constants.TWO_HUNDRED_US_DOLLARS) <= 0) {
 					feeLookupResponseReturn.setTransactionSuccess(true);
 
 					feeLookupResponseReturn
@@ -118,12 +148,12 @@ setCredentials();
 					feeLookupResponseReturn.setFeeAmount(totalAmount
 							.subtract(feeLookupInputBean.getAmount()));
 				} else {
-					feeLookupResponseReturn
-							.setErrorMessage("WithDrawl amount including Fee is : "
-									+ totalAmount.toString()
-									+ ". Cannot withdraw more the 200 dollars incl"
-									+ "uding fee, per Transaction."
-									+ "Please try again");
+//					feeLookupResponseReturn.setErrorMessage(messageProperties
+//							.getProperty("AMOUNT_IS")
+//							.concat(totalAmount.toString())
+//							.concat(messageProperties
+//									.getProperty("WITHDRAW_ERROR_MESSAGE")));
+					feeLookupResponseReturn.setErrorMessage("Error message for above 200 dollar");
 					feeLookupResponseReturn.setTransactionSuccess(false);
 					feeLookupResponseReturn.setTotalAmount(totalAmount);
 					feeLookupResponseReturn.setFeeAmount(totalAmount
@@ -139,12 +169,37 @@ setCredentials();
 		return new Gson().toJson(feeLookupResponseReturn);
 	}
 
-	private FeeLookupRequest createFeeLookupInput(BigDecimal amount) {
+	private FeeLookupRequest createFeeLookupInput(BigDecimal amount)
+			/*throws IOException*/ {
 
 		LOGGER.debug("Enter createFeeLookupInput.");
 
-		FeeLookupRequest feeLookupRequest = new FeeLookupRequest();
+//		Properties constantProperties = new Properties();
+//		constantProperties.load(new FileInputStream(constantFilePath));
 
+		FeeLookupRequest feeLookupRequest = new FeeLookupRequest();
+//		feeLookupRequest.setAgentID(constantProperties.getProperty("AGENT_ID"));
+//		feeLookupRequest.setAgentSequence(constantProperties
+//				.getProperty("AGENT_SEQUENCE"));
+//		feeLookupRequest.setToken(constantProperties.getProperty("TOKEN"));
+//		feeLookupRequest.setTimeStamp(getTimeStamp());
+//		feeLookupRequest.setApiVersion(constantProperties.getProperty("API_VERSION"));
+//		feeLookupRequest.setClientSoftwareVersion(constantProperties
+//				.getProperty("CLIENT_SOFTWARE_VERSION"));
+//		feeLookupRequest.setAmountExcludingFee(amount);
+//		feeLookupRequest.setProductType(ProductType.SEND);
+//		feeLookupRequest.setReceiveCountry(constantProperties
+//				.getProperty("MGI_COUNTRY_CODE_USA"));
+//		feeLookupRequest.setDeliveryOption(constantProperties
+//				.getProperty("DELIVER_OPTION_WILL_CALL"));
+//		feeLookupRequest.setReceiveCurrency(constantProperties
+//				.getProperty("CURRENCY_CODE_USA"));
+//		feeLookupRequest.setSendCurrency(constantProperties
+//				.getProperty("CURRENCY_CODE_USA"));
+//		feeLookupRequest.setAllOptions(false);
+
+		
+		
 		feeLookupRequest.setAgentID(MGI_Constants.AGENT_ID);
 		feeLookupRequest.setAgentSequence(MGI_Constants.AGENT_SEQUENCE);
 		feeLookupRequest.setToken(MGI_Constants.TOKEN);
@@ -160,7 +215,9 @@ setCredentials();
 		feeLookupRequest.setReceiveCurrency(MGI_Constants.CURRENCY_CODE_USA);
 		feeLookupRequest.setSendCurrency(MGI_Constants.CURRENCY_CODE_USA);
 		feeLookupRequest.setAllOptions(false);
-
+		
+		
+		
 		LOGGER.debug("Exit createFeeLookupInput.");
 
 		return feeLookupRequest;
@@ -169,7 +226,6 @@ setCredentials();
 	private BigDecimal getFeeForFeeLink(BigDecimal amount) {
 
 		LOGGER.debug("Enter getFeeForFeeLink.");
-
 
 		byte retryCount = 3;
 		while (retryCount >= 1) {
@@ -192,54 +248,6 @@ setCredentials();
 
 	}
 
-	private void updateFeeLink() throws Exception {
-		BigDecimal feeForTwoHundred = getFeeForFeeLink(MGI_Constants.TWO_HUNDRED_US_DOLLARS);
-		BigDecimal feeForFiveHundred = getFeeForFeeLink(MGI_Constants.FIVE_HUNDRED_US_DOLLARS);
-		MoneyGramPayPalDAO feeLinkTable = new MoneyGramPayPalDAO();
-		try {
-			feeLinkTable.insertFee(new BigDecimal(0),
-					MGI_Constants.TWO_HUNDRED_US_DOLLARS, feeForTwoHundred, "");
-			feeLinkTable.insertFee(new BigDecimal(201),
-					MGI_Constants.FIVE_HUNDRED_US_DOLLARS, feeForFiveHundred,
-					"");
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
-	@POST
-	@Path("/getFeeLinkValue")
-	@Override
-	public String getFeeLinkValue() {
-
-		LOGGER.debug("Enter getFeeLinkValue.");
-
-		// if(FEELINK_FLAG){
-
-		FeeLinkValues feeLinkValues = null;
-		
-		try {
-			MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
-			feeLinkValues = moneyGramPayPalDAO.selectFromFeeDetailTable();
-			feeLinkValues.setTransactionSuccess(true);
-		} catch (Exception exception) {
-			feeLinkValues.setTransactionSuccess(false);
-			feeLinkValues.setErrorMessage("please try after few minutes.");
-			return new Gson().toJson(feeLinkValues);
-		}
-		// }else {
-		// send message to UI : "please try after few minutes."
-		// }
-		LOGGER.debug("Exit getFeeLinkValue.");
-
-		return new Gson().toJson(feeLinkValues);
-	}
-
 	@POST
 	@Path("/getHistoryDetails")
 	@Override
@@ -249,25 +257,13 @@ setCredentials();
 		LOGGER.debug("Enter getHistoryDetails.");
 
 		HistroyLookupResponse histroyLookupResponse = new HistroyLookupResponse();
-	
+
 		List<HistoryDetails> historyDetailsList = new ArrayList<HistoryDetails>();
 		try {
-<<<<<<< HEAD
 			MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
-=======
->>>>>>> MOdified for History Details
-			/*historyDetailsList = historyTable
+			historyDetailsList = moneyGramPayPalDAO
 					.retrieveHistroyDetails(histroyLookupInputBean
 							.getCustomerEmailId());
-			*/
-			//TODO delete below code
-<<<<<<< HEAD
-			historyDetailsList = moneyGramPayPalDAO
-=======
-			historyDetailsList = historyTable
->>>>>>> MOdified for History Details
-					.retrieveHistroyDetails("Test@MgiMail.com");
-			
 		} catch (Exception exception) {
 			histroyLookupResponse.setTransactionSuccess(false);
 			histroyLookupResponse.setErrorMessage("Please try again.");
@@ -293,53 +289,141 @@ setCredentials();
 	}
 
 	@POST
+	@Path("/getFeeLinkValue")
+	@Override
+	public String getFeeLinkValue() {
+
+		LOGGER.debug("Enter getFeeLinkValue.");
+
+		int yesterday = 7;
+		FeeLinkValues feeLinkValues = new FeeLinkValues();
+		if (FEELINK_DAY_IDENTIFIER != Calendar.getInstance().get(
+				Calendar.DAY_OF_WEEK)) {
+
+			synchronized (FEELINK_DAY_IDENTIFIER) {
+				yesterday = FEELINK_DAY_IDENTIFIER;
+				FEELINK_DAY_IDENTIFIER = Calendar.getInstance().get(
+						Calendar.DAY_OF_WEEK);
+			}
+//			Properties messageProperties = new Properties();
+//			Properties constantProperties = new Properties();
+//			try {
+//				messageProperties.load(new FileInputStream("Message.properties"));
+//				constantProperties.load(new FileInputStream("Constants.properties"));
+//			} catch (IOException ioException) {
+//				LOGGER.error("Exception while Accecssing 'Constants.properties' File");
+//				LOGGER.error(ioException.getStackTrace());
+//				LOGGER.error(System.getProperty("line.separator"));
+//			}
+//			BigDecimal feeForTwoHundred = getFeeForFeeLink(new BigDecimal(
+//					constantProperties.getProperty("TWO_HUNDRED_US_DOLLARS")));
+//			BigDecimal feeForFiveHundred = getFeeForFeeLink(new BigDecimal(
+//					constantProperties.getProperty("FIVE_HUNDRED_US_DOLLARS")));
+
+			BigDecimal feeForTwoHundred = getFeeForFeeLink(MGI_Constants.TWO_HUNDRED_US_DOLLARS);
+			BigDecimal feeForFiveHundred = getFeeForFeeLink(MGI_Constants.FIVE_HUNDRED_US_DOLLARS);
+
+			
+			synchronized (FEE_FOR_TWO_HUNDRED) {
+				FEE_FOR_TWO_HUNDRED = feeForTwoHundred;
+			}
+			synchronized (FEE_FOR_FIVE_HUNDRED) {
+				FEE_FOR_TWO_HUNDRED = feeForFiveHundred;
+			}
+
+			MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
+			try {
+//				moneyGramPayPalDAO.updateFeeFeeDetailTable(new BigDecimal(
+//						constantProperties.getProperty("TWO_HUNDRED_US_DOLLARS")), feeForTwoHundred);
+//				moneyGramPayPalDAO.updateFeeFeeDetailTable(
+//						new BigDecimal(constantProperties
+//								.getProperty("FIVE_HUNDRED_US_DOLLARS")),
+//						feeForFiveHundred);
+
+				moneyGramPayPalDAO.updateFeeFeeDetailTable(
+						MGI_Constants.TWO_HUNDRED_US_DOLLARS, feeForTwoHundred);
+				moneyGramPayPalDAO.updateFeeFeeDetailTable(
+						MGI_Constants.FIVE_HUNDRED_US_DOLLARS,
+						feeForFiveHundred);
+				
+				
+			} catch (Exception exception) {
+				synchronized (FEELINK_DAY_IDENTIFIER) {
+					FEELINK_DAY_IDENTIFIER = yesterday;
+				}
+				LOGGER.error("New Fee Not Updated Into Table 'MGI_PAYPAL_FEE_DTL'.");
+				LOGGER.error(exception.getLocalizedMessage());
+				LOGGER.error(System.getProperty("line.separator"));
+				feeLinkValues.setTransactionSuccess(false);
+				feeLinkValues.setErrorMessage("Please try after few minutes.");
+			}
+			feeLinkValues.setTransactionSuccess(true);
+			feeLinkValues.setFeeForTwoHundred(FEE_FOR_TWO_HUNDRED);
+			feeLinkValues.setFeeForFiveHundred(FEE_FOR_FIVE_HUNDRED);
+
+			return new Gson().toJson(feeLinkValues);
+
+		} else {
+			feeLinkValues.setTransactionSuccess(true);
+			feeLinkValues.setFeeForTwoHundred(FEE_FOR_TWO_HUNDRED);
+			feeLinkValues.setFeeForFiveHundred(FEE_FOR_FIVE_HUNDRED);
+		}
+
+		LOGGER.debug("Exit getFeeLinkValue.");
+
+		return new Gson().toJson(feeLinkValues);
+	}
+
+	@POST
 	@Path("/getStateCode")
 	@Override
 	public String getState() {
 
 		LOGGER.debug("Enter getStateCode.");
 
-		if (DAY_IDENTIFIER != Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) {
-			// FEELINK_FLAG = false;
-			int yesterday = DAY_IDENTIFIER;
-			synchronized (DAY_IDENTIFIER) {
-				DAY_IDENTIFIER = Calendar.getInstance().get(
-						Calendar.DAY_OF_WEEK);
-			}
+		if (CODETABLE_DAY_IDENTIFIER != Calendar.getInstance().get(
+				Calendar.DAY_OF_WEEK)) {
+			synchronized (STATES_IN_USA) {
+				int yesterday = 7;
+				synchronized (CODETABLE_DAY_IDENTIFIER) {
+					yesterday = CODETABLE_DAY_IDENTIFIER;
+					CODETABLE_DAY_IDENTIFIER = Calendar.getInstance().get(
+							Calendar.DAY_OF_WEEK);
+				}
 
-			CodeTableRequest codeTableRequest = new CodeTableRequest();
-			codeTableRequest.setAgentAllowedOnly(true);
-			codeTableRequest.setApiVersion(MGI_Constants.API_VERSION);
-			codeTableRequest
-					.setClientSoftwareVersion(MGI_Constants.CLIENT_SOFTWARE_VERSION);
-			codeTableRequest.setUnitProfileID(158178);
-			codeTableRequest.setToken(MGI_Constants.TOKEN);
-			codeTableRequest.setAgentSequence(MGI_Constants.AGENT_SEQUENCE);
-			codeTableRequest.setTimeStamp(getTimeStamp());
-			codeTableRequest.setLanguage(MGI_Constants.LANGUAGE_CODE_ENGLISH);
-			byte retryCount = 3;
-			boolean responseRecived = false;
-			while (retryCount >= 1) {
+				CodeTableRequest codeTableRequest = new CodeTableRequest();
+				codeTableRequest.setAgentAllowedOnly(true);
+				codeTableRequest.setApiVersion(MGI_Constants.API_VERSION);
+				codeTableRequest
+						.setClientSoftwareVersion(MGI_Constants.CLIENT_SOFTWARE_VERSION);
+				codeTableRequest.setUnitProfileID(158178);
+				codeTableRequest.setToken(MGI_Constants.TOKEN);
+				codeTableRequest.setAgentSequence(MGI_Constants.AGENT_SEQUENCE);
+				codeTableRequest.setTimeStamp(getTimeStamp());
+				codeTableRequest
+						.setLanguage(MGI_Constants.LANGUAGE_CODE_ENGLISH);
+				byte retryCount = 3;
+				boolean responseRecived = false;
+				while (retryCount >= 1) {
 
-				try {
-					synchronized (STATES_IN_USA) {
+					try {
 						STATES_IN_USA = new Gson()
 								.toJson(AgentConnect_AgentConnect_Client
 										.codeTable(codeTableRequest));
 						responseRecived = true;
+					} catch (Exception exception) {
+						retryCount--;
+						if (retryCount == 0) {
+							synchronized (CODETABLE_DAY_IDENTIFIER) {
+								CODETABLE_DAY_IDENTIFIER = yesterday;
+							}
+						}
 					}
-				} catch (Exception exception) {
-					retryCount--;
-					if (retryCount == 0) {
-						DAY_IDENTIFIER = yesterday;
+					if (responseRecived) {
+						break;
 					}
-				}
-				if (responseRecived) {
-					break;
 				}
 			}
-			// updateFeeLink();
-			// FEELINK_FLAG = true;
 		}
 
 		LOGGER.debug("Exit getStateCode.");
@@ -369,7 +453,7 @@ setCredentials();
 				.setMgiTransactionSessionID(commitTransactionInputBean
 						.getMgiTransactionSessionID().trim());
 		commitTransactionRequest.setProductType(ProductType.SEND);
-		com.ac.CommitTransactionResponse commitTransactionResponseForReturn 
+		com.ac.CommitTransactionResponse commitTransactionResponseForReturn
 		= new com.ac.CommitTransactionResponse();
 		byte retryCount = 3;
 		while (retryCount >= 1) {
@@ -383,9 +467,9 @@ setCredentials();
 							.setErrorMessage("Transaction Failed.Please Try Again");
 					commitTransactionResponseForReturn
 							.setTransactionSuccess(false);
-					
+
 					LOGGER.debug("Exit commitTransaction.");
-					
+
 					return new Gson().toJson(commitTransactionResponse);
 				}
 			}
@@ -394,24 +478,27 @@ setCredentials();
 				commitTransactionResponseForReturn
 						.setReferenceNumber(commitTransactionResponse
 								.getReferenceNumber());
+				commitTransactionInputBean.setTransactionId(1);
 				commitTransactionInputBean
 						.setMgiReferenceNumber(commitTransactionResponse
 								.getReferenceNumber());
-<<<<<<< HEAD
-				
+				commitTransactionInputBean
+						.setMgiTransactionStatus("Not_Collected");
+				commitTransactionInputBean
+						.setPayPalTransactionStatus("Collected");
+				commitTransactionInputBean.setTransactionId(1000);
 				try {
 					MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
 					moneyGramPayPalDAO
-=======
-				HistoryTable historyTable = new HistoryTable();
-				try {
-					historyTable
->>>>>>> MOdified for History Details
 							.insertHistoryDetails(commitTransactionInputBean);
 				} catch (Exception exception) {
+					LOGGER.error("Insert Into HistroyTable failed : "
+							+ new Gson().toJson(commitTransactionInputBean));
 					LOGGER.error(exception.getLocalizedMessage());
+					exception.printStackTrace();
+					LOGGER.debug(System.getProperty("line.separator"));
 				}
-				
+
 				break;
 			}
 		}
@@ -507,10 +594,6 @@ setCredentials();
 
 		LOGGER.debug("Enter sendValidation.");
 
-<<<<<<< HEAD
-=======
-		setCredentials();
->>>>>>> Committed contact us client and modified code in acimpl.java.
 		com.ac1211.client.SendValidationResponse sendValidationResponse = null;
 
 		com.ac1211.client.SendValidationRequest sendValidationRequest 
@@ -545,9 +628,9 @@ setCredentials();
 
 		sendValidationRequest.setReceiveCurrency(sendValidationInputBean
 				.getReceiveCurrency());
-		
+
 		setSenderName(sendValidationInputBean, sendValidationRequest);
-		
+
 		sendValidationRequest.setSenderAddress(sendValidationInputBean
 				.getSenderAddress());
 		sendValidationRequest.setSenderCity(sendValidationInputBean
@@ -590,34 +673,35 @@ setCredentials();
 
 		}
 		// }
-		
+
 		LOGGER.debug("Exit sendValidation.");
-				
+
 		return new Gson().toJson(sendValidationResponse2);
 	}
-	
+
 	private void setSenderName(SendValidationInputBean sendValidationInputBean,
 			com.ac1211.client.SendValidationRequest sendValidationRequest) {
-		
+
 		LOGGER.debug("Enter setSenderName.");
-		
+
 		String firstName = sendValidationInputBean.getSenderFirstName();
 		String lastName = sendValidationInputBean.getSenderLastName();
 		if (firstName.length() < 40) {
-			firstName = firstName.concat("                                        ")
+			firstName = firstName.concat(
+					"                                        ")
 					.substring(0, 39);
 		}
-		if(lastName.length() < 60){
-			lastName = lastName.concat(
-					"                                                            ")
+		if (lastName.length() < 60) {
+			lastName = lastName
+					.concat("                                                            ")
 					.substring(0, 59);
 		}
 
 		sendValidationRequest.setSenderFirstName(firstName.substring(0, 14));
 		sendValidationRequest.setSenderMiddleName(firstName.substring(0, 1));
 		sendValidationRequest.setSenderLastName(lastName.substring(0, 20));
-//		sendValidationRequest.setSenderLastName2(lastName.substring(0, 5));
-		
+		// sendValidationRequest.setSenderLastName2(lastName.substring(0, 5));
+
 		LOGGER.debug("Exit setSenderName.");
 	}
 
@@ -698,22 +782,15 @@ setCredentials();
 	@Path("/sendMail")
 	@Override
 	public String sendMail(SendMailInputBean sendMailInputBean) {
-<<<<<<< HEAD
 
-		
 		SendMailOutputBean sendMailOutputBean = new SendMailOutputBean();
 		try {
-=======
-		setCredentials();
-		
-		SendMailOutputBean sendMailOutputBean = new SendMailOutputBean();
-		try {
-			// mGI_PayPal_Mail.sendMail(sendMailInputBean);
->>>>>>> Committed contact us client and modified code in acimpl.java.
-			InsertRecsIntoCRMExtWebFormRequest insertRecsIntoCRMExtWebFormRequest = new InsertRecsIntoCRMExtWebFormRequest();
+			InsertRecsIntoCRMExtWebFormRequest insertRecsIntoCRMExtWebFormRequest
+			= new InsertRecsIntoCRMExtWebFormRequest();
 			insertRecsIntoCRMExtWebFormRequest
 					.setWhoCompletingForm("MoneyGram Consumer");
-			InsertRecsIntoCRMExtWebFormResponse insertRecsIntoCRMExtWebFormResponse = ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client
+			InsertRecsIntoCRMExtWebFormResponse insertRecsIntoCRMExtWebFormResponse 
+			= ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client
 					.InsertRecsIntoCRMExtWebForm(insertRecsIntoCRMExtWebFormRequest);
 			LOGGER.debug(insertRecsIntoCRMExtWebFormResponse
 					.getInsertRecsIntoCRMExtWebFormResult());
@@ -733,18 +810,4 @@ setCredentials();
 		return new Gson().toJson(sendMailOutputBean);
 	}
 
-<<<<<<< HEAD
-=======
-	/**
-	 * 
-	 */
-	private void setCredentials() {
-		// TODO remove this method
-		System.setProperty("http.proxyHost", "proxy.tcs.com");
-		System.setProperty("http.proxyPort", "8080");
-		System.setProperty("http.proxyUser", "****");
-		System.setProperty("http.proxyPassword", "****");
-
-	}
->>>>>>> Committed contact us client and modified code in acimpl.java.
 }

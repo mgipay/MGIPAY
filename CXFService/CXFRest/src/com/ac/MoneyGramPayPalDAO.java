@@ -23,30 +23,32 @@ public class MoneyGramPayPalDAO {
 
 	private static Logger LOGGER = Logger.getLogger(MoneyGramPayPalDAO.class);
 
-	public void insertFee(BigDecimal lowerLimit, BigDecimal upperLimit,
-			BigDecimal feeCharge, String fundsType)
+	public void updateFeeFeeDetailTable(BigDecimal upperLimit,
+			BigDecimal feeCharge)
 			throws ClassNotFoundException, SQLException {
 
-		LOGGER.debug("Enter insertFee.");
+		LOGGER.debug("Enter updateFeeFeeDetailTable.");
 
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 		Connection connection = DriverManager.getConnection(
 				"jdbc:oracle:thin:@10.0.1.167:1521:devdb", "devdb",
 				"devdbdevdb");
-		String strQuery = "INSERT INTO MGI_PAYPAL_FEE_DTL (country_CODE, LOWER_LIMIT, UPPER_LIMIT"
-				+ ", FEE_CHARGES, FUNDS_TYPE) VALUES (?,?,?,?,?,?);";
+//		String strQuery = "INSERT INTO MGI_PAYPAL_FEE_DTL (country_CODE, LOWER_LIMIT, UPPER_LIMIT"
+//				+ ", FEE_CHARGES, FUNDS_TYPE) VALUES (?,?,?,?,?,?);";
+		String strQuery = "Update MGI_PAYPAL_FEE_DTL set FEE_CHARGES = ? where UPPER_LIMIT = ?";
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
-		preparedStatement.setString(1, "usa");
-		preparedStatement.setBigDecimal(2, lowerLimit);
-		preparedStatement.setBigDecimal(3, upperLimit);
-		preparedStatement.setBigDecimal(4, feeCharge);
-		preparedStatement.setString(5, fundsType);
+		preparedStatement.setBigDecimal(1, feeCharge);
+		preparedStatement.setBigDecimal(2, upperLimit);
+		
+		
+		LOGGER.debug("preparedStatement.executeUpdate()");
+		
 		preparedStatement.executeUpdate();
 		connection.close();
 
-		LOGGER.debug("Exit insertFee.");
+		LOGGER.debug("Exit updateFeeFeeDetailTable.");
 	}
 
 	public FeeLinkValues selectFromFeeDetailTable()
@@ -64,17 +66,14 @@ public class MoneyGramPayPalDAO {
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		ResultSet resultSet = preparedStatement.executeQuery();
-		LOGGER.debug("result set came");
 		BigDecimal feeForTwoHundred = null;
 		BigDecimal feeForFiveHundred = null;
 		while (resultSet.next()) {
 			BigDecimal upperLimit = resultSet.getBigDecimal("UPPER_LIMIT");
 			if (upperLimit.compareTo(new BigDecimal(200)) == 0) {
 				feeForTwoHundred = resultSet.getBigDecimal("FEE_CHARGES");
-				LOGGER.debug(feeForTwoHundred.toString());
 			} else {
 				feeForFiveHundred = resultSet.getBigDecimal("FEE_CHARGES");
-				LOGGER.debug(feeForFiveHundred);
 			}
 		}
 		FeeLinkValues feeLinkValues = new FeeLinkValues();
@@ -89,13 +88,22 @@ public class MoneyGramPayPalDAO {
 	public List<HistoryDetails> retrieveHistroyDetails(String emailId)
 			throws ClassNotFoundException, SQLException {
 
+		LOGGER.debug("Enter retrieveHistroyDetails.");
+		
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 		Connection connection = DriverManager.getConnection(
 				"jdbc:oracle:thin:@10.0.1.167:1521:devdb", "devdb",
 				"devdbdevdb");
-		String strQuery = "SELECT * FROM MGI_PAYPAL_TRAN_HIST WHERE CUST_EMAIL = ? order by"
-				+ " TRAN_DATE desc";
+		/*
+		 * SELECT * FROM (SELECT * FROM MyTbl ORDER BY Fname ) WHERE ROWNUM = 1;
+		 * 
+		 * old query
+		 * SELECT * FROM MGI_PAYPAL_TRAN_HIST WHERE CUST_EMAIL = ? order by"
+				+ " TRAN_DATE desc
+		 */
+		String strQuery = "SELECT * FROM (SELECT * FROM MGI_PAYPAL_TRAN_HIST WHERE CUST_EMAIL = ? order by"
+				+ " TRAN_DATE desc) WHERE ROWNUM < 11";
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1, emailId);
@@ -135,17 +143,22 @@ public class MoneyGramPayPalDAO {
 
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-		int tansactionId = 0;
 		Connection connection = DriverManager.getConnection(
 				"jdbc:oracle:thin:@10.0.1.167:1521:devdb", "devdb",
 				"devdbdevdb");
-
+		/*
+		 * INSERT INTO MGI_PAYPAL_TRAN_HIST (TRAN_ID,CUST_EMAIL, CUST_NAME,
+		 * CUST_PHONE, PAYPAL_TRAN_ID, MGI_REF_NUM, TRAN_DATE, TRAN_AMT,
+		 * TRAN_FEE, TRAN_STATUS,PayPal_TRAN_STATUS) VALUES (1,
+		 * 'Test@MgiMail.com','Jane',987456856,'96385274','458796581',TO_DATE('2013-03-01','yyyy-mm-dd'),
+		 * 101,12,'Collected','Paypal Collected');
+		 */
 		String strQuery = " (TRAN_ID, CUST_EMAIL, CUST_NAME, CUST_PHONE, PAYPAL_"
-				+ "TRAN_ID, MGI_REF_NUM, TRAN_DATE, TRAN_AMT, TRAN_FEE, TRAN_STATUS,) "
-				+ "ATUS) VALUES (?,?,?,?,?,?,?,?,?,?);";
+				+ "TRAN_ID, MGI_REF_NUM, TRAN_DATE, TRAN_AMT, TRAN_FEE, TRAN_STATUS, "
+				+ "PayPal_TRAN_STATUS) VALUES (?,?,?,?,?,?,?,?,?,?,?);";
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
-		preparedStatement.setInt(1, tansactionId);
+		preparedStatement.setInt(1, commitTransactionInputBean.getTransactionId());
 		preparedStatement.setString(2,
 				commitTransactionInputBean.getCustomerEmail());
 		preparedStatement.setString(3,
@@ -164,8 +177,9 @@ public class MoneyGramPayPalDAO {
 		preparedStatement.setBigDecimal(9,
 				commitTransactionInputBean.getTransactionFee());
 		preparedStatement.setString(10,
-				commitTransactionInputBean.getTransactionStatus());
-
+				commitTransactionInputBean.getMgiTransactionStatus());
+		preparedStatement.setString(11,
+				commitTransactionInputBean.getPayPalTransactionStatus());
 		preparedStatement.executeUpdate();
 		connection.close();
 	}

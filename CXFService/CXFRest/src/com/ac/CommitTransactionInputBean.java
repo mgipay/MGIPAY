@@ -11,6 +11,7 @@ public class CommitTransactionInputBean {
 
 	}
 
+	private Integer transactionId;
 	private String mgiTransactionSessionID;
 	private String customerEmail;
 	private String customerName;
@@ -18,8 +19,25 @@ public class CommitTransactionInputBean {
 	private String paypalTransactionID;
 	private BigDecimal transactionAmount;
 	private BigDecimal transactionFee;
-	private String transactionStatus;
+	private String mgiTransactionStatus;
 	private String mgiReferenceNumber;
+	private String payPalTransactionStatus;
+
+	public Integer getTransactionId() {
+		return transactionId;
+	}
+
+	public void setTransactionId(Integer transactionId) {
+		this.transactionId = transactionId;
+	}
+
+	public String getPayPalTransactionStatus() {
+		return payPalTransactionStatus;
+	}
+
+	public void setPayPalTransactionStatus(String payPalTransactionStatus) {
+		this.payPalTransactionStatus = payPalTransactionStatus;
+	}
 
 	public String getMgiTransactionSessionID() {
 		return mgiTransactionSessionID;
@@ -77,12 +95,12 @@ public class CommitTransactionInputBean {
 		this.transactionFee = transactionFee;
 	}
 
-	public String getTransactionStatus() {
-		return transactionStatus;
+	public String getMgiTransactionStatus() {
+		return mgiTransactionStatus;
 	}
 
-	public void setTransactionStatus(String transactionStatus) {
-		this.transactionStatus = transactionStatus;
+	public void setMgiTransactionStatus(String mgiTransactionStatus) {
+		this.mgiTransactionStatus = mgiTransactionStatus;
 	}
 
 	public String getMgiReferenceNumber() {
