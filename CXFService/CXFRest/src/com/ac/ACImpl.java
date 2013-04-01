@@ -1,8 +1,12 @@
 package com.ac;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -19,6 +23,12 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 
 import com.ac1211.client.AgentConnect_AgentConnect_Client;
@@ -34,6 +44,7 @@ import com.ac1211.client.SendReversalReasonCode;
 import com.ac1211.client.SendReversalRequest;
 import com.ac1211.client.SendReversalResponse;
 import com.ac1211.client.SendReversalType;
+import com.ac1211.client.TransactionStatus;
 import com.ac1211.mail.client.ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client;
 import com.ac1211.mail.client.InsertRecsIntoCRMExtWebFormRequest;
 import com.ac1211.mail.client.InsertRecsIntoCRMExtWebFormResponse;
@@ -77,10 +88,10 @@ public class ACImpl implements ACInterface {
 //					+ "PAY\\CXFService\\CXFRest\\Message.properties";
 //	
 	 private void setCredentials(){
-//	 System.setProperty("http.proxyHost", "proxy.tcs.com");
-//	 System.setProperty("http.proxyPort", "8080");
-//	 System.setProperty("http.proxyUser", "538540");
-//	 System.setProperty("http.proxyPassword", "Bala@Apr84");
+	 System.setProperty("http.proxyHost", "proxy.tcs.com");
+	 System.setProperty("http.proxyPort", "8080");
+	 System.setProperty("http.proxyUser", "538540");
+	 System.setProperty("http.proxyPassword", "Bala@Apr84");
 	 }
 	@POST
 	@Path("/getFee")
@@ -264,6 +275,20 @@ public class ACImpl implements ACInterface {
 			historyDetailsList = moneyGramPayPalDAO
 					.retrieveHistroyDetails(histroyLookupInputBean
 							.getCustomerEmailId());
+
+			for (HistoryDetails historyDetails : historyDetailsList) {
+				if (!historyDetails.getTransactionStatus().equals(
+						TransactionStatus.RECVD)) {
+					moneyGramPayPalDAO
+							.updateHistoryDetail(
+									detailLookUp2(
+											historyDetails
+													.getMgiReferenceNumber())
+											.value(), historyDetails
+											.getMgiReferenceNumber());
+					historyDetails.setTransactionStatus(TransactionStatus.values().toString());
+				}
+			}
 		} catch (Exception exception) {
 			histroyLookupResponse.setTransactionSuccess(false);
 			histroyLookupResponse.setErrorMessage("Please try again.");
@@ -275,6 +300,72 @@ public class ACImpl implements ACInterface {
 		LOGGER.debug("Exit getHistoryDetails.");
 
 		return new Gson().toJson(histroyLookupResponse);
+	}
+	
+	public TransactionStatus detailLookUp2(String referenceNumber)
+			throws Exception {
+
+		LOGGER.debug("Enter detailLookUp.");
+
+		DetailLookupRequest detailLookupRequest = new DetailLookupRequest();
+
+		detailLookupRequest.setAgentID(MGI_Constants.AGENT_ID);
+		detailLookupRequest.setAgentSequence(MGI_Constants.AGENT_SEQUENCE);
+		detailLookupRequest.setApiVersion(MGI_Constants.API_VERSION);
+		detailLookupRequest
+				.setClientSoftwareVersion(MGI_Constants.CLIENT_SOFTWARE_VERSION);
+		detailLookupRequest.setIncludeUseData(false);
+		detailLookupRequest.setLanguage(MGI_Constants.LANGUAGE_CODE_ENGLISH);
+		detailLookupRequest.setReferenceNumber(referenceNumber);
+
+		detailLookupRequest.setTimeStamp(getTimeStamp());
+
+		detailLookupRequest.setToken(MGI_Constants.TOKEN);
+		detailLookupRequest.setUnitProfileID(MGI_Constants.UNIT_PROFILE_ID);
+		DetailLookupResponse detailLookupResponse = null;
+		detailLookupResponse = AgentConnect_AgentConnect_Client
+				.detailLookup(detailLookupRequest);
+
+		LOGGER.debug("Exit detailLookUp.");
+
+		return detailLookupResponse.getTransactionStatus();
+	}
+	@POST
+	@Path("/detailLookUp")
+	@Override
+	public String detailLookUp(DetailLookupInputBean detailLookupInputBean) {
+
+		LOGGER.debug("Enter detailLookUp.");
+
+		DetailLookupRequest detailLookupRequest = new DetailLookupRequest();
+
+		detailLookupRequest.setAgentID(MGI_Constants.AGENT_ID);
+		detailLookupRequest.setAgentSequence(MGI_Constants.AGENT_SEQUENCE);
+		detailLookupRequest.setApiVersion(MGI_Constants.API_VERSION);
+		detailLookupRequest
+				.setClientSoftwareVersion(MGI_Constants.CLIENT_SOFTWARE_VERSION);
+		detailLookupRequest.setIncludeUseData(false);
+		detailLookupRequest.setLanguage(MGI_Constants.LANGUAGE_CODE_ENGLISH);
+		detailLookupRequest.setReferenceNumber(detailLookupInputBean
+				.getReferenceNumber());
+
+		detailLookupRequest.setTimeStamp(getTimeStamp());
+
+		detailLookupRequest.setToken(MGI_Constants.TOKEN);
+		detailLookupRequest.setUnitProfileID(MGI_Constants.UNIT_PROFILE_ID);
+		DetailLookupResponse detailLookupResponse = null;
+		try {
+			detailLookupResponse = AgentConnect_AgentConnect_Client
+					.detailLookup(detailLookupRequest);
+			LOGGER.debug(detailLookupResponse.getTransactionStatus().value());
+		} catch (Exception exception) {
+			// TODO Auto-generated catch block
+			exception.printStackTrace();
+		}
+
+		LOGGER.debug("Exit detailLookUp.");
+
+		return new Gson().toJson(detailLookupResponse);
 	}
 
 	private static XMLGregorianCalendar getTimeStamp() {
@@ -294,7 +385,7 @@ public class ACImpl implements ACInterface {
 	public String getFeeLinkValue() {
 
 		LOGGER.debug("Enter getFeeLinkValue.");
-
+setCredentials();
 		int yesterday = 7;
 		FeeLinkValues feeLinkValues = new FeeLinkValues();
 		if (FEELINK_DAY_IDENTIFIER != Calendar.getInstance().get(
@@ -328,7 +419,7 @@ public class ACImpl implements ACInterface {
 				FEE_FOR_TWO_HUNDRED = feeForTwoHundred;
 			}
 			synchronized (FEE_FOR_FIVE_HUNDRED) {
-				FEE_FOR_TWO_HUNDRED = feeForFiveHundred;
+				FEE_FOR_FIVE_HUNDRED = feeForFiveHundred;
 			}
 
 			MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
@@ -357,9 +448,20 @@ public class ACImpl implements ACInterface {
 				feeLinkValues.setTransactionSuccess(false);
 				feeLinkValues.setErrorMessage("Please try after few minutes.");
 			}
-			feeLinkValues.setTransactionSuccess(true);
-			feeLinkValues.setFeeForTwoHundred(FEE_FOR_TWO_HUNDRED);
-			feeLinkValues.setFeeForFiveHundred(FEE_FOR_FIVE_HUNDRED);
+			
+			if (feeForFiveHundred.compareTo(BigDecimal.ZERO) == 0
+					|| feeForTwoHundred.compareTo(BigDecimal.ZERO) == 0) {
+				synchronized (FEELINK_DAY_IDENTIFIER) {
+					FEELINK_DAY_IDENTIFIER = yesterday;
+				}
+				feeLinkValues.setTransactionSuccess(false);
+				feeLinkValues.setErrorMessage("Please Try Again.");
+			} else {
+
+				feeLinkValues.setTransactionSuccess(true);
+				feeLinkValues.setFeeForTwoHundred(FEE_FOR_TWO_HUNDRED);
+				feeLinkValues.setFeeForFiveHundred(FEE_FOR_FIVE_HUNDRED);
+			}
 
 			return new Gson().toJson(feeLinkValues);
 
@@ -483,9 +585,9 @@ public class ACImpl implements ACInterface {
 						.setMgiReferenceNumber(commitTransactionResponse
 								.getReferenceNumber());
 				commitTransactionInputBean
-						.setMgiTransactionStatus("Not_Collected");
+						.setMgiTransactionStatus(TransactionStatus.AVAIL.value());
 				commitTransactionInputBean
-						.setPayPalTransactionStatus("Collected");
+						.setPayPalTransactionStatus("Payapal_Collected");
 				commitTransactionInputBean.setTransactionId(1000);
 				try {
 					MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
@@ -508,42 +610,7 @@ public class ACImpl implements ACInterface {
 		return new Gson().toJson(commitTransactionResponseForReturn);
 	}
 
-	@POST
-	@Path("/detailLookUp")
-	@Override
-	public String detailLookUp(DetailLookupInputBean detailLookupInputBean) {
-
-		LOGGER.debug("Enter detailLookUp.");
-
-		DetailLookupRequest detailLookupRequest = new DetailLookupRequest();
-
-		detailLookupRequest.setAgentID(MGI_Constants.AGENT_ID);
-		detailLookupRequest.setAgentSequence(MGI_Constants.AGENT_SEQUENCE);
-		detailLookupRequest.setApiVersion(MGI_Constants.API_VERSION);
-		detailLookupRequest
-				.setClientSoftwareVersion(MGI_Constants.CLIENT_SOFTWARE_VERSION);
-		detailLookupRequest.setIncludeUseData(false);
-		detailLookupRequest.setLanguage(MGI_Constants.LANGUAGE_CODE_ENGLISH);
-		detailLookupRequest.setReferenceNumber(detailLookupInputBean
-				.getReferenceNumber());
-
-		detailLookupRequest.setTimeStamp(getTimeStamp());
-
-		detailLookupRequest.setToken(MGI_Constants.TOKEN);
-		detailLookupRequest.setUnitProfileID(MGI_Constants.UNIT_PROFILE_ID);
-		DetailLookupResponse detailLookupResponse = null;
-		try {
-			detailLookupResponse = AgentConnect_AgentConnect_Client
-					.detailLookup(detailLookupRequest);
-		} catch (Exception exception) {
-			// TODO Auto-generated catch block
-			exception.printStackTrace();
-		}
-
-		LOGGER.debug("Exit detailLookUp.");
-
-		return new Gson().toJson(detailLookupResponse);
-	}
+	
 
 	@POST
 	@Path("/sendReversal")
@@ -767,6 +834,7 @@ public class ACImpl implements ACInterface {
 					currencyType.setAmount(new BigDecimal(0));
 					currencyType.setCode("Invalid Code");
 					getUserLimitsResponse2.setCurrencyType(currencyType);
+					getUserLimitsResponse2.setTransactionSuccess(false);
 				}
 
 				break;
@@ -777,7 +845,94 @@ public class ACImpl implements ACInterface {
 
 		return gson.toJson(getUserLimitsResponse2);
 	}
+	
+	@POST
+	@Path("/getUserData")
+	@Override
+	public String getUserData(UserDataInputBean userDataInputBean) {
 
+		LOGGER.debug("Enter getUserLimits.");
+
+		String token = createToken(userDataInputBean.getCode());
+		String userData = getUserData(token);
+
+		LOGGER.debug("Exit getUserLimits.");
+
+		return userData;
+	}
+
+	private String createToken(String codeValue) {
+
+		String token = null;
+		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
+				+ "/v1/tokenservice";
+
+		try {
+			HttpClient client = new HttpClient();
+			PostMethod postMethod = new PostMethod(uri);
+			String myQuery = "profile https://uri.paypal.com/services/AdaptivePaymentsPayAPI openid";
+			String ScopeValue = URLEncoder.encode(myQuery, "ISO-8859-1")
+					.toString();
+			postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+					new DefaultHttpMethodRetryHandler(3, false));
+			postMethod.addRequestHeader("Authorization",
+					"Basic bWdpX2Z1bmRzX291dC5tb25leWdyYW0uY29tOlNTQVJXTEJRUkxGTURMSEg=");
+			postMethod.addParameter("grant_type", "authorization_code");
+			postMethod.addParameter("scope", ScopeValue);
+			postMethod.addParameter("code", codeValue);
+
+			int statusCode = client.executeMethod(postMethod);
+
+			if (statusCode != HttpStatus.SC_NOT_IMPLEMENTED) {
+				String[] stringArray = postMethod.getResponseBodyAsString().split(":");
+				token = stringArray[stringArray.length - 1];
+				token = token.substring(1, token.length() - 2);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return token;
+	}
+
+	private String getUserData(String tokenData){
+
+		String responseBody = null;
+		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
+				+ "/v1/userinfo?schema=openid";
+		try {
+			HttpClient client = new HttpClient();
+			GetMethod method2 = new GetMethod(uri);
+			method2.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+					new DefaultHttpMethodRetryHandler(3, false));
+			method2.addRequestHeader("Authorization",
+					"Bearer ".concat(tokenData));
+			int statusCode = client.executeMethod(method2);
+
+			if (statusCode != HttpStatus.SC_NOT_IMPLEMENTED) {
+				 responseBody = method2.getResponseBodyAsString();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	
+		return responseBody;
+	}
+	@POST
+	@Path("/payToMoneyGram")
+	@Override
+	public String payToMoneyGram() {
+
+		LOGGER.debug("Enter getUserLimits.");
+
+		
+		LOGGER.debug("Exit getUserLimits.");
+
+		return null;
+	}
 	@POST
 	@Path("/sendMail")
 	@Override

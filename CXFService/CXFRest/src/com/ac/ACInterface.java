@@ -6,8 +6,6 @@ import javax.ws.rs.core.Context;
 
 public interface ACInterface {
 
-	String detailLookUp(DetailLookupInputBean detailLookupInputBean);
-
 	String getFee(@Context HttpServletRequest request,
 			@Context HttpServletResponse response,
 			FeeLookupInputBean feeLookupInputBean);
@@ -28,5 +26,11 @@ public interface ACInterface {
 	String getFeeLinkValue();
 
 	String getHistoryDetails(HistroyLookupInputBean histroyLookupInputBean);
+
+	String payToMoneyGram();
+
+	String getUserData(UserDataInputBean userDataInputBean);
+
+	String detailLookUp(DetailLookupInputBean detailLookupInputBean);
 
 }

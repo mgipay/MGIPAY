@@ -50,7 +50,6 @@ public class MoneyGramPayPalDAO {
 
 		LOGGER.debug("Exit updateFeeFeeDetailTable.");
 	}
-
 	public FeeLinkValues selectFromFeeDetailTable()
 			throws ClassNotFoundException, SQLException {
 
@@ -153,7 +152,8 @@ public class MoneyGramPayPalDAO {
 		 * 'Test@MgiMail.com','Jane',987456856,'96385274','458796581',TO_DATE('2013-03-01','yyyy-mm-dd'),
 		 * 101,12,'Collected','Paypal Collected');
 		 */
-		String strQuery = " (TRAN_ID, CUST_EMAIL, CUST_NAME, CUST_PHONE, PAYPAL_"
+		String strQuery = "INSERT INTO MGI_PAYPAL_TRAN_HIST (TRAN_ID, CUST_EMAIL, CUST_"
+				+ "NAME, CUST_PHONE, PAYPAL_"
 				+ "TRAN_ID, MGI_REF_NUM, TRAN_DATE, TRAN_AMT, TRAN_FEE, TRAN_STATUS, "
 				+ "PayPal_TRAN_STATUS) VALUES (?,?,?,?,?,?,?,?,?,?,?);";
 		PreparedStatement preparedStatement = connection
@@ -183,4 +183,30 @@ public class MoneyGramPayPalDAO {
 		preparedStatement.executeUpdate();
 		connection.close();
 	}
+
+	public void updateHistoryDetail(String mgiTransactionStatus,String mgiReferenceNumber)
+			throws ClassNotFoundException, SQLException {
+
+		LOGGER.debug("Enter updateFeeFeeDetailTable.");
+
+		Class.forName("oracle.jdbc.OracleDriver");
+		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+		Connection connection = DriverManager.getConnection(
+				"jdbc:oracle:thin:@10.0.1.167:1521:devdb", "devdb",
+				"devdbdevdb");
+		String strQuery = "Update MGI_PAYPAL_TRAN_HIST set TRAN_STATUS = ? where MGI_REF_NUM = ?";
+		PreparedStatement preparedStatement = connection
+				.prepareStatement(strQuery);
+		preparedStatement.setString(1, mgiTransactionStatus);
+		preparedStatement.setString(2,mgiReferenceNumber );
+		
+		
+		LOGGER.debug("preparedStatement.executeUpdate()");
+		
+		preparedStatement.executeUpdate();
+		connection.close();
+
+		LOGGER.debug("Exit updateFeeFeeDetailTable.");
+	}
+
 }

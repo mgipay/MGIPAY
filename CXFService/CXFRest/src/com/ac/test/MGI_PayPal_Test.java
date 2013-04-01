@@ -26,6 +26,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ac.CommitTransactionInputBean;
+import com.ac1211.client.TransactionStatus;
 import com.google.gson.Gson;
 
 /**
@@ -47,17 +48,6 @@ public class MGI_PayPal_Test {
 	public void TestFeeLookUp() { setCredentials();
 		try {
 			
-			
-			
-//			Properties properties = new Properties();
-//			properties.load(new FileInputStream("Constants.properties"));
-//			String name = properties.getProperty("AgentId");
-//			System.out.println(name);
-			
-			
-			
-			
-
 			URL url = new URL("http://localhost:8092/CXFRest/rest/getFee");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
@@ -107,7 +97,7 @@ public class MGI_PayPal_Test {
 				+ "ZipCode\":\"55416\",\"senderCountry\":\"USA\",\"senderHomePhone\":\"9522320253\",\"rece"
 				+ "iverFirstName\":\"N R F\",\"receiverLastName\":\"N R L\",\"sendCurrency\":\"USD\",\"mgiT"
 				+ "ransactionSessionID\":\""
-				+ "9708729E1572561364808310118"
+				+ "9708729E1572561364843019504"
 				+ "\"}}";
 
 		OutputStream os = conn.getOutputStream();
@@ -144,7 +134,7 @@ public class MGI_PayPal_Test {
 			commitTransactionInputBean.setCustomerName("VIJAY BALAKRISHNAN");
 			commitTransactionInputBean.setCustomerPhoneNumber("6057100363");
 			commitTransactionInputBean
-					.setMgiTransactionSessionID("9708729E1572561364383618664");
+					.setMgiTransactionSessionID("9708729E1572561364843019504");
 			commitTransactionInputBean.setPaypalTransactionID("58965687");
 			commitTransactionInputBean
 					.setTransactionAmount(new BigDecimal(100));
@@ -180,9 +170,10 @@ public class MGI_PayPal_Test {
 			e.printStackTrace();
 		}
 	}
-	@Ignore
+	@Test
 	public void TestDetailLookup() { setCredentials();
 		try {
+			System.out.println(TransactionStatus.AVAIL.value());
 			URL url = new URL(
 					"http://localhost:8092/CXFRest/rest/detailLookUp");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -191,7 +182,7 @@ public class MGI_PayPal_Test {
 			conn.setRequestProperty("Content-Type", "application/json");
 
 			String inputJsonObject = "{\"DetailLookupInputBean\":{\"referenceNumber\":\""
-					+ "97957451" + "\"}}";
+					+ "71016865" + "\"}}";
 
 			OutputStream os = conn.getOutputStream();
 			os.write(inputJsonObject.getBytes());
