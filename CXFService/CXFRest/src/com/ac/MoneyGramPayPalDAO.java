@@ -169,9 +169,9 @@ public class MoneyGramPayPalDAO {
 				commitTransactionInputBean.getPaypalTransactionID());
 		preparedStatement.setString(6,
 				commitTransactionInputBean.getMgiReferenceNumber());
-		java.sql.Date transactionDate = (java.sql.Date) Calendar.getInstance()
-				.getTime();
-		preparedStatement.setDate(7, transactionDate);
+		java.util.Date sysDate = new java.util.Date();
+		java.sql.Date sqlDate = new java.sql.Date(sysDate.getTime());
+		preparedStatement.setDate(7, sqlDate);
 		preparedStatement.setBigDecimal(8,
 				commitTransactionInputBean.getTransactionAmount());
 		preparedStatement.setBigDecimal(9,

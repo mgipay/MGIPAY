@@ -5,14 +5,13 @@ package com.ac.test;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Properties;
 import java.util.Scanner;
@@ -38,6 +37,23 @@ public class MGI_PayPal_Test {
 	private static Logger LOGGER = Logger.getLogger(MGI_PayPal_Test.class);
 	@Test
 	public void test() throws FileNotFoundException, IOException {
+		
+		
+//java.util.Date sysDate = new java.util.Date();
+//java.sql.Date sqlDate = new java.sql.Date(sysDate.getTime());
+//System.out.println(sqlDate);
+
+		
+		String string = "{\"family_name\":\"FundsInI\",\"language\":\"en_US\",\"veri" +
+				"fied\":\"true\",\"locale\":\"en_US\",\"zoneinfo\":\"America/Los" +
+				"_Angeles\",\"name\":\"MGI FundsInI\",\"given_name\":\"MGI\",\"user_id\":\"url\"}";
+		
+		Gson gson = new Gson();
+		
+		java.sql.Date transactionDate = (java.sql.Date) Calendar.getInstance()
+				.getTime();
+		
+		
 		Properties properties = new Properties();
 		properties.load(new FileInputStream("Constants.properties"));
 		String name = properties.getProperty("TWO_HUNDRED_US_DOLLARS");

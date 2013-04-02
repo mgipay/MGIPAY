@@ -1,6 +1,7 @@
 package com.ac.test;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -23,6 +24,11 @@ public class Test {
 
 	public static void main1(String[] args) {
 
+		
+		java.sql.Date transactionDate = (java.sql.Date) Calendar.getInstance()
+				.getTime();
+		
+		
 		// TODO delete this class
 		GetUserLimitsRequest getUserLimitsRequest = new GetUserLimitsRequest();
 		PhoneNumberType phoneNumberType = new PhoneNumberType();

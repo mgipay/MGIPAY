@@ -279,13 +279,23 @@ public class ACImpl implements ACInterface {
 			for (HistoryDetails historyDetails : historyDetailsList) {
 				if (!historyDetails.getTransactionStatus().equals(
 						TransactionStatus.RECVD.value())) {
-					moneyGramPayPalDAO.updateHistoryDetail(
-							detailLookUp2(
-									historyDetails.getMgiReferenceNumber())
-									.value(), historyDetails
-									.getMgiReferenceNumber(), historyDetails
-									.getCustomerEmail());
-					historyDetails.setTransactionStatus(TransactionStatus.values().toString());
+
+					String statusFromDetailLookUp = detailLookUp2(historyDetails.getMgiReferenceNumber());
+
+					LOGGER.debug("statusFromDetailLookUp : "
+							+ statusFromDetailLookUp);
+					LOGGER.debug("statusFromHistoryTable : "
+							+ historyDetails.getTransactionStatus());
+
+					if (!statusFromDetailLookUp.equals(historyDetails
+							.getTransactionStatus())) {
+						moneyGramPayPalDAO.updateHistoryDetail(
+								statusFromDetailLookUp,
+								historyDetails.getMgiReferenceNumber(),
+								historyDetails.getCustomerEmail());
+						historyDetails.setTransactionStatus(statusFromDetailLookUp);
+					}
+					
 				}
 			}
 		} catch (Exception exception) {
@@ -301,7 +311,7 @@ public class ACImpl implements ACInterface {
 		return new Gson().toJson(histroyLookupResponse);
 	}
 	
-	public TransactionStatus detailLookUp2(String referenceNumber)
+	public String detailLookUp2(String referenceNumber)
 			throws Exception {
 
 		LOGGER.debug("Enter detailLookUp.");
@@ -327,7 +337,7 @@ public class ACImpl implements ACInterface {
 
 		LOGGER.debug("Exit detailLookUp.");
 
-		return detailLookupResponse.getTransactionStatus();
+		return detailLookupResponse.getTransactionStatus().value();
 	}
 	@POST
 	@Path("/detailLookUp")
@@ -824,7 +834,6 @@ setCredentials();
 				List<UserLimit> userLimitList = getUserLimitsResponse
 						.getUserLimit();
 				if (userLimitList != null && !userLimitList.isEmpty()) {
-					LOGGER.debug("userLimitList is not empty");
 					getUserLimitsResponse2.setCurrencyType(userLimitList.get(0)
 							.getLimitAmount());
 				} else {
@@ -862,10 +871,9 @@ setCredentials();
 
 	private String createToken(String codeValue) {
 
-		String token = null;
 		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
 				+ "/v1/tokenservice";
-
+		AccessToken accessToken = new AccessToken();
 		try {
 			HttpClient client = new HttpClient();
 			PostMethod postMethod = new PostMethod(uri);
@@ -881,18 +889,18 @@ setCredentials();
 			postMethod.addParameter("code", codeValue);
 
 			int statusCode = client.executeMethod(postMethod);
-
+			
 			if (statusCode != HttpStatus.SC_NOT_IMPLEMENTED) {
-				String[] stringArray = postMethod.getResponseBodyAsString().split(":");
-				token = stringArray[stringArray.length - 1];
-				token = token.substring(1, token.length() - 2);
+				String string= postMethod.getResponseBodyAsString();
+				accessToken = (AccessToken) new Gson().fromJson(
+						string, AccessToken.class);
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		return token;
+		return accessToken.getAccess_token();
 	}
 
 	private String getUserData(String tokenData){
@@ -900,6 +908,7 @@ setCredentials();
 		String responseBody = null;
 		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
 				+ "/v1/userinfo?schema=openid";
+		
 		try {
 			HttpClient client = new HttpClient();
 			GetMethod method2 = new GetMethod(uri);
