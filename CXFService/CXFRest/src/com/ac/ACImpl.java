@@ -88,10 +88,10 @@ public class ACImpl implements ACInterface {
 //					+ "PAY\\CXFService\\CXFRest\\Message.properties";
 //	
 	 private void setCredentials(){
-	 System.setProperty("http.proxyHost", "proxy.tcs.com");
-	 System.setProperty("http.proxyPort", "8080");
-	 System.setProperty("http.proxyUser", "538540");
-	 System.setProperty("http.proxyPassword", "Bala@Apr84");
+//	 System.setProperty("http.proxyHost", "proxy.tcs.com");
+//	 System.setProperty("http.proxyPort", "8080");
+//	 System.setProperty("http.proxyUser", "538540");
+//	 System.setProperty("http.proxyPassword", "Bala@Apr84");
 	 }
 	@POST
 	@Path("/getFee")
@@ -597,7 +597,11 @@ setCredentials();
 						.setMgiTransactionStatus(TransactionStatus.AVAIL.value());
 				commitTransactionInputBean
 						.setPayPalTransactionStatus("Payapal_Collected");
+				//TODO
+				
+				LOGGER.debug(commitTransactionInputBean.getCustomerPhoneNumber());
 				commitTransactionInputBean.setTransactionId(1000);
+				commitTransactionInputBean.setCustomerPhoneNumber(567456);
 				try {
 					MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
 					moneyGramPayPalDAO
@@ -859,12 +863,12 @@ setCredentials();
 	@Override
 	public String getUserData(UserDataInputBean userDataInputBean) {
 
-		LOGGER.debug("Enter getUserLimits.");
+		LOGGER.debug("Enter getUserData.");
 
 		String token = createToken(userDataInputBean.getCode());
 		String userData = getUserData(token);
 
-		LOGGER.debug("Exit getUserLimits.");
+		LOGGER.debug("Exit getUserData.");
 
 		return userData;
 	}

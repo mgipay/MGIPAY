@@ -153,7 +153,7 @@ public class MoneyGramPayPalDAO {
 		 * 101,12,'Collected','Paypal Collected');
 		 */
 		String strQuery = "INSERT INTO MGI_PAYPAL_TRAN_HIST (TRAN_ID, CUST_EMAIL, CUST_"
-				+ "NAME, to_number(CUST_PHONE), PAYPAL_"
+				+ "NAME, CUST_PHONE, PAYPAL_"
 				+ "TRAN_ID, MGI_REF_NUM, TRAN_DATE, TRAN_AMT, TRAN_FEE, TRAN_STATUS, "
 				+ "PayPal_TRAN_STATUS) VALUES (?,?,?,?,?,?,?,?,?,?,?);";
 		PreparedStatement preparedStatement = connection
@@ -163,7 +163,7 @@ public class MoneyGramPayPalDAO {
 				commitTransactionInputBean.getCustomerEmail());
 		preparedStatement.setString(3,
 				commitTransactionInputBean.getCustomerName());
-		preparedStatement.setString(4, commitTransactionInputBean
+		preparedStatement.setInt(4,commitTransactionInputBean
 				.getCustomerPhoneNumber());
 		preparedStatement.setString(5,
 				commitTransactionInputBean.getPaypalTransactionID());

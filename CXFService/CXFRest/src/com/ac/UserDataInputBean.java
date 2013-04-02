@@ -1,5 +1,8 @@
 package com.ac;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class UserDataInputBean {
 
 	private String code;

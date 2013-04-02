@@ -25,6 +25,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ac.CommitTransactionInputBean;
+import com.ac.UserDataInputBean;
 import com.ac1211.client.TransactionStatus;
 import com.google.gson.Gson;
 
@@ -38,11 +39,18 @@ public class MGI_PayPal_Test {
 	@Test
 	public void test() throws FileNotFoundException, IOException {
 		
+		BigDecimal bigDecimal = new BigDecimal("9999999999");
+		System.out.println(Integer.parseInt(bigDecimal.toString()));
 		
+		
+//		Integer i = new Integer(999999999);
 //java.util.Date sysDate = new java.util.Date();
 //java.sql.Date sqlDate = new java.sql.Date(sysDate.getTime());
 //System.out.println(sqlDate);
 
+		UserDataInputBean userDataInputBean = new UserDataInputBean();
+		userDataInputBean.setCode(".7M-j4lm-wvADrkX6I5KEH3mcjTobdEyEYioavl3woQ");
+		System.out.println(new Gson().toJson(userDataInputBean));
 		
 		String string = "{\"family_name\":\"FundsInI\",\"language\":\"en_US\",\"veri" +
 				"fied\":\"true\",\"locale\":\"en_US\",\"zoneinfo\":\"America/Los" +
@@ -148,7 +156,7 @@ public class MGI_PayPal_Test {
 			CommitTransactionInputBean commitTransactionInputBean = new CommitTransactionInputBean();
 			commitTransactionInputBean.setCustomerEmail("vbalki@ebay.com");
 			commitTransactionInputBean.setCustomerName("VIJAY BALAKRISHNAN");
-			commitTransactionInputBean.setCustomerPhoneNumber("6057100363");
+//			commitTransactionInputBean.setCustomerPhoneNumber("6057100363");
 			commitTransactionInputBean
 					.setMgiTransactionSessionID("9708729E1572561364843019504");
 			commitTransactionInputBean.setPaypalTransactionID("58965687");
