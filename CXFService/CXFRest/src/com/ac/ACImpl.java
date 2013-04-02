@@ -278,14 +278,13 @@ public class ACImpl implements ACInterface {
 
 			for (HistoryDetails historyDetails : historyDetailsList) {
 				if (!historyDetails.getTransactionStatus().equals(
-						TransactionStatus.RECVD)) {
-					moneyGramPayPalDAO
-							.updateHistoryDetail(
-									detailLookUp2(
-											historyDetails
-													.getMgiReferenceNumber())
-											.value(), historyDetails
-											.getMgiReferenceNumber());
+						TransactionStatus.RECVD.value())) {
+					moneyGramPayPalDAO.updateHistoryDetail(
+							detailLookUp2(
+									historyDetails.getMgiReferenceNumber())
+									.value(), historyDetails
+									.getMgiReferenceNumber(), historyDetails
+									.getCustomerEmail());
 					historyDetails.setTransactionStatus(TransactionStatus.values().toString());
 				}
 			}

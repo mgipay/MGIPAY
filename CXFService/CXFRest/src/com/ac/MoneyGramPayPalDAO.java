@@ -153,7 +153,7 @@ public class MoneyGramPayPalDAO {
 		 * 101,12,'Collected','Paypal Collected');
 		 */
 		String strQuery = "INSERT INTO MGI_PAYPAL_TRAN_HIST (TRAN_ID, CUST_EMAIL, CUST_"
-				+ "NAME, CUST_PHONE, PAYPAL_"
+				+ "NAME, to_number(CUST_PHONE), PAYPAL_"
 				+ "TRAN_ID, MGI_REF_NUM, TRAN_DATE, TRAN_AMT, TRAN_FEE, TRAN_STATUS, "
 				+ "PayPal_TRAN_STATUS) VALUES (?,?,?,?,?,?,?,?,?,?,?);";
 		PreparedStatement preparedStatement = connection
@@ -163,8 +163,8 @@ public class MoneyGramPayPalDAO {
 				commitTransactionInputBean.getCustomerEmail());
 		preparedStatement.setString(3,
 				commitTransactionInputBean.getCustomerName());
-		preparedStatement.setInt(4, Integer.parseInt(commitTransactionInputBean
-				.getCustomerPhoneNumber()));
+		preparedStatement.setString(4, commitTransactionInputBean
+				.getCustomerPhoneNumber());
 		preparedStatement.setString(5,
 				commitTransactionInputBean.getPaypalTransactionID());
 		preparedStatement.setString(6,
@@ -184,7 +184,8 @@ public class MoneyGramPayPalDAO {
 		connection.close();
 	}
 
-	public void updateHistoryDetail(String mgiTransactionStatus,String mgiReferenceNumber)
+	public void updateHistoryDetail(String mgiTransactionStatus,
+			String mgiReferenceNumber, String customerEmail)
 			throws ClassNotFoundException, SQLException {
 
 		LOGGER.debug("Enter updateFeeFeeDetailTable.");
@@ -194,12 +195,13 @@ public class MoneyGramPayPalDAO {
 		Connection connection = DriverManager.getConnection(
 				"jdbc:oracle:thin:@10.0.1.167:1521:devdb", "devdb",
 				"devdbdevdb");
-		String strQuery = "Update MGI_PAYPAL_TRAN_HIST set TRAN_STATUS = ? where MGI_REF_NUM = ?";
+		String strQuery = 
+				"Update MGI_PAYPAL_TRAN_HIST set TRAN_STATUS = ? where MGI_REF_NUM = ? and CUST_EMAIL = ?";
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1, mgiTransactionStatus);
-		preparedStatement.setString(2,mgiReferenceNumber );
-		
+		preparedStatement.setString(2, mgiReferenceNumber);
+		preparedStatement.setString(3, customerEmail);
 		
 		LOGGER.debug("preparedStatement.executeUpdate()");
 		
