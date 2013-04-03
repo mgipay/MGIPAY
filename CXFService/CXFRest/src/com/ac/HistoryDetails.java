@@ -12,12 +12,21 @@ public class HistoryDetails {
 	private BigDecimal transactionID;
 	private String customerEmail;
 	private String customerName;
-	private Integer customerPhone;
+	private BigDecimal customerPhone;
 	private String paypalTransactionID;
 	private String mgiReferenceNumber;
 	private BigDecimal transactionAmount;
 	private BigDecimal transactionFee;
 	private String transactionStatus;
+
+	
+	public BigDecimal getCustomerPhone() {
+		return customerPhone;
+	}
+
+	public void setCustomerPhone(BigDecimal customerPhone) {
+		this.customerPhone = customerPhone;
+	}
 
 	public String getTransactionDate() {
 		return transactionDate;
@@ -51,13 +60,13 @@ public class HistoryDetails {
 		this.customerName = customerName;
 	}
 
-	public Integer getCustomerPhone() {
-		return customerPhone;
-	}
-
-	public void setCustomerPhone(Integer customerPhone) {
-		this.customerPhone = customerPhone;
-	}
+//	public Integer getCustomerPhone() {
+//		return customerPhone;
+//	}
+//
+//	public void setCustomerPhone(Integer customerPhone) {
+//		this.customerPhone = customerPhone;
+//	}
 
 	public String getPaypalTransactionID() {
 		return paypalTransactionID;

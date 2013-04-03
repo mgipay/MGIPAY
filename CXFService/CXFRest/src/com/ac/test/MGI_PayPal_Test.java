@@ -11,8 +11,12 @@ import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -25,6 +29,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ac.CommitTransactionInputBean;
+import com.ac.HistoryDetails;
 import com.ac.UserDataInputBean;
 import com.ac1211.client.TransactionStatus;
 import com.google.gson.Gson;
@@ -36,12 +41,59 @@ import com.google.gson.Gson;
 public class MGI_PayPal_Test {
 	
 	private static Logger LOGGER = Logger.getLogger(MGI_PayPal_Test.class);
+	@SuppressWarnings("unchecked")
 	@Test
 	public void test() throws FileNotFoundException, IOException {
 		
-		BigDecimal bigDecimal = new BigDecimal("9999999999");
-		System.out.println(Integer.parseInt(bigDecimal.toString()));
+//		BigDecimal bigDecimal = new BigDecimal("6057100363.234");
+//		System.out.println(bigDecimal.setScale(0,RoundingMode.DOWN));
+////		System.out.println(Integer.parseInt(bigDecimal.toString()));
+//		String string2 = "ABC@GMAil.com";
+//		System.out.println(string2.toLowerCase());
 		
+		HistoryDetails details = new HistoryDetails();
+		HistoryDetails details2 = new HistoryDetails();
+		HistoryDetails details3 = new HistoryDetails();
+		HistoryDetails details4 = new HistoryDetails();
+		details.setTransactionID(new BigDecimal(1));
+		details2.setTransactionID(new BigDecimal(2));
+		details3.setTransactionID(new BigDecimal(3));
+		details4.setTransactionID(new BigDecimal(4));
+		
+		List<HistoryDetails> historyDetailsList = new ArrayList<HistoryDetails>();
+		
+		historyDetailsList.add(details3);
+		historyDetailsList.add(details4);
+		historyDetailsList.add(details);
+		historyDetailsList.add(details2);
+		/*
+		 *  Collections.sort(employeeList, new Comparator() {  
+            @Override  
+            public int compare(Object obj1, Object obj2) {  
+                Employee emp1 = (Employee)obj1;  
+                Employee emp2 = (Employee)obj2;  
+                return emp1.getFirstName().compareToIgnoreCase(emp2.getFirstName());  
+            }  
+        });  
+        
+		 */
+		
+		for(HistoryDetails historyDetails :  historyDetailsList){
+			System.out.println(historyDetails.getTransactionID());
+		}
+
+		Collections.sort(historyDetailsList, new Comparator<HistoryDetails>() {
+			public int compare(HistoryDetails historyDetails1,
+					HistoryDetails historyDetails2) {
+				return historyDetails2.getTransactionID().compareTo(
+						historyDetails1.getTransactionID());
+			}
+
+		});		 
+		 
+		for(HistoryDetails historyDetails :  historyDetailsList){
+			System.out.println(historyDetails.getTransactionID());
+		}
 		
 //		Integer i = new Integer(999999999);
 //java.util.Date sysDate = new java.util.Date();
@@ -166,6 +218,7 @@ public class MGI_PayPal_Test {
 //			commitTransactionInputBean.setTransactionStatus("PENDING");
 			
 
+//			Integer integer = 200050000;
 			LOGGER.debug(new Gson().toJson(commitTransactionInputBean));
 			
 			String inputJsonObject = "{\"CommitTransactionInputBean\":{\"mgiTransactionSessionID\":\""

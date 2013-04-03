@@ -15,21 +15,21 @@ public class CommitTransactionInputBean {
 	private String mgiTransactionSessionID;
 	private String customerEmail;
 	private String customerName;
-	private Integer customerPhoneNumber;
-	public Integer getCustomerPhoneNumber() {
-		return customerPhoneNumber;
-	}
-
-	public void setCustomerPhoneNumber(Integer customerPhoneNumber) {
-		this.customerPhoneNumber = customerPhoneNumber;
-	}
-
+	private BigDecimal customerPhoneNumber;
 	private String paypalTransactionID;
 	private BigDecimal transactionAmount;
 	private BigDecimal transactionFee;
 	private String mgiTransactionStatus;
 	private String mgiReferenceNumber;
 	private String payPalTransactionStatus;
+
+	public BigDecimal getCustomerPhoneNumber() {
+		return customerPhoneNumber;
+	}
+
+	public void setCustomerPhoneNumber(BigDecimal customerPhoneNumber) {
+		this.customerPhoneNumber = customerPhoneNumber;
+	}
 
 	public Integer getTransactionId() {
 		return transactionId;
@@ -70,14 +70,6 @@ public class CommitTransactionInputBean {
 	public void setCustomerName(String customerName) {
 		this.customerName = customerName;
 	}
-
-//	public String getCustomerPhoneNumber() {
-//		return customerPhoneNumber;
-//	}
-//
-//	public void setCustomerPhoneNumber(String customerPhoneNumber) {
-//		this.customerPhoneNumber = customerPhoneNumber;
-//	}
 
 	public String getPaypalTransactionID() {
 		return paypalTransactionID;

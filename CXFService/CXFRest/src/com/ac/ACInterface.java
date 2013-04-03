@@ -27,10 +27,10 @@ public interface ACInterface {
 
 	String getHistoryDetails(HistroyLookupInputBean histroyLookupInputBean);
 
-	String payToMoneyGram();
-
 	String getUserData(UserDataInputBean userDataInputBean);
 
 	String detailLookUp(DetailLookupInputBean detailLookupInputBean);
+
+	String payToMoneyGram(String token);
 
 }

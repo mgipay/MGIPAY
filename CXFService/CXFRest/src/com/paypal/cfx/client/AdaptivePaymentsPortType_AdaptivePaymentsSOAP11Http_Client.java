@@ -55,9 +55,75 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 		return _getUserLimits__return;
 	}
 
+	public static PayResponse getPay(PayRequest payRequest,String token)
+			throws java.lang.Exception {
+		AdaptivePaymentsPortType port = getPortForPay(token);
+
+		com.paypal.cfx.client.PayResponse _PayResponse = null;
+		try {
+			_PayResponse = port.pay(payRequest);
+
+		} catch (PPFaultMessage objPpFaultMessage) {
+			objPpFaultMessage.printStackTrace();
+			FaultMessage objFaultMessage = objPpFaultMessage.getFaultInfo();
+			ErrorData ed = objFaultMessage.getError().get(0);
+			System.out
+					.println("Expected exception: PPFaultMessage has occurred.");
+			System.out.println("Error Code: " + ed.getErrorId()
+					+ " FaultMessage" + ed.getMessage());
+			System.out.println(objPpFaultMessage.toString());
+		}
+
+		return _PayResponse;
+	}
+
+	private static AdaptivePaymentsPortType getPortForPay(String token) {
+		setCredentialsForPay();
+		// String wsdlURL
+		// ="https://svcs.sandbox.paypal.com/AdaptivePayments/Pay";
+		String wsdlURL = "https://api.stage2cp07.stage.paypal.com:9090/AdaptivePayments/Pay";
+
+		AdaptivePayments ss = new AdaptivePayments();
+		AdaptivePaymentsPortType port = ss.getAdaptivePaymentsSOAP11Http();
+		BindingProvider bd = (BindingProvider) port;
+		bd.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+				wsdlURL);
+		// addLogHandler(bd);
+		// setupHeaders(bd);
+		setupHeadersForPay(bd,token);
+		return port;
+	}
+
+	public static void setupHeadersForPay(BindingProvider bp,String token) {
+
+		/*
+		 * System.out.println("Setting HTTP Header"); AccessToken accessToken =
+		 * new AccessToken(); String Token = accessToken.getAccess_token();
+		 */
+
+		// String Tok="F2DcXe38dhK.Pxw1N.fhS9KJYed3lQAnPCnSCKYTj1Q";
+		Map<String, List<String>> headers = new HashMap<String, List<String>>();
+		headers.put("X-PAYPAL-SECURITY-PASSWORD",
+				Collections.singletonList("SSARWLBQRLFMDLHH"));
+
+		headers.put("X-PAYPAL-APPLICATION-ID",
+				Collections.singletonList("APP-1JE4291016473214C"));
+		headers.put("X-PAYPAL-SECURITY-USERID", Collections
+				.singletonList("mgi_fundsout_test_api1.moneygram.com"));
+
+		headers.put("X-PAYPAL-SECONDARY-AUTH-UNIVERSAL-TOKEN ", Collections
+				.singletonList("Hia6.IbEOZ1kV-KvqETllw9vPBtrH-QoXu297bVRqy8"));
+		bp.getRequestContext()
+				.put(MessageContext.HTTP_REQUEST_HEADERS, headers);
+
+	}
+
 	private static AdaptivePaymentsPortType getPort() {
 		setCredentials();
 		String wsdlURL = "https://svcs.sandbox.paypal.com/AdaptivePayments/GetUserLimits";
+
+		// String wsdlURL =
+		// "https://api.stage2cp07.stage.paypal.com:9090/AdaptivePayments/GetUserLimits";
 
 		AdaptivePayments ss = new AdaptivePayments();
 		AdaptivePaymentsPortType port = ss.getAdaptivePaymentsSOAP11Http();
@@ -69,16 +135,40 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 		return port;
 	}
 
+	private static void setCredentialsForPay() {
+		Security.setProperty("ssl.SocketFactory.provider",
+				"com.ibm.jsse2.SSLSocketFactoryImpl");
+		Security.setProperty("ssl.ServerSocketFactory.provider",
+				"com.ibm.jsse2.SSLServerSocketFactoryImpl");
+		System.setProperty("javax.net.ssl.trustStoreType", "JKS");
+		System.setProperty("javax.net.ssl.trustStore",
+				"C:\\Documents and Settings\\vt69\\Desktop\\paypal1\\truststore.jks");
+		System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
+		System.setProperty("javax.net.ssl.keyStoreType", "pkcs12");
+		System.setProperty("javax.net.ssl.keyStore",
+				"C:\\Documents and Settings\\vt69\\Desktop\\paypal1\\paypal_cert.p12");
+		System.setProperty("javax.net.ssl.keyStorePassword", "prompt");
+
+		/*
+		 * System.setProperty("http.proxyHost", "proxy.tcs.com");
+		 * System.setProperty("http.proxyPort", "8080");
+		 * System.setProperty("http.proxyUser", "351189");
+		 * System.setProperty("http.proxyPassword", "Maha@mar13");
+		 */
+	}
+
 	private static void setCredentials() {
 		Security.setProperty("ssl.SocketFactory.provider",
 				"com.ibm.jsse2.SSLSocketFactoryImpl");
 		Security.setProperty("ssl.ServerSocketFactory.provider",
 				"com.ibm.jsse2.SSLServerSocketFactoryImpl");
 
-	/*	System.setProperty("http.proxyHost", "proxy.tcs.com");
-		System.setProperty("http.proxyPort", "8080");
-		System.setProperty("http.proxyUser", "538540");
-		System.setProperty("http.proxyPassword", "Bala@Mar84");*/
+		/*
+		 * System.setProperty("http.proxyHost", "proxy.tcs.com");
+		 * System.setProperty("http.proxyPort", "8080");
+		 * System.setProperty("http.proxyUser", "538540");
+		 * System.setProperty("http.proxyPassword", "Bala@Mar84");
+		 */
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

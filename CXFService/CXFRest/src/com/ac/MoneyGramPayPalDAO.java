@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -34,18 +33,12 @@ public class MoneyGramPayPalDAO {
 		Connection connection = DriverManager.getConnection(
 				"jdbc:oracle:thin:@10.0.1.167:1521:devdb", "devdb",
 				"devdbdevdb");
-//		String strQuery = "INSERT INTO MGI_PAYPAL_FEE_DTL (country_CODE, LOWER_LIMIT, UPPER_LIMIT"
-//				+ ", FEE_CHARGES, FUNDS_TYPE) VALUES (?,?,?,?,?,?);";
 		String strQuery = "Update MGI_PAYPAL_FEE_DTL set FEE_CHARGES = ? where UPPER_LIMIT = ?";
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setBigDecimal(1, feeCharge);
 		preparedStatement.setBigDecimal(2, upperLimit);
-		
-		
-		LOGGER.debug("preparedStatement.executeUpdate()");
-		
-		preparedStatement.executeUpdate();
+                                                                                           		preparedStatement.executeUpdate();
 		connection.close();
 
 		LOGGER.debug("Exit updateFeeFeeDetailTable.");
@@ -89,20 +82,15 @@ public class MoneyGramPayPalDAO {
 
 		LOGGER.debug("Enter retrieveHistroyDetails.");
 		
+		LOGGER.debug("emailId for retrive History  : " + emailId);
+		
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 		Connection connection = DriverManager.getConnection(
 				"jdbc:oracle:thin:@10.0.1.167:1521:devdb", "devdb",
 				"devdbdevdb");
-		/*
-		 * SELECT * FROM (SELECT * FROM MyTbl ORDER BY Fname ) WHERE ROWNUM = 1;
-		 * 
-		 * old query
-		 * SELECT * FROM MGI_PAYPAL_TRAN_HIST WHERE CUST_EMAIL = ? order by"
-				+ " TRAN_DATE desc
-		 */
-		String strQuery = "SELECT * FROM (SELECT * FROM MGI_PAYPAL_TRAN_HIST WHERE CUST_EMAIL = ? order by"
-				+ " TRAN_DATE desc) WHERE ROWNUM < 11";
+		String strQuery = "SELECT * FROM (SELECT * FROM MGI_PAYPAL_TR" +
+				"AN_HIST WHERE CUST_EMAIL = ? order by TRAN_DATE desc) a where rownum < 11";
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1, emailId);
@@ -112,7 +100,7 @@ public class MoneyGramPayPalDAO {
 			HistoryDetails historyDetails = new HistoryDetails();
 			historyDetails.setCustomerEmail(resultSet.getString("CUST_EMAIL"));
 			historyDetails.setCustomerName(resultSet.getString("CUST_NAME"));
-			historyDetails.setCustomerPhone(resultSet.getInt("CUST_PHONE"));
+			historyDetails.setCustomerPhone(resultSet.getBigDecimal("CUST_PHONE"));
 			historyDetails.setMgiReferenceNumber(resultSet
 					.getString("MGI_REF_NUM"));
 			historyDetails.setPaypalTransactionID(resultSet
@@ -140,48 +128,46 @@ public class MoneyGramPayPalDAO {
 			CommitTransactionInputBean commitTransactionInputBean)
 			throws ClassNotFoundException, SQLException {
 
+		LOGGER.debug("Enter insertHistoryDetails.");
+		
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 		Connection connection = DriverManager.getConnection(
 				"jdbc:oracle:thin:@10.0.1.167:1521:devdb", "devdb",
 				"devdbdevdb");
-		/*
-		 * INSERT INTO MGI_PAYPAL_TRAN_HIST (TRAN_ID,CUST_EMAIL, CUST_NAME,
-		 * CUST_PHONE, PAYPAL_TRAN_ID, MGI_REF_NUM, TRAN_DATE, TRAN_AMT,
-		 * TRAN_FEE, TRAN_STATUS,PayPal_TRAN_STATUS) VALUES (1,
-		 * 'Test@MgiMail.com','Jane',987456856,'96385274','458796581',TO_DATE('2013-03-01','yyyy-mm-dd'),
-		 * 101,12,'Collected','Paypal Collected');
-		 */
+		
 		String strQuery = "INSERT INTO MGI_PAYPAL_TRAN_HIST (TRAN_ID, CUST_EMAIL, CUST_"
 				+ "NAME, CUST_PHONE, PAYPAL_"
 				+ "TRAN_ID, MGI_REF_NUM, TRAN_DATE, TRAN_AMT, TRAN_FEE, TRAN_STATUS, "
-				+ "PayPal_TRAN_STATUS) VALUES (?,?,?,?,?,?,?,?,?,?,?);";
+				+ "PayPal_TRAN_STATUS) VALUES (mgi_paypal_tranid_seq.nextval,?,?,?,?,?,?,?,?,?,?)";
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
-		preparedStatement.setInt(1, commitTransactionInputBean.getTransactionId());
-		preparedStatement.setString(2,
+		preparedStatement.setString(1,
 				commitTransactionInputBean.getCustomerEmail());
-		preparedStatement.setString(3,
+		preparedStatement.setString(2,
 				commitTransactionInputBean.getCustomerName());
-		preparedStatement.setInt(4,commitTransactionInputBean
+		preparedStatement.setBigDecimal(3,commitTransactionInputBean
 				.getCustomerPhoneNumber());
-		preparedStatement.setString(5,
+		preparedStatement.setString(4,
 				commitTransactionInputBean.getPaypalTransactionID());
-		preparedStatement.setString(6,
+		preparedStatement.setString(5,
 				commitTransactionInputBean.getMgiReferenceNumber());
 		java.util.Date sysDate = new java.util.Date();
 		java.sql.Date sqlDate = new java.sql.Date(sysDate.getTime());
-		preparedStatement.setDate(7, sqlDate);
-		preparedStatement.setBigDecimal(8,
+		preparedStatement.setDate(6, sqlDate);
+		preparedStatement.setBigDecimal(7,
 				commitTransactionInputBean.getTransactionAmount());
-		preparedStatement.setBigDecimal(9,
+		preparedStatement.setBigDecimal(8,
 				commitTransactionInputBean.getTransactionFee());
-		preparedStatement.setString(10,
+		preparedStatement.setString(9,
 				commitTransactionInputBean.getMgiTransactionStatus());
-		preparedStatement.setString(11,
+		preparedStatement.setString(10,
 				commitTransactionInputBean.getPayPalTransactionStatus());
-		preparedStatement.executeUpdate();
+		preparedStatement.execute();
 		connection.close();
+		
+		LOGGER.debug("Exit insertHistoryDetails.");
+		
 	}
 
 	public void updateHistoryDetail(String mgiTransactionStatus,
@@ -202,9 +188,6 @@ public class MoneyGramPayPalDAO {
 		preparedStatement.setString(1, mgiTransactionStatus);
 		preparedStatement.setString(2, mgiReferenceNumber);
 		preparedStatement.setString(3, customerEmail);
-		
-		LOGGER.debug("preparedStatement.executeUpdate()");
-		
 		preparedStatement.executeUpdate();
 		connection.close();
 
