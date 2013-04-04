@@ -21,6 +21,9 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -84,10 +87,7 @@ public class ACImpl implements ACInterface {
 
 	private static Logger log = Logger.getLogger(ACImpl.class);
 
-//	 private String constantFilePath =
-//	 "C:\\Documents and Settings\\538540\\28_03_2013_New\\MGI"
-//	 + "PAY\\CXFService\\CXFRest\\Constants.properties";
-	//
+
 	// private String messageFilePath =
 	// "C:\\Documents and Settings\\538540\\28_03_2013_New\\MGI"
 	// + "PAY\\CXFService\\CXFRest\\Message.properties";
@@ -97,7 +97,10 @@ public class ACImpl implements ACInterface {
 		// System.setProperty("http.proxyPort", "8080");
 		// System.setProperty("http.proxyUser", "538540");
 		// System.setProperty("http.proxyPassword", "Bala@Apr84");
+
 	}
+	
+	
 
 	@POST
 	@Path("/getFee")
@@ -171,13 +174,13 @@ public class ACImpl implements ACInterface {
 					// .concat(messageProperties
 					// .getProperty("WITHDRAW_ERROR_MESSAGE")));
 					log.warn("Entered Amount above 200 dollars");
-					
-					
+
 					feeLookupResponseReturn
-							.setErrorMessage("WithDraw amount Including Fee is : "
-									.concat(totalAmount.toString())
-									.concat(" USD. You Can Withdraw 200 dollars incl" +
-											"uding fee, per Transaction. Please try again."));
+							.setErrorMessage("Withdraw amount including fee is : "
+									.concat(totalAmount
+											.toString()
+											.concat(" USD. You can withdraw 200 dollars "
+													+ "including fee per transaction. Please try again.")));
 					feeLookupResponseReturn.setTransactionSuccess(false);
 					feeLookupResponseReturn.setTotalAmount(totalAmount);
 					feeLookupResponseReturn.setFeeAmount(totalAmount
@@ -196,31 +199,42 @@ public class ACImpl implements ACInterface {
 	private FeeLookupRequest createFeeLookupInput(BigDecimal amount)
 	/* throws IOException */{
 
-		log.info("Enter createFeeLookupInput.");
+/*		log.info("Enter createFeeLookupInput.");
+		
+		PropertiesConfiguration constant = null;
+		  try {
+		   constant = new PropertiesConfiguration("Constants.properties");
+
+		  } catch (ConfigurationException e1) {
+		   // TODO Auto-generated catch block
+		   ((Throwable) e1).printStackTrace();
+		  }
+		  constant.setReloadingStrategy(new FileChangedReloadingStrategy());*/
 
 		// Properties constantProperties = new Properties();
 		// constantProperties.load(new FileInputStream(constantFilePath));
 
 		FeeLookupRequest feeLookupRequest = new FeeLookupRequest();
 		// feeLookupRequest.setAgentID(constantProperties.getProperty("AGENT_ID"));
-		// feeLookupRequest.setAgentSequence(constantProperties
-		// .getProperty("AGENT_SEQUENCE"));
-		// feeLookupRequest.setToken(constantProperties.getProperty("TOKEN"));
-		// feeLookupRequest.setTimeStamp(getTimeStamp());
-		// feeLookupRequest.setApiVersion(constantProperties.getProperty("API_VERSION"));
-		// feeLookupRequest.setClientSoftwareVersion(constantProperties
-		// .getProperty("CLIENT_SOFTWARE_VERSION"));
-		// feeLookupRequest.setAmountExcludingFee(amount);
-		// feeLookupRequest.setProductType(ProductType.SEND);
-		// feeLookupRequest.setReceiveCountry(constantProperties
-		// .getProperty("MGI_COUNTRY_CODE_USA"));
-		// feeLookupRequest.setDeliveryOption(constantProperties
-		// .getProperty("DELIVER_OPTION_WILL_CALL"));
-		// feeLookupRequest.setReceiveCurrency(constantProperties
-		// .getProperty("CURRENCY_CODE_USA"));
-		// feeLookupRequest.setSendCurrency(constantProperties
-		// .getProperty("CURRENCY_CODE_USA"));
-		// feeLookupRequest.setAllOptions(false);
+/*		 feeLookupRequest.setAgentSequence(constant
+		 .getString("AGENT_SEQUENCE"));
+		 log.debug(constant.getString("AGENT_SEQUENCE"));
+		 feeLookupRequest.setToken(constant.getString("TOKEN"));
+		 feeLookupRequest.setTimeStamp(getTimeStamp());
+		 feeLookupRequest.setApiVersion(constant.getString("API_VERSION"));
+		 feeLookupRequest.setClientSoftwareVersion(constant
+		 .getString("CLIENT_SOFTWARE_VERSION"));
+		 feeLookupRequest.setAmountExcludingFee(amount);
+		 feeLookupRequest.setProductType(ProductType.SEND);
+		 feeLookupRequest.setReceiveCountry(constant
+		 .getString("MGI_COUNTRY_CODE_USA"));
+		 feeLookupRequest.setDeliveryOption(constant
+		 .getString("DELIVER_OPTION_WILL_CALL"));
+		 feeLookupRequest.setReceiveCurrency(constant
+		 .getString("CURRENCY_CODE_USA"));
+		 feeLookupRequest.setSendCurrency(constant
+		 .getString("CURRENCY_CODE_USA"));
+		 feeLookupRequest.setAllOptions(false);*/
 
 		feeLookupRequest.setAgentID(MGI_Constants.AGENT_ID);
 		feeLookupRequest.setAgentSequence(MGI_Constants.AGENT_SEQUENCE);
@@ -849,7 +863,8 @@ public class ACImpl implements ACInterface {
 		phoneNumberType.setPhoneNumber("6057100363");
 
 		AccountIdentifier accountIdentifier = new AccountIdentifier();
-		accountIdentifier.setEmail(userLimitInputBean.getEmailID());
+//		accountIdentifier.setEmail(userLimitInputBean.getEmailID());
+		accountIdentifier.setEmail("paypalmoneygram@gmail.com");
 		accountIdentifier.setPhone(phoneNumberType);
 
 		RequestEnvelope requestEnvelope = new RequestEnvelope();

@@ -38,7 +38,7 @@ public class MoneyGramPayPalDAO {
 				.prepareStatement(strQuery);
 		preparedStatement.setBigDecimal(1, feeCharge);
 		preparedStatement.setBigDecimal(2, upperLimit);
-                                                                                           		preparedStatement.executeUpdate();
+		preparedStatement.executeUpdate();
 		connection.close();
 
 		LOGGER.debug("Exit updateFeeFeeDetailTable.");

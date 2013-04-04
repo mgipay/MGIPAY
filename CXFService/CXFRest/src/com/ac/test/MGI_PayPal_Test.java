@@ -94,25 +94,25 @@ public class MGI_PayPal_Test {
 		for(HistoryDetails historyDetails :  historyDetailsList){
 			System.out.println(historyDetails.getTransactionID());
 		}
-		
-//		Integer i = new Integer(999999999);
-//java.util.Date sysDate = new java.util.Date();
-//java.sql.Date sqlDate = new java.sql.Date(sysDate.getTime());
-//System.out.println(sqlDate);
-
-		UserDataInputBean userDataInputBean = new UserDataInputBean();
-		userDataInputBean.setCode(".7M-j4lm-wvADrkX6I5KEH3mcjTobdEyEYioavl3woQ");
-		System.out.println(new Gson().toJson(userDataInputBean));
-		
-		String string = "{\"family_name\":\"FundsInI\",\"language\":\"en_US\",\"veri" +
-				"fied\":\"true\",\"locale\":\"en_US\",\"zoneinfo\":\"America/Los" +
-				"_Angeles\",\"name\":\"MGI FundsInI\",\"given_name\":\"MGI\",\"user_id\":\"url\"}";
-		
-		Gson gson = new Gson();
-		
-		java.sql.Date transactionDate = (java.sql.Date) Calendar.getInstance()
-				.getTime();
-		
+//		
+////		Integer i = new Integer(999999999);
+////java.util.Date sysDate = new java.util.Date();
+////java.sql.Date sqlDate = new java.sql.Date(sysDate.getTime());
+////System.out.println(sqlDate);
+//
+//		UserDataInputBean userDataInputBean = new UserDataInputBean();
+//		userDataInputBean.setCode(".7M-j4lm-wvADrkX6I5KEH3mcjTobdEyEYioavl3woQ");
+//		System.out.println(new Gson().toJson(userDataInputBean));
+//		
+//		String string = "{\"family_name\":\"FundsInI\",\"language\":\"en_US\",\"veri" +
+//				"fied\":\"true\",\"locale\":\"en_US\",\"zoneinfo\":\"America/Los" +
+//				"_Angeles\",\"name\":\"MGI FundsInI\",\"given_name\":\"MGI\",\"user_id\":\"url\"}";
+//		
+//		Gson gson = new Gson();
+//		
+//		java.sql.Date transactionDate = (java.sql.Date) Calendar.getInstance()
+//				.getTime();
+//		
 		
 		Properties properties = new Properties();
 		properties.load(new FileInputStream("Constants.properties"));
