@@ -9,12 +9,16 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author TCS
  * 
  */
-@XmlRootElement(name="SendMailInputBean")
+@XmlRootElement(name = "SendMailInputBean")
 public class SendMailInputBean {
 
 	public SendMailInputBean() {
 	}
 
+	private String firstname;
+
+	private String lastName;
+	
 	private String mailSubject;
 
 	private String mailText;
@@ -24,6 +28,23 @@ public class SendMailInputBean {
 	private String customerEmailId;
 
 	private Integer phoneNumber;
+
+
+	public String getFirstname() {
+		return firstname;
+	}
+
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
 
 	public String getMailSubject() {
 		return mailSubject;

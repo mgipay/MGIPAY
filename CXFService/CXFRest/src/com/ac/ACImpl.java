@@ -1069,9 +1069,26 @@ public class ACImpl implements ACInterface {
 
 		SendMailOutputBean sendMailOutputBean = new SendMailOutputBean();
 		try {
-			InsertRecsIntoCRMExtWebFormRequest insertRecsIntoCRMExtWebFormRequest = new InsertRecsIntoCRMExtWebFormRequest();
+			InsertRecsIntoCRMExtWebFormRequest insertRecsIntoCRMExtWebFormRequest = 
+					new InsertRecsIntoCRMExtWebFormRequest();
+			insertRecsIntoCRMExtWebFormRequest
+					.setActionNotes("InsertRecsIntoCRMExtWebForm");
 			insertRecsIntoCRMExtWebFormRequest
 					.setWhoCompletingForm("MoneyGram Consumer");
+			insertRecsIntoCRMExtWebFormRequest.setFirstname(sendMailInputBean
+					.getFirstname());
+			insertRecsIntoCRMExtWebFormRequest.setLastname(sendMailInputBean
+					.getLastName());
+			insertRecsIntoCRMExtWebFormRequest
+					.setEmailaddress(sendMailInputBean.getCustomerEmailId());
+			insertRecsIntoCRMExtWebFormRequest.setDescription(sendMailInputBean
+					.getMailText());
+			insertRecsIntoCRMExtWebFormRequest
+					.setComplainingabout(sendMailInputBean.getMailSubject());
+			insertRecsIntoCRMExtWebFormRequest.setTrnRefNbr(sendMailInputBean
+					.getReferenceNumber());
+			
+			
 			InsertRecsIntoCRMExtWebFormResponse insertRecsIntoCRMExtWebFormResponse = ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client
 					.InsertRecsIntoCRMExtWebForm(insertRecsIntoCRMExtWebFormRequest);
 			log.debug(insertRecsIntoCRMExtWebFormResponse
