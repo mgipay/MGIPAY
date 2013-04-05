@@ -21,9 +21,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -32,6 +30,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 
+import com.ac.PropertyUtil;
 import com.ac1211.client.AgentConnect_AgentConnect_Client;
 import com.ac1211.client.CodeTableRequest;
 import com.ac1211.client.CommitTransactionRequest;
@@ -86,21 +85,20 @@ public class ACImpl implements ACInterface {
 	private static BigDecimal FEE_FOR_FIVE_HUNDRED = BigDecimal.ZERO;
 
 	private static Logger log = Logger.getLogger(ACImpl.class);
-
+	
+	PropertiesConfiguration constant = new PropertyUtil().getPropertyConfig();
 
 	// private String messageFilePath =
 	// "C:\\Documents and Settings\\538540\\28_03_2013_New\\MGI"
 	// + "PAY\\CXFService\\CXFRest\\Message.properties";
 	//
 	private void setCredentials() {
-		// System.setProperty("http.proxyHost", "proxy.tcs.com");
-		// System.setProperty("http.proxyPort", "8080");
-		// System.setProperty("http.proxyUser", "538540");
-		// System.setProperty("http.proxyPassword", "Bala@Apr84");
+//		System.setProperty("http.proxyHost", "proxy.tcs.com");
+//		System.setProperty("http.proxyPort", "8080");
+//		System.setProperty("http.proxyUser", "538540");
+//		System.setProperty("http.proxyPassword", "Bala@Apr84");
 
 	}
-	
-	
 
 	@POST
 	@Path("/getFee")
@@ -108,12 +106,10 @@ public class ACImpl implements ACInterface {
 	public String getFee(@Context HttpServletRequest request,
 			@Context HttpServletResponse response,
 			FeeLookupInputBean feeLookupInputBean) {
-
+		
 		log.info("Enter getFee.");
 
 		setCredentials();
-		// Properties messageProperties = new Properties();
-		// Properties constantProperties = new Properties();
 		FeeLookupRequest feeLookupRequest = null;
 		// try {
 		// messageProperties.load(new FileInputStream(messageFilePath));
@@ -199,59 +195,55 @@ public class ACImpl implements ACInterface {
 	private FeeLookupRequest createFeeLookupInput(BigDecimal amount)
 	/* throws IOException */{
 
-/*		log.info("Enter createFeeLookupInput.");
+		log.info("Enter createFeeLookupInput.");
+
 		
-		PropertiesConfiguration constant = null;
-		  try {
-		   constant = new PropertiesConfiguration("Constants.properties");
-
-		  } catch (ConfigurationException e1) {
-		   // TODO Auto-generated catch block
-		   ((Throwable) e1).printStackTrace();
-		  }
-		  constant.setReloadingStrategy(new FileChangedReloadingStrategy());*/
-
 		// Properties constantProperties = new Properties();
 		// constantProperties.load(new FileInputStream(constantFilePath));
 
 		FeeLookupRequest feeLookupRequest = new FeeLookupRequest();
-		// feeLookupRequest.setAgentID(constantProperties.getProperty("AGENT_ID"));
-/*		 feeLookupRequest.setAgentSequence(constant
-		 .getString("AGENT_SEQUENCE"));
-		 log.debug(constant.getString("AGENT_SEQUENCE"));
-		 feeLookupRequest.setToken(constant.getString("TOKEN"));
-		 feeLookupRequest.setTimeStamp(getTimeStamp());
-		 feeLookupRequest.setApiVersion(constant.getString("API_VERSION"));
-		 feeLookupRequest.setClientSoftwareVersion(constant
-		 .getString("CLIENT_SOFTWARE_VERSION"));
-		 feeLookupRequest.setAmountExcludingFee(amount);
-		 feeLookupRequest.setProductType(ProductType.SEND);
-		 feeLookupRequest.setReceiveCountry(constant
-		 .getString("MGI_COUNTRY_CODE_USA"));
-		 feeLookupRequest.setDeliveryOption(constant
-		 .getString("DELIVER_OPTION_WILL_CALL"));
-		 feeLookupRequest.setReceiveCurrency(constant
-		 .getString("CURRENCY_CODE_USA"));
-		 feeLookupRequest.setSendCurrency(constant
-		 .getString("CURRENCY_CODE_USA"));
-		 feeLookupRequest.setAllOptions(false);*/
 
-		feeLookupRequest.setAgentID(MGI_Constants.AGENT_ID);
-		feeLookupRequest.setAgentSequence(MGI_Constants.AGENT_SEQUENCE);
-		feeLookupRequest.setToken(MGI_Constants.TOKEN);
+		feeLookupRequest.setAgentID(constant.getString("AGENT_ID"));
+		feeLookupRequest.setAgentSequence(constant.getString("AGENT_SEQUENCE"));
+		log.debug(constant.getString("AGENT_SEQUENCE"));
+		feeLookupRequest.setToken(constant.getString("TOKEN"));
 		feeLookupRequest.setTimeStamp(getTimeStamp());
-		feeLookupRequest.setApiVersion(MGI_Constants.API_VERSION);
-		feeLookupRequest
-				.setClientSoftwareVersion(MGI_Constants.CLIENT_SOFTWARE_VERSION);
+		feeLookupRequest.setApiVersion(constant.getString("API_VERSION"));
+		feeLookupRequest.setClientSoftwareVersion(constant
+				.getString("CLIENT_SOFTWARE_VERSION"));
 		feeLookupRequest.setAmountExcludingFee(amount);
 		feeLookupRequest.setProductType(ProductType.SEND);
-		feeLookupRequest.setReceiveCountry(MGI_Constants.COUNTRY_CODE_USA);
-		feeLookupRequest
-				.setDeliveryOption(MGI_Constants.DELIVER_OPTION_WILL_CALL);
-		feeLookupRequest.setReceiveCurrency(MGI_Constants.CURRENCY_CODE_USA);
-		feeLookupRequest.setSendCurrency(MGI_Constants.CURRENCY_CODE_USA);
+		feeLookupRequest.setReceiveCountry(constant
+				.getString("MGI_COUNTRY_CODE_USA"));
+		feeLookupRequest.setDeliveryOption(constant
+				.getString("DELIVER_OPTION_WILL_CALL"));
+		feeLookupRequest.setReceiveCurrency(constant
+				.getString("CURRENCY_CODE_USA"));
+		feeLookupRequest.setSendCurrency(constant
+				.getString("CURRENCY_CODE_USA"));
 		feeLookupRequest.setAllOptions(false);
 
+		/*
+		 * feeLookupRequest.setAgentID(MGI_Constants.AGENT_ID);
+		 * feeLookupRequest.setAgentSequence(MGI_Constants.AGENT_SEQUENCE);
+		 * feeLookupRequest.setToken(MGI_Constants.TOKEN);
+		 * feeLookupRequest.setTimeStamp(getTimeStamp());
+		 * feeLookupRequest.setApiVersion(MGI_Constants.API_VERSION);
+		 * feeLookupRequest
+		 * .setClientSoftwareVersion(MGI_Constants.CLIENT_SOFTWARE_VERSION);
+		 * feeLookupRequest.setAmountExcludingFee(amount);
+		 * feeLookupRequest.setProductType(ProductType.SEND);
+		 * feeLookupRequest.setReceiveCountry(MGI_Constants.COUNTRY_CODE_USA);
+		 * feeLookupRequest
+		 * .setDeliveryOption(MGI_Constants.DELIVER_OPTION_WILL_CALL);
+		 * feeLookupRequest.setReceiveCurrency(MGI_Constants.CURRENCY_CODE_USA);
+		 * feeLookupRequest.setSendCurrency(MGI_Constants.CURRENCY_CODE_USA);
+		 * feeLookupRequest.setAllOptions(false);
+		 */
+
+		if (log.isDebugEnabled()) {
+			log.debug(new Gson().toJson(feeLookupRequest));
+		}
 		log.info("Exit createFeeLookupInput.");
 
 		return feeLookupRequest;
@@ -298,10 +290,10 @@ public class ACImpl implements ACInterface {
 			histroyLookupInputBean.setCustomerEmailId(histroyLookupInputBean
 					.getCustomerEmailId().toLowerCase());
 			MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
-//			historyDetailsList = moneyGramPayPalDAO
-//					.retrieveHistroyDetails(histroyLookupInputBean
-//							.getCustomerEmailId());
-			//TODO
+			// historyDetailsList = moneyGramPayPalDAO
+			// .retrieveHistroyDetails(histroyLookupInputBean
+			// .getCustomerEmailId());
+			// TODO
 			historyDetailsList = moneyGramPayPalDAO
 					.retrieveHistroyDetails("vbalki@ebay.com");
 			for (HistoryDetails historyDetails : historyDetailsList) {
@@ -342,12 +334,12 @@ public class ACImpl implements ACInterface {
 						historyDetails1.getTransactionID());
 			}
 
-		});		
+		});
 		histroyLookupResponse.setHistoryDetailsList(historyDetailsList);
 		histroyLookupResponse.setTransactionSuccess(true);
 
 		log.info("Exit getHistoryDetails.");
-		
+
 		return new Gson().toJson(histroyLookupResponse);
 	}
 
@@ -575,7 +567,8 @@ public class ACImpl implements ACInterface {
 										.codeTable(codeTableRequest));
 						responseRecived = true;
 					} catch (Exception exception) {
-						log.error("Retrying Codetable Request because of :" + exception);
+						log.error("Retrying Codetable Request because of :"
+								+ exception);
 						retryCount--;
 						if (retryCount == 0) {
 							synchronized (CODETABLE_DAY_IDENTIFIER) {
@@ -655,8 +648,8 @@ public class ACImpl implements ACInterface {
 				commitTransactionInputBean
 						.setCustomerEmail(commitTransactionInputBean
 								.getCustomerEmail().toLowerCase());
-				
-				//TODO
+
+				// TODO
 				commitTransactionInputBean.setCustomerEmail("vbalki@ebay.com");
 				try {
 					MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
@@ -863,7 +856,7 @@ public class ACImpl implements ACInterface {
 		phoneNumberType.setPhoneNumber("6057100363");
 
 		AccountIdentifier accountIdentifier = new AccountIdentifier();
-//		accountIdentifier.setEmail(userLimitInputBean.getEmailID());
+		// accountIdentifier.setEmail(userLimitInputBean.getEmailID());
 		accountIdentifier.setEmail("paypalmoneygram@gmail.com");
 		accountIdentifier.setPhone(phoneNumberType);
 
@@ -886,10 +879,10 @@ public class ACImpl implements ACInterface {
 		byte retryCount = 3;
 		while (retryCount >= 1) {
 			try {
-//				if (log.isDebugEnabled()) {
-//					log.debug("getUserLimitsRequest: "
-//							+ new Gson().toJson(getUserLimitsRequest));
-//				}
+				// if (log.isDebugEnabled()) {
+				// log.debug("getUserLimitsRequest: "
+				// + new Gson().toJson(getUserLimitsRequest));
+				// }
 				getUserLimitsResponse = AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client
 						.getUserLimit(getUserLimitsRequest);
 			} catch (Exception exception) {
@@ -1069,8 +1062,7 @@ public class ACImpl implements ACInterface {
 
 		SendMailOutputBean sendMailOutputBean = new SendMailOutputBean();
 		try {
-			InsertRecsIntoCRMExtWebFormRequest insertRecsIntoCRMExtWebFormRequest = 
-					new InsertRecsIntoCRMExtWebFormRequest();
+			InsertRecsIntoCRMExtWebFormRequest insertRecsIntoCRMExtWebFormRequest = new InsertRecsIntoCRMExtWebFormRequest();
 			insertRecsIntoCRMExtWebFormRequest
 					.setActionNotes("InsertRecsIntoCRMExtWebForm");
 			insertRecsIntoCRMExtWebFormRequest
@@ -1087,8 +1079,7 @@ public class ACImpl implements ACInterface {
 					.setComplainingabout(sendMailInputBean.getMailSubject());
 			insertRecsIntoCRMExtWebFormRequest.setTrnRefNbr(sendMailInputBean
 					.getReferenceNumber());
-			
-			
+
 			InsertRecsIntoCRMExtWebFormResponse insertRecsIntoCRMExtWebFormResponse = ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client
 					.InsertRecsIntoCRMExtWebForm(insertRecsIntoCRMExtWebFormRequest);
 			log.debug(insertRecsIntoCRMExtWebFormResponse
