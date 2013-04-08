@@ -86,7 +86,8 @@ public class ACImpl implements ACInterface {
 
 	private static Logger LOGGER = Logger.getLogger(ACImpl.class);
 
-	PropertiesConfiguration constant = new PropertyUtil().getPropertyConfig();
+	PropertiesConfiguration constantFromProperties = new PropertyUtil()
+			.getConstantPropertyConfig();
 
 	private void setCredentials() {
 		// System.setProperty("http.proxyHost", "proxy.tcs.com");
@@ -96,6 +97,14 @@ public class ACImpl implements ACInterface {
 
 	}
 
+	/**
+	 * getFee. This method will return fee in USD for given input amount.
+	 * 
+	 * @param HttpServletRequest
+	 *            ,HttpServletResponse,FeeLookupInputBean
+	 * 
+	 * @return FeeLookupResponse This response contains fee in JSON format.
+	 */
 	@POST
 	@Path("/getFee")
 	@Override
@@ -105,6 +114,8 @@ public class ACImpl implements ACInterface {
 
 		LOGGER.info("Enter getFee.");
 
+		LOGGER.info("IP Address : " + request.getRemoteAddr());
+		
 		setCredentials();
 		FeeLookupRequest feeLookupRequest = null;
 		feeLookupRequest = createFeeLookupInput(feeLookupInputBean.getAmount());
@@ -117,13 +128,14 @@ public class ACImpl implements ACInterface {
 				feeLookupResponse = AgentConnect_AgentConnect_Client
 						.feeLookup(feeLookupRequest);
 			} catch (Exception exception) {
-				LOGGER.error("FeeLookup Retrying because of" + exception.getLocalizedMessage());
+				LOGGER.error("FeeLookup Retrying because of"
+						+ exception.getLocalizedMessage());
 				exception.printStackTrace();
 				retryCount--;
 				if (retryCount == 0) {
 					LOGGER.info("Maximum Number of Retries reached. FeeLookUp Response Failed.");
 					feeLookupResponseReturn
-							.setErrorMessage("PLEASE_TRY_AFTER_FEW_MINUTES");
+							.setErrorMessage("Please try after few minutes.");
 
 					feeLookupResponseReturn.setTransactionSuccess(false);
 
@@ -133,7 +145,8 @@ public class ACImpl implements ACInterface {
 			if (feeLookupResponse != null) {
 				BigDecimal totalAmount = feeLookupResponse.getFeeInfo().get(0)
 						.getTotalAmount();
-				if (totalAmount.compareTo(constant.getBigDecimal("TWO_HUNDRED_US_DOLLARS")) <= 0) {
+				if (totalAmount.compareTo(constantFromProperties
+						.getBigDecimal("TWO_HUNDRED_US_DOLLARS")) <= 0) {
 					feeLookupResponseReturn.setTransactionSuccess(true);
 
 					feeLookupResponseReturn
@@ -167,25 +180,39 @@ public class ACImpl implements ACInterface {
 		return new Gson().toJson(feeLookupResponseReturn);
 	}
 
+	/**
+	 * createFeeLookupInput. This method will form the request object for
+	 * feeLookUp.
+	 * 
+	 * @param amount
+	 * 
+	 * @return FeeLookupResponse.
+	 */
 	private FeeLookupRequest createFeeLookupInput(BigDecimal amount) {
 
 		LOGGER.info("Enter createFeeLookupInput.");
 
 		FeeLookupRequest feeLookupRequest = new FeeLookupRequest();
 
-		feeLookupRequest.setAgentID(constant.getString("AGENT_ID"));
-		feeLookupRequest.setAgentSequence(constant.getString("AGENT_SEQUENCE"));
-		feeLookupRequest.setToken(constant.getString("TOKEN"));
+		feeLookupRequest.setAgentID(constantFromProperties
+				.getString("AGENT_ID"));
+		feeLookupRequest.setAgentSequence(constantFromProperties
+				.getString("AGENT_SEQUENCE"));
+		feeLookupRequest.setToken(constantFromProperties.getString("TOKEN"));
 		feeLookupRequest.setTimeStamp(getTimeStamp());
-		feeLookupRequest.setApiVersion(constant.getString("API_VERSION"));
-		feeLookupRequest.setClientSoftwareVersion(constant.getString("CLIENT_SOFTWARE_VERSION"));
+		feeLookupRequest.setApiVersion(constantFromProperties
+				.getString("API_VERSION"));
+		feeLookupRequest.setClientSoftwareVersion(constantFromProperties
+				.getString("CLIENT_SOFTWARE_VERSION"));
 		feeLookupRequest.setAmountExcludingFee(amount);
 		feeLookupRequest.setProductType(ProductType.SEND);
-		feeLookupRequest.setReceiveCountry(constant
+		feeLookupRequest.setReceiveCountry(constantFromProperties
 				.getString("MGI_COUNTRY_CODE_USA"));
-		feeLookupRequest.setDeliveryOption(constant.getString("DELIVER_OPTION_WILL_CALL"));
-		feeLookupRequest.setReceiveCurrency(constant.getString("CURRENCY_CODE_USA"));
-		feeLookupRequest.setSendCurrency(constant
+		feeLookupRequest.setDeliveryOption(constantFromProperties
+				.getString("DELIVER_OPTION_WILL_CALL"));
+		feeLookupRequest.setReceiveCurrency(constantFromProperties
+				.getString("CURRENCY_CODE_USA"));
+		feeLookupRequest.setSendCurrency(constantFromProperties
 				.getString("CURRENCY_CODE_USA"));
 		feeLookupRequest.setAllOptions(false);
 
@@ -194,6 +221,14 @@ public class ACImpl implements ACInterface {
 		return feeLookupRequest;
 	}
 
+	/**
+	 * getFeeForFeeLink. This method will return only feeAmount.
+	 * 
+	 * @param BigDecimal
+	 *            the transaction amount.
+	 * 
+	 * @return feeAmount.
+	 */
 	private BigDecimal getFeeForFeeLink(BigDecimal amount) {
 
 		LOGGER.info("Enter getFeeForFeeLink.");
@@ -220,6 +255,17 @@ public class ACImpl implements ACInterface {
 
 	}
 
+	/**
+	 * getHistoryDetails. This method will return last ten transaction from
+	 * history table. It will call detailLookUp API for transaction which is not
+	 * in 'received' status and update the status in history table.
+	 * 
+	 * @param HistroyLookupInputBean
+	 *            The histroyLookupInputBean
+	 * 
+	 * @return histroyLookupResponse. This return object will contain last ten
+	 *         transaction in JSON format.
+	 */
 	@POST
 	@Path("/getHistoryDetails")
 	@Override
@@ -242,6 +288,7 @@ public class ACImpl implements ACInterface {
 			historyDetailsList = moneyGramPayPalDAO
 					.retrieveHistroyDetails("vbalki@ebay.com");
 			for (HistoryDetails historyDetails : historyDetailsList) {
+				// checking status is 'received' or not in history table
 				if (!historyDetails.getTransactionStatus().equals(
 						TransactionStatus.RECVD.value())) {
 
@@ -274,25 +321,36 @@ public class ACImpl implements ACInterface {
 		return new Gson().toJson(histroyLookupResponse);
 	}
 
+	/**
+	 * detailLookUp. This method will call detailLookUp API of AgentConnet.
+	 * 
+	 * @param String
+	 *            The referenceNumber for transaction.
+	 * 
+	 * @return status of transaction as String.
+	 */
 	public String detailLookUp2(String referenceNumber) throws Exception {
 
 		LOGGER.info("Enter detailLookUp.");
 
 		DetailLookupRequest detailLookupRequest = new DetailLookupRequest();
 
-		detailLookupRequest.setAgentID(constant.getString("AGENT_ID"));
-		detailLookupRequest.setAgentSequence(constant.getString("AGENT_SEQUENCE"));
-		detailLookupRequest.setApiVersion(constant.getString("API_VERSION"));
-		detailLookupRequest
-				.setClientSoftwareVersion(constant.getString("CLIENT_SOFTWARE_VERSION"));
+		detailLookupRequest.setAgentID(constantFromProperties
+				.getString("AGENT_ID"));
+		detailLookupRequest.setAgentSequence(constantFromProperties
+				.getString("AGENT_SEQUENCE"));
+		detailLookupRequest.setApiVersion(constantFromProperties
+				.getString("API_VERSION"));
+		detailLookupRequest.setClientSoftwareVersion(constantFromProperties
+				.getString("CLIENT_SOFTWARE_VERSION"));
 		detailLookupRequest.setIncludeUseData(false);
-		detailLookupRequest.setLanguage(constant.getString("LANGUAGE_CODE_ENGLISH"));
+		detailLookupRequest.setLanguage(constantFromProperties
+				.getString("LANGUAGE_CODE_ENGLISH"));
 		detailLookupRequest.setReferenceNumber(referenceNumber);
-
 		detailLookupRequest.setTimeStamp(getTimeStamp());
-
-		detailLookupRequest.setToken(constant.getString("TOKEN"));
-		detailLookupRequest.setUnitProfileID(constant.getInt("UNIT_PROFILE_ID"));
+		detailLookupRequest.setToken(constantFromProperties.getString("TOKEN"));
+		detailLookupRequest.setUnitProfileID(constantFromProperties
+				.getInt("UNIT_PROFILE_ID"));
 		DetailLookupResponse detailLookupResponse = null;
 		detailLookupResponse = AgentConnect_AgentConnect_Client
 				.detailLookup(detailLookupRequest);
@@ -302,6 +360,7 @@ public class ACImpl implements ACInterface {
 		return detailLookupResponse.getTransactionStatus().value();
 	}
 
+	// TODO delete below method.
 	@POST
 	@Path("/detailLookUp")
 	@Override
@@ -311,20 +370,25 @@ public class ACImpl implements ACInterface {
 
 		DetailLookupRequest detailLookupRequest = new DetailLookupRequest();
 
-		detailLookupRequest.setAgentID(constant.getString("AGENT_ID"));
-		detailLookupRequest.setAgentSequence(constant.getString("AGENT_SEQUENCE"));
-		detailLookupRequest.setApiVersion(constant.getString("API_VERSION"));
-		detailLookupRequest
-				.setClientSoftwareVersion(constant.getString("CLIENT_SOFTWARE_VERSION"));
+		detailLookupRequest.setAgentID(constantFromProperties
+				.getString("AGENT_ID"));
+		detailLookupRequest.setAgentSequence(constantFromProperties
+				.getString("AGENT_SEQUENCE"));
+		detailLookupRequest.setApiVersion(constantFromProperties
+				.getString("API_VERSION"));
+		detailLookupRequest.setClientSoftwareVersion(constantFromProperties
+				.getString("CLIENT_SOFTWARE_VERSION"));
 		detailLookupRequest.setIncludeUseData(false);
-		detailLookupRequest.setLanguage(constant.getString("LANGUAGE_CODE_ENGLISH"));
+		detailLookupRequest.setLanguage(constantFromProperties
+				.getString("LANGUAGE_CODE_ENGLISH"));
 		detailLookupRequest.setReferenceNumber(detailLookupInputBean
 				.getReferenceNumber());
 
 		detailLookupRequest.setTimeStamp(getTimeStamp());
 
-		detailLookupRequest.setToken(constant.getString("TOKEN"));
-		detailLookupRequest.setUnitProfileID(constant.getInt("UNIT_PROFILE_ID"));
+		detailLookupRequest.setToken(constantFromProperties.getString("TOKEN"));
+		detailLookupRequest.setUnitProfileID(constantFromProperties
+				.getInt("UNIT_PROFILE_ID"));
 		DetailLookupResponse detailLookupResponse = null;
 		try {
 			detailLookupResponse = AgentConnect_AgentConnect_Client
@@ -357,27 +421,35 @@ public class ACImpl implements ACInterface {
 		return xgcal;
 	}
 
+	/**
+	 * getFeeLinkValue. This method will call feeLookUp API to get fee for only
+	 * two hundred and five hundred USD.
+	 * 
+	 * @return feeLinkValues. The feeLinkValues object contains fee for two
+	 *         hundred and five hundred USD in JSON format.
+	 */
 	@POST
 	@Path("/getFeeLinkValue")
 	@Override
 	public String getFeeLinkValue() {
 
 		LOGGER.info("Enter getFeeLinkValue.");
-		
+
 		setCredentials();
 		int yesterday = 7;
 		FeeLinkValues feeLinkValues = new FeeLinkValues();
 		if (FEELINK_DAY_IDENTIFIER != Calendar.getInstance().get(
 				Calendar.DAY_OF_WEEK)) {
-
+			// For first call in a day.Retrive from API and update DB and Update
+			// static Objects.
 			synchronized (FEELINK_DAY_IDENTIFIER) {
 				yesterday = FEELINK_DAY_IDENTIFIER;
 				FEELINK_DAY_IDENTIFIER = Calendar.getInstance().get(
 						Calendar.DAY_OF_WEEK);
 			}
-			BigDecimal feeForTwoHundred = getFeeForFeeLink(constant
+			BigDecimal feeForTwoHundred = getFeeForFeeLink(constantFromProperties
 					.getBigDecimal("TWO_HUNDRED_US_DOLLARS"));
-			BigDecimal feeForFiveHundred = getFeeForFeeLink(constant
+			BigDecimal feeForFiveHundred = getFeeForFeeLink(constantFromProperties
 					.getBigDecimal("FIVE_HUNDRED_US_DOLLARS"));
 
 			synchronized (FEE_FOR_TWO_HUNDRED) {
@@ -390,10 +462,12 @@ public class ACImpl implements ACInterface {
 			MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
 			try {
 				moneyGramPayPalDAO.updateFeeFeeDetailTable(
-						constant.getBigDecimal("TWO_HUNDRED_US_DOLLARS"),
+						constantFromProperties
+								.getBigDecimal("TWO_HUNDRED_US_DOLLARS"),
 						feeForTwoHundred);
 				moneyGramPayPalDAO.updateFeeFeeDetailTable(
-						constant.getBigDecimal("FIVE_HUNDRED_US_DOLLARS"),
+						constantFromProperties
+								.getBigDecimal("FIVE_HUNDRED_US_DOLLARS"),
 						feeForFiveHundred);
 
 			} catch (Exception exception) {
@@ -416,7 +490,6 @@ public class ACImpl implements ACInterface {
 				feeLinkValues.setTransactionSuccess(false);
 				feeLinkValues.setErrorMessage("Please Try Again.");
 			} else {
-
 				feeLinkValues.setTransactionSuccess(true);
 				feeLinkValues.setFeeForTwoHundred(FEE_FOR_TWO_HUNDRED);
 				feeLinkValues.setFeeForFiveHundred(FEE_FOR_FIVE_HUNDRED);
@@ -435,6 +508,13 @@ public class ACImpl implements ACInterface {
 		return new Gson().toJson(feeLinkValues);
 	}
 
+	/**
+	 * getState. This method will call codeTable API for only one time in a day to get
+	 * states in USA and it will update static Object. From the second call this
+	 * method will return the list of states from static object 'STATES_IN_USA'.
+	 * 
+	 * @return list of states in USA in JSON format.
+	 */
 	@POST
 	@Path("/getStateCode")
 	@Override
@@ -454,15 +534,19 @@ public class ACImpl implements ACInterface {
 
 				CodeTableRequest codeTableRequest = new CodeTableRequest();
 				codeTableRequest.setAgentAllowedOnly(true);
-				codeTableRequest.setApiVersion(constant.getString("API_VERSION"));
+				codeTableRequest.setApiVersion(constantFromProperties
+						.getString("API_VERSION"));
 				codeTableRequest
-						.setClientSoftwareVersion(constant.getString("CLIENT_SOFTWARE_VERSION"));
+						.setClientSoftwareVersion(constantFromProperties
+								.getString("CLIENT_SOFTWARE_VERSION"));
 				codeTableRequest.setUnitProfileID(158178);
-				codeTableRequest.setToken(constant.getString("TOKEN"));
-				codeTableRequest.setAgentSequence(constant.getString("AGENT_SEQUENCE"));
+				codeTableRequest.setToken(constantFromProperties
+						.getString("TOKEN"));
+				codeTableRequest.setAgentSequence(constantFromProperties
+						.getString("AGENT_SEQUENCE"));
 				codeTableRequest.setTimeStamp(getTimeStamp());
-				codeTableRequest
-						.setLanguage(constant.getString("LANGUAGE_CODE_ENGLISH"));
+				codeTableRequest.setLanguage(constantFromProperties
+						.getString("LANGUAGE_CODE_ENGLISH"));
 				byte retryCount = 3;
 				boolean responseRecived = false;
 				while (retryCount >= 1) {
@@ -494,6 +578,16 @@ public class ACImpl implements ACInterface {
 		return STATES_IN_USA;
 	}
 
+	/**
+	 * commitTransaction. This method will call commitTransaction API and it
+	 * will generate referenceNumber for the transaction.After committing the
+	 * transaction, This method will insert one tuple in HistoryTable with
+	 * referenceNumber.
+	 * 
+	 * @param CommitTransactionInputBean
+	 *            the commit Transaction InputBean
+	 * @return CommitTransactionResponse which contains reference number as JSON object.
+	 */
 	@POST
 	@Path("/commitTransaction")
 	@Override
@@ -505,18 +599,24 @@ public class ACImpl implements ACInterface {
 		CommitTransactionRequest commitTransactionRequest = new CommitTransactionRequest();
 		CommitTransactionResponse commitTransactionResponse = null;
 
-		commitTransactionRequest.setAgentID(constant.getString("AGENT_ID"));
-		commitTransactionRequest.setAgentSequence(constant.getString("AGENT_SEQUENCE"));
-		commitTransactionRequest.setToken(constant.getString("TOKEN"));
+		commitTransactionRequest.setAgentID(constantFromProperties
+				.getString("AGENT_ID"));
+		commitTransactionRequest.setAgentSequence(constantFromProperties
+				.getString("AGENT_SEQUENCE"));
+		commitTransactionRequest.setToken(constantFromProperties
+				.getString("TOKEN"));
 		commitTransactionRequest.setTimeStamp(getTimeStamp());
-		commitTransactionRequest.setApiVersion(constant.getString("API_VERSION"));
+		commitTransactionRequest.setApiVersion(constantFromProperties
+				.getString("API_VERSION"));
 		commitTransactionRequest
-				.setClientSoftwareVersion(constant.getString("CLIENT_SOFTWARE_VERSION"));
+				.setClientSoftwareVersion(constantFromProperties
+						.getString("CLIENT_SOFTWARE_VERSION"));
 		commitTransactionRequest
 				.setMgiTransactionSessionID(commitTransactionInputBean
 						.getMgiTransactionSessionID().trim());
 		commitTransactionRequest.setProductType(ProductType.SEND);
-		com.ac.CommitTransactionResponse commitTransactionResponseForReturn = new com.ac.CommitTransactionResponse();
+		com.ac.CommitTransactionResponse commitTransactionResponseForReturn 
+		= new com.ac.CommitTransactionResponse();
 		byte retryCount = 3;
 		while (retryCount >= 1) {
 			try {
@@ -588,14 +688,17 @@ public class ACImpl implements ACInterface {
 		LOGGER.info("Enter sendReversal.");
 
 		SendReversalRequest sendReversalRequest = new SendReversalRequest();
-		sendReversalRequest.setAgentID(constant.getString("AGENT_ID"));
-		sendReversalRequest.setAgentSequence(constant.getString("AGENT_SEQUENCE"));
+		sendReversalRequest.setAgentID(constantFromProperties
+				.getString("AGENT_ID"));
+		sendReversalRequest.setAgentSequence(constantFromProperties
+				.getString("AGENT_SEQUENCE"));
 		sendReversalRequest.setToken("456");
 
 		sendReversalRequest.setTimeStamp(getTimeStamp());
-		sendReversalRequest.setApiVersion(constant.getString("API_VERSION"));
-		sendReversalRequest
-				.setClientSoftwareVersion(constant.getString("CLIENT_SOFTWARE_VERSION"));
+		sendReversalRequest.setApiVersion(constantFromProperties
+				.getString("API_VERSION"));
+		sendReversalRequest.setClientSoftwareVersion(constantFromProperties
+				.getString("CLIENT_SOFTWARE_VERSION"));
 		sendReversalRequest
 				.setSendAmount(sendReversalInputBean.getSendAmount());
 		sendReversalRequest.setFeeAmount(sendReversalInputBean.getFeeAmount());
@@ -627,6 +730,16 @@ public class ACImpl implements ACInterface {
 		return new Gson().toJson(sendReversalResponse);
 	}
 
+	/**
+	 * sendValidation. This method will call sendValidation API of Agent
+	 * Connect. This method will store the transaction details in MoneyGram
+	 * server and the stored data will be available for 30 minutes only.
+	 * 
+	 * @param SendValidationInputBean
+	 *            the send Validation Input Bean
+	 * @return SendValidationResponse which contains MgiTransactionSessionID as JSON
+	 *         object.
+	 */
 	@POST
 	@Path("/sendValidation")
 	@Override
@@ -639,21 +752,27 @@ public class ACImpl implements ACInterface {
 		com.ac1211.client.SendValidationRequest sendValidationRequest = new com.ac1211.client.SendValidationRequest();
 		sendValidationRequest.setConsumerId("0");
 		sendValidationRequest.setFormFreeStaging(false);
-		sendValidationRequest.setTimeToLive(constant.getBigInteger("TIME_TO_LIVE_THIRTY"));
+		sendValidationRequest.setTimeToLive(constantFromProperties
+				.getBigInteger("TIME_TO_LIVE_THIRTY"));
+		sendValidationRequest.setPrimaryReceiptLanguage(constantFromProperties
+				.getString("LANGUAGE_CODE_ENGLISH"));
 		sendValidationRequest
-				.setPrimaryReceiptLanguage(constant.getString("LANGUAGE_CODE_ENGLISH"));
-		sendValidationRequest
-				.setSecondaryReceiptLanguage(constant.getString("LANGUAGE_CODE_SPANISH"));
-		sendValidationRequest.setAgentID(constant.getString("AGENT_ID"));
-		sendValidationRequest.setAgentSequence(constant.getString("AGENT_SEQUENCE"));
-		sendValidationRequest.setToken(constant.getString("TOKEN"));
+				.setSecondaryReceiptLanguage(constantFromProperties
+						.getString("LANGUAGE_CODE_SPANISH"));
+		sendValidationRequest.setAgentID(constantFromProperties
+				.getString("AGENT_ID"));
+		sendValidationRequest.setAgentSequence(constantFromProperties
+				.getString("AGENT_SEQUENCE"));
+		sendValidationRequest.setToken(constantFromProperties
+				.getString("TOKEN"));
 		sendValidationRequest.setTimeStamp(getTimeStamp());
-		sendValidationRequest.setApiVersion(constant.getString("API_VERSION"));
-		sendValidationRequest
-				.setClientSoftwareVersion(constant.getString("CLIENT_SOFTWARE_VERSION"));
+		sendValidationRequest.setApiVersion(constantFromProperties
+				.getString("API_VERSION"));
+		sendValidationRequest.setClientSoftwareVersion(constantFromProperties
+				.getString("CLIENT_SOFTWARE_VERSION"));
 		sendValidationRequest.setOperatorName("pgui");
-		sendValidationRequest
-				.setDeliveryOption(constant.getString("DELIVER_OPTION_WILL_CALL"));
+		sendValidationRequest.setDeliveryOption(constantFromProperties
+				.getString("DELIVER_OPTION_WILL_CALL"));
 		sendValidationRequest.setAmount(sendValidationInputBean.getAmount());
 		sendValidationRequest
 				.setMgiTransactionSessionID(sendValidationInputBean
@@ -688,39 +807,35 @@ public class ACImpl implements ACInterface {
 				.getReceiverLastName());
 		sendValidationRequest.setSendCurrency(sendValidationInputBean
 				.getSendCurrency());
-		// byte retryCount = 3;
-		com.ac.SendValidationResponse sendValidationResponse2 = new com.ac.SendValidationResponse();
-		// while (retryCount >= 1) {
+		com.ac.SendValidationResponse sendValidationResponseForReturn = new com.ac.SendValidationResponse();
 		try {
 			sendValidationResponse = com.ac1211.client.AgentConnect_AgentConnect_Client
 					.sendValidation(sendValidationRequest);
 		} catch (Exception exception) {
-			// retryCount--;
 			LOGGER.error("SendValidation Failed because of :" + exception);
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("SendValidation Request: "
 						+ new Gson().toJson(sendValidationRequest));
 			}
 			exception.printStackTrace();
-			sendValidationResponse2.setTransactionSuccess(false);
-			sendValidationResponse2.setErrorMessage(exception
+			sendValidationResponseForReturn.setTransactionSuccess(false);
+			sendValidationResponseForReturn.setErrorMessage(exception
 					.getLocalizedMessage().concat(
 							"Transaction Failed.Please try again."));
 			return new Gson().toJson(sendValidationResponse);
 		}
 		if (sendValidationResponse != null) {
 
-			sendValidationResponse2
+			sendValidationResponseForReturn
 					.setMgiTransactionSessionID(sendValidationResponse
 							.getMgiTransactionSessionID());
-			sendValidationResponse2.setTransactionSuccess(true);
+			sendValidationResponseForReturn.setTransactionSuccess(true);
 
 		}
-		// }
 
 		LOGGER.info("Exit sendValidation.");
 
-		return new Gson().toJson(sendValidationResponse2);
+		return new Gson().toJson(sendValidationResponseForReturn);
 	}
 
 	private void setSenderName(SendValidationInputBean sendValidationInputBean,
@@ -749,6 +864,14 @@ public class ACImpl implements ACInterface {
 		LOGGER.info("Exit setSenderName.");
 	}
 
+	/**
+	 * getUserLimits. This method will call getUserLimits API of AdaptivePayment.
+	 * 
+	 * @param UserLimitInputBean
+	 *            the user Limit Input Bean
+	 * @return GetUserLimitsResponse which contains userLimitAmount as JSON
+	 *         object.
+	 */
 	@POST
 	@Path("/getUserLimits")
 	@Override
@@ -762,6 +885,7 @@ public class ACImpl implements ACInterface {
 		phoneNumberType.setPhoneNumber("6057100363");
 
 		AccountIdentifier accountIdentifier = new AccountIdentifier();
+		// TODO
 		// accountIdentifier.setEmail(userLimitInputBean.getEmailID());
 		accountIdentifier.setEmail("paypalmoneygram@gmail.com");
 		accountIdentifier.setPhone(phoneNumberType);
@@ -781,14 +905,10 @@ public class ACImpl implements ACInterface {
 		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
 		Gson gson = new Gson();
 
-		com.ac.GetUserLimitsResponse getUserLimitsResponse2 = new com.ac.GetUserLimitsResponse();
+		com.ac.GetUserLimitsResponse getUserLimitsResponseForReturn = new com.ac.GetUserLimitsResponse();
 		byte retryCount = 3;
 		while (retryCount >= 1) {
 			try {
-				// if (log.isDebugEnabled()) {
-				// log.debug("getUserLimitsRequest: "
-				// + new Gson().toJson(getUserLimitsRequest));
-				// }
 				getUserLimitsResponse = AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client
 						.getUserLimit(getUserLimitsRequest);
 			} catch (Exception exception) {
@@ -796,28 +916,28 @@ public class ACImpl implements ACInterface {
 				retryCount--;
 				if (retryCount == 0) {
 					LOGGER.info("Max number of retries for GetUserLimits reached. Call Failed.");
-					getUserLimitsResponse2.setTransactionSuccess(false);
-					getUserLimitsResponse2
+					getUserLimitsResponseForReturn.setTransactionSuccess(false);
+					getUserLimitsResponseForReturn
 							.setErrorMessage("Session Expired.Please Retry.");
 
 					return new Gson().toJson(getUserLimitsResponse);
 				}
 			}
 			if (getUserLimitsResponse != null) {
-				getUserLimitsResponse2.setTransactionSuccess(true);
+				getUserLimitsResponseForReturn.setTransactionSuccess(true);
 
 				List<UserLimit> userLimitList = getUserLimitsResponse
 						.getUserLimit();
 				if (userLimitList != null && !userLimitList.isEmpty()) {
-					getUserLimitsResponse2.setCurrencyType(userLimitList.get(0)
+					getUserLimitsResponseForReturn.setCurrencyType(userLimitList.get(0)
 							.getLimitAmount());
 				} else {
 					LOGGER.warn("userLimitList is empty.Hardcoded value went to UI");
 					CurrencyType currencyType = new CurrencyType();
 					currencyType.setAmount(new BigDecimal(0));
 					currencyType.setCode("Invalid Code");
-					getUserLimitsResponse2.setCurrencyType(currencyType);
-					getUserLimitsResponse2.setTransactionSuccess(false);
+					getUserLimitsResponseForReturn.setCurrencyType(currencyType);
+					getUserLimitsResponseForReturn.setTransactionSuccess(false);
 				}
 
 				break;
@@ -826,7 +946,7 @@ public class ACImpl implements ACInterface {
 
 		LOGGER.info("Exit getUserLimits.");
 
-		return gson.toJson(getUserLimitsResponse2);
+		return gson.toJson(getUserLimitsResponseForReturn);
 	}
 
 	@POST
@@ -845,6 +965,7 @@ public class ACImpl implements ACInterface {
 	}
 
 	private String createToken(String codeValue) {
+		
 		LOGGER.info("Entering Create Token");
 
 		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
@@ -968,9 +1089,9 @@ public class ACImpl implements ACInterface {
 		LOGGER.info("Enter sendMail.");
 
 		SendMailOutputBean sendMailOutputBean = new SendMailOutputBean();
+		InsertRecsIntoCRMExtWebFormResponse insertRecsIntoCRMExtWebFormResponse = null;
 		try {
-			InsertRecsIntoCRMExtWebFormRequest insertRecsIntoCRMExtWebFormRequest 
-			= new InsertRecsIntoCRMExtWebFormRequest();
+			InsertRecsIntoCRMExtWebFormRequest insertRecsIntoCRMExtWebFormRequest = new InsertRecsIntoCRMExtWebFormRequest();
 			insertRecsIntoCRMExtWebFormRequest
 					.setWhoCompletingForm("MoneyGram Consumer");
 			insertRecsIntoCRMExtWebFormRequest.setFirstname(sendMailInputBean
@@ -989,18 +1110,16 @@ public class ACImpl implements ACInterface {
 					.getPhoneNumber());
 			Header header = new Header();
 			AgentHeader agentHeader = new AgentHeader();
-			agentHeader.setAgentId(constant.getString("AGENT_ID"));
+			agentHeader
+					.setAgentId(constantFromProperties.getString("AGENT_ID"));
 			header.setAgent(agentHeader);
 			ProcessingInstruction processingInstruction = new ProcessingInstruction();
 			processingInstruction.setAction("InsertRecsIntoCRMExtWebForm");
 			processingInstruction.setRollbackTransaction(false);
 			header.setProcessingInstruction(processingInstruction);
 			insertRecsIntoCRMExtWebFormRequest.setHeader(header);
-			InsertRecsIntoCRMExtWebFormResponse insertRecsIntoCRMExtWebFormResponse 
-			= ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client
+			insertRecsIntoCRMExtWebFormResponse = ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client
 					.insertRecsIntoCRMExtWebForm(insertRecsIntoCRMExtWebFormRequest);
-			LOGGER.debug(insertRecsIntoCRMExtWebFormResponse
-					.getInsertRecsIntoCRMExtWebFormResult());
 		} catch (MalformedURLException e) {
 			sendMailOutputBean.setTransactionSuccess(false);
 			sendMailOutputBean.setMailSubject(sendMailInputBean
@@ -1013,7 +1132,12 @@ public class ACImpl implements ACInterface {
 		}
 
 		sendMailOutputBean.setTransactionSuccess(true);
-		sendMailOutputBean.setMessageToUser("Mail sent succesfully.");
+		sendMailOutputBean
+				.setMessageToUser("Mail sent succesfully. Please note down the "
+						+ "mail reference number for further communication. < "
+								.concat(insertRecsIntoCRMExtWebFormResponse
+										.getInsertRecsIntoCRMExtWebFormResult())
+								.concat(" >"));
 
 		LOGGER.info("Exit sendMail.");
 
