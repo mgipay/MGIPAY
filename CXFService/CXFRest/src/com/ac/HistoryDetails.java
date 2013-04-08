@@ -12,7 +12,7 @@ public class HistoryDetails {
 	private BigDecimal transactionID;
 	private String customerEmail;
 	private String customerName;
-	private BigDecimal customerPhone;
+	private String customerPhone;
 	private String paypalTransactionID;
 	private String mgiReferenceNumber;
 	private BigDecimal transactionAmount;
@@ -20,11 +20,11 @@ public class HistoryDetails {
 	private String transactionStatus;
 
 	
-	public BigDecimal getCustomerPhone() {
+	public String getCustomerPhone() {
 		return customerPhone;
 	}
 
-	public void setCustomerPhone(BigDecimal customerPhone) {
+	public void setCustomerPhone(String customerPhone) {
 		this.customerPhone = customerPhone;
 	}
 

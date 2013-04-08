@@ -18,7 +18,7 @@ public class SendMailInputBean {
 	private String firstname;
 
 	private String lastName;
-	
+
 	private String mailSubject;
 
 	private String mailText;
@@ -27,8 +27,7 @@ public class SendMailInputBean {
 
 	private String customerEmailId;
 
-	private Integer phoneNumber;
-
+	private String phoneNumber;
 
 	public String getFirstname() {
 		return firstname;
@@ -78,11 +77,11 @@ public class SendMailInputBean {
 		this.customerEmailId = customerEmailId;
 	}
 
-	public Integer getPhoneNumber() {
+	public String getPhoneNumber() {
 		return phoneNumber;
 	}
 
-	public void setPhoneNumber(Integer phoneNumber) {
+	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 

@@ -37,7 +37,7 @@ public final class ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Clien
 		return port;
 	}
 
-	public static com.ac1211.mail.client.InsertRecsIntoCRMExtWebFormResponse InsertRecsIntoCRMExtWebForm(
+	public static com.ac1211.mail.client.InsertRecsIntoCRMExtWebFormResponse insertRecsIntoCRMExtWebForm(
 			com.ac1211.mail.client.InsertRecsIntoCRMExtWebFormRequest _insertRecsIntoCRMExtWebForm_parameters)
 			throws MalformedURLException {
 		ComplaintProxyServicePortType port = getPort();
@@ -45,11 +45,7 @@ public final class ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Clien
 				.insertRecsIntoCRMExtWebForm(_insertRecsIntoCRMExtWebForm_parameters);
 		return _insertRecsIntoCRMExtWebForm__return;
 	}
-	
-	
-	
-	
-	
+
 	public static void main(String args[]) throws java.lang.Exception {
 		URL wsdlURL = ComplaintProxyServiceV1.WSDL_LOCATION;
 		if (args.length > 0 && args[0] != null && !"".equals(args[0])) {

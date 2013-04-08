@@ -90,7 +90,7 @@ public class MoneyGramPayPalDAO {
 				"jdbc:oracle:thin:@10.0.1.167:1521:devdb", "devdb",
 				"devdbdevdb");
 		String strQuery = "SELECT * FROM (SELECT * FROM MGI_PAYPAL_TR" +
-				"AN_HIST WHERE CUST_EMAIL = ? order by TRAN_DATE desc) a where rownum < 11";
+				"AN_HIST WHERE CUST_EMAIL = ? order by TRAN_ID desc) a where rownum < 11";
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1, emailId);
@@ -100,7 +100,7 @@ public class MoneyGramPayPalDAO {
 			HistoryDetails historyDetails = new HistoryDetails();
 			historyDetails.setCustomerEmail(resultSet.getString("CUST_EMAIL"));
 			historyDetails.setCustomerName(resultSet.getString("CUST_NAME"));
-			historyDetails.setCustomerPhone(resultSet.getBigDecimal("CUST_PHONE"));
+			historyDetails.setCustomerPhone(resultSet.getString("CUST_PHONE"));
 			historyDetails.setMgiReferenceNumber(resultSet
 					.getString("MGI_REF_NUM"));
 			historyDetails.setPaypalTransactionID(resultSet
@@ -146,7 +146,7 @@ public class MoneyGramPayPalDAO {
 				commitTransactionInputBean.getCustomerEmail());
 		preparedStatement.setString(2,
 				commitTransactionInputBean.getCustomerName());
-		preparedStatement.setBigDecimal(3,commitTransactionInputBean
+		preparedStatement.setString(3,commitTransactionInputBean
 				.getCustomerPhoneNumber());
 		preparedStatement.setString(4,
 				commitTransactionInputBean.getPaypalTransactionID());
