@@ -88,6 +88,8 @@ public class ACImpl implements ACInterface {
 
 	PropertiesConfiguration constantFromProperties = new PropertyUtil()
 			.getConstantPropertyConfig();
+	PropertiesConfiguration messageFromProperties = new PropertyUtil()
+	.getConstantPropertyConfig();
 
 	private void setCredentials() {
 		// System.setProperty("http.proxyHost", "proxy.tcs.com");
@@ -135,7 +137,7 @@ public class ACImpl implements ACInterface {
 				if (retryCount == 0) {
 					LOGGER.info("Maximum Number of Retries reached. FeeLookUp Response Failed.");
 					feeLookupResponseReturn
-							.setErrorMessage("Please try after few minutes.");
+							.setErrorMessage(messageFromProperties.getString("RETRY_IN_SOMETIME"));
 
 					feeLookupResponseReturn.setTransactionSuccess(false);
 
@@ -160,11 +162,9 @@ public class ACImpl implements ACInterface {
 					LOGGER.warn("Entered Amount above 200 dollars");
 
 					feeLookupResponseReturn
-							.setErrorMessage("Withdraw amount including fee is : "
-									.concat(totalAmount
+							.setErrorMessage(messageFromProperties.getString("WITHDRAW_ERROR_MESSAGE1").concat(totalAmount
 											.toString()
-											.concat(" USD. You can withdraw 200 dollars "
-													+ "including fee per transaction. Please try again.")));
+											.concat(messageFromProperties.getString("WITHDRAW_ERROR_MESSAGE2"))));
 					feeLookupResponseReturn.setTransactionSuccess(false);
 					feeLookupResponseReturn.setTotalAmount(totalAmount);
 					feeLookupResponseReturn.setFeeAmount(totalAmount
@@ -310,7 +310,7 @@ public class ACImpl implements ACInterface {
 			LOGGER.error("getHistory failed because of:" + exception);
 			exception.printStackTrace();
 			histroyLookupResponse.setTransactionSuccess(false);
-			histroyLookupResponse.setErrorMessage("Please try again.");
+			histroyLookupResponse.setErrorMessage(messageFromProperties.getString("RETRY"));
 			return new Gson().toJson(histroyLookupResponse);
 		}
 		histroyLookupResponse.setHistoryDetailsList(historyDetailsList);
@@ -479,7 +479,7 @@ public class ACImpl implements ACInterface {
 				LOGGER.error(exception.getLocalizedMessage());
 				LOGGER.error(System.getProperty("line.separator"));
 				feeLinkValues.setTransactionSuccess(false);
-				feeLinkValues.setErrorMessage("Please try after few minutes.");
+				feeLinkValues.setErrorMessage(messageFromProperties.getString("RETRY_IN_SOMETIME"));;
 			}
 
 			if (feeForFiveHundred.compareTo(BigDecimal.ZERO) == 0
@@ -488,7 +488,7 @@ public class ACImpl implements ACInterface {
 					FEELINK_DAY_IDENTIFIER = yesterday;
 				}
 				feeLinkValues.setTransactionSuccess(false);
-				feeLinkValues.setErrorMessage("Please Try Again.");
+				feeLinkValues.setErrorMessage(messageFromProperties.getString("RETRY"));
 			} else {
 				feeLinkValues.setTransactionSuccess(true);
 				feeLinkValues.setFeeForTwoHundred(FEE_FOR_TWO_HUNDRED);
@@ -629,7 +629,7 @@ public class ACImpl implements ACInterface {
 				if (retryCount == 0) {
 					LOGGER.info("Max number of retries reached. Commit Trasaction Failed.");
 					commitTransactionResponseForReturn
-							.setErrorMessage("Transaction Failed.Please Try Again");
+							.setErrorMessage(messageFromProperties.getString("TRANSACTION_FAILED_RETRY"));
 					commitTransactionResponseForReturn
 							.setTransactionSuccess(false);
 
@@ -821,7 +821,7 @@ public class ACImpl implements ACInterface {
 			sendValidationResponseForReturn.setTransactionSuccess(false);
 			sendValidationResponseForReturn.setErrorMessage(exception
 					.getLocalizedMessage().concat(
-							"Transaction Failed.Please try again."));
+							messageFromProperties.getString("TRANSACTION_FAILED_RETRY")));
 			return new Gson().toJson(sendValidationResponse);
 		}
 		if (sendValidationResponse != null) {
@@ -918,7 +918,7 @@ public class ACImpl implements ACInterface {
 					LOGGER.info("Max number of retries for GetUserLimits reached. Call Failed.");
 					getUserLimitsResponseForReturn.setTransactionSuccess(false);
 					getUserLimitsResponseForReturn
-							.setErrorMessage("Session Expired.Please Retry.");
+							.setErrorMessage(messageFromProperties.getString("SESSION_EXPIRED"));
 
 					return new Gson().toJson(getUserLimitsResponse);
 				}
@@ -1127,14 +1127,13 @@ public class ACImpl implements ACInterface {
 			sendMailOutputBean.setMailText(sendMailInputBean.getMailText());
 			sendMailOutputBean.setCustomerEmailId(sendMailInputBean
 					.getCustomerEmailId());
-			sendMailOutputBean.setMessageToUser("Please Re-send your mail.");
+			sendMailOutputBean.setMessageToUser(messageFromProperties.getString("RESEND_MAIL"));
 			return new Gson().toJson(sendMailOutputBean);
 		}
 
 		sendMailOutputBean.setTransactionSuccess(true);
 		sendMailOutputBean
-				.setMessageToUser("Mail sent succesfully. Please note down the "
-						+ "mail reference number for further communication. < "
+				.setMessageToUser(messageFromProperties.getString("MAIL_SUCCESS").concat("< ")
 								.concat(insertRecsIntoCRMExtWebFormResponse
 										.getInsertRecsIntoCRMExtWebFormResult())
 								.concat(" >"));

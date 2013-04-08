@@ -7,6 +7,7 @@ import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 public class PropertyUtil {
 
 	PropertiesConfiguration constant = null;
+	PropertiesConfiguration message = null;
 
 	public PropertyUtil() {
 		// TODO Auto-generated constructor stub
@@ -26,16 +27,16 @@ public class PropertyUtil {
 		return this.constant;
 	}
 
-	/*public PropertiesConfiguration getMessagePropertyConfig() {
+	public PropertiesConfiguration getMessagePropertyConfig() {
 		try {
-			constant = new PropertiesConfiguration(
+			message = new PropertiesConfiguration(
 					"/var/lib/tomcat7/conf/Message.properties");
 
 		} catch (ConfigurationException e1) {
 			// TODO Auto-generated catch block
 			((Throwable) e1).printStackTrace();
 		}
-		constant.setReloadingStrategy(new FileChangedReloadingStrategy());
-		return this.constant;
-	}*/
+		message.setReloadingStrategy(new FileChangedReloadingStrategy());
+		return this.message;
+	}
 }
