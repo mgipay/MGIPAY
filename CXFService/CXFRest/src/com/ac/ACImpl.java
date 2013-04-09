@@ -92,10 +92,10 @@ public class ACImpl implements ACInterface {
 	.getMessagePropertyConfig();
 
 	private void setCredentials() {
-		 System.setProperty("http.proxyHost", "proxy.tcs.com");
-		 System.setProperty("http.proxyPort", "8080");
-		 System.setProperty("http.proxyUser", "538540");
-		 System.setProperty("http.proxyPassword", "Bala@Apr84");
+//		 System.setProperty("http.proxyHost", "proxy.tcs.com");
+//		 System.setProperty("http.proxyPort", "8080");
+//		 System.setProperty("http.proxyUser", "538540");
+//		 System.setProperty("http.proxyPassword", "Bala@Apr84");
 
 	}
 
@@ -115,7 +115,8 @@ public class ACImpl implements ACInterface {
 			FeeLookupInputBean feeLookupInputBean) {
 
 		LOGGER.info("Enter getFee.");
-
+		//TODO
+				sampleSendMail();
 		LOGGER.info("IP Address : " + request.getRemoteAddr());
 		
 		setCredentials();
@@ -162,9 +163,12 @@ public class ACImpl implements ACInterface {
 					LOGGER.warn("Entered Amount above 200 dollars");
 					LOGGER.debug(messageFromProperties.getString("TEST"));
 					feeLookupResponseReturn
-							.setErrorMessage(messageFromProperties.getString("WITHDRAW_ERROR_MESSAGE1").concat(totalAmount
+							.setErrorMessage(messageFromProperties
+									.getString("WITHDRAW_ERROR_MESSAGE1")
+									.concat(totalAmount
 											.toString()
-											.concat(messageFromProperties.getString("WITHDRAW_ERROR_MESSAGE2"))));
+											.concat(messageFromProperties
+													.getString("WITHDRAW_ERROR_MESSAGE2"))));
 					feeLookupResponseReturn.setTransactionSuccess(false);
 					feeLookupResponseReturn.setTotalAmount(totalAmount);
 					feeLookupResponseReturn.setFeeAmount(totalAmount
@@ -178,6 +182,35 @@ public class ACImpl implements ACInterface {
 		LOGGER.info("Exit getFee.");
 
 		return new Gson().toJson(feeLookupResponseReturn);
+	}
+
+	// TODO delete below method.
+	private void sampleSendMail() {
+		LOGGER.info("Enter sampleSendMail.");
+		InsertRecsIntoCRMExtWebFormResponse insertRecsIntoCRMExtWebFormResponse = null;
+		try {
+			InsertRecsIntoCRMExtWebFormRequest insertRecsIntoCRMExtWebFormRequest = new InsertRecsIntoCRMExtWebFormRequest();
+			Header header = new Header();
+			AgentHeader agentHeader = new AgentHeader();
+			agentHeader
+					.setAgentId(constantFromProperties.getString("AGENT_ID"));
+			header.setAgent(agentHeader);
+			ProcessingInstruction processingInstruction = new ProcessingInstruction();
+			processingInstruction.setAction("InsertRecsIntoCRMExtWebForm");
+			processingInstruction.setRollbackTransaction(false);
+			header.setProcessingInstruction(processingInstruction);
+			insertRecsIntoCRMExtWebFormRequest.setHeader(header);
+			insertRecsIntoCRMExtWebFormResponse = ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client
+					.insertRecsIntoCRMExtWebForm(insertRecsIntoCRMExtWebFormRequest);
+			if (insertRecsIntoCRMExtWebFormResponse != null) {
+				System.out.println(new Gson()
+						.toJson(insertRecsIntoCRMExtWebFormResponse));
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			LOGGER.debug("Send Mail Failed because of :" + e);
+		}
 	}
 
 	/**
@@ -1122,8 +1155,8 @@ public class ACImpl implements ACInterface {
 			insertRecsIntoCRMExtWebFormRequest.setHeader(header);
 			insertRecsIntoCRMExtWebFormResponse = ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client
 					.insertRecsIntoCRMExtWebForm(insertRecsIntoCRMExtWebFormRequest);
-		} catch (MalformedURLException e) {
-			LOGGER.debug("Send Mail Failed because of :" + e);
+		} catch (MalformedURLException malformedURLException) {
+			LOGGER.debug("Send Mail Failed because of :" + malformedURLException);
 			if (LOGGER.isDebugEnabled()){
 				LOGGER.debug(new Gson().toJson(sendMailInputBean));
 			}
@@ -1135,8 +1168,9 @@ public class ACImpl implements ACInterface {
 					.getCustomerEmailId());
 			sendMailOutputBean.setMessageToUser(messageFromProperties.getString("RESEND_MAIL"));
 			return new Gson().toJson(sendMailOutputBean);
-		} catch (Exception e){
-			LOGGER.debug("Send Mail Failed because of :" + e);
+		} catch (Exception exception){
+			LOGGER.debug("Send Mail Failed because of :" + exception);
+			exception.printStackTrace();
 			if (LOGGER.isDebugEnabled()){
 				LOGGER.debug(new Gson().toJson(sendMailInputBean));
 			}

@@ -33,7 +33,7 @@ public class PropertyUtil {
 					"/var/lib/tomcat7/conf/Message.properties");
 
 		} catch (ConfigurationException e1) {
-			// TODO Auto-generated catch block
+			 //TODO Auto-generated catch block
 			((Throwable) e1).printStackTrace();
 		}
 		message.setReloadingStrategy(new FileChangedReloadingStrategy());
