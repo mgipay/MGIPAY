@@ -27,9 +27,16 @@ public final class ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Clien
 
 	private static ComplaintProxyServicePortType getPort()
 			throws MalformedURLException {
-		URL wsdlURL = new URL(
-				"http://extwsintsvcs.corp.moneygram.com//ComplaintProxyService//Complaint"
-						+ "ProxyService_v1//META-INF//wsdl//ComplaintProxyService_v1.wsdl");
+//		URL wsdlURL = new URL(
+//				"http://extwsintsvcs.corp.moneygram.com//ComplaintProxyService//Complaint"
+//						+ "ProxyService_v1//META-INF//wsdl//ComplaintProxyService_v1.wsdl");
+		
+//		URL wsdlURL = new URL( 
+//			    "http://extwsintsvcs.corp.moneygram.com/ComplaintProxyService/ComplaintPr" +
+//			    "oxyService_v1/META-INF/wsdl/ComplaintProxyService_v1.wsdl");
+		URL wsdlURL = new URL( 
+			    "https://q2mgiapps.qa.moneygram.com/ComplaintProxyService/Complaint" +
+			    "ProxyService_v1/META-INF/wsdl/ComplaintProxyService_v1.wsdl");
 
 		ComplaintProxyServiceV1 ss = new ComplaintProxyServiceV1(wsdlURL,
 				SERVICE_NAME);

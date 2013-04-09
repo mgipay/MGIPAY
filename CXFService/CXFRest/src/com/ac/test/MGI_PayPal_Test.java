@@ -361,7 +361,7 @@ private void setCredentials(){
 	public void TestFeeLinkValue() { setCredentials();
 
 		try {
-			URL url = new URL("http://localhost:8092/CXFRest/rest/getFeeLinkValue");
+			URL url = new URL("http://localhost:8080/CXFRest/rest/getFeeLinkValue");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");
@@ -385,12 +385,12 @@ private void setCredentials(){
 			e.printStackTrace();
 		}
 	}
-	@Ignore
+	@Test
 	public void TestSendMail() { setCredentials();
 
 		try {
 
-			URL url = new URL("http://localhost:8092/CXFRest/rest/sendMail");
+			URL url = new URL("http://localhost:8080/CXFRest/rest/sendMail");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");

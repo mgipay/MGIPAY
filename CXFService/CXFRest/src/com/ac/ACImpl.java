@@ -89,13 +89,13 @@ public class ACImpl implements ACInterface {
 	PropertiesConfiguration constantFromProperties = new PropertyUtil()
 			.getConstantPropertyConfig();
 	PropertiesConfiguration messageFromProperties = new PropertyUtil()
-	.getConstantPropertyConfig();
+	.getMessagePropertyConfig();
 
 	private void setCredentials() {
-		// System.setProperty("http.proxyHost", "proxy.tcs.com");
-		// System.setProperty("http.proxyPort", "8080");
-		// System.setProperty("http.proxyUser", "538540");
-		// System.setProperty("http.proxyPassword", "Bala@Apr84");
+		 System.setProperty("http.proxyHost", "proxy.tcs.com");
+		 System.setProperty("http.proxyPort", "8080");
+		 System.setProperty("http.proxyUser", "538540");
+		 System.setProperty("http.proxyPassword", "Bala@Apr84");
 
 	}
 
@@ -160,7 +160,7 @@ public class ACImpl implements ACInterface {
 							.subtract(feeLookupInputBean.getAmount()));
 				} else {
 					LOGGER.warn("Entered Amount above 200 dollars");
-
+					LOGGER.debug(messageFromProperties.getString("TEST"));
 					feeLookupResponseReturn
 							.setErrorMessage(messageFromProperties.getString("WITHDRAW_ERROR_MESSAGE1").concat(totalAmount
 											.toString()
@@ -244,6 +244,7 @@ public class ACImpl implements ACInterface {
 				retryCount--;
 			}
 			if (feeLookupResponse != null) {
+				LOGGER.info("FeeLookup for FeeLink Successful");
 				return feeLookupResponse.getFeeInfo().get(0).getTotalAmount()
 						.subtract(amount);
 			}
@@ -1088,26 +1089,27 @@ public class ACImpl implements ACInterface {
 
 		LOGGER.info("Enter sendMail.");
 
+		setCredentials();
 		SendMailOutputBean sendMailOutputBean = new SendMailOutputBean();
 		InsertRecsIntoCRMExtWebFormResponse insertRecsIntoCRMExtWebFormResponse = null;
 		try {
 			InsertRecsIntoCRMExtWebFormRequest insertRecsIntoCRMExtWebFormRequest = new InsertRecsIntoCRMExtWebFormRequest();
-			insertRecsIntoCRMExtWebFormRequest
-					.setWhoCompletingForm("MoneyGram Consumer");
-			insertRecsIntoCRMExtWebFormRequest.setFirstname(sendMailInputBean
-					.getFirstname());
-			insertRecsIntoCRMExtWebFormRequest.setLastname(sendMailInputBean
-					.getLastName());
-			insertRecsIntoCRMExtWebFormRequest
-					.setEmailaddress(sendMailInputBean.getCustomerEmailId());
-			insertRecsIntoCRMExtWebFormRequest.setDescription(sendMailInputBean
-					.getMailText());
-			insertRecsIntoCRMExtWebFormRequest
-					.setComplainingabout(sendMailInputBean.getMailSubject());
-			insertRecsIntoCRMExtWebFormRequest.setTrnRefNbr(sendMailInputBean
-					.getReferenceNumber());
-			insertRecsIntoCRMExtWebFormRequest.setTelephone(sendMailInputBean
-					.getPhoneNumber());
+//			insertRecsIntoCRMExtWebFormRequest
+//					.setWhoCompletingForm("MoneyGram Consumer");
+//			insertRecsIntoCRMExtWebFormRequest.setFirstname(sendMailInputBean
+//					.getFirstname());
+//			insertRecsIntoCRMExtWebFormRequest.setLastname(sendMailInputBean
+//					.getLastName());
+//			insertRecsIntoCRMExtWebFormRequest
+//					.setEmailaddress(sendMailInputBean.getCustomerEmailId());
+//			insertRecsIntoCRMExtWebFormRequest.setDescription(sendMailInputBean
+//					.getMailText());
+//			insertRecsIntoCRMExtWebFormRequest
+//					.setComplainingabout(sendMailInputBean.getMailSubject());
+//			insertRecsIntoCRMExtWebFormRequest.setTrnRefNbr(sendMailInputBean
+//					.getReferenceNumber());
+//			insertRecsIntoCRMExtWebFormRequest.setTelephone(sendMailInputBean
+//					.getPhoneNumber());
 			Header header = new Header();
 			AgentHeader agentHeader = new AgentHeader();
 			agentHeader
@@ -1121,6 +1123,23 @@ public class ACImpl implements ACInterface {
 			insertRecsIntoCRMExtWebFormResponse = ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client
 					.insertRecsIntoCRMExtWebForm(insertRecsIntoCRMExtWebFormRequest);
 		} catch (MalformedURLException e) {
+			LOGGER.debug("Send Mail Failed because of :" + e);
+			if (LOGGER.isDebugEnabled()){
+				LOGGER.debug(new Gson().toJson(sendMailInputBean));
+			}
+			sendMailOutputBean.setTransactionSuccess(false);
+			sendMailOutputBean.setMailSubject(sendMailInputBean
+					.getMailSubject());
+			sendMailOutputBean.setMailText(sendMailInputBean.getMailText());
+			sendMailOutputBean.setCustomerEmailId(sendMailInputBean
+					.getCustomerEmailId());
+			sendMailOutputBean.setMessageToUser(messageFromProperties.getString("RESEND_MAIL"));
+			return new Gson().toJson(sendMailOutputBean);
+		} catch (Exception e){
+			LOGGER.debug("Send Mail Failed because of :" + e);
+			if (LOGGER.isDebugEnabled()){
+				LOGGER.debug(new Gson().toJson(sendMailInputBean));
+			}
 			sendMailOutputBean.setTransactionSuccess(false);
 			sendMailOutputBean.setMailSubject(sendMailInputBean
 					.getMailSubject());
