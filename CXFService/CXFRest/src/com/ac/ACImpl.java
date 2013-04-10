@@ -5,6 +5,8 @@ import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -357,6 +359,16 @@ public class ACImpl implements ACInterface {
 			histroyLookupResponse.setErrorMessage(messageFromProperties.getString("RETRY"));
 			return new Gson().toJson(histroyLookupResponse);
 		}
+		
+		Collections.sort(historyDetailsList, new Comparator<HistoryDetails>() {
+			public int compare(HistoryDetails historyDetails1,
+					HistoryDetails historyDetails2) {
+				return historyDetails2.getTransactionID().compareTo(
+						historyDetails1.getTransactionID());
+			}
+
+		});	
+		
 		histroyLookupResponse.setHistoryDetailsList(historyDetailsList);
 		histroyLookupResponse.setTransactionSuccess(true);
 
@@ -1126,6 +1138,7 @@ public class ACImpl implements ACInterface {
 	public String payToMoneyGram(String token) {
 
 		LOGGER.debug("Enter getUserLimits.");
+		
 		RequestEnvelope requestEnvelopee = new RequestEnvelope();
 		requestEnvelopee.setDetailLevel(DetailLevelCode.RETURN_ALL);
 		requestEnvelopee.setErrorLanguage("error_US");
@@ -1172,7 +1185,7 @@ public class ACImpl implements ACInterface {
 	}
 
 	@POST
-	@Path("/sendMail")
+	@Path("/sendmail")
 	@Override
 	public String sendMail(SendMailInputBean sendMailInputBean) {
 

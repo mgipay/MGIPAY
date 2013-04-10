@@ -55,7 +55,7 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 		return _getUserLimits__return;
 	}
 
-	public static PayResponse getPay(PayRequest payRequest,String token)
+	public static PayResponse getPay(PayRequest payRequest, String token)
 			throws java.lang.Exception {
 		AdaptivePaymentsPortType port = getPortForPay(token);
 
@@ -78,10 +78,10 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 	}
 
 	private static AdaptivePaymentsPortType getPortForPay(String token) {
-		setCredentialsForPay();
+		setCredentials();
 		// String wsdlURL
 		// ="https://svcs.sandbox.paypal.com/AdaptivePayments/Pay";
-		String wsdlURL = "https://api.stage2cp07.stage.paypal.com:9090/AdaptivePayments/Pay";
+		String wsdlURL = "https://api.stage2cp07.stage.paypal.com/AdaptivePayments/Pay";
 
 		AdaptivePayments ss = new AdaptivePayments();
 		AdaptivePaymentsPortType port = ss.getAdaptivePaymentsSOAP11Http();
@@ -90,40 +90,15 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 				wsdlURL);
 		// addLogHandler(bd);
 		// setupHeaders(bd);
-		setupHeadersForPay(bd,token);
+		setupHeadersForPay(bd, token);
 		return port;
 	}
 
-	public static void setupHeadersForPay(BindingProvider bp,String token) {
-
-		/*
-		 * System.out.println("Setting HTTP Header"); AccessToken accessToken =
-		 * new AccessToken(); String Token = accessToken.getAccess_token();
-		 */
-
-		// String Tok="F2DcXe38dhK.Pxw1N.fhS9KJYed3lQAnPCnSCKYTj1Q";
-		Map<String, List<String>> headers = new HashMap<String, List<String>>();
-		headers.put("X-PAYPAL-SECURITY-PASSWORD",
-				Collections.singletonList("SSARWLBQRLFMDLHH"));
-
-		headers.put("X-PAYPAL-APPLICATION-ID",
-				Collections.singletonList("APP-1JE4291016473214C"));
-		headers.put("X-PAYPAL-SECURITY-USERID", Collections
-				.singletonList("mgi_fundsout_test_api1.moneygram.com"));
-
-		headers.put("X-PAYPAL-SECONDARY-AUTH-UNIVERSAL-TOKEN ", Collections
-				.singletonList("Hia6.IbEOZ1kV-KvqETllw9vPBtrH-QoXu297bVRqy8"));
-		bp.getRequestContext()
-				.put(MessageContext.HTTP_REQUEST_HEADERS, headers);
-
-	}
-
 	private static AdaptivePaymentsPortType getPort() {
-		setCredentials();
-		String wsdlURL = "https://svcs.sandbox.paypal.com/AdaptivePayments/GetUserLimits";
-
 		// String wsdlURL =
-		// "https://api.stage2cp07.stage.paypal.com:9090/AdaptivePayments/GetUserLimits";
+		// "https://svcs.sandbox.paypal.com/AdaptivePayments/GetUserLimits";
+		setCredentials();
+		String wsdlURL = "https://api.stage2cp07.stage.paypal.com/AdaptivePayments/GetUserLimits";
 
 		AdaptivePayments ss = new AdaptivePayments();
 		AdaptivePaymentsPortType port = ss.getAdaptivePaymentsSOAP11Http();
@@ -135,41 +110,35 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 		return port;
 	}
 
-	private static void setCredentialsForPay() {
+	private static void setCredentials() {
 		Security.setProperty("ssl.SocketFactory.provider",
 				"com.ibm.jsse2.SSLSocketFactoryImpl");
 		Security.setProperty("ssl.ServerSocketFactory.provider",
 				"com.ibm.jsse2.SSLServerSocketFactoryImpl");
 		System.setProperty("javax.net.ssl.trustStoreType", "JKS");
 		System.setProperty("javax.net.ssl.trustStore",
-				"C:\\Documents and Settings\\vt69\\Desktop\\paypal1\\truststore.jks");
+				"/usr/share/tomcat7/paypal_certificates/truststore.jks");
 		System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
 		System.setProperty("javax.net.ssl.keyStoreType", "pkcs12");
 		System.setProperty("javax.net.ssl.keyStore",
-				"C:\\Documents and Settings\\vt69\\Desktop\\paypal1\\paypal_cert.p12");
+				"/usr/share/tomcat7/paypal_certificates/paypal_cert.p12");
 		System.setProperty("javax.net.ssl.keyStorePassword", "prompt");
 
-		/*
-		 * System.setProperty("http.proxyHost", "proxy.tcs.com");
-		 * System.setProperty("http.proxyPort", "8080");
-		 * System.setProperty("http.proxyUser", "351189");
-		 * System.setProperty("http.proxyPassword", "Maha@mar13");
-		 */
 	}
 
-	private static void setCredentials() {
-		Security.setProperty("ssl.SocketFactory.provider",
-				"com.ibm.jsse2.SSLSocketFactoryImpl");
-		Security.setProperty("ssl.ServerSocketFactory.provider",
-				"com.ibm.jsse2.SSLServerSocketFactoryImpl");
-
-		/*
-		 * System.setProperty("http.proxyHost", "proxy.tcs.com");
-		 * System.setProperty("http.proxyPort", "8080");
-		 * System.setProperty("http.proxyUser", "538540");
-		 * System.setProperty("http.proxyPassword", "Bala@Mar84");
-		 */
-	}
+	// private static void setCredentials() {
+	// Security.setProperty("ssl.SocketFactory.provider",
+	// "com.ibm.jsse2.SSLSocketFactoryImpl");
+	// Security.setProperty("ssl.ServerSocketFactory.provider",
+	// "com.ibm.jsse2.SSLServerSocketFactoryImpl");
+	//
+	//
+	// System.setProperty("http.proxyHost", "proxy.tcs.com");
+	// System.setProperty("http.proxyPort", "8080");
+	// System.setProperty("http.proxyUser", "538540");
+	// System.setProperty("http.proxyPassword", "Bala@Mar84");
+	//
+	// }
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void addLogHandler(BindingProvider bp) {
@@ -187,19 +156,51 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 	public static void setupHeaders(BindingProvider bp) {
 
 		Map<String, List<String>> headers = new HashMap<String, List<String>>();
+		// headers.put("X-PAYPAL-SECURITY-PASSWORD",
+		// Collections.singletonList("1360057509"));
+		// headers.put("X-PAYPAL-APPLICATION-ID",
+		// Collections.singletonList("APP-80W284485P519543T"));
 		headers.put("X-PAYPAL-SECURITY-PASSWORD",
-				Collections.singletonList("1360057509"));
+				Collections.singletonList("SSARWLBQRLFMDLHH"));
+
 		headers.put("X-PAYPAL-APPLICATION-ID",
-				Collections.singletonList("APP-80W284485P519543T"));
+				Collections.singletonList("APP-1JE4291016473214C"));
 		headers.put("X-PAYPAL-SECURITY-USERID", Collections
-				.singletonList("yathi_1360057489_biz_api1.gmail.com"));
-		headers.put(
-				"X-PAYPAL-SECURITY-SIGNATURE",
-				Collections
-						.singletonList("AnuN4vab8al1SfyKRXM4mSMYZQAmA8IvJIBGoIZVkt7XxF7W--tLgaXw"));
+				.singletonList("mgi_fundsout_test_api1.moneygram.com"));
+		// headers.put("X-PAYPAL-SECURITY-USERID", Collections
+		// .singletonList("yathi_1360057489_biz_api1.gmail.com"));
+		// headers.put(
+		// "X-PAYPAL-SECURITY-SIGNATURE",
+		// Collections
+		// .singletonList("AnuN4vab8al1SfyKRXM4mSMYZQAmA8IvJIBGoIZVkt7XxF7W--tLgaXw"));
 		bp.getRequestContext()
 				.put(MessageContext.HTTP_REQUEST_HEADERS, headers);
 
 	}
 
+	public static void setupHeadersForPay(BindingProvider bp, String token) {
+
+		/*
+		 * System.out.println("Setting HTTP Header"); AccessToken accessToken =
+		 * new AccessToken(); String Token = accessToken.getAccess_token();
+		 */
+
+		// String Tok="F2DcXe38dhK.Pxw1N.fhS9KJYed3lQAnPCnSCKYTj1Q";
+		Map<String, List<String>> headers = new HashMap<String, List<String>>();
+		headers.put("X-PAYPAL-SECURITY-PASSWORD",
+				Collections.singletonList("SSARWLBQRLFMDLHH"));
+
+		headers.put("X-PAYPAL-APPLICATION-ID",
+				Collections.singletonList("APP-1JE4291016473214C"));
+		headers.put("X-PAYPAL-SECURITY-USERID", Collections
+				.singletonList("mgi_fundsout_test_api1.moneygram.com"));
+
+		headers.put(
+				"X-PAYPAL-SECONDARY-AUTH-UNIVERSAL-TOKEN ",
+				Collections
+						.singletonList(/* "Hia6.IbEOZ1kV-KvqETllw9vPBtrH-QoXu297bVRqy8" */token));
+		bp.getRequestContext()
+				.put(MessageContext.HTTP_REQUEST_HEADERS, headers);
+
+	}
 }
