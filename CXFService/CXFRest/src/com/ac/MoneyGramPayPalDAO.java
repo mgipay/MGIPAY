@@ -23,7 +23,7 @@ public class MoneyGramPayPalDAO {
 	private static Logger LOGGER = Logger.getLogger(MoneyGramPayPalDAO.class);
 
 	public void updateFeeFeeDetailTable(BigDecimal upperLimit,
-			BigDecimal feeCharge)
+			BigDecimal feeCharge,boolean fundsIn)
 			throws ClassNotFoundException, SQLException {
 
 		LOGGER.debug("Enter updateFeeFeeDetailTable.");
@@ -33,11 +33,16 @@ public class MoneyGramPayPalDAO {
 		Connection connection = DriverManager.getConnection(
 				"jdbc:oracle:thin:@10.0.1.167:1521:devdb", "devdb",
 				"devdbdevdb");
-		String strQuery = "Update MGI_PAYPAL_FEE_DTL set FEE_CHARGES = ? where UPPER_LIMIT = ?";
+		String strQuery = "Update MGI_PAYPAL_FEE_DTL set FEE_CHARGES = ? where UPPER_LIMIT = ? and FUNDS_TYPE = ?";
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setBigDecimal(1, feeCharge);
 		preparedStatement.setBigDecimal(2, upperLimit);
+		if (fundsIn) {
+			preparedStatement.setString(3, "Fund_In");
+		} else {
+			preparedStatement.setString(3, "Fund_Out");
+		}
 		preparedStatement.executeUpdate();
 		connection.close();
 
@@ -90,7 +95,7 @@ public class MoneyGramPayPalDAO {
 				"jdbc:oracle:thin:@10.0.1.167:1521:devdb", "devdb",
 				"devdbdevdb");
 		String strQuery = "SELECT * FROM (SELECT * FROM MGI_PAYPAL_TR" +
-				"AN_HIST WHERE CUST_EMAIL = ? order by TRAN_ID desc) a where rownum < 11";
+				"AN_HIST WHERE CUST_EMAIL = ? order by TRAN_DATE desc) a where rownum < 11";
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1, emailId);
@@ -139,7 +144,7 @@ public class MoneyGramPayPalDAO {
 		String strQuery = "INSERT INTO MGI_PAYPAL_TRAN_HIST (TRAN_ID, CUST_EMAIL, CUST_"
 				+ "NAME, CUST_PHONE, PAYPAL_"
 				+ "TRAN_ID, MGI_REF_NUM, TRAN_DATE, TRAN_AMT, TRAN_FEE, TRAN_STATUS, "
-				+ "PayPal_TRAN_STATUS) VALUES (mgi_paypal_tranid_seq.nextval,?,?,?,?,?,?,?,?,?,?)";
+				+ "PayPal_TRAN_STATUS,MGI_SESS_ID) VALUES (mgi_paypal_tranid_seq.nextval,?,?,?,?,?,?,?,?,?,?,?)";
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1,
@@ -163,6 +168,8 @@ public class MoneyGramPayPalDAO {
 				commitTransactionInputBean.getMgiTransactionStatus());
 		preparedStatement.setString(10,
 				commitTransactionInputBean.getPayPalTransactionStatus());
+		preparedStatement.setString(11,
+				commitTransactionInputBean.getMgiTransactionSessionID());
 		preparedStatement.execute();
 		connection.close();
 		

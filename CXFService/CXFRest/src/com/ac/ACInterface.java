@@ -23,8 +23,6 @@ public interface ACInterface {
 
 	String sendMail(SendMailInputBean sendMailInputBean);
 
-	String getFeeLinkValue();
-
 	String getHistoryDetails(HistroyLookupInputBean histroyLookupInputBean);
 
 	String getUserData(UserDataInputBean userDataInputBean);
@@ -32,5 +30,7 @@ public interface ACInterface {
 	String detailLookUp(DetailLookupInputBean detailLookupInputBean);
 
 	String payToMoneyGram(String token);
+
+	String getFeeLinkValue(FeeLinkValueInputBean feeLinkValueInputBean);
 
 }
