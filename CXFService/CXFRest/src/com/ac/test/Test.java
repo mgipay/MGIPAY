@@ -10,15 +10,15 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.log4j.Logger;
 
-import com.ac1211.client.FeeLookupResponse;
 import com.google.gson.Gson;
-import com.paypal.cfx.client.AccountIdentifier;
-import com.paypal.cfx.client.AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client;
-import com.paypal.cfx.client.DetailLevelCode;
-import com.paypal.cfx.client.GetUserLimitsRequest;
-import com.paypal.cfx.client.GetUserLimitsResponse;
-import com.paypal.cfx.client.PhoneNumberType;
-import com.paypal.cfx.client.RequestEnvelope;
+import com.mgi.agentconnect.client.FeeLookupResponse;
+import com.paypal.adaptivepayment.client.AccountIdentifier;
+import com.paypal.adaptivepayment.client.AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client;
+import com.paypal.adaptivepayment.client.DetailLevelCode;
+import com.paypal.adaptivepayment.client.GetUserLimitsRequest;
+import com.paypal.adaptivepayment.client.GetUserLimitsResponse;
+import com.paypal.adaptivepayment.client.PhoneNumberType;
+import com.paypal.adaptivepayment.client.RequestEnvelope;
 
 public class Test {
 
@@ -61,7 +61,7 @@ public class Test {
 		System.out.println(getUserLimitsResponse.getUserLimit().get(0)
 				.getLimitAmount().getAmount());
 		try {
-			com.ac1211.client.FeeLookupRequest feeLookupRequest = new com.ac1211.client.FeeLookupRequest();
+			com.mgi.agentconnect.client.FeeLookupRequest feeLookupRequest = new com.mgi.agentconnect.client.FeeLookupRequest();
 
 			feeLookupRequest.setAgentID("30014943");
 			feeLookupRequest.setAgentSequence("9");
@@ -70,7 +70,7 @@ public class Test {
 			feeLookupRequest.setApiVersion("1211");
 			feeLookupRequest.setClientSoftwareVersion("v1");
 			feeLookupRequest.setAmountExcludingFee(new BigDecimal(100));
-			feeLookupRequest.setProductType(com.ac1211.client.ProductType.SEND);
+			feeLookupRequest.setProductType(com.mgi.agentconnect.client.ProductType.SEND);
 			feeLookupRequest.setReceiveCountry("USA");
 			feeLookupRequest.setDeliveryOption("WILL_CALL");
 			feeLookupRequest.setReceiveCurrency("USD");
@@ -79,13 +79,13 @@ public class Test {
 
 			System.out.println(gson.toJson(feeLookupRequest));
 
-			FeeLookupResponse feeLookupResponse = com.ac1211.client.AgentConnect_AgentConnect_Client
+			FeeLookupResponse feeLookupResponse = com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client
 					.feeLookup(feeLookupRequest);
 			XMLGregorianCalendar xmlGregorianCalendar = getTimeStamp();
-			com.ac1211.client.SendValidationResponse sendValidationResponse = sendValidation(
+			com.mgi.agentconnect.client.SendValidationResponse sendValidationResponse = sendValidation(
 					gson, feeLookupResponse, xmlGregorianCalendar);
-			com.ac1211.client.CommitTransactionRequest commitTransactionRequest = new com.ac1211.client.CommitTransactionRequest();
-			com.ac1211.client.CommitTransactionResponse commitTransactionResponse = null;
+			com.mgi.agentconnect.client.CommitTransactionRequest commitTransactionRequest = new com.mgi.agentconnect.client.CommitTransactionRequest();
+			com.mgi.agentconnect.client.CommitTransactionResponse commitTransactionResponse = null;
 
 			commitTransactionRequest.setAgentID("30014943");
 			commitTransactionRequest.setAgentSequence("9");
@@ -97,9 +97,9 @@ public class Test {
 					.setMgiTransactionSessionID(sendValidationResponse
 							.getMgiTransactionSessionID());
 			commitTransactionRequest
-					.setProductType(com.ac1211.client.ProductType.SEND);
+					.setProductType(com.mgi.agentconnect.client.ProductType.SEND);
 			System.out.println(gson.toJson(commitTransactionRequest));
-			commitTransactionResponse = com.ac1211.client.AgentConnect_AgentConnect_Client
+			commitTransactionResponse = com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client
 					.commitTransaction(commitTransactionRequest);
 			System.out.println(commitTransactionResponse.getReferenceNumber());
 		} catch (Exception e) {
@@ -108,10 +108,10 @@ public class Test {
 		}
 	}
 
-	private static com.ac1211.client.SendValidationResponse sendValidation(
+	private static com.mgi.agentconnect.client.SendValidationResponse sendValidation(
 			Gson gson, FeeLookupResponse feeLookupResponse,
 			XMLGregorianCalendar xmlGregorianCalendar) throws Exception {
-		com.ac1211.client.SendValidationRequest sendValidationRequest = new com.ac1211.client.SendValidationRequest();
+		com.mgi.agentconnect.client.SendValidationRequest sendValidationRequest = new com.mgi.agentconnect.client.SendValidationRequest();
 		// sendValidationRequest.setMgiTransactionSessionID(feeLookupResponse
 		// .getMgiTransactionSessionID());
 		// sendValidationRequest.setFeeAmount(feeLookupResponse.getFeeInfo()
@@ -147,9 +147,9 @@ public class Test {
 		sendValidationRequest.setTimeToLive(new java.math.BigInteger("30"));
 		sendValidationRequest.setPrimaryReceiptLanguage("eng");
 		sendValidationRequest.setSecondaryReceiptLanguage("spa");
-		com.ac1211.client.SendValidationResponse sendValidationResponse = null;
+		com.mgi.agentconnect.client.SendValidationResponse sendValidationResponse = null;
 		System.out.println(gson.toJson(sendValidationRequest));
-		sendValidationResponse = com.ac1211.client.AgentConnect_AgentConnect_Client
+		sendValidationResponse = com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client
 				.sendValidation(sendValidationRequest);
 		System.out.println(sendValidationResponse);
 		return sendValidationResponse;

@@ -14,6 +14,10 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.mgi.paypal.inputbean.CommitTransactionInputBean;
+import com.mgi.paypal.util.FeeLinkValues;
+import com.mgi.paypal.util.HistoryDetails;
+
 public class MoneyGramPayPalDAO {
 
 	public MoneyGramPayPalDAO() {
@@ -148,7 +152,7 @@ public class MoneyGramPayPalDAO {
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1,
-				commitTransactionInputBean.getCustomerEmail());
+				commitTransactionInputBean.getCustomerEmail().toLowerCase());
 		preparedStatement.setString(2,
 				commitTransactionInputBean.getCustomerName());
 		preparedStatement.setString(3,commitTransactionInputBean

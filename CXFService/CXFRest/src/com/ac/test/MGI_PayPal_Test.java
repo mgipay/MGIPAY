@@ -12,7 +12,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
@@ -28,11 +27,10 @@ import org.apache.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.ac.CommitTransactionInputBean;
-import com.ac.HistoryDetails;
-import com.ac.UserDataInputBean;
-import com.ac1211.client.TransactionStatus;
 import com.google.gson.Gson;
+import com.mgi.agentconnect.client.TransactionStatus;
+import com.mgi.paypal.inputbean.CommitTransactionInputBean;
+import com.mgi.paypal.util.HistoryDetails;
 
 /**
  * @author TCS
@@ -466,7 +464,7 @@ private void setCredentials(){
 	@Ignore
 	public void TestSendReversal() { setCredentials();
 		// setCredentials();
-		com.ac1211.client.SendReversalRequest sendReversalRequest = new com.ac1211.client.SendReversalRequest();
+		com.mgi.agentconnect.client.SendReversalRequest sendReversalRequest = new com.mgi.agentconnect.client.SendReversalRequest();
 		sendReversalRequest.setAgentID("");
 		sendReversalRequest.setAgentSequence("9");
 		sendReversalRequest.setToken("456");
@@ -479,14 +477,14 @@ private void setCredentials(){
 		sendReversalRequest.setSendCurrency("USA");
 		sendReversalRequest.setReferenceNumber("3012228");
 		sendReversalRequest
-				.setReversalType(com.ac1211.client.SendReversalType.C);
+				.setReversalType(com.mgi.agentconnect.client.SendReversalType.C);
 		sendReversalRequest
-				.setSendReversalReason(com.ac1211.client.SendReversalReasonCode.MS_NOT_USED);
+				.setSendReversalReason(com.mgi.agentconnect.client.SendReversalReasonCode.MS_NOT_USED);
 		sendReversalRequest.setFeeRefund("Y");
-		com.ac1211.client.SendReversalResponse sendReversalResponse = null;
+		com.mgi.agentconnect.client.SendReversalResponse sendReversalResponse = null;
 
 		try {
-			sendReversalResponse = com.ac1211.client.AgentConnect_AgentConnect_Client
+			sendReversalResponse = com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client
 					.sendReversal(sendReversalRequest);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

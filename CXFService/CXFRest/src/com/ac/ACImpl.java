@@ -30,43 +30,60 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 
-import com.ac1211.client.AgentConnect_AgentConnect_Client;
-import com.ac1211.client.CodeTableRequest;
-import com.ac1211.client.CommitTransactionRequest;
-import com.ac1211.client.CommitTransactionResponse;
-import com.ac1211.client.DetailLookupRequest;
-import com.ac1211.client.DetailLookupResponse;
-import com.ac1211.client.FeeLookupRequest;
-import com.ac1211.client.FeeLookupResponse;
-import com.ac1211.client.ProductType;
-import com.ac1211.client.SendReversalReasonCode;
-import com.ac1211.client.SendReversalRequest;
-import com.ac1211.client.SendReversalResponse;
-import com.ac1211.client.SendReversalType;
-import com.ac1211.client.TransactionStatus;
-import com.ac1211.mail.client.AgentHeader;
-import com.ac1211.mail.client.ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client;
-import com.ac1211.mail.client.Header;
-import com.ac1211.mail.client.InsertRecsIntoCRMExtWebFormRequest;
-import com.ac1211.mail.client.InsertRecsIntoCRMExtWebFormResponse;
-import com.ac1211.mail.client.ProcessingInstruction;
 import com.google.gson.Gson;
-import com.paypal.cfx.client.AccountIdentifier;
-import com.paypal.cfx.client.AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client;
-import com.paypal.cfx.client.CurrencyType;
-import com.paypal.cfx.client.DetailLevelCode;
-import com.paypal.cfx.client.FundingConstraint;
-import com.paypal.cfx.client.FundingTypeInfo;
-import com.paypal.cfx.client.FundingTypeList;
-import com.paypal.cfx.client.GetUserLimitsRequest;
-import com.paypal.cfx.client.GetUserLimitsResponse;
-import com.paypal.cfx.client.PayRequest;
-import com.paypal.cfx.client.PayResponse;
-import com.paypal.cfx.client.PhoneNumberType;
-import com.paypal.cfx.client.Receiver;
-import com.paypal.cfx.client.ReceiverList;
-import com.paypal.cfx.client.RequestEnvelope;
-import com.paypal.cfx.client.UserLimit;
+import com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client;
+import com.mgi.agentconnect.client.CodeTableRequest;
+import com.mgi.agentconnect.client.CommitTransactionRequest;
+import com.mgi.agentconnect.client.CommitTransactionResponse;
+import com.mgi.agentconnect.client.DetailLookupRequest;
+import com.mgi.agentconnect.client.DetailLookupResponse;
+import com.mgi.agentconnect.client.FeeLookupRequest;
+import com.mgi.agentconnect.client.FeeLookupResponse;
+import com.mgi.agentconnect.client.ProductType;
+import com.mgi.agentconnect.client.SendReversalReasonCode;
+import com.mgi.agentconnect.client.SendReversalRequest;
+import com.mgi.agentconnect.client.SendReversalResponse;
+import com.mgi.agentconnect.client.SendReversalType;
+import com.mgi.agentconnect.client.TransactionStatus;
+import com.mgi.complaintproxyservice.client.AgentHeader;
+import com.mgi.complaintproxyservice.client.ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client;
+import com.mgi.complaintproxyservice.client.Header;
+import com.mgi.complaintproxyservice.client.InsertRecsIntoCRMExtWebFormRequest;
+import com.mgi.complaintproxyservice.client.InsertRecsIntoCRMExtWebFormResponse;
+import com.mgi.complaintproxyservice.client.ProcessingInstruction;
+import com.mgi.paypal.inputbean.CommitTransactionInputBean;
+import com.mgi.paypal.inputbean.DetailLookupInputBean;
+import com.mgi.paypal.inputbean.FeeLinkValueInputBean;
+import com.mgi.paypal.inputbean.FeeLookupInputBean;
+import com.mgi.paypal.inputbean.HistroyLookupInputBean;
+import com.mgi.paypal.inputbean.SendMailInputBean;
+import com.mgi.paypal.inputbean.SendReversalInputBean;
+import com.mgi.paypal.inputbean.SendValidationInputBean;
+import com.mgi.paypal.inputbean.UserDataInputBean;
+import com.mgi.paypal.inputbean.UserLimitInputBean;
+import com.mgi.paypal.interf.ACInterface;
+import com.mgi.paypal.response.HistroyLookupResponse;
+import com.mgi.paypal.response.SendMailOutputBean;
+import com.mgi.paypal.util.AccessToken;
+import com.mgi.paypal.util.FeeLinkValues;
+import com.mgi.paypal.util.HistoryDetails;
+import com.mgi.paypal.util.PropertyUtil;
+import com.paypal.adaptivepayment.client.AccountIdentifier;
+import com.paypal.adaptivepayment.client.AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client;
+import com.paypal.adaptivepayment.client.CurrencyType;
+import com.paypal.adaptivepayment.client.DetailLevelCode;
+import com.paypal.adaptivepayment.client.FundingConstraint;
+import com.paypal.adaptivepayment.client.FundingTypeInfo;
+import com.paypal.adaptivepayment.client.FundingTypeList;
+import com.paypal.adaptivepayment.client.GetUserLimitsRequest;
+import com.paypal.adaptivepayment.client.GetUserLimitsResponse;
+import com.paypal.adaptivepayment.client.PayRequest;
+import com.paypal.adaptivepayment.client.PayResponse;
+import com.paypal.adaptivepayment.client.PhoneNumberType;
+import com.paypal.adaptivepayment.client.Receiver;
+import com.paypal.adaptivepayment.client.ReceiverList;
+import com.paypal.adaptivepayment.client.RequestEnvelope;
+import com.paypal.adaptivepayment.client.UserLimit;
 
 @Consumes("application/json")
 @Produces("application/JSON")
@@ -128,7 +145,7 @@ public class ACImpl implements ACInterface {
 		FeeLookupRequest feeLookupRequest = null;
 		feeLookupRequest = createFeeLookupInput(feeLookupInputBean.getAmount(),
 				true);
-		com.ac.FeeLookupResponse feeLookupResponseReturn = new com.ac.FeeLookupResponse();
+		com.mgi.paypal.response.FeeLookupResponse feeLookupResponseReturn = new com.mgi.paypal.response.FeeLookupResponse();
 
 		byte retryCount = 3;
 		while (retryCount >= 1) {
@@ -288,8 +305,8 @@ public class ACImpl implements ACInterface {
 				LOGGER.error("getFeeForFeeLink Retrying because of" + exception);
 				retryCount--;
 			}
-			if (feeLookupResponse != null) {
-				LOGGER.info("FeeLookup for FeeLink Successful");
+			if (feeLookupResponse != null
+					&& !feeLookupResponse.getFeeInfo().isEmpty()) {
 				return feeLookupResponse.getFeeInfo().get(0).getTotalAmount()
 						.subtract(amount);
 			}
@@ -717,8 +734,8 @@ public class ACImpl implements ACInterface {
 		.setMgiTransactionSessionID(commitTransactionInputBean
 				.getMgiTransactionSessionID().trim());
 		commitTransactionRequest.setProductType(ProductType.SEND);
-		com.ac.CommitTransactionResponse commitTransactionResponseForReturn 
-		= new com.ac.CommitTransactionResponse();
+		com.mgi.paypal.response.CommitTransactionResponse commitTransactionResponseForReturn 
+		= new com.mgi.paypal.response.CommitTransactionResponse();
 		byte retryCount = 3;
 		while (retryCount >= 1) {
 			try {
@@ -731,10 +748,17 @@ public class ACImpl implements ACInterface {
 				if (retryCount == 0) {
 					LOGGER.info("Max number of retries reached. Commit Trasaction Failed.");
 					commitTransactionResponseForReturn
-					.setErrorMessage(messageFromProperties.getString("TRANSACTION_FAILED_RETRY"));
+							.setErrorMessage(messageFromProperties
+									.getString("TRANSACTION_FAILED_RETRY"));
 					commitTransactionResponseForReturn
-					.setTransactionSuccess(false);
-
+							.setTransactionSuccess(false);
+					commitTransactionInputBean
+							.setMgiReferenceNumber("00000000");
+					commitTransactionInputBean
+							.setMgiTransactionStatus("FAILED");
+					commitTransactionInputBean
+							.setPayPalTransactionStatus("Payapal_Collected");
+					insertToHistory(commitTransactionInputBean);
 					LOGGER.info("Exit commitTransaction.");
 
 					return new Gson().toJson(commitTransactionResponse);
@@ -753,25 +777,10 @@ public class ACImpl implements ACInterface {
 						.value());
 				commitTransactionInputBean
 				.setPayPalTransactionStatus("Payapal_Collected");
-				commitTransactionInputBean
-				.setCustomerEmail(commitTransactionInputBean
-						.getCustomerEmail().toLowerCase());
 
 				// TODO
 				commitTransactionInputBean.setCustomerEmail("vbalki@ebay.com");
-				try {
-					MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
-					moneyGramPayPalDAO
-					.insertHistoryDetails(commitTransactionInputBean);
-				} catch (Exception exception) {
-					LOGGER.error("Insert Into HistroyTable failed : "
-							+ new Gson().toJson(commitTransactionInputBean));
-					LOGGER.error(exception.getLocalizedMessage());
-					exception.printStackTrace();
-					if (LOGGER.isDebugEnabled()) {
-						LOGGER.debug(System.getProperty("line.separator"));
-					}
-				}
+				insertToHistory(commitTransactionInputBean);
 
 				break;
 			}
@@ -780,6 +789,23 @@ public class ACImpl implements ACInterface {
 		LOGGER.info("Exit commitTransaction.");
 
 		return new Gson().toJson(commitTransactionResponseForReturn);
+	}
+
+	private void insertToHistory(
+			CommitTransactionInputBean commitTransactionInputBean) {
+		try {
+			MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
+			moneyGramPayPalDAO
+			.insertHistoryDetails(commitTransactionInputBean);
+		} catch (Exception exception) {
+			LOGGER.error("Insert Into HistroyTable failed : "
+					+ new Gson().toJson(commitTransactionInputBean));
+			LOGGER.error(exception.getLocalizedMessage());
+			exception.printStackTrace();
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug(System.getProperty("line.separator"));
+			}
+		}
 	}
 
 	@POST
@@ -849,9 +875,9 @@ public class ACImpl implements ACInterface {
 
 		LOGGER.info("Enter sendValidation.");
 
-		com.ac1211.client.SendValidationResponse sendValidationResponse = null;
+		com.mgi.agentconnect.client.SendValidationResponse sendValidationResponse = null;
 
-		com.ac1211.client.SendValidationRequest sendValidationRequest = new com.ac1211.client.SendValidationRequest();
+		com.mgi.agentconnect.client.SendValidationRequest sendValidationRequest = new com.mgi.agentconnect.client.SendValidationRequest();
 		sendValidationRequest.setConsumerId("0");
 		sendValidationRequest.setFormFreeStaging(false);
 		sendValidationRequest.setTimeToLive(constantFromProperties
@@ -909,9 +935,9 @@ public class ACImpl implements ACInterface {
 				.getReceiverLastName());
 		sendValidationRequest.setSendCurrency(sendValidationInputBean
 				.getSendCurrency());
-		com.ac.SendValidationResponse sendValidationResponseForReturn = new com.ac.SendValidationResponse();
+		com.mgi.paypal.response.SendValidationResponse sendValidationResponseForReturn = new com.mgi.paypal.response.SendValidationResponse();
 		try {
-			sendValidationResponse = com.ac1211.client.AgentConnect_AgentConnect_Client
+			sendValidationResponse = com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client
 					.sendValidation(sendValidationRequest);
 		} catch (Exception exception) {
 			LOGGER.error("SendValidation Failed because of :" + exception);
@@ -941,7 +967,7 @@ public class ACImpl implements ACInterface {
 	}
 
 	private void setSenderName(SendValidationInputBean sendValidationInputBean,
-			com.ac1211.client.SendValidationRequest sendValidationRequest) {
+			com.mgi.agentconnect.client.SendValidationRequest sendValidationRequest) {
 
 		LOGGER.info("Enter setSenderName.");
 
@@ -999,15 +1025,15 @@ public class ACImpl implements ACInterface {
 		GetUserLimitsRequest getUserLimitsRequest = new GetUserLimitsRequest();
 		getUserLimitsRequest.setUser(accountIdentifier);
 		getUserLimitsRequest.setRequestEnvelope(requestEnvelope);
-		getUserLimitsRequest.setCountry(PayPal_Constants.COUNTRY_CODE_US);
+		getUserLimitsRequest.setCountry(constantFromProperties.getString("PP_COUNTRY_CODE_US"));
 		getUserLimitsRequest
-		.setCurrencyCode(PayPal_Constants.CURRENCY_CODE_USA);
-		getUserLimitsRequest.getLimitType().add(PayPal_Constants.LIMIT_TYPE);
+		.setCurrencyCode(constantFromProperties.getString("PP_CURRENCY_CODE_USA"));
+		getUserLimitsRequest.getLimitType().add(constantFromProperties.getString("PP_LIMIT_TYPE"));
 
 		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
 		Gson gson = new Gson();
 
-		com.ac.GetUserLimitsResponse getUserLimitsResponseForReturn = new com.ac.GetUserLimitsResponse();
+		com.mgi.paypal.response.GetUserLimitsResponse getUserLimitsResponseForReturn = new com.mgi.paypal.response.GetUserLimitsResponse();
 		byte retryCount = 3;
 		while (retryCount >= 1) {
 			try {
@@ -1222,6 +1248,9 @@ public class ACImpl implements ACInterface {
 			processingInstruction.setRollbackTransaction(false);
 			header.setProcessingInstruction(processingInstruction);
 			insertRecsIntoCRMExtWebFormRequest.setHeader(header);
+			
+			LOGGER.debug(new Gson().toJson(insertRecsIntoCRMExtWebFormRequest));
+			
 			insertRecsIntoCRMExtWebFormResponse = ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client
 					.insertRecsIntoCRMExtWebForm(insertRecsIntoCRMExtWebFormRequest);
 		} catch (MalformedURLException malformedURLException) {
