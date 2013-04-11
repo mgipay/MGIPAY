@@ -11,6 +11,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
+import com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client;
 import com.mgi.agentconnect.client.FeeLookupResponse;
 import com.paypal.adaptivepayment.client.AccountIdentifier;
 import com.paypal.adaptivepayment.client.AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client;
@@ -78,8 +79,8 @@ public class Test {
 			feeLookupRequest.setAllOptions(false);
 
 			System.out.println(gson.toJson(feeLookupRequest));
-
-			FeeLookupResponse feeLookupResponse = com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client
+			AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
+			FeeLookupResponse feeLookupResponse =client
 					.feeLookup(feeLookupRequest);
 			XMLGregorianCalendar xmlGregorianCalendar = getTimeStamp();
 			com.mgi.agentconnect.client.SendValidationResponse sendValidationResponse = sendValidation(
@@ -99,7 +100,7 @@ public class Test {
 			commitTransactionRequest
 					.setProductType(com.mgi.agentconnect.client.ProductType.SEND);
 			System.out.println(gson.toJson(commitTransactionRequest));
-			commitTransactionResponse = com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client
+			commitTransactionResponse = client
 					.commitTransaction(commitTransactionRequest);
 			System.out.println(commitTransactionResponse.getReferenceNumber());
 		} catch (Exception e) {
@@ -149,7 +150,8 @@ public class Test {
 		sendValidationRequest.setSecondaryReceiptLanguage("spa");
 		com.mgi.agentconnect.client.SendValidationResponse sendValidationResponse = null;
 		System.out.println(gson.toJson(sendValidationRequest));
-		sendValidationResponse = com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client
+		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
+		sendValidationResponse = client
 				.sendValidation(sendValidationRequest);
 		System.out.println(sendValidationResponse);
 		return sendValidationResponse;

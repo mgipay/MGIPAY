@@ -33,7 +33,10 @@ public enum TransactionStatus {
     RECVD,
     REFND,
     AFR,
-    UNCOMMITED;
+    UNCOMMITED,
+    FAILED,
+    REVERSED,
+    REJECTED;
 
     public String value() {
         return name();

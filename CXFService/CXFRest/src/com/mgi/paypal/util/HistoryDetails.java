@@ -18,8 +18,16 @@ public class HistoryDetails {
 	private BigDecimal transactionAmount;
 	private BigDecimal transactionFee;
 	private String transactionStatus;
-
+	private String MgiTransactionSessionID;
 	
+	public String getMgiTransactionSessionID() {
+		return MgiTransactionSessionID;
+	}
+
+	public void setMgiTransactionSessionID(String mgiTransactionSessionID) {
+		MgiTransactionSessionID = mgiTransactionSessionID;
+	}
+
 	public String getCustomerPhone() {
 		return customerPhone;
 	}

@@ -8,14 +8,20 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.commons.configuration.PropertiesConfiguration;
+
+import com.mgi.paypal.util.PropertyUtil;
+
 public final class AgentConnect_AgentConnect_Client {
 	private static final QName SERVICE_NAME = new QName(
 			"http://www.moneygram.com/AgentConnect1211", "AgentConnectService");
+	PropertiesConfiguration constantFromProperties = new PropertyUtil()
+			.getConstantPropertyConfig();
 
-	private AgentConnect_AgentConnect_Client() {
+	public AgentConnect_AgentConnect_Client() {
 	}
 
-	public static com.mgi.agentconnect.client.FeeLookupResponse feeLookup(
+	public com.mgi.agentconnect.client.FeeLookupResponse feeLookup(
 			com.mgi.agentconnect.client.FeeLookupRequest feeLookupRequest)
 			throws Exception {
 		AgentConnect port = getPort();
@@ -25,15 +31,14 @@ public final class AgentConnect_AgentConnect_Client {
 	}
 
 	/** * @return * @throws MalformedURLException */
-	private static AgentConnect getPort() throws MalformedURLException {
-		URL wsdlURL = new URL(
-				"https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211");
+	private  AgentConnect getPort() throws MalformedURLException {
+		URL wsdlURL = new URL(constantFromProperties.getString("AGENT_CONNECT_PORT_URL"));
 		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
 		AgentConnect port = ss.getAgentConnect();
 		return port;
 	}
 
-	public static List<String> codeTable(
+	public  List<String> codeTable(
 			com.mgi.agentconnect.client.CodeTableRequest codeTableRequest)
 			throws Exception {
 
@@ -49,7 +54,7 @@ public final class AgentConnect_AgentConnect_Client {
 		return stateCodeList;
 	}
 
-	public static com.mgi.agentconnect.client.CommitTransactionResponse commitTransaction(
+	public com.mgi.agentconnect.client.CommitTransactionResponse commitTransaction(
 			com.mgi.agentconnect.client.CommitTransactionRequest commitTransactionRequest)
 			throws Exception {
 		AgentConnect port = getPort();
@@ -58,7 +63,7 @@ public final class AgentConnect_AgentConnect_Client {
 		return _commitTransaction__return;
 	}
 
-	public static com.mgi.agentconnect.client.DetailLookupResponse detailLookup(
+	public com.mgi.agentconnect.client.DetailLookupResponse detailLookup(
 			com.mgi.agentconnect.client.DetailLookupRequest detailLookupRequest)
 			throws Exception {
 		AgentConnect port = getPort();
@@ -67,7 +72,7 @@ public final class AgentConnect_AgentConnect_Client {
 		return _detailLookup__return;
 	}
 
-	public static com.mgi.agentconnect.client.SendReversalResponse sendReversal(
+	public com.mgi.agentconnect.client.SendReversalResponse sendReversal(
 			com.mgi.agentconnect.client.SendReversalRequest sendReversalRequest)
 			throws Exception {
 		AgentConnect port = getPort();
@@ -76,7 +81,7 @@ public final class AgentConnect_AgentConnect_Client {
 		return _sendReversal__return;
 	}
 
-	public static com.mgi.agentconnect.client.SendValidationResponse sendValidation(
+	public com.mgi.agentconnect.client.SendValidationResponse sendValidation(
 			com.mgi.agentconnect.client.SendValidationRequest sendValidationRequest)
 			throws Exception {
 		AgentConnect port = getPort();

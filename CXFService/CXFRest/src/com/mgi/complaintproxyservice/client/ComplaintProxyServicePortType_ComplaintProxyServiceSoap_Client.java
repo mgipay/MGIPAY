@@ -8,6 +8,7 @@ package com.mgi.complaintproxyservice.client;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.Security;
 
 import javax.xml.namespace.QName;
 
@@ -57,13 +58,13 @@ public final class ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Clien
 	}
 
 	private static void setCredentials() {
-		// Security.setProperty("ssl.SocketFactory.provider",
-		// "com.ibm.jsse2.SSLSocketFactoryImpl");
-		// Security.setProperty("ssl.ServerSocketFactory.provider",
-		// "com.ibm.jsse2.SSLServerSocketFactoryImpl");
-		// System.setProperty("javax.net.ssl.trustStore",
-		// "/usr/share/tomcat7/MGI_certificates/truststore.jks");
-		// System.setProperty("javax.net.ssl.trustStorePassword", "changeIt");
+		 Security.setProperty("ssl.SocketFactory.provider",
+		 "com.ibm.jsse2.SSLSocketFactoryImpl");
+		 Security.setProperty("ssl.ServerSocketFactory.provider",
+		 "com.ibm.jsse2.SSLServerSocketFactoryImpl");
+		 System.setProperty("javax.net.ssl.trustStore",
+		 "CXFRest/WebContent/WEB-INF/truststore.jks");
+		 System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
 	}
 
 	public static com.mgi.complaintproxyservice.client.InsertRecsIntoCRMExtWebFormResponse insertRecsIntoCRMExtWebForm(

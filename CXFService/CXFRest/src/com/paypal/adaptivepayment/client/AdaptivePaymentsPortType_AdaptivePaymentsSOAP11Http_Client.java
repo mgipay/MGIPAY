@@ -117,12 +117,12 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 				"com.ibm.jsse2.SSLServerSocketFactoryImpl");
 //		System.setProperty("javax.net.ssl.trustStoreType", "JKS");
 //		System.setProperty("javax.net.ssl.trustStore",
-//				"/usr/share/tomcat7/paypal_certificates/truststore.jks");
+//				"CXFRest/WebContent/WEB-INF/truststore.jks");
 //		System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
 //		System.setProperty("javax.net.ssl.keyStoreType", "pkcs12");
 //		System.setProperty("javax.net.ssl.keyStore",
-//				"/usr/share/tomcat7/paypal_certificates/paypal_cert.p12");
-//		System.setProperty("javax.net.ssl.keyStorePassword", "prompt");
+//				"CXFRest/WebContent/WEB-INF/paypal_cert.p12");
+//		System.setProperty("javax.net.ssl.keyStorePassword", "changeit");
 
 	}
 

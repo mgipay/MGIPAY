@@ -28,6 +28,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.Gson;
+import com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client;
 import com.mgi.agentconnect.client.TransactionStatus;
 import com.mgi.paypal.inputbean.CommitTransactionInputBean;
 import com.mgi.paypal.util.HistoryDetails;
@@ -484,7 +485,8 @@ private void setCredentials(){
 		com.mgi.agentconnect.client.SendReversalResponse sendReversalResponse = null;
 
 		try {
-			sendReversalResponse = com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client
+			com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
+			sendReversalResponse = client
 					.sendReversal(sendReversalRequest);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
