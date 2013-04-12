@@ -1,0 +1,267 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<meta name="description" content="Take the easy steps to withdraw money from your PayPal account. Enjoy your cash today with an easy PayPal to MoneyGram transfer!">
+<link rel="shortcut icon" href="images/favicon.png" type="image/png">
+<title>How to Withdraw Money From PayPal: Withdraw Cash | MoneyGram</title>
+<link href="css/moneygram.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="css/fancybox.css" type="text/css" media="screen"/>
+<script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script> 
+<script type="text/javascript" src="scripts/jquery.cookie.js"></script>
+<script type="text/javascript" src="scripts/withdraw.js"></script>
+<script type="text/javascript" src="scripts/global.js"></script>
+<script type="text/javascript" src="scripts/service.js"></script>
+<script type="text/javascript" src="scripts/utility.js"></script>
+<script type="text/javascript" src="scripts/fancybox.js"></script>
+<script type="text/javascript" src="scripts/spinmin.js"></script>
+<script type="text/javascript" src="scripts/genric.js"></script>
+<script language="javascript">
+/***** Google Analytics Code Start*******/
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-38945408-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+/***** Google Analytics Code Start*******/
+
+</script>
+</head>
+
+<body>
+<div id="preview" style="display:none;">
+            <div class="loading_content" id="loadingContent">
+               <p>Processing your request.</p><p> This will take just a moment</p>
+               <div class="clear"></div>
+               <div id="loading_div">
+               </div>
+            </div>
+</div>
+<div class="mainwrapper" id="mainwrapper">
+  <div class="subwrapper">
+    <div class="header">
+      <div class="logo"> <a href="home.html"><img src="images/logo.png"  alt="MoneyGram" class="logo_moneygram"></a> <a href="home.html"><img src="images/logo_paypal.png"  alt="PayPal" class="logo_paypal"></a> </div>
+      
+      <div class="topNav">
+						<a href="frequently-asked-questions.html">FAQ</a><a href="contact-us.html">Contact Us</a><a href="moneygram-paypal-history.html">History</a><a href="home.html" class="logout">Log Out</a>
+					</div>
+    </div>
+    <div class="innercontainer">
+      <div class="welcome"><!--You are logged in as: <span>Username</span>--></div>
+      <div class="breadcrumb"><a href="home.html">Home</a> > Withdraw Cash</div>
+    </div>
+    <div class="WC_authentication_container">
+      <div class="left">
+        <h1>How to Withdraw Money From PayPal Using a MoneyGram Transfer</h1>
+       
+        <div>
+          <h2><span>1</span>From your available balance </h2>
+          <ul>
+            <li>Select the state where you want to pick up your cash</li>
+            <li>Enter how much money you want to receive</li>
+            <li> A <a  id="fee_withdraw" class="feearrow">fee</a> will be added to the amount you want to receive.
+</li>
+          </ul>
+
+          <!-- Fee tooltip box --> 
+
+         <div id="feetooltip_withdraw" class="displaynone clear">
+
+            <a  id="fancyboxclose_withdraw"></a>  
+            <div id="withdrawFee"></div>
+         </div>
+          
+          <!-- Fee tooltip end --> 
+        </div>
+        <div>
+          <h2><span>2</span>Review the details of your withdrawal, read the fraud warnings, and agree to the terms.
+</h2>
+        </div>
+        <div>
+          <h2><span>3</span>A MoneyGram Reference Number will 
+            be provided. </h2>
+          <ul>
+            <li>Take your MoneyGram Reference Number to a <a  id='map_location'  onclick='mapToLocations()'>MoneyGram location to withdraw cash.</a></li>
+            <li>At the location, complete a simple "receive" form,  hand it in, and show your ID.
+</li>
+          </ul>
+<p>Enjoy your cash!  </p>
+
+        </div>
+      </div>
+      <div class="right">
+        <p>Withdraw Cash in 3 simple steps</p>
+        <div class="WCsteps">
+          <div class="progressivesteps"> 
+          <div class="step1" id="enter_amt"></div>
+          <div class="step22" id="review" style="display:none"><img src="images/wc_review_active.png" width="400" height="32" usemap="#Map" style="border:0">
+            <map name="Map" id="Map">
+  				<area shape="rect" coords="0,0,137,32" href="#" style="border:0" id="back_enteramt"/>
+			</map>
+          </div>
+          <div class="step3" id="get_conf"></div>
+
+      
+          </div>
+          <div class="enteramount">
+            <div class="enteramountbox">
+              <p> You may withdraw up to <span>$200 per day, $500 per month,</span> including fees. </p>
+              <hr/>
+              <p>
+              <h3><span>Amount Available to Withdraw: </span><label id="avail_amt"></label></h3>
+              </p>
+            </div>
+            <ul>
+              <li  id="location">
+                <label>Pick Up Location</label>
+                <select name="" id="pickup_location">
+                </select>
+              </li>
+              <li>
+                <label>Receive Amount</label>
+                <input name="" type="text" value="USD" id="recieveAmount" onblur='currencyfocusout()'>
+              </li>
+              <li>
+                <label>Fee</label>
+                <input name="" type="text" value="USD" id="fee_value" readonly>
+              </li>
+            </ul>
+            <h3><span>Total to withdraw from Balance:</span> <label id="totalAmount"></label></h3>
+            <h6>The amount will be withdrawn from your PayPal balance</h6>
+            <input type="button" class="button" value="Next: Review >" onclick='reviewTransaction()'>
+          </div>
+          <!-- Enter Amount Div End -->
+           <!-- Review Div -->
+       <div class="reviewcontainer" style="display:none">   
+          <ul class="historyGrid">
+    	
+       
+       <li class="trow altrow">
+       			<div>Sender/Receiver:</div>
+                <div class="sender_name"></div>
+               
+       </li>
+       <li class="trow">
+            	<div>Destination Country:</div>
+                <div class="state"></div>
+       </li>
+       <li class="trow altrow">
+            	<div>Pickup Location:</div>
+                <div class="pickup"></div>
+       </li>
+       <li class="trow">
+            	<div>Availability:</div>
+                <div class="availability"></div>
+       </li>
+        <li class="trow altrow">
+            	<div>Receive Amount:</div>
+                <div class="receive_amt"></div>
+       </li>
+        <li class="trow">
+            	<div>Fee:</div>
+                <div class="final_fee"></div>
+       </li>
+       <li class="trow altrow">
+            	<div id="withdraw">Total to Withdraw from Balance:</div>
+                <div class="review_total"></div>
+       </li>
+      <!-- <li class="trow">
+            	<div>Exchange Rate:</div>
+                <div>1 USD = 1 USD</div>
+       </li>-->
+       
+    </ul>
+    <p><input type="checkbox" value="" id="chk_box">By checking this box you agree to the <a id='termsAndConditionsForWidthdraw'>Terms & Conditions</a>
+    </p>
+    <p><input type="button" value="Withdraw Cash >" class="button fright" id='withdraw_button' onclick='completeTransaction()' disabled="disable" style="opacity:0.5"></p>
+    </div>
+    
+          <!-- Review Div End -->
+         <!-- Get Confirmation Div -->
+     <div class="getconfirmation" id="complete" style="display:none">
+     <img class="printerImg" src="images/printer_icon.gif" onclick="javascript:window.print(); return false;"/>
+     	<p id="done">Thank you.  Your transaction is processing . . . </p>
+	 	<p>Your money will be available for pickup within 10 minutes*.    </p>
+	 	<p>Please take your MoneyGram Reference Number and a valid <a id="id">ID </a>to any <a id="moneygramlocation" onclick='mapToLocations()'>MoneyGram location to withdraw cash</a> in the US.  </p>
+	 	<p>At the location, complete a simple “receive” form, hand it in, and show your ID.   Note:  please make sure your <a class="id">ID </a>matches the name on your transaction.In some cases, transfers could be delayed for up to 48 hours if we need to verify additional information.</p>
+       
+       <p>
+       	Please be sure to pick up your money within 45 days.
+       </p> 
+       <h5>MoneyGram Reference Number: <label class="ref_num"></label></h5>
+         <ul class="historyGrid">
+    	
+       
+       <li class="trow altrow">
+       			<div>Sender/Receiver:</div>
+                <div class="sender_name"></div>
+               
+       </li>
+       <li class="trow">
+            	<div>Destination Country:</div>
+                <div class="state"></div>
+       </li>
+       <li class="trow altrow">
+            	<div>Pickup Location:</div>
+                <div class="pickup"></div>
+       </li>
+       <li class="trow">
+            	<div>Availability:</div>
+                <div class="availability"></div>
+       </li>
+        <li class="trow altrow">
+            	<div>Receive Amount:</div>
+                <div class="receive_amt"></div>
+       </li>
+        <li class="trow">
+            	<div>Fee:</div>
+                <div class="final_fee"></div>
+       </li>
+       <li class="trow altrow">
+            	<div id="withdraw">Total to Withdraw from Balance:</div>
+                <div class="review_total"></div>
+       </li>
+     <!--  <li class="trow">
+            	<div>Exchange Rate:</div>
+                <div>1 USD = 1 USD</div>
+       </li>-->
+       
+    </ul>
+        <h5>MoneyGram Reference Number: <label class="ref_num"></label></h5>
+        <p ><a id='map_location'  onclick='mapToLocations()'>Find a MoneyGram location</a></p>
+        <div class="clear"></div>
+        <div  class="disclaimer"><p><sup>*</sup>Subject to agent operating hours, availability and local laws and regulations.</p></div>
+    </div>
+     <!-- Get Confirmation Div End-->
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="clear"></div>
+  <div class="footer">
+				<div>
+					<span>© <label class="footer_year"></label> MoneyGram. All rights reserved<a href="#" class="backtotop"></a></span><a href="privacypolicy.html">Privacy Policy</a> <a href="#">Terms of Use</a><a href="terms_conditions.html">Terms and Conditions</a><a href="about-moneygram-paypal.html" class="aboutlink">About MoneyGram</a>
+					<p>
+						Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+					</p>
+				</div>
+			</div>
+</div>
+	<div id="light" class="white_content"  >
+        	
+        	<iframe src="https://hosted.where2getit.com/moneygram/en.html" id='location_iframe'  ></iframe>
+        </div>
+
+<div id='TAC_iframe'>
+        	<iframe src="terms_and_conditions.html" id='termsAndCondition_iframe'  ></iframe>
+        </div>
+</body>
+</html>
