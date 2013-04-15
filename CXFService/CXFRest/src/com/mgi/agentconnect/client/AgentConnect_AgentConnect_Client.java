@@ -15,6 +15,7 @@ import com.mgi.paypal.util.PropertyUtil;
 public final class AgentConnect_AgentConnect_Client {
 	private static final QName SERVICE_NAME = new QName(
 			"http://www.moneygram.com/AgentConnect1211", "AgentConnectService");
+	
 	PropertiesConfiguration constantFromProperties = new PropertyUtil()
 			.getConstantPropertyConfig();
 
@@ -32,7 +33,9 @@ public final class AgentConnect_AgentConnect_Client {
 
 	/** * @return * @throws MalformedURLException */
 	private  AgentConnect getPort() throws MalformedURLException {
-		URL wsdlURL = new URL(constantFromProperties.getString("AGENT_CONNECT_PORT_URL"));
+		URL wsdlURL = new URL(/*"https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211"*/
+				constantFromProperties.getString("AGENT_CONNECT_PORT_URL")
+				);
 		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
 		AgentConnect port = ss.getAgentConnect();
 		return port;
@@ -45,13 +48,14 @@ public final class AgentConnect_AgentConnect_Client {
 		AgentConnect port = getPort();
 		com.mgi.agentconnect.client.CodeTableResponse _codeTable__return = null;
 		_codeTable__return = port.codeTable(codeTableRequest);
-		List<String> stateCodeList = new ArrayList<String>();
+		List<String> stateNameAndCodeList = new ArrayList<String>();
 		for (StateProvinceInfo stateProvinceInfo : _codeTable__return.stateProvinceInfo) {
 			if (stateProvinceInfo.getCountryCode().equals("USA")) {
-				stateCodeList.add(stateProvinceInfo.getStateProvinceName());
+				stateNameAndCodeList.add(stateProvinceInfo.getStateProvinceName());
+				stateNameAndCodeList.add(stateProvinceInfo.getStateProvinceCode());
 			}
 		}
-		return stateCodeList;
+		return stateNameAndCodeList;
 	}
 
 	public com.mgi.agentconnect.client.CommitTransactionResponse commitTransaction(

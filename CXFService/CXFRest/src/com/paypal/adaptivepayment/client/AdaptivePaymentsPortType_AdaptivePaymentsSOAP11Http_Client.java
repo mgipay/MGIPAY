@@ -17,6 +17,9 @@ import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.MessageContext;
 
+import org.apache.commons.configuration.PropertiesConfiguration;
+
+import com.mgi.paypal.util.PropertyUtil;
 import com.mgi.paypal.util.SOAPMessageLoggingHandler;
 import com.mgi.paypal.util.StringOutputStream;
 
@@ -28,11 +31,14 @@ import com.mgi.paypal.util.StringOutputStream;
 public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 	public static OutputStream output = new StringOutputStream();
 
-	private AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client() {
+	public AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client() {
 
 	}
 
-	public static GetUserLimitsResponse getUserLimit(
+	PropertiesConfiguration constantFromProperties = new PropertyUtil()
+			.getConstantPropertyConfig();
+
+	public GetUserLimitsResponse getUserLimit(
 			GetUserLimitsRequest getUserLimitsRequest)
 			throws java.lang.Exception {
 		AdaptivePaymentsPortType port = getPort();
@@ -55,7 +61,7 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 		return _getUserLimits__return;
 	}
 
-	public static PayResponse getPay(PayRequest payRequest, String token)
+	public PayResponse getPay(PayRequest payRequest, String token)
 			throws java.lang.Exception {
 		AdaptivePaymentsPortType port = getPortForPay(token);
 
@@ -77,11 +83,13 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 		return _PayResponse;
 	}
 
-	private static AdaptivePaymentsPortType getPortForPay(String token) {
+	private AdaptivePaymentsPortType getPortForPay(String token) {
 		setCredentials();
 		// String wsdlURL
 		// ="https://svcs.sandbox.paypal.com/AdaptivePayments/Pay";
-		String wsdlURL = "https://api.stage2cp07.stage.paypal.com/AdaptivePayments/Pay";
+		String wsdlURL = constantFromProperties
+				.getString("ADAPTIVE_PAYMENTS_PAY_URL");
+		// "https://api.stage2cp07.stage.paypal.com/AdaptivePayments/Pay";
 
 		AdaptivePayments ss = new AdaptivePayments();
 		AdaptivePaymentsPortType port = ss.getAdaptivePaymentsSOAP11Http();
@@ -94,11 +102,12 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 		return port;
 	}
 
-	private static AdaptivePaymentsPortType getPort() {
+	private AdaptivePaymentsPortType getPort() {
 		// String wsdlURL =
 		// "https://svcs.sandbox.paypal.com/AdaptivePayments/GetUserLimits";
 		setCredentials();
-		String wsdlURL = "https://api.stage2cp07.stage.paypal.com/AdaptivePayments/GetUserLimits";
+		String wsdlURL = constantFromProperties
+				.getString("ADAPTIVE_PAYMENTS_GET_USERLIMIT_URL");
 
 		AdaptivePayments ss = new AdaptivePayments();
 		AdaptivePaymentsPortType port = ss.getAdaptivePaymentsSOAP11Http();
@@ -115,30 +124,16 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 				"com.ibm.jsse2.SSLSocketFactoryImpl");
 		Security.setProperty("ssl.ServerSocketFactory.provider",
 				"com.ibm.jsse2.SSLServerSocketFactoryImpl");
-//		System.setProperty("javax.net.ssl.trustStoreType", "JKS");
-//		System.setProperty("javax.net.ssl.trustStore",
-//				"CXFRest/WebContent/WEB-INF/truststore.jks");
-//		System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
-//		System.setProperty("javax.net.ssl.keyStoreType", "pkcs12");
-//		System.setProperty("javax.net.ssl.keyStore",
-//				"CXFRest/WebContent/WEB-INF/paypal_cert.p12");
-//		System.setProperty("javax.net.ssl.keyStorePassword", "changeit");
+		// System.setProperty("javax.net.ssl.trustStoreType", "JKS");
+		// System.setProperty("javax.net.ssl.trustStore",
+		// "CXFRest/WebContent/WEB-INF/truststore.jks");
+		// System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
+		// System.setProperty("javax.net.ssl.keyStoreType", "pkcs12");
+		// System.setProperty("javax.net.ssl.keyStore",
+		// "CXFRest/WebContent/WEB-INF/paypal_cert.p12");
+		// System.setProperty("javax.net.ssl.keyStorePassword", "changeit");
 
 	}
-
-	// private static void setCredentials() {
-	// Security.setProperty("ssl.SocketFactory.provider",
-	// "com.ibm.jsse2.SSLSocketFactoryImpl");
-	// Security.setProperty("ssl.ServerSocketFactory.provider",
-	// "com.ibm.jsse2.SSLServerSocketFactoryImpl");
-	//
-	//
-	// System.setProperty("http.proxyHost", "proxy.tcs.com");
-	// System.setProperty("http.proxyPort", "8080");
-	// System.setProperty("http.proxyUser", "538540");
-	// System.setProperty("http.proxyPassword", "Bala@Mar84");
-	//
-	// }
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void addLogHandler(BindingProvider bp) {

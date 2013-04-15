@@ -29,6 +29,15 @@ public class SendValidationInputBean {
 	private String sendCurrency;
 	private String consumerId;
 	private String mgiTransactionSessionID;
+	private String senderEmail;
+
+	public String getSenderEmail() {
+		return senderEmail;
+	}
+
+	public void setSenderEmail(String senderEmail) {
+		this.senderEmail = senderEmail;
+	}
 
 	public BigDecimal getAmount() {
 		return amount;

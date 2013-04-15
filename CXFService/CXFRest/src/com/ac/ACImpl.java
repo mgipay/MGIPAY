@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
+import java.util.Hashtable;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -105,6 +106,8 @@ public class ACImpl implements ACInterface {
 	private static BigDecimal FEE_FOR_TWO_HUNDRED_FUNDS_OUT = BigDecimal.ZERO;
 
 	private static BigDecimal FEE_FOR_FIVE_HUNDRED_FUNDS_OUT = BigDecimal.ZERO;
+	
+	private static Hashtable<String, String> stateAndCodeHashTable = new Hashtable<String, String>();
 
 	private static Logger LOGGER = Logger.getLogger(ACImpl.class);
 
@@ -199,6 +202,13 @@ public class ACImpl implements ACInterface {
 				}
 
 				break;
+			} else {
+				
+				feeLookupResponseReturn.setErrorMessage(messageFromProperties
+						.getString("RETRY_IN_SOMETIME"));
+
+				feeLookupResponseReturn.setTransactionSuccess(false);
+				break;
 			}
 		}
 
@@ -274,6 +284,7 @@ public class ACImpl implements ACInterface {
 				feeLookupResponse = client
 						.feeLookup(createFeeLookupInput(amount, fundsIn));
 			} catch (Exception exception) {
+				exception.printStackTrace();
 				LOGGER.error("getFeeForFeeLink Retrying because of" + exception);
 				retryCount--;
 			}
@@ -316,12 +327,15 @@ public class ACImpl implements ACInterface {
 			histroyLookupInputBean.setCustomerEmailId(histroyLookupInputBean
 					.getCustomerEmailId().toLowerCase());
 			MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
-			// historyDetailsList = moneyGramPayPalDAO
-			// .retrieveHistroyDetails(histroyLookupInputBean
-			// .getCustomerEmailId());
+			LOGGER.debug("CustomerEmailId"
+					+ histroyLookupInputBean.getCustomerEmailId());
+			 historyDetailsList = moneyGramPayPalDAO
+			 .retrieveHistroyDetails(histroyLookupInputBean
+			 .getCustomerEmailId());
+			 
 			// TODO
-			historyDetailsList = moneyGramPayPalDAO
-					.retrieveHistroyDetails("vbalki@ebay.com");
+//			historyDetailsList = moneyGramPayPalDAO
+//					.retrieveHistroyDetails("vbalki@ebay.com");
 			for (HistoryDetails historyDetails : historyDetailsList) {
 				// checking status is 'received' or not in history table
 				if (!historyDetails.getTransactionStatus().equals(
@@ -653,13 +667,35 @@ public class ACImpl implements ACInterface {
 
 					try {
 						AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
-						STATES_IN_USA = new Gson()
-								.toJson(client
-										.codeTable(codeTableRequest));
+						List<String> tempStateList = new ArrayList<String>();
+						List<String> stateList = new ArrayList<String>();
+						List<String> stateAndCodeList = new ArrayList<String>();
+						stateAndCodeList = client
+								.codeTable(codeTableRequest);
+						
+						for (int index = 0; index < stateAndCodeList.size(); index = index + 2) {
+							stateAndCodeHashTable.put(
+									stateAndCodeList.get(index),
+									stateAndCodeList.get(index + 1));
+							tempStateList.add(stateAndCodeList.get(index));
+						}
+						
+						for(String statemName : tempStateList) {
+							statemName = statemName.toLowerCase();
+							char[] stringArray = statemName.toCharArray();
+							stringArray[0] = Character.toUpperCase(stringArray[0]);
+							statemName = new String(stringArray);
+							stateList.add(statemName);
+						}
+						
+						
+						STATES_IN_USA = new Gson().toJson(stateList);
 						responseRecived = true;
 					} catch (Exception exception) {
 						LOGGER.error("Retrying Codetable Request because of :"
 								+ exception);
+						//TODO
+						exception.printStackTrace();
 						retryCount--;
 						if (retryCount == 0) {
 							synchronized (CODETABLE_DAY_IDENTIFIER) {
@@ -731,6 +767,7 @@ public class ACImpl implements ACInterface {
 				retryCount--;
 				if (retryCount == 0) {
 					LOGGER.info("Max number of retries reached. Commit Trasaction Failed.");
+					
 					commitTransactionResponseForReturn
 							.setErrorMessage(messageFromProperties
 									.getString("TRANSACTION_FAILED_RETRY"));
@@ -743,6 +780,7 @@ public class ACImpl implements ACInterface {
 					commitTransactionInputBean
 							.setPayPalTransactionStatus("Payapal_Collected");
 					insertToHistory(commitTransactionInputBean);
+					
 					LOGGER.info("Exit commitTransaction.");
 
 					return new Gson().toJson(commitTransactionResponseForReturn);
@@ -762,8 +800,10 @@ public class ACImpl implements ACInterface {
 				commitTransactionInputBean
 						.setPayPalTransactionStatus("Payapal_Collected");
 
+				LOGGER.debug(commitTransactionInputBean.getCustomerEmail());
+				
 				// TODO
-				commitTransactionInputBean.setCustomerEmail("vbalki@ebay.com");
+//				commitTransactionInputBean.setCustomerEmail("vbalki@ebay.com");
 				insertToHistory(commitTransactionInputBean);
 
 				break;
@@ -779,6 +819,7 @@ public class ACImpl implements ACInterface {
 				commitTransactionInputBean
 						.setPayPalTransactionStatus("Payapal_Collected");
 				insertToHistory(commitTransactionInputBean);
+				break;
 			}
 		}
 
@@ -797,9 +838,7 @@ public class ACImpl implements ACInterface {
 					+ new Gson().toJson(commitTransactionInputBean));
 			LOGGER.error(exception.getLocalizedMessage());
 			exception.printStackTrace();
-			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug(System.getProperty("line.separator"));
-			}
+			LOGGER.error(System.getProperty("line.separator"));
 		}
 	}
 
@@ -873,7 +912,8 @@ public class ACImpl implements ACInterface {
 
 		com.mgi.agentconnect.client.SendValidationResponse sendValidationResponse = null;
 
-		com.mgi.agentconnect.client.SendValidationRequest sendValidationRequest = new com.mgi.agentconnect.client.SendValidationRequest();
+		com.mgi.agentconnect.client.SendValidationRequest sendValidationRequest 
+		= new com.mgi.agentconnect.client.SendValidationRequest();
 		sendValidationRequest.setConsumerId("0");
 		sendValidationRequest.setFormFreeStaging(false);
 		sendValidationRequest.setTimeToLive(constantFromProperties
@@ -905,8 +945,11 @@ public class ACImpl implements ACInterface {
 				.getFeeAmount());
 		sendValidationRequest.setDestinationCountry(sendValidationInputBean
 				.getDestinationCountry());
-		sendValidationRequest.setDestinationState(sendValidationInputBean
-				.getDestinationState());
+//		sendValidationRequest.setDestinationState(stateAndCodeHashTable
+//				.get(sendValidationInputBean.getDestinationState()
+//						.toUpperCase()));
+		sendValidationRequest.setDestinationState(
+		sendValidationInputBean.getDestinationState());
 
 		sendValidationRequest.setReceiveCurrency(sendValidationInputBean
 				.getReceiveCurrency());
@@ -931,32 +974,45 @@ public class ACImpl implements ACInterface {
 				.getReceiverLastName());
 		sendValidationRequest.setSendCurrency(sendValidationInputBean
 				.getSendCurrency());
-		com.mgi.paypal.response.SendValidationResponse sendValidationResponseForReturn = new com.mgi.paypal.response.SendValidationResponse();
-		try {
-			AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
-			sendValidationResponse = client
-					.sendValidation(sendValidationRequest);
-		} catch (Exception exception) {
-			LOGGER.error("SendValidation Failed because of :" + exception);
-			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("SendValidation Request: "
-						+ new Gson().toJson(sendValidationRequest));
+		sendValidationRequest.setSenderEmailAddress(sendValidationInputBean.getSenderEmail());
+
+		com.mgi.paypal.response.SendValidationResponse sendValidationResponseForReturn
+		= new com.mgi.paypal.response.SendValidationResponse();
+		byte retryCount = 3;
+		while (retryCount >= 1) {
+			try {
+				AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
+				sendValidationResponse = client
+						.sendValidation(sendValidationRequest);
+			} catch (Exception exception) {
+				retryCount--;
+				if (retryCount == 1) {
+					LOGGER.debug("SendValidation Request: "
+							+ new Gson().toJson(sendValidationRequest));
+					exception.printStackTrace();
+					sendValidationResponseForReturn
+							.setTransactionSuccess(false);
+					sendValidationResponseForReturn
+							.setErrorMessage(messageFromProperties
+									.getString("TRANSACTION_FAILED_RETRY"));
+					return new Gson().toJson(sendValidationResponse);
+				}
 			}
-			exception.printStackTrace();
-			sendValidationResponseForReturn.setTransactionSuccess(false);
-			sendValidationResponseForReturn.setErrorMessage(exception
-					.getLocalizedMessage().concat(
-							messageFromProperties
-									.getString("TRANSACTION_FAILED_RETRY")));
-			return new Gson().toJson(sendValidationResponse);
-		}
-		if (sendValidationResponse != null) {
+			if (sendValidationResponse != null) {
 
-			sendValidationResponseForReturn
-					.setMgiTransactionSessionID(sendValidationResponse
-							.getMgiTransactionSessionID());
-			sendValidationResponseForReturn.setTransactionSuccess(true);
+				sendValidationResponseForReturn
+						.setMgiTransactionSessionID(sendValidationResponse
+								.getMgiTransactionSessionID());
+				sendValidationResponseForReturn.setTransactionSuccess(true);
+				break;
 
+			} else {
+				sendValidationResponseForReturn.setTransactionSuccess(false);
+				sendValidationResponseForReturn
+						.setErrorMessage(messageFromProperties
+								.getString("TRANSACTION_FAILED_RETRY"));
+				break;
+			}
 		}
 
 		LOGGER.info("Exit sendValidation.");
@@ -1013,9 +1069,10 @@ public class ACImpl implements ACInterface {
 		phoneNumberType.setPhoneNumber("6057100363");
 
 		AccountIdentifier accountIdentifier = new AccountIdentifier();
+		LOGGER.debug(userLimitInputBean.getEmailID());
 		// TODO
-		// accountIdentifier.setEmail(userLimitInputBean.getEmailID());
-		accountIdentifier.setEmail("paypalmoneygram@gmail.com");
+		 accountIdentifier.setEmail(userLimitInputBean.getEmailID());
+//		accountIdentifier.setEmail("paypalmoneygram@gmail.com");
 		accountIdentifier.setPhone(phoneNumberType);
 
 		RequestEnvelope requestEnvelope = new RequestEnvelope();
@@ -1040,7 +1097,9 @@ public class ACImpl implements ACInterface {
 		byte retryCount = 3;
 		while (retryCount >= 1) {
 			try {
-				getUserLimitsResponse = AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client
+				AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client client 
+				= new AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client();
+				getUserLimitsResponse = client
 						.getUserLimit(getUserLimitsRequest);
 			} catch (Exception exception) {
 				LOGGER.error("Retrying GetUserLimits because of :" + exception);
@@ -1100,7 +1159,7 @@ public class ACImpl implements ACInterface {
 
 	private String createToken(String codeValue) {
 
-		LOGGER.info("Entering Create Token");
+		LOGGER.info("Enter Create Token");
 
 		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
 				+ "/v1/tokenservice";
@@ -1132,12 +1191,16 @@ public class ACImpl implements ACInterface {
 			LOGGER.error(e, e);
 			e.printStackTrace();
 		}
-		LOGGER.info("Exiting Create Token");
+		
+		LOGGER.info("Exit Create Token");
+		
 		return accessToken.getAccess_token();
 	}
 
 	private String getUserData(String tokenData) {
-		LOGGER.info("Entering getUserData");
+		
+		LOGGER.info("Enter getUserData");
+		
 		String responseBody = null;
 		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
 				+ "/v1/userinfo?schema=openid";
@@ -1159,7 +1222,8 @@ public class ACImpl implements ACInterface {
 			LOGGER.error(e, e);
 			e.printStackTrace();
 		}
-		LOGGER.info("Exiting getUserData");
+		
+		LOGGER.info("Exit getUserData");
 
 		return responseBody;
 	}
@@ -1202,8 +1266,9 @@ public class ACImpl implements ACInterface {
 		PayResponse payResponse = new PayResponse();
 		Gson gson = new Gson();
 		try {
-			payResponse = AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client
-					.getPay(payRequest, token);
+			AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client client 
+			= new AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client();
+			payResponse = client.getPay(payRequest, token);
 			System.out.println("Response from serverrr:"
 					+ payResponse.getPaymentExecStatus().toString());
 		} catch (Exception e) {
@@ -1256,8 +1321,9 @@ public class ACImpl implements ACInterface {
 			insertRecsIntoCRMExtWebFormRequest.setHeader(header);
 
 			LOGGER.debug(new Gson().toJson(insertRecsIntoCRMExtWebFormRequest));
-
-			insertRecsIntoCRMExtWebFormResponse = ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client
+			ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client client = 
+					new ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client();
+			insertRecsIntoCRMExtWebFormResponse = client
 					.insertRecsIntoCRMExtWebForm(insertRecsIntoCRMExtWebFormRequest);
 		} catch (Exception exception) {
 			LOGGER.debug("Send Mail Failed because of :" + exception);
@@ -1304,7 +1370,7 @@ public class ACImpl implements ACInterface {
 				for (HistoryDetails historyDetails : historyDetailList) {
 					String detailLookupStatus = detailLookUp2(
 							historyDetails.getMgiReferenceNumber(),
-							historyDetails.getMgiReferenceNumber());
+							historyDetails.getMgiTransactionSessionID());
 					
 //					if(detailLookupStatus.equals(TransactionStatus.))
 					

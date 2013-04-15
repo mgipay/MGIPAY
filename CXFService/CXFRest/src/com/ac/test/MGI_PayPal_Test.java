@@ -44,6 +44,20 @@ public class MGI_PayPal_Test {
 	@Test
 	public void test() throws FileNotFoundException, IOException {
 		
+		String string = "BALA";
+		String string2 = "MURALI";
+		List<String> list = new ArrayList<String>();
+		list.add(string);
+		list.add(string2);
+		for(String statemName : list){
+			statemName = statemName.toLowerCase();
+			char[] stringArray = statemName.toCharArray();
+			stringArray[0] = Character.toUpperCase(stringArray[0]);
+			statemName = new String(stringArray);
+		}
+	
+		
+		
 //		BigDecimal bigDecimal = new BigDecimal("6057100363.234");
 //		System.out.println(bigDecimal.setScale(0,RoundingMode.DOWN));
 ////		System.out.println(Integer.parseInt(bigDecimal.toString()));
@@ -155,7 +169,42 @@ public class MGI_PayPal_Test {
 			e.printStackTrace();
 		}
 	}
+	@Test
+	public void TestGetUserData() { setCredentials();
+		try {
+			
+			URL url = new URL("http://localhost:8092/CXFRest/rest/getUserData");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-Type", "application/json");
 
+			String inputJsonObject = "{\"UserDataInputBean\":{\"code\":\"100\"}}";
+
+			OutputStream os = conn.getOutputStream();
+			os.write(inputJsonObject.getBytes());
+			os.flush();
+			Scanner scanner;
+			String response;
+			if (conn.getResponseCode() != 200) {
+				scanner = new Scanner(conn.getErrorStream());
+				response = "Error From Server \n\n";
+			} else {
+				scanner = new Scanner(conn.getInputStream());
+				response = "Response From Server \n\n";
+			}
+			scanner.useDelimiter("\\Z");
+
+			LOGGER.debug(response + scanner.next());
+
+			scanner.close();
+			conn.disconnect();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	@Test
 	public void TestSendValidation() throws Exception {
 		
@@ -172,8 +221,7 @@ public class MGI_PayPal_Test {
 				+ "ZipCode\":\"55416\",\"senderCountry\":\"USA\",\"senderHomePhone\":\"9522320253\",\"rece"
 				+ "iverFirstName\":\"N R F\",\"receiverLastName\":\"N R L\",\"sendCurrency\":\"USD\",\"mgiT"
 				+ "ransactionSessionID\":\""
-				+ "9708729E1572561364843019504"
-				+ "\"}}";
+				+ "9708729E1572561364843019504\",\"senderEmail\":\"testuser@moneygram.com\"}}";
 
 		OutputStream os = conn.getOutputStream();
 		os.write(inputJsonObject.getBytes());
@@ -285,10 +333,10 @@ public class MGI_PayPal_Test {
 	}
 	
 private void setCredentials(){
-	System.setProperty("http.proxyHost", "proxy.tcs.com");
-	System.setProperty("http.proxyPort", "8080");
-	System.setProperty("http.proxyUser", "538540");
-	System.setProperty("http.proxyPassword", "Bala@Apr84");
+//	System.setProperty("http.proxyHost", "proxy.tcs.com");
+//	System.setProperty("http.proxyPort", "8080");
+//	System.setProperty("http.proxyUser", "538540");
+//	System.setProperty("http.proxyPassword", "Bala@Apr84");
 }
 	@Test
 	public void TestUserLimit() {

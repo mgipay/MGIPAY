@@ -1,66 +1,60 @@
 package com.ac.test;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.Hashtable;
+import java.util.List;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.apache.log4j.Logger;
-
 import com.google.gson.Gson;
 import com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client;
+import com.mgi.agentconnect.client.CodeTableRequest;
 import com.mgi.agentconnect.client.FeeLookupResponse;
-import com.paypal.adaptivepayment.client.AccountIdentifier;
-import com.paypal.adaptivepayment.client.AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client;
-import com.paypal.adaptivepayment.client.DetailLevelCode;
-import com.paypal.adaptivepayment.client.GetUserLimitsRequest;
-import com.paypal.adaptivepayment.client.GetUserLimitsResponse;
-import com.paypal.adaptivepayment.client.PhoneNumberType;
-import com.paypal.adaptivepayment.client.RequestEnvelope;
 
 public class Test {
-
-	public static void main1(String[] args) {
+	private static Hashtable<String, String> stateAndCodeHashTable = new Hashtable<String, String>();
+	public static void main(String[] args) {
 
 		
-		java.sql.Date transactionDate = (java.sql.Date) Calendar.getInstance()
-				.getTime();
+//		java.sql.Date transactionDate = (java.sql.Date) Calendar.getInstance()
+//				.getTime();
 		
 		
 		// TODO delete this class
-		GetUserLimitsRequest getUserLimitsRequest = new GetUserLimitsRequest();
-		PhoneNumberType phoneNumberType = new PhoneNumberType();
-		AccountIdentifier accountIdentifier = new AccountIdentifier();
-		phoneNumberType.setCountryCode("1");
-		phoneNumberType.setExtension("4237");
-		phoneNumberType.setPhoneNumber("6057100363");
-		accountIdentifier.setPhone(phoneNumberType);
-		getUserLimitsRequest.setUser(accountIdentifier);
-		accountIdentifier.setEmail("vbalki@ebay.com");
-		RequestEnvelope requestEnvelope = new RequestEnvelope();
-		requestEnvelope.setDetailLevel(DetailLevelCode.RETURN_ALL);
-		requestEnvelope.setErrorLanguage("NA");
-		getUserLimitsRequest.setRequestEnvelope(requestEnvelope);
-		getUserLimitsRequest.setCountry("US");
-		getUserLimitsRequest.setCurrencyCode("USD");
-		getUserLimitsRequest.getLimitType().add("WITHDRAWAL");
-
-		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
+//		GetUserLimitsRequest getUserLimitsRequest = new GetUserLimitsRequest();
+//		PhoneNumberType phoneNumberType = new PhoneNumberType();
+//		AccountIdentifier accountIdentifier = new AccountIdentifier();
+//		phoneNumberType.setCountryCode("1");
+//		phoneNumberType.setExtension("4237");
+//		phoneNumberType.setPhoneNumber("6057100363");
+//		accountIdentifier.setPhone(phoneNumberType);
+//		getUserLimitsRequest.setUser(accountIdentifier);
+//		accountIdentifier.setEmail("vbalki@ebay.com");
+//		RequestEnvelope requestEnvelope = new RequestEnvelope();
+//		requestEnvelope.setDetailLevel(DetailLevelCode.RETURN_ALL);
+//		requestEnvelope.setErrorLanguage("NA");
+//		getUserLimitsRequest.setRequestEnvelope(requestEnvelope);
+//		getUserLimitsRequest.setCountry("US");
+//		getUserLimitsRequest.setCurrencyCode("USD");
+//		getUserLimitsRequest.getLimitType().add("WITHDRAWAL");
+//
+//		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
 		Gson gson = new Gson();
+//
+//		try {
+//			getUserLimitsResponse = AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client
+//					.getUserLimit(getUserLimitsRequest);
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
-		try {
-			getUserLimitsResponse = AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client
-					.getUserLimit(getUserLimitsRequest);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		System.out.println(getUserLimitsResponse.getUserLimit().get(0)
-				.getLimitAmount().getAmount());
+//		System.out.println(getUserLimitsResponse.getUserLimit().get(0)
+//				.getLimitAmount().getAmount());
 		try {
 			com.mgi.agentconnect.client.FeeLookupRequest feeLookupRequest = new com.mgi.agentconnect.client.FeeLookupRequest();
 
@@ -117,8 +111,8 @@ public class Test {
 		// .getMgiTransactionSessionID());
 		// sendValidationRequest.setFeeAmount(feeLookupResponse.getFeeInfo()
 		// .get(0).getTotalAmount().subtract(new BigDecimal(100)));
-
-		sendValidationRequest.setMgiTransactionSessionID("");
+		
+		sendValidationRequest.setMgiTransactionSessionID("9708729E1572561364843019504");
 		sendValidationRequest.setFeeAmount(new BigDecimal(12));
 		sendValidationRequest.setAgentID("30014943");
 		sendValidationRequest.setAgentSequence("9");
@@ -128,26 +122,39 @@ public class Test {
 		sendValidationRequest.setClientSoftwareVersion("v1");
 		sendValidationRequest.setOperatorName("pgui");
 		sendValidationRequest.setAmount(new BigDecimal(100));
-		sendValidationRequest.setDestinationCountry("USA");
-		sendValidationRequest.setDestinationState("MN");
-		sendValidationRequest.setDeliveryOption("WILL_CALL");
-		sendValidationRequest.setReceiveCurrency("USD");
-		sendValidationRequest.setSenderFirstName("SF");
-		sendValidationRequest.setSenderLastName("SL");
-		sendValidationRequest.setSenderAddress("1351 H AVE S");
-		sendValidationRequest.setSenderCity("CHNMPLS");
-		sendValidationRequest.setSenderState("MN");
-		sendValidationRequest.setSenderZipCode("55416");
-		sendValidationRequest.setSenderCountry("USA");
-		sendValidationRequest.setSenderHomePhone("9522320253");
-		sendValidationRequest.setReceiverFirstName("N R F");
-		sendValidationRequest.setReceiverLastName("N R L");
-		sendValidationRequest.setSendCurrency("USD");
-		sendValidationRequest.setConsumerId("0");
-		sendValidationRequest.setFormFreeStaging(false);
-		sendValidationRequest.setTimeToLive(new java.math.BigInteger("30"));
-		sendValidationRequest.setPrimaryReceiptLanguage("eng");
-		sendValidationRequest.setSecondaryReceiptLanguage("spa");
+		/*
+		 * "{"address":{"postal_code":"07901","locality":"Summit","region":"NJ",
+		 * "country":"US","street_address":"4807384 5th Street, 3272844 4th Street"},
+		 * "family_name":"Fundsout11","verified":"true","phone_number":" 6023820578",
+		 * "zoneinfo":"America/Los_Angeles","name":"MGI Fundsout11",
+		 * "email":"testuser@moneygram.com","given_name":"MGI",
+		 * "user_id":"https://www.paypal.com/webapps/auth/identity/user/
+		 * dCn3hbvb2NWbecoGgSGz41zZ5jGdcYvQAr3zmwEZxUo"}"
+		 */
+		
+		sendValidationRequest.setDestinationState("MN");// from UI
+		sendValidationRequest.setSenderFirstName("SF");//"given_name":"MGI"
+		sendValidationRequest.setSenderLastName("SL");//"family_name":"Fundsout11",
+		sendValidationRequest.setSenderAddress("1351 H AVE S");//"street_address":"4807384 5th Street, 3272844 4th Street "},
+		sendValidationRequest.setSenderCity("CHNMPLS");// "zoneinfo":"America/Los_Angeles" after slash
+		sendValidationRequest.setSenderState("MN");//"region":"NJ",
+		sendValidationRequest.setSenderZipCode("55416");//"postal_code":"07901"
+		sendValidationRequest.setSenderCountry("USA");//hardcode
+		sendValidationRequest.setSenderHomePhone("9522320253");//"phone_number":" 6023820578",
+		sendValidationRequest.setReceiverFirstName("N R F");//"given_name":"MGI"
+		sendValidationRequest.setReceiverLastName("N R L");//"family_name":"Fundsout11",
+		sendValidationRequest.setSenderEmailAddress("testuser@moneygram.com");
+		
+		sendValidationRequest.setDeliveryOption("WILL_CALL");//hardcode
+		sendValidationRequest.setReceiveCurrency("USD");//hardcode
+		sendValidationRequest.setDestinationCountry("USA");//hardcode
+		sendValidationRequest.setSendCurrency("USD");//hardcode
+		sendValidationRequest.setConsumerId("0");//hardcode
+		sendValidationRequest.setFormFreeStaging(false);//hardcode
+		sendValidationRequest.setTimeToLive(new java.math.BigInteger("30"));//hardcode
+		sendValidationRequest.setPrimaryReceiptLanguage("eng");//hardcode
+		sendValidationRequest.setSecondaryReceiptLanguage("spa");//hardcode\
+		
 		com.mgi.agentconnect.client.SendValidationResponse sendValidationResponse = null;
 		System.out.println(gson.toJson(sendValidationRequest));
 		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
@@ -167,5 +174,63 @@ public class Test {
 			e.printStackTrace();
 		}
 		return xgcal;
+	}
+	public static void main4(String[] args) throws Exception {
+		 System.setProperty("http.proxyHost", "proxy.tcs.com");
+				 System.setProperty("http.proxyPort", "8080");
+				 System.setProperty("http.proxyUser", "538540");
+				 System.setProperty("http.proxyPassword", "Bala@Apr84");
+		CodeTableRequest codeTableRequest = new CodeTableRequest();
+		codeTableRequest.setAgentAllowedOnly(true);
+		codeTableRequest.setApiVersion("1211");
+		codeTableRequest
+				.setClientSoftwareVersion("v1");
+		codeTableRequest.setUnitProfileID(158178);
+		codeTableRequest.setToken("TEST");
+		codeTableRequest.setAgentSequence("9");
+		codeTableRequest.setTimeStamp(getTimeStamp());
+		codeTableRequest.setLanguage("eng");
+		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
+		List<String> tempStateList = new ArrayList<String>();
+
+		List<String> stateAndCodeList = new ArrayList<String>();
+		stateAndCodeList = client
+				.codeTable(codeTableRequest);
+		int index = 0;
+		for (index =0 ; index < stateAndCodeList.size(); index = index + 2) {
+			stateAndCodeHashTable.put(
+					stateAndCodeList.get(index),
+					stateAndCodeList.get(index + 1));
+		}
+		System.err.println(tempStateList);
+	}
+	public static void main2(String[] args) {
+		
+		
+//		SendProofMessage sendProofMessage = new SendProofMessage();
+//		sendProofMessage.setMessageName("EXAMPLETRIGGER");
+//
+//		String[] strings = { "couellette@e-dialog.com" };
+//		sendProofMessage.setReplacementAddress(strings);
+//		PropertyType propertyType = new PropertyType();
+//		propertyType.setName("EMAIL");
+//		propertyType.setValue("couellette@e-dialog.com");
+//
+//		PropertyType propertyType2 = new PropertyType();
+//		propertyType2.setName("TEMPZIP");
+//		propertyType2.setValue("01568");
+//
+//		PropertyType[] propertyTypes = { propertyType, propertyType2 };
+//
+//		sendProofMessage.setProperty(propertyTypes);
+//		
+		Hashtable<String,String> hashtable = new Hashtable<String, String>();
+		hashtable.put("ALASKA", "q");
+
+		System.out.println(hashtable.get("Alaska".toUpperCase()));
+//		SdkServiceStub sdkServiceStub = new SdkServiceStub();
+//	SendProofMessageResponse sendProofMessageResponse = sdkServiceStub.sendProofMessage("EXAMPLETRIGGER", strings, propertyTypes);
+		
+		
 	}
 }

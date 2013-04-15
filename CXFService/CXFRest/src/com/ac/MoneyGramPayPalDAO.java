@@ -15,6 +15,7 @@ import java.util.List;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 
+import com.google.gson.Gson;
 import com.mgi.paypal.inputbean.CommitTransactionInputBean;
 import com.mgi.paypal.util.FeeLinkValues;
 import com.mgi.paypal.util.HistoryDetails;
@@ -25,12 +26,13 @@ public class MoneyGramPayPalDAO {
 	public MoneyGramPayPalDAO() {
 
 	}
+
 	PropertiesConfiguration constantFromProperties = new PropertyUtil()
-	.getConstantPropertyConfig();
+			.getConstantPropertyConfig();
 	private static Logger LOGGER = Logger.getLogger(MoneyGramPayPalDAO.class);
 
 	public void updateFeeFeeDetailTable(BigDecimal upperLimit,
-			BigDecimal feeCharge,boolean fundsIn)
+			BigDecimal feeCharge, boolean fundsIn)
 			throws ClassNotFoundException, SQLException {
 
 		LOGGER.debug("Enter updateFeeFeeDetailTable.");
@@ -42,7 +44,8 @@ public class MoneyGramPayPalDAO {
 				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
 				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
-		String strQuery = constantFromProperties.getString("UPDATE_FEE_DETAIL_QUERY");
+		String strQuery = constantFromProperties
+				.getString("UPDATE_FEE_DETAIL_QUERY");
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setBigDecimal(1, feeCharge);
@@ -57,6 +60,7 @@ public class MoneyGramPayPalDAO {
 
 		LOGGER.debug("Exit updateFeeFeeDetailTable.");
 	}
+
 	public FeeLinkValues selectFromFeeDetailTable()
 			throws ClassNotFoundException, SQLException {
 
@@ -69,7 +73,8 @@ public class MoneyGramPayPalDAO {
 				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
 				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
-		String strQuery = constantFromProperties.getString("SELECT_FEE_DETAIL_QUERY");
+		String strQuery = constantFromProperties
+				.getString("SELECT_FEE_DETAIL_QUERY");
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		ResultSet resultSet = preparedStatement.executeQuery();
@@ -96,17 +101,18 @@ public class MoneyGramPayPalDAO {
 			throws ClassNotFoundException, SQLException {
 
 		LOGGER.debug("Enter retrieveHistroyDetails.");
-		
+
 		LOGGER.debug("emailId for retrive History  : " + emailId);
-		
+
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 		Connection connection = DriverManager.getConnection(
 				constantFromProperties.getString("ORACLE_DB_URL"),
 				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
 				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
-		
-		String strQuery = constantFromProperties.getString("RETRIEVE_HISTORY_DETAILS_QUERY");
+
+		String strQuery = constantFromProperties
+				.getString("RETRIEVE_HISTORY_DETAILS_QUERY");
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1, emailId);
@@ -139,22 +145,24 @@ public class MoneyGramPayPalDAO {
 
 		return historyDetailsList;
 	}
+
 	public List<HistoryDetails> retrieveHistroyDetailsForBatchProcess()
 			throws ClassNotFoundException, SQLException {
 
 		LOGGER.debug("Enter retrieveHistroyDetails.");
-		
+
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 		Connection connection = DriverManager.getConnection(
 				constantFromProperties.getString("ORACLE_DB_URL"),
 				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
 				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
-		
-		String strQuery = constantFromProperties.getString("RETRIEVE_HISTORY_DETAILS_FOR_BATCH_QUERY");
+
+		String strQuery = constantFromProperties
+				.getString("RETRIEVE_HISTORY_DETAILS_FOR_BATCH_QUERY");
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
-//		preparedStatement.setString(1, emailId);
+		// preparedStatement.setString(1, emailId);
 		ResultSet resultSet = preparedStatement.executeQuery();
 		List<HistoryDetails> historyDetailsList = new ArrayList<HistoryDetails>();
 		while (resultSet.next()) {
@@ -176,7 +184,8 @@ public class MoneyGramPayPalDAO {
 			Date transactionDate = resultSet.getDate(("TRAN_DATE"));
 			DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 			historyDetails.setTransactionDate(df.format(transactionDate));
-			historyDetails.setMgiTransactionSessionID(resultSet.getString("MGI_SESS_ID"));
+			historyDetails.setMgiTransactionSessionID(resultSet
+					.getString("MGI_SESS_ID"));
 			historyDetailsList.add(historyDetails);
 
 		}
@@ -185,28 +194,32 @@ public class MoneyGramPayPalDAO {
 
 		return historyDetailsList;
 	}
+
 	public void insertHistoryDetails(
 			CommitTransactionInputBean commitTransactionInputBean)
 			throws ClassNotFoundException, SQLException {
 
 		LOGGER.debug("Enter insertHistoryDetails.");
-		
+
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 		Connection connection = DriverManager.getConnection(
 				constantFromProperties.getString("ORACLE_DB_URL"),
 				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
 				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
-		
-		String strQuery = constantFromProperties.getString("INSERT_HISTORY_DETAILS_QUERY");
+		// TODO
+		LOGGER.debug(new Gson().toJson(commitTransactionInputBean));
+
+		String strQuery = constantFromProperties
+				.getString("INSERT_HISTORY_DETAILS_QUERY");
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
-		preparedStatement.setString(1,
-				commitTransactionInputBean.getCustomerEmail().toLowerCase());
+		preparedStatement.setString(1, commitTransactionInputBean
+				.getCustomerEmail().toLowerCase());
 		preparedStatement.setString(2,
 				commitTransactionInputBean.getCustomerName());
-		preparedStatement.setString(3,commitTransactionInputBean
-				.getCustomerPhoneNumber());
+		preparedStatement.setString(3,
+				commitTransactionInputBean.getCustomerPhoneNumber());
 		preparedStatement.setString(4,
 				commitTransactionInputBean.getPaypalTransactionID());
 		preparedStatement.setString(5,
@@ -226,9 +239,9 @@ public class MoneyGramPayPalDAO {
 				commitTransactionInputBean.getMgiTransactionSessionID());
 		preparedStatement.execute();
 		connection.close();
-		
+
 		LOGGER.debug("Exit insertHistoryDetails.");
-		
+
 	}
 
 	public void updateHistoryDetail(String mgiTransactionStatus,
@@ -243,8 +256,9 @@ public class MoneyGramPayPalDAO {
 				constantFromProperties.getString("ORACLE_DB_URL"),
 				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
 				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
-		
-		String strQuery = constantFromProperties.getString("UPDATE_HISTORY_DETAIL");
+
+		String strQuery = constantFromProperties
+				.getString("UPDATE_HISTORY_DETAIL");
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1, mgiTransactionStatus);

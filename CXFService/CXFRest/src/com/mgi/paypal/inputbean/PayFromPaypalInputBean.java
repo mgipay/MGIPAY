@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "PayFromPaypalInputBean")
 public class PayFromPaypalInputBean {
 
 	public PayFromPaypalInputBean() {

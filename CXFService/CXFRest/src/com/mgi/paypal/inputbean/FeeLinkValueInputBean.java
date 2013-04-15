@@ -2,7 +2,7 @@ package com.mgi.paypal.inputbean;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
+@XmlRootElement(name = "FeeLinkValueInputBean")
 public class FeeLinkValueInputBean {
 
 	public FeeLinkValueInputBean() {
