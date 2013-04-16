@@ -74,6 +74,7 @@ import com.mgi.paypal.response.SendMailOutputBean;
 import com.mgi.paypal.util.AccessToken;
 import com.mgi.paypal.util.FeeLinkValues;
 import com.mgi.paypal.util.HistoryDetails;
+import com.mgi.paypal.util.HistoryStatusReverseBean;
 import com.mgi.paypal.util.PropertyUtil;
 import com.paypal.adaptivepayment.client.AccountIdentifier;
 import com.paypal.adaptivepayment.client.AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client;
@@ -1411,28 +1412,36 @@ public class ACImpl implements ACInterface {
 				if (historyDetailList != null && historyDetailList.isEmpty()) {
 					break;
 				}
-
+				List<HistoryStatusReverseBean> historyStatusReverseBeanList = 
+						new ArrayList<HistoryStatusReverseBean>();
+				List<String> histroyStatusRejectedList = new ArrayList<String>();
 				for (HistoryDetails historyDetails : historyDetailList) {
 					DetailLookupResponse detailLookupResponse 
 					= detailLookUpForBatchProcess(historyDetails
 							.getMgiTransactionSessionID());
 					String mgiReferenceNumber = detailLookupResponse
 							.getReferenceNumber();
-
+					
 					if (mgiReferenceNumber != null) {
 						// Update history with reference number and status as
 						// 'REVERSED'
-						moneyGramPayPalDAO.updateHistoryDetailStatusReversed(
-								historyDetails.getMgiTransactionSessionID(),
-								mgiReferenceNumber);
+						HistoryStatusReverseBean historyStatusReverseBean = new HistoryStatusReverseBean();
+						historyStatusReverseBean.setMgiReferenceNumber(mgiReferenceNumber);
+						historyStatusReverseBean
+								.setMgiTransactionSessionID(historyDetails
+										.getMgiTransactionSessionID());
+						historyStatusReverseBeanList.add(historyStatusReverseBean);
+						
 					} else {
 						// Update history TABLE mgi_status as 'REJECTED'
-						moneyGramPayPalDAO
-								.updateHistoryDetailStatusRejected(historyDetails
-										.getMgiTransactionSessionID());
+						histroyStatusRejectedList.add(historyDetails.getMgiTransactionSessionID());
 
 					}
 				}
+				moneyGramPayPalDAO
+						.updateHistoryDetailStatusReversedAndRejected(
+								historyStatusReverseBeanList,
+								histroyStatusRejectedList);
 
 			} catch (Exception exception) {
 				exception.printStackTrace();

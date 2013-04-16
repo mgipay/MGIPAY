@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import com.google.gson.Gson;
 import com.mgi.paypal.inputbean.CommitTransactionInputBean;
 import com.mgi.paypal.util.FeeLinkValues;
 import com.mgi.paypal.util.HistoryDetails;
+import com.mgi.paypal.util.HistoryStatusReverseBean;
 import com.mgi.paypal.util.PropertyUtil;
 
 public class MoneyGramPayPalDAO {
@@ -272,11 +274,12 @@ public class MoneyGramPayPalDAO {
 		LOGGER.debug("Exit updateHistoryDetail.");
 	}
 
-	public void updateHistoryDetailStatusReversed(
-			String mgiTransactionSessionID, String mgiReferenceNumber)
+	public void updateHistoryDetailStatusReversedAndRejected(
+			List<HistoryStatusReverseBean> historyStatusReverseBeanList,
+			List<String> histroyStatusRejectedList)
 			throws ClassNotFoundException, SQLException {
 
-		LOGGER.debug("Enter updateHistoryDetailStatusReversed.");
+		LOGGER.debug("Enter updateHistoryDetailStatusReversedAndRejected.");
 
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
@@ -284,39 +287,29 @@ public class MoneyGramPayPalDAO {
 				constantFromProperties.getString("ORACLE_DB_URL"),
 				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
 				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
+		Statement statement = connection.createStatement();
+		for(HistoryStatusReverseBean historyStatusReverseBean : historyStatusReverseBeanList){
+			String quesrToUpdateReverse = constantFromProperties
+					.getString("UPDATE_HISTORY_STAUS_REVERSED_PART1")
+					.concat(historyStatusReverseBean.getMgiReferenceNumber())
+					.concat(constantFromProperties
+							.getString("UPDATE_HISTORY_STAUS_REVERSED_PART2"))
+					.concat(historyStatusReverseBean
+							.getMgiTransactionSessionID()).concat("'");
 
-		String strQuery = constantFromProperties
-				.getString("UPDATE_HISTORY_STAUS_REVERSED");
-		PreparedStatement preparedStatement = connection
-				.prepareStatement(strQuery);
-		preparedStatement.setString(1, mgiReferenceNumber);
-		preparedStatement.setString(2, mgiTransactionSessionID);
-		preparedStatement.executeUpdate();
+			statement.addBatch(quesrToUpdateReverse);
+		}
+		for (String mgiTransactionSessionID : histroyStatusRejectedList) {
+			String queryToUpdateReject = constantFromProperties
+					.getString("UPDATE_HISTORY_STAUS_REJECTED")
+					.concat(mgiTransactionSessionID).concat("'");
+			statement.addBatch(queryToUpdateReject);
+			
+		}
+		statement.executeBatch();
 		connection.close();
 
-		LOGGER.debug("Exit updateHistoryDetailStatusReversed.");
+		LOGGER.debug("Exit updateHistoryDetailStatusReversedAndRejected.");
 	}
 
-	public void updateHistoryDetailStatusRejected(String mgiTransactionSessionID)
-			throws ClassNotFoundException, SQLException {
-
-		LOGGER.debug("Enter updateHistoryDetailStatusRejected.");
-
-		Class.forName("oracle.jdbc.OracleDriver");
-		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-		Connection connection = DriverManager.getConnection(
-				constantFromProperties.getString("ORACLE_DB_URL"),
-				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
-				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
-
-		String strQuery = constantFromProperties
-				.getString("UPDATE_HISTORY_STAUS_REJECTED");
-		PreparedStatement preparedStatement = connection
-				.prepareStatement(strQuery);
-		preparedStatement.setString(1, mgiTransactionSessionID);
-		preparedStatement.executeUpdate();
-		connection.close();
-
-		LOGGER.debug("Exit updateHistoryDetailStatusRejected.");
-	}
 }
