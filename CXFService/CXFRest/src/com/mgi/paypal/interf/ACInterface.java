@@ -5,11 +5,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Context;
 
 import com.mgi.paypal.inputbean.CommitTransactionInputBean;
-import com.mgi.paypal.inputbean.DetailLookupInputBean;
 import com.mgi.paypal.inputbean.FeeLinkValueInputBean;
 import com.mgi.paypal.inputbean.FeeLookupInputBean;
 import com.mgi.paypal.inputbean.HistroyLookupInputBean;
 import com.mgi.paypal.inputbean.SendMailInputBean;
+import com.mgi.paypal.inputbean.SendProofInputBean;
 import com.mgi.paypal.inputbean.SendReversalInputBean;
 import com.mgi.paypal.inputbean.SendValidationInputBean;
 import com.mgi.paypal.inputbean.UserDataInputBean;
@@ -38,10 +38,12 @@ public interface ACInterface {
 
 	String getUserData(UserDataInputBean userDataInputBean);
 
-	String detailLookUp(DetailLookupInputBean detailLookupInputBean);
+//	String detailLookUp(DetailLookupInputBean detailLookupInputBean);
 
 	String payToMoneyGram(String token);
 
 	String getFeeLinkValue(FeeLinkValueInputBean feeLinkValueInputBean);
+
+	String sendProofMessage(SendProofInputBean sendProofInputBean);
 
 }

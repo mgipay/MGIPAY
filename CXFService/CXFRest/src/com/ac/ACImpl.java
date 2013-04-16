@@ -2,6 +2,7 @@ package com.ac;
 
 import java.math.BigDecimal;
 import java.net.URLEncoder;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -21,6 +22,10 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.axis2.AxisFault;
+import org.apache.axis2.client.Options;
+import org.apache.axis2.transport.http.HTTPConstants;
+import org.apache.axis2.transport.http.HttpTransportProperties;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
@@ -30,6 +35,8 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 
+import com.edialog.sdk.ws.SdkServiceStub;
+import com.edialog.sdk.ws.realtimemessaging.PropertyType;
 import com.google.gson.Gson;
 import com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client;
 import com.mgi.agentconnect.client.CodeTableRequest;
@@ -52,11 +59,11 @@ import com.mgi.complaintproxyservice.client.InsertRecsIntoCRMExtWebFormRequest;
 import com.mgi.complaintproxyservice.client.InsertRecsIntoCRMExtWebFormResponse;
 import com.mgi.complaintproxyservice.client.ProcessingInstruction;
 import com.mgi.paypal.inputbean.CommitTransactionInputBean;
-import com.mgi.paypal.inputbean.DetailLookupInputBean;
 import com.mgi.paypal.inputbean.FeeLinkValueInputBean;
 import com.mgi.paypal.inputbean.FeeLookupInputBean;
 import com.mgi.paypal.inputbean.HistroyLookupInputBean;
 import com.mgi.paypal.inputbean.SendMailInputBean;
+import com.mgi.paypal.inputbean.SendProofInputBean;
 import com.mgi.paypal.inputbean.SendReversalInputBean;
 import com.mgi.paypal.inputbean.SendValidationInputBean;
 import com.mgi.paypal.inputbean.UserDataInputBean;
@@ -83,7 +90,6 @@ import com.paypal.adaptivepayment.client.PhoneNumberType;
 import com.paypal.adaptivepayment.client.Receiver;
 import com.paypal.adaptivepayment.client.ReceiverList;
 import com.paypal.adaptivepayment.client.RequestEnvelope;
-import com.paypal.adaptivepayment.client.UserLimit;
 
 @Consumes("application/json")
 @Produces("application/JSON")
@@ -95,9 +101,9 @@ public class ACImpl implements ACInterface {
 
 	private static String STATES_IN_USA = "";
 
-	private static Integer CODETABLE_DAY_IDENTIFIER = 7;
+	private static Integer CODETABLE_DAY_IDENTIFIER = 9;
 
-	private static Integer FEELINK_DAY_IDENTIFIER = 7;
+	private static Integer FEELINK_DAY_IDENTIFIER = 9;
 
 	private static BigDecimal FEE_FOR_TWO_HUNDRED_FUNDS_IN = BigDecimal.ZERO;
 
@@ -139,29 +145,31 @@ public class ACImpl implements ACInterface {
 			@Context HttpServletResponse response,
 			FeeLookupInputBean feeLookupInputBean) {
 
-		LOGGER.info("Enter getFee.");
+		LOGGER.debug("Enter getFee.");
 
-		LOGGER.info("IP Address : " + request.getRemoteAddr());
+		LOGGER.debug("IP Address : " + request.getRemoteAddr());
 
 		setCredentials();
 		FeeLookupRequest feeLookupRequest = null;
 		feeLookupRequest = createFeeLookupInput(feeLookupInputBean.getAmount(),
 				true);
 		com.mgi.paypal.response.FeeLookupResponse feeLookupResponseReturn = new com.mgi.paypal.response.FeeLookupResponse();
-
+		FeeLookupResponse feeLookupResponse = null;
 		byte retryCount = 3;
 		while (retryCount >= 1) {
-			FeeLookupResponse feeLookupResponse = null;
+			
 			try {
 				AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 				feeLookupResponse = client.feeLookup(feeLookupRequest);
+				break;
 			} catch (Exception exception) {
-				LOGGER.error("FeeLookup Retrying because of"
-						+ exception.getLocalizedMessage());
-				exception.printStackTrace();
+				
 				retryCount--;
 				if (retryCount == 0) {
-					LOGGER.info("Maximum Number of Retries reached. FeeLookUp Response Failed.");
+					LOGGER.error("FeeLookup Retrying because of"
+							+ exception.getLocalizedMessage());
+					exception.printStackTrace();
+					LOGGER.debug("Maximum Number of Retries reached. FeeLookUp Response Failed.");
 					feeLookupResponseReturn
 							.setErrorMessage(messageFromProperties
 									.getString("RETRY_IN_SOMETIME"));
@@ -171,48 +179,46 @@ public class ACImpl implements ACInterface {
 					return new Gson().toJson(feeLookupResponseReturn);
 				}
 			}
-			if (feeLookupResponse != null) {
-				BigDecimal totalAmount = feeLookupResponse.getFeeInfo().get(0)
-						.getTotalAmount();
-				if (totalAmount.compareTo(constantFromProperties
-						.getBigDecimal("TWO_HUNDRED_US_DOLLARS")) <= 0) {
-					feeLookupResponseReturn.setTransactionSuccess(true);
+		}
+		if (feeLookupResponse != null) {
+			BigDecimal totalAmount = feeLookupResponse.getFeeInfo().get(0)
+					.getTotalAmount();
+			if (totalAmount.compareTo(constantFromProperties
+					.getBigDecimal("TWO_HUNDRED_US_DOLLARS")) <= 0) {
+				feeLookupResponseReturn.setTransactionSuccess(true);
 
-					feeLookupResponseReturn
-							.setMgiTransactionSessionID(feeLookupResponse
-									.getMgiTransactionSessionID());
+				feeLookupResponseReturn
+						.setMgiTransactionSessionID(feeLookupResponse
+								.getMgiTransactionSessionID());
 
-					feeLookupResponseReturn.setTotalAmount(totalAmount);
-					feeLookupResponseReturn.setFeeAmount(totalAmount
-							.subtract(feeLookupInputBean.getAmount()));
-				} else {
-					LOGGER.warn("Entered Amount above 200 dollars");
-					LOGGER.debug(messageFromProperties.getString("TEST"));
-					feeLookupResponseReturn
-							.setErrorMessage(messageFromProperties
-									.getString("WITHDRAW_ERROR_MESSAGE1")
-									.concat(totalAmount
-											.toString()
-											.concat(messageFromProperties
-													.getString("WITHDRAW_ERROR_MESSAGE2"))));
-					feeLookupResponseReturn.setTransactionSuccess(false);
-					feeLookupResponseReturn.setTotalAmount(totalAmount);
-					feeLookupResponseReturn.setFeeAmount(totalAmount
-							.subtract(feeLookupInputBean.getAmount()));
-				}
-
-				break;
+				feeLookupResponseReturn.setTotalAmount(totalAmount);
+				feeLookupResponseReturn.setFeeAmount(totalAmount
+						.subtract(feeLookupInputBean.getAmount()));
 			} else {
-				
-				feeLookupResponseReturn.setErrorMessage(messageFromProperties
-						.getString("RETRY_IN_SOMETIME"));
-
+				LOGGER.warn("Entered Amount above 200 dollars");
+				LOGGER.debug(messageFromProperties.getString("TEST"));
+				feeLookupResponseReturn
+						.setErrorMessage(messageFromProperties
+								.getString("WITHDRAW_ERROR_MESSAGE1")
+								.concat(totalAmount
+										.toString()
+										.concat(messageFromProperties
+												.getString("WITHDRAW_ERROR_MESSAGE2"))));
 				feeLookupResponseReturn.setTransactionSuccess(false);
-				break;
+				feeLookupResponseReturn.setTotalAmount(totalAmount);
+				feeLookupResponseReturn.setFeeAmount(totalAmount
+						.subtract(feeLookupInputBean.getAmount()));
 			}
+
+		} else {
+
+			feeLookupResponseReturn.setErrorMessage(messageFromProperties
+					.getString("RETRY_IN_SOMETIME"));
+
+			feeLookupResponseReturn.setTransactionSuccess(false);
 		}
 
-		LOGGER.info("Exit getFee.");
+		LOGGER.debug("Exit getFee.");
 
 		return new Gson().toJson(feeLookupResponseReturn);
 	}
@@ -228,7 +234,7 @@ public class ACImpl implements ACInterface {
 	private FeeLookupRequest createFeeLookupInput(BigDecimal amount,
 			boolean fundsIn) {
 
-		LOGGER.info("Enter createFeeLookupInput.");
+		LOGGER.debug("Enter createFeeLookupInput.");
 
 		FeeLookupRequest feeLookupRequest = new FeeLookupRequest();
 
@@ -259,7 +265,7 @@ public class ACImpl implements ACInterface {
 				.getString("CURRENCY_CODE_USA"));
 		feeLookupRequest.setAllOptions(false);
 
-		LOGGER.info("Exit createFeeLookupInput.");
+		LOGGER.debug("Exit createFeeLookupInput.");
 
 		return feeLookupRequest;
 	}
@@ -274,28 +280,31 @@ public class ACImpl implements ACInterface {
 	 */
 	private BigDecimal getFeeForFeeLink(BigDecimal amount, boolean fundsIn) {
 
-		LOGGER.info("Enter getFeeForFeeLink.");
+		LOGGER.debug("Enter getFeeForFeeLink.");
 
 		byte retryCount = 3;
+		FeeLookupResponse feeLookupResponse = null;
 		while (retryCount >= 1) {
-			FeeLookupResponse feeLookupResponse = null;
+			
 			try {
 				AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 				feeLookupResponse = client
 						.feeLookup(createFeeLookupInput(amount, fundsIn));
+				break;
 			} catch (Exception exception) {
 				exception.printStackTrace();
 				LOGGER.error("getFeeForFeeLink Retrying because of" + exception);
 				retryCount--;
 			}
-			if (feeLookupResponse != null
-					&& !feeLookupResponse.getFeeInfo().isEmpty()) {
-				return feeLookupResponse.getFeeInfo().get(0).getTotalAmount()
-						.subtract(amount);
-			}
+			
+			
 		}
-
-		LOGGER.info("Exit getFeeForFeeLink.");
+		if (feeLookupResponse != null
+				&& !feeLookupResponse.getFeeInfo().isEmpty()) {
+			return feeLookupResponse.getFeeInfo().get(0).getTotalAmount()
+					.subtract(amount);
+		}
+		LOGGER.debug("Exit getFeeForFeeLink.");
 
 		return new BigDecimal(0);
 
@@ -318,7 +327,7 @@ public class ACImpl implements ACInterface {
 	public String getHistoryDetails(
 			HistroyLookupInputBean histroyLookupInputBean) {
 
-		LOGGER.info("Enter getHistoryDetails.");
+		LOGGER.debug("Enter getHistoryDetails.");
 
 		HistroyLookupResponse histroyLookupResponse = new HistroyLookupResponse();
 
@@ -341,7 +350,7 @@ public class ACImpl implements ACInterface {
 				if (!historyDetails.getTransactionStatus().equals(
 						TransactionStatus.RECVD.value())) {
 
-					String statusFromDetailLookUp = detailLookUp2(historyDetails
+					String statusFromDetailLookUp = detailLookUpForRetrieveHistory(historyDetails
 							.getMgiReferenceNumber(),historyDetails.getMgiTransactionSessionID());
 					if (!statusFromDetailLookUp.equals(historyDetails
 							.getTransactionStatus())) {
@@ -376,7 +385,7 @@ public class ACImpl implements ACInterface {
 		histroyLookupResponse.setHistoryDetailsList(historyDetailsList);
 		histroyLookupResponse.setTransactionSuccess(true);
 
-		LOGGER.info("Exit getHistoryDetails.");
+		LOGGER.debug("Exit getHistoryDetails.");
 
 		return new Gson().toJson(histroyLookupResponse);
 	}
@@ -389,48 +398,26 @@ public class ACImpl implements ACInterface {
 	 * 
 	 * @return status of transaction as String.
 	 */
-	public String detailLookUp2(String referenceNumber,
+	private String detailLookUpForRetrieveHistory(String referenceNumber,
 			String mgiTransactionSessionID) throws Exception {
 
-		LOGGER.info("Enter detailLookUp.");
+		LOGGER.debug("Enter detailLookUpForRetrieveHistory.");
 
-		DetailLookupRequest detailLookupRequest = new DetailLookupRequest();
-
-		detailLookupRequest.setAgentID(constantFromProperties
-				.getString("AGENT_ID"));
-		detailLookupRequest.setAgentSequence(constantFromProperties
-				.getString("AGENT_SEQUENCE"));
-		detailLookupRequest.setApiVersion(constantFromProperties
-				.getString("API_VERSION"));
-		detailLookupRequest.setClientSoftwareVersion(constantFromProperties
-				.getString("CLIENT_SOFTWARE_VERSION"));
-		detailLookupRequest.setIncludeUseData(false);
-		detailLookupRequest.setLanguage(constantFromProperties
-				.getString("LANGUAGE_CODE_ENGLISH"));
+		DetailLookupRequest detailLookupRequest = createDetailLookupRequest(
+				 mgiTransactionSessionID);
 		detailLookupRequest.setReferenceNumber(referenceNumber);
-		detailLookupRequest.setTimeStamp(getTimeStamp());
-		detailLookupRequest.setToken(constantFromProperties.getString("TOKEN"));
-		detailLookupRequest.setUnitProfileID(constantFromProperties
-				.getInt("UNIT_PROFILE_ID"));
-		detailLookupRequest.setMgiTransactionSessionID(mgiTransactionSessionID);
 		DetailLookupResponse detailLookupResponse = null;
 		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 		detailLookupResponse = client
 				.detailLookup(detailLookupRequest);
 
-		LOGGER.info("Exit detailLookUp.");
+		LOGGER.debug("Exit detailLookUpForRetrieveHistory.");
 
 		return detailLookupResponse.getTransactionStatus().value();
 	}
 
-	// TODO delete below method.
-	@POST
-	@Path("/detailLookUp")
-	@Override
-	public String detailLookUp(DetailLookupInputBean detailLookupInputBean) {
-
-		LOGGER.info("Enter detailLookUp.");
-
+	private DetailLookupRequest createDetailLookupRequest(
+			 String mgiTransactionSessionID) {
 		DetailLookupRequest detailLookupRequest = new DetailLookupRequest();
 
 		detailLookupRequest.setAgentID(constantFromProperties
@@ -444,32 +431,28 @@ public class ACImpl implements ACInterface {
 		detailLookupRequest.setIncludeUseData(false);
 		detailLookupRequest.setLanguage(constantFromProperties
 				.getString("LANGUAGE_CODE_ENGLISH"));
-		detailLookupRequest.setReferenceNumber(detailLookupInputBean
-				.getReferenceNumber());
-
 		detailLookupRequest.setTimeStamp(getTimeStamp());
-
 		detailLookupRequest.setToken(constantFromProperties.getString("TOKEN"));
 		detailLookupRequest.setUnitProfileID(constantFromProperties
 				.getInt("UNIT_PROFILE_ID"));
-		DetailLookupResponse detailLookupResponse = null;
-		try {
-			AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
-			detailLookupResponse = client
-					.detailLookup(detailLookupRequest);
-		} catch (Exception exception) {
-			LOGGER.error("Detail Lookup Failed:" + exception);
-			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("detailLookupRequest: "
-						+ new Gson().toJson(detailLookupRequest));
-			}
+		detailLookupRequest.setMgiTransactionSessionID(mgiTransactionSessionID);
+		return detailLookupRequest;
+	}
 
-			exception.printStackTrace();
-		}
-
-		LOGGER.info("Exit detailLookUp.");
-
-		return new Gson().toJson(detailLookupResponse);
+	private DetailLookupResponse detailLookUpForBatchProcess(
+			String mgiTransactionSessionId) throws Exception {
+		
+		LOGGER.debug("Enter detailLookUpForBatchProcess.");
+		
+		DetailLookupRequest detailLookupRequest = createDetailLookupRequest(
+				mgiTransactionSessionId);
+		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
+		 DetailLookupResponse detailLookupResponse = client
+				.detailLookup(detailLookupRequest);
+		 
+		 LOGGER.debug("Enter detailLookUpForBatchProcess.");
+		 
+		return detailLookupResponse;
 	}
 
 	private static XMLGregorianCalendar getTimeStamp() {
@@ -497,8 +480,11 @@ public class ACImpl implements ACInterface {
 	@Override
 	public String getFeeLinkValue(FeeLinkValueInputBean feeLinkValueInputBean) {
 
-		LOGGER.info("Enter getFeeLinkValue.");
+		LOGGER.debug("Enter getFeeLinkValue.");
 
+		//TODO 
+		LOGGER.debug(feeLinkValueInputBean.isFundsIn());
+		
 		setCredentials();
 		int yesterday = 7;
 		FeeLinkValues feeLinkValues = new FeeLinkValues();
@@ -527,52 +513,7 @@ public class ACImpl implements ACInterface {
 					constantFromProperties
 							.getBigDecimal("FIVE_HUNDRED_US_DOLLARS"),
 					false);
-
-			synchronized (FEE_FOR_TWO_HUNDRED_FUNDS_IN) {
-				FEE_FOR_TWO_HUNDRED_FUNDS_IN = feeForTwoHundredFundsIn;
-			}
-			synchronized (FEE_FOR_FIVE_HUNDRED_FUNDS_IN) {
-				FEE_FOR_FIVE_HUNDRED_FUNDS_IN = feeForFiveHundredFundsIn;
-			}
-			synchronized (FEE_FOR_TWO_HUNDRED_FUNDS_OUT) {
-				FEE_FOR_TWO_HUNDRED_FUNDS_OUT = feeForTwoHundredFundsOut;
-			}
-			synchronized (FEE_FOR_FIVE_HUNDRED_FUNDS_OUT) {
-				FEE_FOR_FIVE_HUNDRED_FUNDS_OUT = feeForFiveHundredFundsOut;
-			}
-			MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
-			try {
-				moneyGramPayPalDAO.updateFeeFeeDetailTable(
-						constantFromProperties
-								.getBigDecimal("TWO_HUNDRED_US_DOLLARS"),
-						feeForTwoHundredFundsIn, true);
-				moneyGramPayPalDAO.updateFeeFeeDetailTable(
-						constantFromProperties
-								.getBigDecimal("FIVE_HUNDRED_US_DOLLARS"),
-						feeForFiveHundredFundsIn, true);
-
-				moneyGramPayPalDAO.updateFeeFeeDetailTable(
-						constantFromProperties
-								.getBigDecimal("TWO_HUNDRED_US_DOLLARS"),
-						feeForTwoHundredFundsOut, false);
-				moneyGramPayPalDAO.updateFeeFeeDetailTable(
-						constantFromProperties
-								.getBigDecimal("FIVE_HUNDRED_US_DOLLARS"),
-						feeForFiveHundredFundsOut, false);
-
-			} catch (Exception exception) {
-				LOGGER.error(exception, exception);
-				synchronized (FEELINK_DAY_IDENTIFIER) {
-					FEELINK_DAY_IDENTIFIER = yesterday;
-				}
-				LOGGER.error("New Fee Not Updated Into Table 'MGI_PAYPAL_FEE_DTL'.");
-				LOGGER.error(exception.getLocalizedMessage());
-				LOGGER.error(System.getProperty("line.separator"));
-				feeLinkValues.setTransactionSuccess(false);
-				feeLinkValues.setErrorMessage(messageFromProperties
-						.getString("RETRY_IN_SOMETIME"));
-				;
-			}
+			
 
 			if (feeForFiveHundredFundsIn.compareTo(BigDecimal.ZERO) == 0
 					|| feeForTwoHundredFundsIn.compareTo(BigDecimal.ZERO) == 0
@@ -585,6 +526,51 @@ public class ACImpl implements ACInterface {
 				feeLinkValues.setErrorMessage(messageFromProperties
 						.getString("RETRY"));
 			} else {
+				synchronized (FEE_FOR_TWO_HUNDRED_FUNDS_IN) {
+					FEE_FOR_TWO_HUNDRED_FUNDS_IN = feeForTwoHundredFundsIn;
+				}
+				synchronized (FEE_FOR_FIVE_HUNDRED_FUNDS_IN) {
+					FEE_FOR_FIVE_HUNDRED_FUNDS_IN = feeForFiveHundredFundsIn;
+				}
+				synchronized (FEE_FOR_TWO_HUNDRED_FUNDS_OUT) {
+					FEE_FOR_TWO_HUNDRED_FUNDS_OUT = feeForTwoHundredFundsOut;
+				}
+				synchronized (FEE_FOR_FIVE_HUNDRED_FUNDS_OUT) {
+					FEE_FOR_FIVE_HUNDRED_FUNDS_OUT = feeForFiveHundredFundsOut;
+				}
+				MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
+				try {
+					moneyGramPayPalDAO.updateFeeFeeDetailTable(
+							constantFromProperties
+									.getBigDecimal("TWO_HUNDRED_US_DOLLARS"),
+							feeForTwoHundredFundsIn, true);
+					moneyGramPayPalDAO.updateFeeFeeDetailTable(
+							constantFromProperties
+									.getBigDecimal("FIVE_HUNDRED_US_DOLLARS"),
+							feeForFiveHundredFundsIn, true);
+
+					moneyGramPayPalDAO.updateFeeFeeDetailTable(
+							constantFromProperties
+									.getBigDecimal("TWO_HUNDRED_US_DOLLARS"),
+							feeForTwoHundredFundsOut, false);
+					moneyGramPayPalDAO.updateFeeFeeDetailTable(
+							constantFromProperties
+									.getBigDecimal("FIVE_HUNDRED_US_DOLLARS"),
+							feeForFiveHundredFundsOut, false);
+
+				} catch (Exception exception) {
+					exception.printStackTrace();
+					synchronized (FEELINK_DAY_IDENTIFIER) {
+						FEELINK_DAY_IDENTIFIER = yesterday;
+					}
+					LOGGER.error("New Fee Not Updated Into Table 'MGI_PAYPAL_FEE_DTL'.");
+					LOGGER.error(exception.getLocalizedMessage());
+					LOGGER.error(System.getProperty("line.separator"));
+					feeLinkValues.setTransactionSuccess(false);
+					feeLinkValues.setErrorMessage(messageFromProperties
+							.getString("RETRY_IN_SOMETIME"));
+				}
+
 				feeLinkValues.setTransactionSuccess(true);
 				if (feeLinkValueInputBean.isFundsIn()) {
 					feeLinkValues
@@ -615,8 +601,12 @@ public class ACImpl implements ACInterface {
 						.setFeeForFiveHundred(FEE_FOR_FIVE_HUNDRED_FUNDS_OUT);
 			}
 		}
-
-		LOGGER.info("Exit getFeeLinkValue.");
+		// TODO
+		LOGGER.debug(FEE_FOR_TWO_HUNDRED_FUNDS_IN.toString() + "  "
+				+ FEE_FOR_FIVE_HUNDRED_FUNDS_IN.toString() + "  "
+				+ FEE_FOR_TWO_HUNDRED_FUNDS_OUT.toString() + "  "
+							+ FEE_FOR_FIVE_HUNDRED_FUNDS_OUT.toString());
+		LOGGER.debug("Exit getFeeLinkValue.");
 
 		return new Gson().toJson(feeLinkValues);
 	}
@@ -634,12 +624,12 @@ public class ACImpl implements ACInterface {
 	@Override
 	public String getState() {
 
-		LOGGER.info("Enter getStateCode.");
+		LOGGER.debug("Enter getStateCode.");
 
 		if (CODETABLE_DAY_IDENTIFIER != Calendar.getInstance().get(
 				Calendar.DAY_OF_WEEK)) {
 			synchronized (STATES_IN_USA) {
-				int yesterday = 7;
+				int yesterday = 8;
 				synchronized (CODETABLE_DAY_IDENTIFIER) {
 					yesterday = CODETABLE_DAY_IDENTIFIER;
 					CODETABLE_DAY_IDENTIFIER = Calendar.getInstance().get(
@@ -653,7 +643,8 @@ public class ACImpl implements ACInterface {
 				codeTableRequest
 						.setClientSoftwareVersion(constantFromProperties
 								.getString("CLIENT_SOFTWARE_VERSION"));
-				codeTableRequest.setUnitProfileID(158178);
+				codeTableRequest.setUnitProfileID(constantFromProperties
+						.getInt("UNIT_PROFILE_ID"));
 				codeTableRequest.setToken(constantFromProperties
 						.getString("TOKEN"));
 				codeTableRequest.setAgentSequence(constantFromProperties
@@ -687,17 +678,15 @@ public class ACImpl implements ACInterface {
 							statemName = new String(stringArray);
 							stateList.add(statemName);
 						}
-						
-						
+						Collections.sort(stateList);
 						STATES_IN_USA = new Gson().toJson(stateList);
 						responseRecived = true;
 					} catch (Exception exception) {
 						LOGGER.error("Retrying Codetable Request because of :"
 								+ exception);
-						//TODO
-						exception.printStackTrace();
 						retryCount--;
 						if (retryCount == 0) {
+							exception.printStackTrace();
 							synchronized (CODETABLE_DAY_IDENTIFIER) {
 								CODETABLE_DAY_IDENTIFIER = yesterday;
 							}
@@ -710,7 +699,7 @@ public class ACImpl implements ACInterface {
 			}
 		}
 
-		LOGGER.info("Exit getStateCode.");
+		LOGGER.debug("Exit getStateCode.");
 
 		return STATES_IN_USA;
 	}
@@ -732,7 +721,7 @@ public class ACImpl implements ACInterface {
 	public String commitTransaction(
 			CommitTransactionInputBean commitTransactionInputBean) {
 
-		LOGGER.info("Enter commitTransaction.");
+		LOGGER.debug("Enter commitTransaction.");
 
 		CommitTransactionRequest commitTransactionRequest = new CommitTransactionRequest();
 		CommitTransactionResponse commitTransactionResponse = null;
@@ -761,13 +750,15 @@ public class ACImpl implements ACInterface {
 				AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 				commitTransactionResponse = client
 						.commitTransaction(commitTransactionRequest);
+				break;
 			} catch (Exception exception) {
 				LOGGER.error("Retrying Commit Transaction because of: "
 						+ exception);
 				retryCount--;
 				if (retryCount == 0) {
-					LOGGER.info("Max number of retries reached. Commit Trasaction Failed.");
-					
+					exception.printStackTrace();
+					LOGGER.debug("Max number of retries reached. Commit Trasaction Failed.");
+
 					commitTransactionResponseForReturn
 							.setErrorMessage(messageFromProperties
 									.getString("TRANSACTION_FAILED_RETRY"));
@@ -776,54 +767,50 @@ public class ACImpl implements ACInterface {
 					commitTransactionInputBean
 							.setMgiReferenceNumber("00000000");
 					commitTransactionInputBean
-							.setMgiTransactionStatus(TransactionStatus.FAILED.value());
+							.setMgiTransactionStatus(TransactionStatus.FAILED
+									.value());
 					commitTransactionInputBean
 							.setPayPalTransactionStatus("Payapal_Collected");
 					insertToHistory(commitTransactionInputBean);
-					
-					LOGGER.info("Exit commitTransaction.");
 
-					return new Gson().toJson(commitTransactionResponseForReturn);
+					LOGGER.debug("Exit commitTransaction.");
+
+					return new Gson()
+							.toJson(commitTransactionResponseForReturn);
 				}
 			}
-			if (commitTransactionResponse != null) {
-				commitTransactionResponseForReturn.setTransactionSuccess(true);
-				commitTransactionResponseForReturn
-						.setReferenceNumber(commitTransactionResponse
-								.getReferenceNumber());
-				commitTransactionInputBean
-						.setMgiReferenceNumber(commitTransactionResponse
-								.getReferenceNumber());
-				commitTransactionInputBean
-						.setMgiTransactionStatus(TransactionStatus.AVAIL
-								.value());
-				commitTransactionInputBean
-						.setPayPalTransactionStatus("Payapal_Collected");
 
-				LOGGER.debug(commitTransactionInputBean.getCustomerEmail());
-				
-				// TODO
-//				commitTransactionInputBean.setCustomerEmail("vbalki@ebay.com");
-				insertToHistory(commitTransactionInputBean);
-
-				break;
-			} else {
-				commitTransactionResponseForReturn
-						.setErrorMessage(messageFromProperties
-								.getString("TRANSACTION_FAILED_RETRY"));
-				commitTransactionResponseForReturn.setTransactionSuccess(false);
-				commitTransactionInputBean.setMgiReferenceNumber("00000000");
-				commitTransactionInputBean
-						.setMgiTransactionStatus(TransactionStatus.FAILED
-								.value());
-				commitTransactionInputBean
-						.setPayPalTransactionStatus("Payapal_Collected");
-				insertToHistory(commitTransactionInputBean);
-				break;
-			}
 		}
+		if (commitTransactionResponse != null) {
+			commitTransactionResponseForReturn.setTransactionSuccess(true);
+			commitTransactionResponseForReturn
+					.setReferenceNumber(commitTransactionResponse
+							.getReferenceNumber());
+			commitTransactionInputBean
+					.setMgiReferenceNumber(commitTransactionResponse
+							.getReferenceNumber());
+			commitTransactionInputBean
+					.setMgiTransactionStatus(TransactionStatus.AVAIL.value());
+			commitTransactionInputBean
+					.setPayPalTransactionStatus("Payapal_Collected");
 
-		LOGGER.info("Exit commitTransaction.");
+			LOGGER.debug(commitTransactionInputBean.getCustomerEmail());
+
+			insertToHistory(commitTransactionInputBean);
+
+		} else {
+			commitTransactionResponseForReturn
+					.setErrorMessage(messageFromProperties
+							.getString("TRANSACTION_FAILED_RETRY"));
+			commitTransactionResponseForReturn.setTransactionSuccess(false);
+			commitTransactionInputBean.setMgiReferenceNumber("00000000");
+			commitTransactionInputBean
+					.setMgiTransactionStatus(TransactionStatus.FAILED.value());
+			commitTransactionInputBean
+					.setPayPalTransactionStatus("Payapal_Collected");
+			insertToHistory(commitTransactionInputBean);
+		}
+		LOGGER.debug("Exit commitTransaction.");
 
 		return new Gson().toJson(commitTransactionResponseForReturn);
 	}
@@ -847,7 +834,7 @@ public class ACImpl implements ACInterface {
 	@Override
 	public String sendReversal(SendReversalInputBean sendReversalInputBean) {
 
-		LOGGER.info("Enter sendReversal.");
+		LOGGER.debug("Enter sendReversal.");
 
 		SendReversalRequest sendReversalRequest = new SendReversalRequest();
 		sendReversalRequest.setAgentID(constantFromProperties
@@ -888,7 +875,7 @@ public class ACImpl implements ACInterface {
 			exception.printStackTrace();
 		}
 
-		LOGGER.info("Exit sendReversal.");
+		LOGGER.debug("Exit sendReversal.");
 
 		return new Gson().toJson(sendReversalResponse);
 	}
@@ -908,12 +895,11 @@ public class ACImpl implements ACInterface {
 	@Override
 	public String sendValidation(SendValidationInputBean sendValidationInputBean) {
 
-		LOGGER.info("Enter sendValidation.");
+		LOGGER.debug("Enter sendValidation.");
 
 		com.mgi.agentconnect.client.SendValidationResponse sendValidationResponse = null;
 
-		com.mgi.agentconnect.client.SendValidationRequest sendValidationRequest 
-		= new com.mgi.agentconnect.client.SendValidationRequest();
+		com.mgi.agentconnect.client.SendValidationRequest sendValidationRequest = new com.mgi.agentconnect.client.SendValidationRequest();
 		sendValidationRequest.setConsumerId("0");
 		sendValidationRequest.setFormFreeStaging(false);
 		sendValidationRequest.setTimeToLive(constantFromProperties
@@ -945,11 +931,11 @@ public class ACImpl implements ACInterface {
 				.getFeeAmount());
 		sendValidationRequest.setDestinationCountry(sendValidationInputBean
 				.getDestinationCountry());
-//		sendValidationRequest.setDestinationState(stateAndCodeHashTable
-//				.get(sendValidationInputBean.getDestinationState()
-//						.toUpperCase()));
-		sendValidationRequest.setDestinationState(
-		sendValidationInputBean.getDestinationState());
+		// sendValidationRequest.setDestinationState(stateAndCodeHashTable
+		// .get(sendValidationInputBean.getDestinationState()
+		// .toUpperCase()));
+		sendValidationRequest.setDestinationState(sendValidationInputBean
+				.getDestinationState());
 
 		sendValidationRequest.setReceiveCurrency(sendValidationInputBean
 				.getReceiveCurrency());
@@ -974,9 +960,10 @@ public class ACImpl implements ACInterface {
 				.getReceiverLastName());
 		sendValidationRequest.setSendCurrency(sendValidationInputBean
 				.getSendCurrency());
-		sendValidationRequest.setSenderEmailAddress(sendValidationInputBean.getSenderEmail());
+		sendValidationRequest.setAgentUseSendData(sendValidationInputBean
+				.getSenderEmail());
 
-		com.mgi.paypal.response.SendValidationResponse sendValidationResponseForReturn
+		com.mgi.paypal.response.SendValidationResponse sendValidationResponseForReturn 
 		= new com.mgi.paypal.response.SendValidationResponse();
 		byte retryCount = 3;
 		while (retryCount >= 1) {
@@ -984,9 +971,10 @@ public class ACImpl implements ACInterface {
 				AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 				sendValidationResponse = client
 						.sendValidation(sendValidationRequest);
+				break;
 			} catch (Exception exception) {
 				retryCount--;
-				if (retryCount == 1) {
+				if (retryCount == 0) {
 					LOGGER.debug("SendValidation Request: "
 							+ new Gson().toJson(sendValidationRequest));
 					exception.printStackTrace();
@@ -998,24 +986,22 @@ public class ACImpl implements ACInterface {
 					return new Gson().toJson(sendValidationResponse);
 				}
 			}
-			if (sendValidationResponse != null) {
+		}
+		if (sendValidationResponse != null) {
 
-				sendValidationResponseForReturn
-						.setMgiTransactionSessionID(sendValidationResponse
-								.getMgiTransactionSessionID());
-				sendValidationResponseForReturn.setTransactionSuccess(true);
-				break;
+			sendValidationResponseForReturn
+					.setMgiTransactionSessionID(sendValidationResponse
+							.getMgiTransactionSessionID());
+			sendValidationResponseForReturn.setTransactionSuccess(true);
 
-			} else {
-				sendValidationResponseForReturn.setTransactionSuccess(false);
-				sendValidationResponseForReturn
-						.setErrorMessage(messageFromProperties
-								.getString("TRANSACTION_FAILED_RETRY"));
-				break;
-			}
+		} else {
+			sendValidationResponseForReturn.setTransactionSuccess(false);
+			sendValidationResponseForReturn
+					.setErrorMessage(messageFromProperties
+							.getString("TRANSACTION_FAILED_RETRY"));
 		}
 
-		LOGGER.info("Exit sendValidation.");
+		LOGGER.debug("Exit sendValidation.");
 
 		return new Gson().toJson(sendValidationResponseForReturn);
 	}
@@ -1024,7 +1010,7 @@ public class ACImpl implements ACInterface {
 			SendValidationInputBean sendValidationInputBean,
 			com.mgi.agentconnect.client.SendValidationRequest sendValidationRequest) {
 
-		LOGGER.info("Enter setSenderName.");
+		LOGGER.debug("Enter setSenderName.");
 
 		String firstName = sendValidationInputBean.getSenderFirstName();
 		String lastName = sendValidationInputBean.getSenderLastName();
@@ -1044,7 +1030,7 @@ public class ACImpl implements ACInterface {
 		sendValidationRequest.setSenderLastName(lastName.substring(0, 20));
 		// sendValidationRequest.setSenderLastName2(lastName.substring(0, 5));
 
-		LOGGER.info("Exit setSenderName.");
+		LOGGER.debug("Exit setSenderName.");
 	}
 
 	/**
@@ -1061,7 +1047,7 @@ public class ACImpl implements ACInterface {
 	@Override
 	public String getUserLimits(UserLimitInputBean userLimitInputBean) {
 
-		LOGGER.info("Enter getUserLimits.");
+		LOGGER.debug("Enter getUserLimits.");
 
 		PhoneNumberType phoneNumberType = new PhoneNumberType();
 		phoneNumberType.setCountryCode("1");
@@ -1071,8 +1057,8 @@ public class ACImpl implements ACInterface {
 		AccountIdentifier accountIdentifier = new AccountIdentifier();
 		LOGGER.debug(userLimitInputBean.getEmailID());
 		// TODO
-		 accountIdentifier.setEmail(userLimitInputBean.getEmailID());
-//		accountIdentifier.setEmail("paypalmoneygram@gmail.com");
+		accountIdentifier.setEmail(userLimitInputBean.getEmailID());
+		// accountIdentifier.setEmail("paypalmoneygram@gmail.com");
 		accountIdentifier.setPhone(phoneNumberType);
 
 		RequestEnvelope requestEnvelope = new RequestEnvelope();
@@ -1101,11 +1087,13 @@ public class ACImpl implements ACInterface {
 				= new AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client();
 				getUserLimitsResponse = client
 						.getUserLimit(getUserLimitsRequest);
+				break;
 			} catch (Exception exception) {
 				LOGGER.error("Retrying GetUserLimits because of :" + exception);
 				retryCount--;
 				if (retryCount == 0) {
-					LOGGER.info("Max number of retries for GetUserLimits reached. Call Failed.");
+					exception.printStackTrace();
+					LOGGER.debug("Max number of retries for GetUserLimits reached. Call Failed.");
 					getUserLimitsResponseForReturn.setTransactionSuccess(false);
 					getUserLimitsResponseForReturn
 							.setErrorMessage(messageFromProperties
@@ -1114,30 +1102,29 @@ public class ACImpl implements ACInterface {
 					return new Gson().toJson(getUserLimitsResponse);
 				}
 			}
-			if (getUserLimitsResponse != null) {
-				getUserLimitsResponseForReturn.setTransactionSuccess(true);
 
-				List<UserLimit> userLimitList = getUserLimitsResponse
-						.getUserLimit();
-				if (userLimitList != null && !userLimitList.isEmpty()) {
-					getUserLimitsResponseForReturn
-							.setCurrencyType(userLimitList.get(0)
-									.getLimitAmount());
-				} else {
-					LOGGER.warn("userLimitList is empty.Hardcoded value went to UI");
-					CurrencyType currencyType = new CurrencyType();
-					currencyType.setAmount(new BigDecimal(0));
-					currencyType.setCode("Invalid Code");
-					getUserLimitsResponseForReturn
-							.setCurrencyType(currencyType);
-					getUserLimitsResponseForReturn.setTransactionSuccess(false);
-				}
-
-				break;
-			}
 		}
+		if (getUserLimitsResponse != null
+				&& getUserLimitsResponse.getUserLimit() != null
+				&& !getUserLimitsResponse.getUserLimit().isEmpty()) {
+			getUserLimitsResponseForReturn.setTransactionSuccess(true);
 
-		LOGGER.info("Exit getUserLimits.");
+			getUserLimitsResponseForReturn
+					.setCurrencyType(getUserLimitsResponse.getUserLimit()
+							.get(0).getLimitAmount());
+
+		} else {
+			LOGGER.warn("userLimitList is empty.Hardcoded value went to UI");
+			CurrencyType currencyType = new CurrencyType();
+			currencyType.setAmount(new BigDecimal(0));
+			currencyType.setCode("Invalid Code");
+			getUserLimitsResponseForReturn.setCurrencyType(currencyType);
+			getUserLimitsResponseForReturn.setTransactionSuccess(false);
+			getUserLimitsResponseForReturn
+			.setErrorMessage(messageFromProperties
+					.getString("SESSION_EXPIRED"));
+		}
+		LOGGER.debug("Exit getUserLimits.");
 
 		return gson.toJson(getUserLimitsResponseForReturn);
 	}
@@ -1147,19 +1134,19 @@ public class ACImpl implements ACInterface {
 	@Override
 	public String getUserData(UserDataInputBean userDataInputBean) {
 
-		LOGGER.info("Enter getUserData.");
+		LOGGER.debug("Enter getUserData.");
 
 		String token = createToken(userDataInputBean.getCode());
 		String userData = getUserData(token);
 
-		LOGGER.info("Exit getUserData.");
+		LOGGER.debug("Exit getUserData.");
 
 		return userData;
 	}
 
 	private String createToken(String codeValue) {
 
-		LOGGER.info("Enter Create Token");
+		LOGGER.debug("Enter Create Token");
 
 		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
 				+ "/v1/tokenservice";
@@ -1192,14 +1179,14 @@ public class ACImpl implements ACInterface {
 			e.printStackTrace();
 		}
 		
-		LOGGER.info("Exit Create Token");
+		LOGGER.debug("Exit Create Token");
 		
 		return accessToken.getAccess_token();
 	}
 
 	private String getUserData(String tokenData) {
 		
-		LOGGER.info("Enter getUserData");
+		LOGGER.debug("Enter getUserData");
 		
 		String responseBody = null;
 		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
@@ -1223,7 +1210,7 @@ public class ACImpl implements ACInterface {
 			e.printStackTrace();
 		}
 		
-		LOGGER.info("Exit getUserData");
+		LOGGER.debug("Exit getUserData");
 
 		return responseBody;
 	}
@@ -1286,13 +1273,14 @@ public class ACImpl implements ACInterface {
 	@Override
 	public String sendMail(SendMailInputBean sendMailInputBean) {
 
-		LOGGER.info("Enter sendMail.");
+		LOGGER.debug("Enter sendMail.");
 
 		setCredentials();
 		SendMailOutputBean sendMailOutputBean = new SendMailOutputBean();
 		InsertRecsIntoCRMExtWebFormResponse insertRecsIntoCRMExtWebFormResponse = null;
 		try {
-			InsertRecsIntoCRMExtWebFormRequest insertRecsIntoCRMExtWebFormRequest = new InsertRecsIntoCRMExtWebFormRequest();
+			InsertRecsIntoCRMExtWebFormRequest insertRecsIntoCRMExtWebFormRequest 
+			= new InsertRecsIntoCRMExtWebFormRequest();
 			insertRecsIntoCRMExtWebFormRequest
 					.setWhoCompletingForm("MoneyGram Consumer");
 			insertRecsIntoCRMExtWebFormRequest.setFirstname(sendMailInputBean
@@ -1328,9 +1316,7 @@ public class ACImpl implements ACInterface {
 		} catch (Exception exception) {
 			LOGGER.debug("Send Mail Failed because of :" + exception);
 			exception.printStackTrace();
-			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug(new Gson().toJson(sendMailInputBean));
-			}
+			LOGGER.debug(new Gson().toJson(sendMailInputBean));
 			sendMailOutputBean.setTransactionSuccess(false);
 			sendMailOutputBean.setMailSubject(sendMailInputBean
 					.getMailSubject());
@@ -1349,10 +1335,69 @@ public class ACImpl implements ACInterface {
 				.concat(insertRecsIntoCRMExtWebFormResponse
 						.getInsertRecsIntoCRMExtWebFormResult()).concat(" >"));
 
-		LOGGER.info("Exit sendMail.");
+		LOGGER.debug("Exit sendMail.");
 
 		return new Gson().toJson(sendMailOutputBean);
 	}
+	
+	
+	@POST
+	@Path("/sendProofMessage")
+	@Override
+	public String sendProofMessage(SendProofInputBean sendProofInputBean) {
+
+//		private static final String DEFAULT_URL = "https://sdk-staging.e-dialog.com/edialog-webservices";
+//		private static final String DEFAULT_URL = "https://sdk.e-dialog.com/edialog-webservices";
+		SdkServiceStub service = null;
+		try {
+			service = setUpServiceConn("https://sdk-staging.e-dialog.com/edialog-webservices");
+		} catch (AxisFault af) {
+			System.out.println(af.getMessage());
+		}
+		
+		PropertyType[] messageProperties = new PropertyType[2];
+
+		messageProperties[0] = new PropertyType();
+		messageProperties[0].setName("EMAIL");
+		messageProperties[0].setValue(sendProofInputBean.getCustomerEmail());
+
+		messageProperties[1] = new PropertyType();
+		messageProperties[1].setName("TEMPZIP");
+		messageProperties[1].setValue(sendProofInputBean.getZipCode());
+		
+		String[] emaiMail = {sendProofInputBean.getCustomerEmail()};
+		/* send proofs */
+		String Response = null;
+		try {
+			Response = service.sendProofMessage("EXAMPLETRIGGER", emaiMail, messageProperties);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Response "+Response );
+		return new Gson().toJson(Response);
+	}
+	
+	private static SdkServiceStub setUpServiceConn(String webServicesURL)
+			throws AxisFault {
+
+		// Set up service for the client to use.
+		SdkServiceStub service = new SdkServiceStub(webServicesURL);
+
+		HttpTransportProperties.Authenticator authenticator = new HttpTransportProperties.Authenticator();
+		// Configure authentication.
+		authenticator.setUsername("moneygramws");
+		authenticator.setPassword("WQiyP1c0X");
+		authenticator.setPreemptiveAuthentication(true);
+
+		Options options = service._getServiceClient().getOptions();
+		options.setProperty(HTTPConstants.AUTHENTICATE, authenticator);
+		options.setTimeOutInMilliSeconds(2 * 60L * 1000);
+
+		return service;
+	}
+	
+	
 	
 	public void doBatchForSendReversal() {
 
@@ -1368,12 +1413,25 @@ public class ACImpl implements ACInterface {
 				}
 
 				for (HistoryDetails historyDetails : historyDetailList) {
-					String detailLookupStatus = detailLookUp2(
-							historyDetails.getMgiReferenceNumber(),
-							historyDetails.getMgiTransactionSessionID());
-					
-//					if(detailLookupStatus.equals(TransactionStatus.))
-					
+					DetailLookupResponse detailLookupResponse 
+					= detailLookUpForBatchProcess(historyDetails
+							.getMgiTransactionSessionID());
+					String mgiReferenceNumber = detailLookupResponse
+							.getReferenceNumber();
+
+					if (mgiReferenceNumber != null) {
+						// Update history with reference number and status as
+						// 'REVERSED'
+						moneyGramPayPalDAO.updateHistoryDetailStatusReversed(
+								historyDetails.getMgiTransactionSessionID(),
+								mgiReferenceNumber);
+					} else {
+						// Update history TABLE mgi_status as 'REJECTED'
+						moneyGramPayPalDAO
+								.updateHistoryDetailStatusRejected(historyDetails
+										.getMgiTransactionSessionID());
+
+					}
 				}
 
 			} catch (Exception exception) {

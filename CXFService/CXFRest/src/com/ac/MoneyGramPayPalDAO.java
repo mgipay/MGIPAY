@@ -137,6 +137,8 @@ public class MoneyGramPayPalDAO {
 			Date transactionDate = resultSet.getDate(("TRAN_DATE"));
 			DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 			historyDetails.setTransactionDate(df.format(transactionDate));
+			historyDetails.setMgiTransactionSessionID(resultSet
+					.getString("MGI_SESS_ID"));
 			historyDetailsList.add(historyDetails);
 
 		}
@@ -270,4 +272,51 @@ public class MoneyGramPayPalDAO {
 		LOGGER.debug("Exit updateHistoryDetail.");
 	}
 
+	public void updateHistoryDetailStatusReversed(
+			String mgiTransactionSessionID, String mgiReferenceNumber)
+			throws ClassNotFoundException, SQLException {
+
+		LOGGER.debug("Enter updateHistoryDetailStatusReversed.");
+
+		Class.forName("oracle.jdbc.OracleDriver");
+		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+		Connection connection = DriverManager.getConnection(
+				constantFromProperties.getString("ORACLE_DB_URL"),
+				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
+				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
+
+		String strQuery = constantFromProperties
+				.getString("UPDATE_HISTORY_STAUS_REVERSED");
+		PreparedStatement preparedStatement = connection
+				.prepareStatement(strQuery);
+		preparedStatement.setString(1, mgiReferenceNumber);
+		preparedStatement.setString(2, mgiTransactionSessionID);
+		preparedStatement.executeUpdate();
+		connection.close();
+
+		LOGGER.debug("Exit updateHistoryDetailStatusReversed.");
+	}
+
+	public void updateHistoryDetailStatusRejected(String mgiTransactionSessionID)
+			throws ClassNotFoundException, SQLException {
+
+		LOGGER.debug("Enter updateHistoryDetailStatusRejected.");
+
+		Class.forName("oracle.jdbc.OracleDriver");
+		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+		Connection connection = DriverManager.getConnection(
+				constantFromProperties.getString("ORACLE_DB_URL"),
+				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
+				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
+
+		String strQuery = constantFromProperties
+				.getString("UPDATE_HISTORY_STAUS_REJECTED");
+		PreparedStatement preparedStatement = connection
+				.prepareStatement(strQuery);
+		preparedStatement.setString(1, mgiTransactionSessionID);
+		preparedStatement.executeUpdate();
+		connection.close();
+
+		LOGGER.debug("Exit updateHistoryDetailStatusRejected.");
+	}
 }

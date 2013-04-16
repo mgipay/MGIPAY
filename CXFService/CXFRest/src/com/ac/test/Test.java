@@ -2,6 +2,8 @@ package com.ac.test;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.List;
@@ -14,11 +16,18 @@ import com.google.gson.Gson;
 import com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client;
 import com.mgi.agentconnect.client.CodeTableRequest;
 import com.mgi.agentconnect.client.FeeLookupResponse;
+import com.mgi.paypal.inputbean.SendProofInputBean;
 
 public class Test {
 	private static Hashtable<String, String> stateAndCodeHashTable = new Hashtable<String, String>();
-	public static void main(String[] args) {
+	public static void main1(String[] args) {
 
+		List<String> list = new ArrayList<String>();
+		list.add("ba");
+		list.add("ab");
+		list.add("aa");
+		Collections.sort(list);
+		System.out.println(list);
 		
 //		java.sql.Date transactionDate = (java.sql.Date) Calendar.getInstance()
 //				.getTime();
@@ -103,6 +112,7 @@ public class Test {
 		}
 	}
 
+	
 	private static com.mgi.agentconnect.client.SendValidationResponse sendValidation(
 			Gson gson, FeeLookupResponse feeLookupResponse,
 			XMLGregorianCalendar xmlGregorianCalendar) throws Exception {
@@ -175,7 +185,35 @@ public class Test {
 		}
 		return xgcal;
 	}
-	public static void main4(String[] args) throws Exception {
+	public static void main(String[] args) throws Exception {
+		
+		SendProofInputBean sendProofInputBean = new SendProofInputBean();
+		sendProofInputBean.setCustomerEmail("ndubey@moneygram.com");
+		sendProofInputBean.setZipCode("01568");
+		System.out.println(new Gson().toJson(sendProofInputBean));
+		
+		
+		 System.setProperty("http.proxyHost", "proxy.tcs.com");
+		 System.setProperty("http.proxyPort", "8080");
+		 System.setProperty("http.proxyUser", "538540");
+		 System.setProperty("http.proxyPassword", "Bala@Apr84");
+		 com.mgi.agentconnect.client.CommitTransactionRequest commitTransactionRequest = new com.mgi.agentconnect.client.CommitTransactionRequest();
+		com.mgi.agentconnect.client.CommitTransactionResponse commitTransactionResponse = null;
+
+		commitTransactionRequest.setAgentID("30014943");
+		commitTransactionRequest.setAgentSequence("9");
+		commitTransactionRequest.setToken("TEST");
+		commitTransactionRequest.setTimeStamp(getTimeStamp());
+		commitTransactionRequest.setApiVersion("1211");
+		commitTransactionRequest.setClientSoftwareVersion("v1");
+		commitTransactionRequest
+				.setProductType(com.mgi.agentconnect.client.ProductType.SEND);
+		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
+		commitTransactionResponse = client
+				.commitTransaction(commitTransactionRequest);
+		System.out.println(new Gson().toJson(commitTransactionResponse));
+	}
+	public static void main3(String[] args) throws Exception {
 		 System.setProperty("http.proxyHost", "proxy.tcs.com");
 				 System.setProperty("http.proxyPort", "8080");
 				 System.setProperty("http.proxyUser", "538540");
@@ -185,7 +223,7 @@ public class Test {
 		codeTableRequest.setApiVersion("1211");
 		codeTableRequest
 				.setClientSoftwareVersion("v1");
-		codeTableRequest.setUnitProfileID(158178);
+		codeTableRequest.setUnitProfileID(157256);
 		codeTableRequest.setToken("TEST");
 		codeTableRequest.setAgentSequence("9");
 		codeTableRequest.setTimeStamp(getTimeStamp());
@@ -194,8 +232,9 @@ public class Test {
 		List<String> tempStateList = new ArrayList<String>();
 
 		List<String> stateAndCodeList = new ArrayList<String>();
+		
 		stateAndCodeList = client
-				.codeTable(codeTableRequest);
+				.codeTable(codeTableRequest);System.out.println(stateAndCodeList);
 		int index = 0;
 		for (index =0 ; index < stateAndCodeList.size(); index = index + 2) {
 			stateAndCodeHashTable.put(
@@ -233,4 +272,53 @@ public class Test {
 		
 		
 	}
+//	// TODO delete below method.
+//	@POST
+//	@Path("/detailLookUp")
+//	@Override
+//	public String detailLookUp(DetailLookupInputBean detailLookupInputBean) {
+//
+//		LOGGER.debug("Enter detailLookUp.");
+//
+//		DetailLookupRequest detailLookupRequest = new DetailLookupRequest();
+//
+//		detailLookupRequest.setAgentID(constantFromProperties
+//				.getString("AGENT_ID"));
+//		detailLookupRequest.setAgentSequence(constantFromProperties
+//				.getString("AGENT_SEQUENCE"));
+//		detailLookupRequest.setApiVersion(constantFromProperties
+//				.getString("API_VERSION"));
+//		detailLookupRequest.setClientSoftwareVersion(constantFromProperties
+//				.getString("CLIENT_SOFTWARE_VERSION"));
+//		detailLookupRequest.setIncludeUseData(false);
+//		detailLookupRequest.setLanguage(constantFromProperties
+//				.getString("LANGUAGE_CODE_ENGLISH"));
+//		detailLookupRequest.setReferenceNumber(detailLookupInputBean
+//				.getReferenceNumber());
+//
+//		detailLookupRequest.setTimeStamp(getTimeStamp());
+//
+//		detailLookupRequest.setToken(constantFromProperties.getString("TOKEN"));
+//		detailLookupRequest.setUnitProfileID(constantFromProperties
+//				.getInt("UNIT_PROFILE_ID"));
+//		DetailLookupResponse detailLookupResponse = null;
+//		try {
+//			AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
+//			detailLookupResponse = client
+//					.detailLookup(detailLookupRequest);
+//		} catch (Exception exception) {
+//			LOGGER.error("Detail Lookup Failed:" + exception);
+//			if (LOGGER.isDebugEnabled()) {
+//				LOGGER.debug("detailLookupRequest: "
+//						+ new Gson().toJson(detailLookupRequest));
+//			}
+//
+//			exception.printStackTrace();
+//		}
+//
+//		LOGGER.debug("Exit detailLookUp.");
+//
+//		return new Gson().toJson(detailLookupResponse);
+//	}
+
 }
