@@ -20,7 +20,7 @@ function callAddCashResponse()
 		var feeObj = new Object();
 		feeObj.fundsIn = "true";
 		var feeLinkObj = new Object();
-		feeLinkObj.feeLinkValueInputBean = feeObj;
+		feeLinkObj.FeeLinkValueInputBean = feeObj;
 		callService(methods.GetFeeLinkValue[0], methods.GetFeeLinkValue[1], feeLinkObj, addCashResponseSuccessHandler, addCashResponseFailureHandler);
 	}
 	else
@@ -63,7 +63,7 @@ function callWithdrawCashResponse()
 		var feeObj = new Object();
 		feeObj.fundsIn = "false";
 		var feeLinkObj = new Object();
-		feeLinkObj.feeLinkValueInputBean = feeObj;
+		feeLinkObj.FeeLinkValueInputBean = feeObj;
 		callService(methods.GetFeeLinkValue[0], methods.GetFeeLinkValue[1], feeLinkObj, withdrawResponseSuccessHandler, withdrawResponseFailureHandler);
 	}
 	else
