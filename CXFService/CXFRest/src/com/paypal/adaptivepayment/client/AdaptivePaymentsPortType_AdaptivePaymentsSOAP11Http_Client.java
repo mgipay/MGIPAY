@@ -109,6 +109,8 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 		String wsdlURL = constantFromProperties
 				.getString("ADAPTIVE_PAYMENTS_GET_USERLIMIT_URL");
 
+		System.out.println("get User Limit URL : " + wsdlURL);
+		
 		AdaptivePayments ss = new AdaptivePayments();
 		AdaptivePaymentsPortType port = ss.getAdaptivePaymentsSOAP11Http();
 		BindingProvider bd = (BindingProvider) port;
@@ -162,6 +164,15 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 				Collections.singletonList("APP-1JE4291016473214C"));
 		headers.put("X-PAYPAL-SECURITY-USERID", Collections
 				.singletonList("mgi_fundsout_test_api1.moneygram.com"));
+		
+		System.out.println("Header Values");
+		System.out.println("        ");
+		System.out.println(headers.get("X-PAYPAL-SECURITY-PASSWORD"));
+		System.out.println("        ");
+		System.out.println(headers.get("X-PAYPAL-APPLICATION-ID"));
+		System.out.println("        ");
+		System.out.println(headers.get("X-PAYPAL-SECURITY-USERID"));
+
 		// headers.put("X-PAYPAL-SECURITY-USERID", Collections
 		// .singletonList("yathi_1360057489_biz_api1.gmail.com"));
 		// headers.put(

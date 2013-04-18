@@ -28,10 +28,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client;
 import com.mgi.agentconnect.client.TransactionStatus;
 import com.mgi.paypal.inputbean.CommitTransactionInputBean;
 import com.mgi.paypal.util.HistoryDetails;
+import com.mgi.paypal.util.UserData;
 
 /**
  * @author TCS
@@ -43,6 +45,23 @@ public class MGI_PayPal_Test {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void test() throws FileNotFoundException, IOException {
+		
+		// "{\"FeeLookupInputBean\":{\"amount\":\"100\"}}";
+
+		String string4 = "{\"UserData\":" +
+//				"{\"address\":{\"postal_code\":\"07901\",\"locality\":\"Summ" +
+//				"it\",\"region\":\"NJ\",\"country\":\"US\",\"street_address\":\"4807384 5th" +
+//				" Street, 3272844 4th Street\"}," +
+				"{\"family_name\":\"Fundsout11\",\"verified\":\"true\",\"phone" +
+				"_number\":\"6023820578\",\"zoneinfo\":\"America/Los_Angeles\",\"name\":\"MGI F" +
+				"undsout11\",\"email\":\"testuser@moneygram.com\",\"given_name\":\"MGI\",\"user_id\":\"https://www.pa" +
+				"ypal.com/webapps/auth/identity/user/dCn3hbvb2NWbecoGgSGz41zZ5jGdcYvQAr3zmwEZxUo\"}}";
+		UserData userData =null;	try {
+		userData = (UserData) new Gson().fromJson(string4, UserData.class);
+		} catch (JsonSyntaxException exception){
+			exception.printStackTrace();
+		}
+		
 		
 		String string = "BALA";
 		String string2 = "MURALI";
@@ -252,21 +271,21 @@ public class MGI_PayPal_Test {
 			conn.setRequestMethod("POST");
 			conn.setRequestProperty("Content-Type", "application/json");
 			
-			CommitTransactionInputBean commitTransactionInputBean = new CommitTransactionInputBean();
-			commitTransactionInputBean.setCustomerEmail("vbalki@ebay.com");
-			commitTransactionInputBean.setCustomerName("VIJAY BALAKRISHNAN");
-//			commitTransactionInputBean.setCustomerPhoneNumber("6057100363");
-			commitTransactionInputBean
-					.setMgiTransactionSessionID("9708729E1572561364843019504");
-			commitTransactionInputBean.setPaypalTransactionID("58965687");
-			commitTransactionInputBean
-					.setTransactionAmount(new BigDecimal(100));
-			commitTransactionInputBean.setTransactionFee(new BigDecimal(12));
-//			commitTransactionInputBean.setTransactionStatus("PENDING");
-			
-
-//			Integer integer = 200050000;
-			LOGGER.debug(new Gson().toJson(commitTransactionInputBean));
+//			CommitTransactionInputBean commitTransactionInputBean = new CommitTransactionInputBean();
+//			commitTransactionInputBean.setCustomerEmail("vbalki@ebay.com");
+//			commitTransactionInputBean.setCustomerName("VIJAY BALAKRISHNAN");
+////			commitTransactionInputBean.setCustomerPhoneNumber("6057100363");
+//			commitTransactionInputBean
+//					.setMgiTransactionSessionID("9708729E1572561364843019504");
+//			commitTransactionInputBean.setPaypalTransactionID("58965687");
+//			commitTransactionInputBean
+//					.setTransactionAmount(new BigDecimal(100));
+//			commitTransactionInputBean.setTransactionFee(new BigDecimal(12));
+////			commitTransactionInputBean.setTransactionStatus("PENDING");
+//			
+//
+////			Integer integer = 200050000;
+//			LOGGER.debug(new Gson().toJson(commitTransactionInputBean));
 			
 			String inputJsonObject = "{\"CommitTransactionInputBean\":{\"mgiTransactionSessionID\":\""
 					+ "9708729E1572561364808310118" + "\"}}";
@@ -408,11 +427,15 @@ private void setCredentials(){
 	public void TestFeeLinkValue() { setCredentials();
 
 		try {
-			URL url = new URL("http://localhost:8080/CXFRest/rest/getFeeLinkValue");
+			URL url = new URL("http://localhost:8092/CXFRest/rest/getFeeLinkValue");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");
 			conn.setRequestProperty("Content-Type", "application/json");
+			String inputJsonObject = "{\"FeeLinkValueInputBean\":{\"fundsIn\":\"true\"}}";
+			OutputStream os = conn.getOutputStream();
+			os.write(inputJsonObject.getBytes());
+			os.flush();
 			Scanner scanner;
 			String response;
 			if (conn.getResponseCode() != 200) {

@@ -38,12 +38,8 @@ public interface ACInterface {
 
 	String getUserData(UserDataInputBean userDataInputBean);
 
-//	String detailLookUp(DetailLookupInputBean detailLookupInputBean);
-
-	String payToMoneyGram(String token);
-
 	String getFeeLinkValue(FeeLinkValueInputBean feeLinkValueInputBean);
 
-	String sendProofMessage(SendProofInputBean sendProofInputBean);
+//	String sendProofMessage(SendProofInputBean sendProofInputBean);
 
 }

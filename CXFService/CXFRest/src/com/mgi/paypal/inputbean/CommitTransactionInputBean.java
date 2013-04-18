@@ -23,6 +23,16 @@ public class CommitTransactionInputBean {
 	private String mgiReferenceNumber;
 	private String payPalTransactionStatus;
 
+	private String token;
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
 	public String getCustomerPhoneNumber() {
 		return customerPhoneNumber;
 	}

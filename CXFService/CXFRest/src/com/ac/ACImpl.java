@@ -2,7 +2,6 @@ package com.ac;
 
 import java.math.BigDecimal;
 import java.net.URLEncoder;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -22,10 +21,6 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.apache.axis2.AxisFault;
-import org.apache.axis2.client.Options;
-import org.apache.axis2.transport.http.HTTPConstants;
-import org.apache.axis2.transport.http.HttpTransportProperties;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
@@ -35,8 +30,6 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 
-import com.edialog.sdk.ws.SdkServiceStub;
-import com.edialog.sdk.ws.realtimemessaging.PropertyType;
 import com.google.gson.Gson;
 import com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client;
 import com.mgi.agentconnect.client.CodeTableRequest;
@@ -63,7 +56,6 @@ import com.mgi.paypal.inputbean.FeeLinkValueInputBean;
 import com.mgi.paypal.inputbean.FeeLookupInputBean;
 import com.mgi.paypal.inputbean.HistroyLookupInputBean;
 import com.mgi.paypal.inputbean.SendMailInputBean;
-import com.mgi.paypal.inputbean.SendProofInputBean;
 import com.mgi.paypal.inputbean.SendReversalInputBean;
 import com.mgi.paypal.inputbean.SendValidationInputBean;
 import com.mgi.paypal.inputbean.UserDataInputBean;
@@ -80,17 +72,19 @@ import com.paypal.adaptivepayment.client.AccountIdentifier;
 import com.paypal.adaptivepayment.client.AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client;
 import com.paypal.adaptivepayment.client.CurrencyType;
 import com.paypal.adaptivepayment.client.DetailLevelCode;
-import com.paypal.adaptivepayment.client.FundingConstraint;
-import com.paypal.adaptivepayment.client.FundingTypeInfo;
-import com.paypal.adaptivepayment.client.FundingTypeList;
 import com.paypal.adaptivepayment.client.GetUserLimitsRequest;
 import com.paypal.adaptivepayment.client.GetUserLimitsResponse;
-import com.paypal.adaptivepayment.client.PayRequest;
 import com.paypal.adaptivepayment.client.PayResponse;
 import com.paypal.adaptivepayment.client.PhoneNumberType;
-import com.paypal.adaptivepayment.client.Receiver;
-import com.paypal.adaptivepayment.client.ReceiverList;
 import com.paypal.adaptivepayment.client.RequestEnvelope;
+//import java.rmi.RemoteException;
+//import org.apache.axis2.AxisFault;
+//import org.apache.axis2.client.Options;
+//import org.apache.axis2.transport.http.HTTPConstants;
+//import org.apache.axis2.transport.http.HttpTransportProperties;
+//import com.edialog.sdk.ws.SdkServiceStub;
+//import com.edialog.sdk.ws.realtimemessaging.PropertyType;
+//import com.mgi.paypal.inputbean.SendProofInputBean;
 
 @Consumes("application/json")
 @Produces("application/JSON")
@@ -123,6 +117,7 @@ public class ACImpl implements ACInterface {
 	PropertiesConfiguration messageFromProperties = new PropertyUtil()
 			.getMessagePropertyConfig();
 
+	//TODO delete method.
 	private void setCredentials() {
 		// System.setProperty("http.proxyHost", "proxy.tcs.com");
 		// System.setProperty("http.proxyPort", "8080");
@@ -153,8 +148,8 @@ public class ACImpl implements ACInterface {
 		setCredentials();
 		FeeLookupRequest feeLookupRequest = null;
 		feeLookupRequest = createFeeLookupInput(feeLookupInputBean.getAmount(),
-				true);
-		com.mgi.paypal.response.FeeLookupResponse feeLookupResponseReturn = new com.mgi.paypal.response.FeeLookupResponse();
+				false);
+		com.mgi.paypal.response.FeeLookupResponse feeLookupResponseUI = new com.mgi.paypal.response.FeeLookupResponse();
 		FeeLookupResponse feeLookupResponse = null;
 		byte retryCount = 3;
 		while (retryCount >= 1) {
@@ -171,13 +166,13 @@ public class ACImpl implements ACInterface {
 							+ exception.getLocalizedMessage());
 					exception.printStackTrace();
 					LOGGER.debug("Maximum Number of Retries reached. FeeLookUp Response Failed.");
-					feeLookupResponseReturn
+					feeLookupResponseUI
 							.setErrorMessage(messageFromProperties
 									.getString("RETRY_IN_SOMETIME"));
 
-					feeLookupResponseReturn.setTransactionSuccess(false);
+					feeLookupResponseUI.setTransactionSuccess(false);
 
-					return new Gson().toJson(feeLookupResponseReturn);
+					return new Gson().toJson(feeLookupResponseUI);
 				}
 			}
 		}
@@ -186,42 +181,44 @@ public class ACImpl implements ACInterface {
 					.getTotalAmount();
 			if (totalAmount.compareTo(constantFromProperties
 					.getBigDecimal("TWO_HUNDRED_US_DOLLARS")) <= 0) {
-				feeLookupResponseReturn.setTransactionSuccess(true);
+				feeLookupResponseUI.setTransactionSuccess(true);
 
-				feeLookupResponseReturn
+				feeLookupResponseUI
 						.setMgiTransactionSessionID(feeLookupResponse
 								.getMgiTransactionSessionID());
 
-				feeLookupResponseReturn.setTotalAmount(totalAmount);
-				feeLookupResponseReturn.setFeeAmount(totalAmount
+				feeLookupResponseUI.setTotalAmount(totalAmount);
+				feeLookupResponseUI.setFeeAmount(totalAmount
 						.subtract(feeLookupInputBean.getAmount()));
+				
 			} else {
 				LOGGER.warn("Entered Amount above 200 dollars");
 				LOGGER.debug(messageFromProperties.getString("TEST"));
-				feeLookupResponseReturn
+				feeLookupResponseUI
 						.setErrorMessage(messageFromProperties
 								.getString("WITHDRAW_ERROR_MESSAGE1")
 								.concat(totalAmount
 										.toString()
 										.concat(messageFromProperties
 												.getString("WITHDRAW_ERROR_MESSAGE2"))));
-				feeLookupResponseReturn.setTransactionSuccess(false);
-				feeLookupResponseReturn.setTotalAmount(totalAmount);
-				feeLookupResponseReturn.setFeeAmount(totalAmount
+				feeLookupResponseUI.setTransactionSuccess(false);
+				feeLookupResponseUI.setTotalAmount(totalAmount);
+				feeLookupResponseUI.setFeeAmount(totalAmount
 						.subtract(feeLookupInputBean.getAmount()));
 			}
 
 		} else {
 
-			feeLookupResponseReturn.setErrorMessage(messageFromProperties
+			feeLookupResponseUI.setErrorMessage(messageFromProperties
 					.getString("RETRY_IN_SOMETIME"));
 
-			feeLookupResponseReturn.setTransactionSuccess(false);
+			feeLookupResponseUI.setTransactionSuccess(false);
 		}
 
+		
 		LOGGER.debug("Exit getFee.");
 
-		return new Gson().toJson(feeLookupResponseReturn);
+		return new Gson().toJson(feeLookupResponseUI);
 	}
 
 	/**
@@ -254,11 +251,12 @@ public class ACImpl implements ACInterface {
 		feeLookupRequest.setReceiveCountry(constantFromProperties
 				.getString("MGI_COUNTRY_CODE_USA"));
 		if (fundsIn) {
-			feeLookupRequest.setDeliveryOption(constantFromProperties
-					.getString("DELIVER_OPTION_WILL_CALL"));
-		} else {
+			
 			feeLookupRequest.setDeliveryOption(constantFromProperties
 					.getString("DELIVER_OPTION_BANK_DEPOSIT"));
+		} else {
+			feeLookupRequest.setDeliveryOption(constantFromProperties
+					.getString("DELIVER_OPTION_WILL_CALL"));
 		}
 		feeLookupRequest.setReceiveCurrency(constantFromProperties
 				.getString("CURRENCY_CODE_USA"));
@@ -343,9 +341,6 @@ public class ACImpl implements ACInterface {
 			 .retrieveHistroyDetails(histroyLookupInputBean
 			 .getCustomerEmailId());
 			 
-			// TODO
-//			historyDetailsList = moneyGramPayPalDAO
-//					.retrieveHistroyDetails("vbalki@ebay.com");
 			for (HistoryDetails historyDetails : historyDetailsList) {
 				// checking status is 'received' or not in history table
 				if (!historyDetails.getTransactionStatus().equals(
@@ -483,9 +478,6 @@ public class ACImpl implements ACInterface {
 
 		LOGGER.debug("Enter getFeeLinkValue.");
 
-		//TODO 
-		LOGGER.debug(feeLinkValueInputBean.isFundsIn());
-		
 		setCredentials();
 		int yesterday = 7;
 		FeeLinkValues feeLinkValues = new FeeLinkValues();
@@ -607,6 +599,7 @@ public class ACImpl implements ACInterface {
 				+ FEE_FOR_FIVE_HUNDRED_FUNDS_IN.toString() + "  "
 				+ FEE_FOR_TWO_HUNDRED_FUNDS_OUT.toString() + "  "
 							+ FEE_FOR_FIVE_HUNDRED_FUNDS_OUT.toString());
+		
 		LOGGER.debug("Exit getFeeLinkValue.");
 
 		return new Gson().toJson(feeLinkValues);
@@ -705,6 +698,7 @@ public class ACImpl implements ACInterface {
 		return STATES_IN_USA;
 	}
 
+	
 	/**
 	 * commitTransaction. This method will call commitTransaction API and it
 	 * will generate referenceNumber for the transaction.After committing the
@@ -743,8 +737,9 @@ public class ACImpl implements ACInterface {
 				.setMgiTransactionSessionID(commitTransactionInputBean
 						.getMgiTransactionSessionID().trim());
 		commitTransactionRequest.setProductType(ProductType.SEND);
-		com.mgi.paypal.response.CommitTransactionResponse commitTransactionResponseForReturn 
+		com.mgi.paypal.response.CommitTransactionResponse commitTransactionResponseForUI 
 		= new com.mgi.paypal.response.CommitTransactionResponse();
+		MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
 		byte retryCount = 3;
 		while (retryCount >= 1) {
 			try {
@@ -760,31 +755,33 @@ public class ACImpl implements ACInterface {
 					exception.printStackTrace();
 					LOGGER.debug("Max number of retries reached. Commit Trasaction Failed.");
 
-					commitTransactionResponseForReturn
+					commitTransactionResponseForUI
 							.setErrorMessage(messageFromProperties
 									.getString("TRANSACTION_FAILED_RETRY"));
-					commitTransactionResponseForReturn
+					commitTransactionResponseForUI
 							.setTransactionSuccess(false);
 					commitTransactionInputBean
-							.setMgiReferenceNumber("00000000");
+							.setMgiReferenceNumber("");
 					commitTransactionInputBean
 							.setMgiTransactionStatus(TransactionStatus.FAILED
 									.value());
 					commitTransactionInputBean
-							.setPayPalTransactionStatus("Payapal_Collected");
+							.setPayPalTransactionStatus("PayPal_Not_Collected");
 					insertToHistory(commitTransactionInputBean);
 
 					LOGGER.debug("Exit commitTransaction.");
 
 					return new Gson()
-							.toJson(commitTransactionResponseForReturn);
+							.toJson(commitTransactionResponseForUI);
 				}
 			}
 
 		}
 		if (commitTransactionResponse != null) {
-			commitTransactionResponseForReturn.setTransactionSuccess(true);
-			commitTransactionResponseForReturn
+			// Commit Transaction success
+
+			commitTransactionResponseForUI.setTransactionSuccess(true);
+			commitTransactionResponseForUI
 					.setReferenceNumber(commitTransactionResponse
 							.getReferenceNumber());
 			commitTransactionInputBean
@@ -792,28 +789,55 @@ public class ACImpl implements ACInterface {
 							.getReferenceNumber());
 			commitTransactionInputBean
 					.setMgiTransactionStatus(TransactionStatus.AVAIL.value());
-			commitTransactionInputBean
-					.setPayPalTransactionStatus("Payapal_Collected");
+			commitTransactionInputBean.setPayPalTransactionStatus("PayPal_Not_Collected");
+			commitTransactionInputBean.setPaypalTransactionID("");
 
 			LOGGER.debug(commitTransactionInputBean.getCustomerEmail());
 
 			insertToHistory(commitTransactionInputBean);
 
+			// payToMoneyGram("",
+			// commitTransactionInputBean.getCustomerEmail());
+			PayPalBO payPalBO = new PayPalBO();
+			try {
+				PayResponse payResponse = payPalBO.payToMoneyGram(
+						commitTransactionInputBean.getToken(),
+						commitTransactionInputBean.getCustomerEmail());
+
+				if (payResponse != null) {
+					// update history table with
+					// setPayPalTransactionStatus,setPaypalTransactionID
+
+					moneyGramPayPalDAO
+							.updateHistoryDetailAfterCommitTransaction(
+									"Paypal_Collected", payResponse.getPayKey(),
+									commitTransactionInputBean.getMgiTransactionSessionID());
+
+				} 
+
+			} catch (Exception exception) {
+				commitTransactionResponseForUI
+						.setErrorMessage(messageFromProperties
+								.getString("TRANSACTION_FAILED_RETRY"));
+				commitTransactionResponseForUI.setTransactionSuccess(false);
+			}
+
 		} else {
-			commitTransactionResponseForReturn
+			commitTransactionResponseForUI
 					.setErrorMessage(messageFromProperties
 							.getString("TRANSACTION_FAILED_RETRY"));
-			commitTransactionResponseForReturn.setTransactionSuccess(false);
-			commitTransactionInputBean.setMgiReferenceNumber("00000000");
+			commitTransactionResponseForUI.setTransactionSuccess(false);
+			commitTransactionInputBean.setMgiReferenceNumber("");
 			commitTransactionInputBean
 					.setMgiTransactionStatus(TransactionStatus.FAILED.value());
 			commitTransactionInputBean
-					.setPayPalTransactionStatus("Payapal_Collected");
+					.setPayPalTransactionStatus("PayPal_Not_Collected");
 			insertToHistory(commitTransactionInputBean);
+			commitTransactionInputBean.setPaypalTransactionID("");
 		}
 		LOGGER.debug("Exit commitTransaction.");
 
-		return new Gson().toJson(commitTransactionResponseForReturn);
+		return new Gson().toJson(commitTransactionResponseForUI);
 	}
 
 	private void insertToHistory(
@@ -964,7 +988,7 @@ public class ACImpl implements ACInterface {
 		sendValidationRequest.setAgentUseSendData(sendValidationInputBean
 				.getSenderEmail());
 
-		com.mgi.paypal.response.SendValidationResponse sendValidationResponseForReturn 
+		com.mgi.paypal.response.SendValidationResponse sendValidationResponseForUI 
 		= new com.mgi.paypal.response.SendValidationResponse();
 		byte retryCount = 3;
 		while (retryCount >= 1) {
@@ -979,9 +1003,9 @@ public class ACImpl implements ACInterface {
 					LOGGER.debug("SendValidation Request: "
 							+ new Gson().toJson(sendValidationRequest));
 					exception.printStackTrace();
-					sendValidationResponseForReturn
+					sendValidationResponseForUI
 							.setTransactionSuccess(false);
-					sendValidationResponseForReturn
+					sendValidationResponseForUI
 							.setErrorMessage(messageFromProperties
 									.getString("TRANSACTION_FAILED_RETRY"));
 					return new Gson().toJson(sendValidationResponse);
@@ -990,21 +1014,21 @@ public class ACImpl implements ACInterface {
 		}
 		if (sendValidationResponse != null) {
 
-			sendValidationResponseForReturn
+			sendValidationResponseForUI
 					.setMgiTransactionSessionID(sendValidationResponse
 							.getMgiTransactionSessionID());
-			sendValidationResponseForReturn.setTransactionSuccess(true);
+			sendValidationResponseForUI.setTransactionSuccess(true);
 
 		} else {
-			sendValidationResponseForReturn.setTransactionSuccess(false);
-			sendValidationResponseForReturn
+			sendValidationResponseForUI.setTransactionSuccess(false);
+			sendValidationResponseForUI
 					.setErrorMessage(messageFromProperties
 							.getString("TRANSACTION_FAILED_RETRY"));
 		}
 
 		LOGGER.debug("Exit sendValidation.");
 
-		return new Gson().toJson(sendValidationResponseForReturn);
+		return new Gson().toJson(sendValidationResponseForUI);
 	}
 
 	private void setSenderName(
@@ -1056,10 +1080,10 @@ public class ACImpl implements ACInterface {
 		phoneNumberType.setPhoneNumber("6057100363");
 
 		AccountIdentifier accountIdentifier = new AccountIdentifier();
-		LOGGER.debug(userLimitInputBean.getEmailID());
-		// TODO
-		accountIdentifier.setEmail(userLimitInputBean.getEmailID());
-		// accountIdentifier.setEmail("paypalmoneygram@gmail.com");
+		LOGGER.debug("from ui " + userLimitInputBean.getEmailID());
+		// TODO MODIFY BELOW LINE.
+		 accountIdentifier.setEmail(constantFromProperties
+					.getString("GET_USER_LIMIT_EMAIL_ID"));
 		accountIdentifier.setPhone(phoneNumberType);
 
 		RequestEnvelope requestEnvelope = new RequestEnvelope();
@@ -1079,13 +1103,14 @@ public class ACImpl implements ACInterface {
 		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
 		Gson gson = new Gson();
 
-		com.mgi.paypal.response.GetUserLimitsResponse getUserLimitsResponseForReturn 
+		com.mgi.paypal.response.GetUserLimitsResponse getUserLimitsResponseForUI 
 		= new com.mgi.paypal.response.GetUserLimitsResponse();
 		byte retryCount = 3;
 		while (retryCount >= 1) {
 			try {
 				AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client client 
 				= new AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client();
+				LOGGER.debug("getUserLimitsRequest : " + gson.toJson(getUserLimitsRequest));
 				getUserLimitsResponse = client
 						.getUserLimit(getUserLimitsRequest);
 				break;
@@ -1095,8 +1120,8 @@ public class ACImpl implements ACInterface {
 				if (retryCount == 0) {
 					exception.printStackTrace();
 					LOGGER.debug("Max number of retries for GetUserLimits reached. Call Failed.");
-					getUserLimitsResponseForReturn.setTransactionSuccess(false);
-					getUserLimitsResponseForReturn
+					getUserLimitsResponseForUI.setTransactionSuccess(false);
+					getUserLimitsResponseForUI
 							.setErrorMessage(messageFromProperties
 									.getString("SESSION_EXPIRED"));
 
@@ -1108,9 +1133,9 @@ public class ACImpl implements ACInterface {
 		if (getUserLimitsResponse != null
 				&& getUserLimitsResponse.getUserLimit() != null
 				&& !getUserLimitsResponse.getUserLimit().isEmpty()) {
-			getUserLimitsResponseForReturn.setTransactionSuccess(true);
+			getUserLimitsResponseForUI.setTransactionSuccess(true);
 
-			getUserLimitsResponseForReturn
+			getUserLimitsResponseForUI
 					.setCurrencyType(getUserLimitsResponse.getUserLimit()
 							.get(0).getLimitAmount());
 
@@ -1119,15 +1144,15 @@ public class ACImpl implements ACInterface {
 			CurrencyType currencyType = new CurrencyType();
 			currencyType.setAmount(new BigDecimal(0));
 			currencyType.setCode("Invalid Code");
-			getUserLimitsResponseForReturn.setCurrencyType(currencyType);
-			getUserLimitsResponseForReturn.setTransactionSuccess(false);
-			getUserLimitsResponseForReturn
+			getUserLimitsResponseForUI.setCurrencyType(currencyType);
+			getUserLimitsResponseForUI.setTransactionSuccess(false);
+			getUserLimitsResponseForUI
 			.setErrorMessage(messageFromProperties
 					.getString("SESSION_EXPIRED"));
 		}
 		LOGGER.debug("Exit getUserLimits.");
 
-		return gson.toJson(getUserLimitsResponseForReturn);
+		return gson.toJson(getUserLimitsResponseForUI);
 	}
 
 	@POST
@@ -1138,8 +1163,11 @@ public class ACImpl implements ACInterface {
 		LOGGER.debug("Enter getUserData.");
 
 		String token = createToken(userDataInputBean.getCode());
-		String userData = getUserData(token);
+		String userData = processToken(token);
 
+//		userData.concat("{ token");
+		
+		
 		LOGGER.debug("Exit getUserData.");
 
 		return userData;
@@ -1166,11 +1194,14 @@ public class ACImpl implements ACInterface {
 			postMethod.addParameter("grant_type", "authorization_code");
 			postMethod.addParameter("scope", ScopeValue);
 			postMethod.addParameter("code", codeValue);
-
-			int statusCode = client.executeMethod(postMethod);
-
+			LOGGER.debug(codeValue);
+			int statusCode = client.executeMethod(postMethod);	
+			// TODO 
+			LOGGER.debug(statusCode);
 			if (statusCode != HttpStatus.SC_NOT_IMPLEMENTED) {
 				String string = postMethod.getResponseBodyAsString();
+				// TODO 
+				LOGGER.debug(string);
 				accessToken = (AccessToken) new Gson().fromJson(string,
 						AccessToken.class);
 			}
@@ -1185,9 +1216,11 @@ public class ACImpl implements ACInterface {
 		return accessToken.getAccess_token();
 	}
 
-	private String getUserData(String tokenData) {
+	private String processToken(String tokenData) {
 		
-		LOGGER.debug("Enter getUserData");
+		LOGGER.debug("Enter processToken");
+		
+		LOGGER.debug(tokenData);
 		
 		String responseBody = null;
 		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
@@ -1211,63 +1244,12 @@ public class ACImpl implements ACInterface {
 			e.printStackTrace();
 		}
 		
-		LOGGER.debug("Exit getUserData");
+		LOGGER.debug("Exit processToken");
 
 		return responseBody;
 	}
 
-	@POST
-	@Path("/payToMoneyGram")
-	@Override
-	public String payToMoneyGram(String token) {
-
-		LOGGER.debug("Enter getUserLimits.");
-
-		RequestEnvelope requestEnvelopee = new RequestEnvelope();
-		requestEnvelopee.setDetailLevel(DetailLevelCode.RETURN_ALL);
-		requestEnvelopee.setErrorLanguage("error_US");
-		PayRequest payRequest = new PayRequest();
-
-		Receiver receiver = new Receiver();
-		receiver.setAmount(new BigDecimal(2));
-		// receiver.setEmail("lsoni@moneygram.com");
-		receiver.setEmail("mgi_fundsout_test@moneygram.com");
-		receiver.setPaymentType("WITHDRAWAL");
-		ReceiverList receiverList = new ReceiverList();
-		receiverList.getReceiver().add(receiver);
-		payRequest.setActionType("PAY");
-		payRequest.setCurrencyCode("USD");
-		payRequest.setRequestEnvelope(requestEnvelopee);
-		payRequest.setReturnUrl("https://noop");
-		payRequest.setReceiverList(receiverList);
-		payRequest.setCancelUrl("https://noop");
-		payRequest.setFeesPayer("NOFEE");
-		// mgi_fundsout_test@moneygram.com
-		payRequest.setSenderEmail("mgi_consumer_test@moneygram.com");
-		FundingTypeInfo ff = new FundingTypeInfo();
-		ff.setFundingType("BALANCE");
-		FundingTypeList ftl = new FundingTypeList();
-		ftl.getFundingTypeInfo().add(ff);
-		FundingConstraint fundingConstraint = new FundingConstraint();
-		fundingConstraint.setAllowedFundingType(ftl);
-		payRequest.setFundingConstraint(fundingConstraint);
-		PayResponse payResponse = new PayResponse();
-		Gson gson = new Gson();
-		try {
-			AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client client 
-			= new AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client();
-			payResponse = client.getPay(payRequest, token);
-			System.out.println("Response from serverrr:"
-					+ payResponse.getPaymentExecStatus().toString());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		LOGGER.debug("Exit getUserLimits.");
-
-		return gson.toJson(payResponse);
-	}
+	
 
 	@POST
 	@Path("/sendmail")
@@ -1342,61 +1324,61 @@ public class ACImpl implements ACInterface {
 	}
 	
 	
-	@POST
-	@Path("/sendProofMessage")
-	@Override
-	public String sendProofMessage(SendProofInputBean sendProofInputBean) {
-
-//		private static final String DEFAULT_URL = "https://sdk-staging.e-dialog.com/edialog-webservices";
-//		private static final String DEFAULT_URL = "https://sdk.e-dialog.com/edialog-webservices";
-		SdkServiceStub service = null;
-		try {
-			service = setUpServiceConn("https://sdk-staging.e-dialog.com/edialog-webservices");
-		} catch (AxisFault af) {
-			System.out.println(af.getMessage());
-		}
-		
-		PropertyType[] messageProperties = new PropertyType[2];
-
-		messageProperties[0] = new PropertyType();
-		messageProperties[0].setName("EMAIL");
-		messageProperties[0].setValue(sendProofInputBean.getCustomerEmail());
-
-		messageProperties[1] = new PropertyType();
-		messageProperties[1].setName("TEMPZIP");
-		messageProperties[1].setValue(sendProofInputBean.getZipCode());
-		
-		String[] emaiMail = {sendProofInputBean.getCustomerEmail()};
-		/* send proofs */
-		String Response = null;
-		try {
-			Response = service.sendProofMessage("EXAMPLETRIGGER", emaiMail, messageProperties);
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println("Response "+Response );
-		return new Gson().toJson(Response);
-	}
-	
-	private static SdkServiceStub setUpServiceConn(String webServicesURL)
-			throws AxisFault {
-
-		// Set up service for the client to use.
-		SdkServiceStub service = new SdkServiceStub(webServicesURL);
-
-		HttpTransportProperties.Authenticator authenticator = new HttpTransportProperties.Authenticator();
-		// Configure authentication.
-		authenticator.setUsername("moneygramws");
-		authenticator.setPassword("WQiyP1c0X");
-		authenticator.setPreemptiveAuthentication(true);
-
-		Options options = service._getServiceClient().getOptions();
-		options.setProperty(HTTPConstants.AUTHENTICATE, authenticator);
-		options.setTimeOutInMilliSeconds(2 * 60L * 1000);
-
-		return service;
-	}
+//	@POST
+//	@Path("/sendProofMessage")
+//	@Override
+//	public String sendProofMessage(SendProofInputBean sendProofInputBean) {
+//
+////		private static final String DEFAULT_URL = "https://sdk-staging.e-dialog.com/edialog-webservices";
+////		private static final String DEFAULT_URL = "https://sdk.e-dialog.com/edialog-webservices";
+//		SdkServiceStub service = null;
+//		try {
+//			service = setUpServiceConn("https://sdk-staging.e-dialog.com/edialog-webservices");
+//		} catch (AxisFault af) {
+//			System.out.println(af.getMessage());
+//		}
+//		
+//		PropertyType[] messageProperties = new PropertyType[2];
+//
+//		messageProperties[0] = new PropertyType();
+//		messageProperties[0].setName("EMAIL");
+//		messageProperties[0].setValue(sendProofInputBean.getCustomerEmail());
+//
+//		messageProperties[1] = new PropertyType();
+//		messageProperties[1].setName("TEMPZIP");
+//		messageProperties[1].setValue(sendProofInputBean.getZipCode());
+//		
+//		String[] emaiMail = {sendProofInputBean.getCustomerEmail()};
+//		/* send proofs */
+//		String Response = null;
+//		try {
+//			Response = service.sendProofMessage("EXAMPLETRIGGER", emaiMail, messageProperties);
+//		} catch (RemoteException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		System.out.println("Response "+Response );
+//		return new Gson().toJson(Response);
+//	}
+//	
+//	private static SdkServiceStub setUpServiceConn(String webServicesURL)
+//			throws AxisFault {
+//
+//		// Set up service for the client to use.
+//		SdkServiceStub service = new SdkServiceStub(webServicesURL);
+//
+//		HttpTransportProperties.Authenticator authenticator = new HttpTransportProperties.Authenticator();
+//		// Configure authentication.
+//		authenticator.setUsername("moneygramws");
+//		authenticator.setPassword("WQiyP1c0X");
+//		authenticator.setPreemptiveAuthentication(true);
+//
+//		Options options = service._getServiceClient().getOptions();
+//		options.setProperty(HTTPConstants.AUTHENTICATE, authenticator);
+//		options.setTimeOutInMilliSeconds(2 * 60L * 1000);
+//
+//		return service;
+//	}
 	
 	
 	
