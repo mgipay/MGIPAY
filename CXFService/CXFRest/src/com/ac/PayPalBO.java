@@ -1,13 +1,24 @@
 package com.ac;
 
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.mgi.paypal.inputbean.UserDataInputBean;
 import com.mgi.paypal.inputbean.UserLimitInputBean;
+import com.mgi.paypal.util.AccessToken;
 import com.mgi.paypal.util.PropertyUtil;
+import com.mgi.paypal.util.UserData;
 import com.paypal.adaptivepayment.client.AccountIdentifier;
 import com.paypal.adaptivepayment.client.AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client;
 import com.paypal.adaptivepayment.client.CurrencyType;
@@ -28,13 +39,14 @@ public class PayPalBO {
 
 	public PayPalBO() {
 	}
+
 	PropertiesConfiguration constantFromProperties = new PropertyUtil()
-	.getConstantPropertyConfig();
+			.getConstantPropertyConfig();
 	PropertiesConfiguration messageFromProperties = new PropertyUtil()
-	.getMessagePropertyConfig();
+			.getMessagePropertyConfig();
 	private static Logger LOGGER = Logger.getLogger(PayPalBO.class);
 
-	public  PayResponse payToMoneyGram(String token, String cutomerEmail)
+	public PayResponse payToMoneyGram(String token, String cutomerEmail)
 			throws Exception {
 
 		LOGGER.debug("Enter payToMoneyGram.");
@@ -69,9 +81,8 @@ public class PayPalBO {
 		payRequest.setFundingConstraint(fundingConstraint);
 		PayResponse payResponse = new PayResponse();
 
-		AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client client 
-		= new AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client();
-		
+		AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client client = new AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client();
+
 		payResponse = client.getPay(payRequest, token);
 		System.out.println("Response from serverrr:"
 				+ payResponse.getPaymentExecStatus().toString());
@@ -80,7 +91,8 @@ public class PayPalBO {
 
 		return payResponse;
 	}
-	private  String getUserLimits(UserLimitInputBean userLimitInputBean){
+
+	public String getUserLimits(UserLimitInputBean userLimitInputBean) {
 
 		LOGGER.debug("Enter getUserLimits.");
 
@@ -92,8 +104,8 @@ public class PayPalBO {
 		AccountIdentifier accountIdentifier = new AccountIdentifier();
 		LOGGER.debug("from ui " + userLimitInputBean.getEmailID());
 		// TODO MODIFY BELOW LINE.
-		 accountIdentifier.setEmail(constantFromProperties
-					.getString("GET_USER_LIMIT_EMAIL_ID"));
+		accountIdentifier.setEmail(constantFromProperties
+				.getString("GET_USER_LIMIT_EMAIL_ID"));
 		accountIdentifier.setPhone(phoneNumberType);
 
 		RequestEnvelope requestEnvelope = new RequestEnvelope();
@@ -113,13 +125,11 @@ public class PayPalBO {
 		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
 		Gson gson = new Gson();
 
-		com.mgi.paypal.response.GetUserLimitsResponse getUserLimitsResponseForReturn 
-		= new com.mgi.paypal.response.GetUserLimitsResponse();
+		com.mgi.paypal.response.GetUserLimitsResponse getUserLimitsResponseForReturn = new com.mgi.paypal.response.GetUserLimitsResponse();
 		byte retryCount = 3;
 		while (retryCount >= 1) {
 			try {
-				AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client client 
-				= new AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client();
+				AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client client = new AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client();
 				getUserLimitsResponse = client
 						.getUserLimit(getUserLimitsRequest);
 				break;
@@ -156,11 +166,112 @@ public class PayPalBO {
 			getUserLimitsResponseForReturn.setCurrencyType(currencyType);
 			getUserLimitsResponseForReturn.setTransactionSuccess(false);
 			getUserLimitsResponseForReturn
-			.setErrorMessage(messageFromProperties
-					.getString("SESSION_EXPIRED"));
+					.setErrorMessage(messageFromProperties
+							.getString("SESSION_EXPIRED"));
 		}
 		LOGGER.debug("Exit getUserLimits.");
 
 		return gson.toJson(getUserLimitsResponseForReturn);
+	}
+	
+	private String createToken(String codeValue) {
+
+		LOGGER.debug("Enter Create Token");
+
+		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
+				+ "/v1/tokenservice";
+		AccessToken accessToken = new AccessToken();
+		try {
+			HttpClient client = new HttpClient();
+			PostMethod postMethod = new PostMethod(uri);
+			String myQuery = "profile https://uri.paypal.com/services/AdaptivePaymentsPayAPI openid";
+			String ScopeValue = URLEncoder.encode(myQuery, "ISO-8859-1")
+					.toString();
+			postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+					new DefaultHttpMethodRetryHandler(3, false));
+			postMethod
+					.addRequestHeader("Authorization",
+							"Basic bWdpX2Z1bmRzX291dC5tb25leWdyYW0uY29tOlNTQVJXTEJRUkxGTURMSEg=");
+			postMethod.addParameter("grant_type", "authorization_code");
+			postMethod.addParameter("scope", ScopeValue);
+			postMethod.addParameter("code", codeValue);
+			LOGGER.debug(codeValue);
+			int statusCode = client.executeMethod(postMethod);	
+			// TODO 
+			LOGGER.debug(statusCode);
+			if (statusCode != HttpStatus.SC_NOT_IMPLEMENTED) {
+				String string = postMethod.getResponseBodyAsString();
+				// TODO 
+				LOGGER.debug(string);
+				accessToken = (AccessToken) new Gson().fromJson(string,
+						AccessToken.class);
+			}
+
+		} catch (Exception e) {
+			LOGGER.error(e, e);
+			e.printStackTrace();
+		}
+		
+		LOGGER.debug("Exit Create Token");
+		
+		return accessToken.getAccess_token();
+	}
+
+	private String processToken(String tokenData) {
+		
+		LOGGER.debug("Enter processToken");
+		
+		LOGGER.debug(tokenData);
+		
+		String responseBody = null;
+		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
+				+ "/v1/userinfo?schema=openid";
+
+		try {
+			HttpClient client = new HttpClient();
+			GetMethod method2 = new GetMethod(uri);
+			method2.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+					new DefaultHttpMethodRetryHandler(3, false));
+			method2.addRequestHeader("Authorization",
+					"Bearer ".concat(tokenData));
+			int statusCode = client.executeMethod(method2);
+
+			if (statusCode != HttpStatus.SC_NOT_IMPLEMENTED) {
+				responseBody = method2.getResponseBodyAsString();
+			}
+
+		} catch (Exception e) {
+			LOGGER.error(e, e);
+			e.printStackTrace();
+		}
+		
+		LOGGER.debug("Exit processToken");
+
+		return responseBody;
+	}
+	public String getUserData(UserDataInputBean userDataInputBean) {
+
+		LOGGER.debug("Enter getUserData.");
+
+		String token = createToken(userDataInputBean.getCode());
+		String userDataString = processToken(token);
+
+		UserData userData = new UserData();
+		Gson gson = new Gson();
+		try {
+			userData = (UserData) gson.fromJson(userDataString, UserData.class);
+		} catch (JsonSyntaxException jsonSyntaxException) {
+			jsonSyntaxException.printStackTrace();
+			LOGGER.error(jsonSyntaxException.getLocalizedMessage());
+			userData.setTransactionSuccess(false);
+			userData.setErrorMessage(messageFromProperties
+					.getString("RETRY_IN_SOMETIME"));
+			return gson.toJson(userData);
+		}
+		userData.setToken(token);
+		
+		LOGGER.debug("Exit getUserData.");
+
+		return gson.toJson(userData);
 	}
 }

@@ -1,7 +1,9 @@
 package com.ac.test;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.GregorianCalendar;
@@ -17,6 +19,7 @@ import com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client;
 import com.mgi.agentconnect.client.CodeTableRequest;
 import com.mgi.agentconnect.client.FeeLookupResponse;
 import com.mgi.paypal.inputbean.SendProofInputBean;
+import com.mgi.paypal.inputbean.TransactionInformationMailInputBean;
 
 public class Test {
 	private static Hashtable<String, String> stateAndCodeHashTable = new Hashtable<String, String>();
@@ -187,6 +190,31 @@ public class Test {
 	}
 	public static void main(String[] args) throws Exception {
 		
+		
+		
+		
+		TransactionInformationMailInputBean bean = new TransactionInformationMailInputBean();
+		bean.setCustomerEmail("TestAccmgipay@gmail.com");
+		bean.setTransactionAmount("100");
+		bean.setReferenceNumber("56987458");
+		System.out.println(new Gson().toJson(bean));
+		
+		
+
+
+		String strdate = null;
+
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+
+		strdate = sdf.format(Calendar.getInstance().getTime());
+
+		System.out.println(strdate);
+		
+		
+		
+		
+		
+		
 		SendProofInputBean sendProofInputBean = new SendProofInputBean();
 		sendProofInputBean.setCustomerEmail("ndubey@moneygram.com");
 		sendProofInputBean.setZipCode("01568");
@@ -234,7 +262,7 @@ public class Test {
 		List<String> stateAndCodeList = new ArrayList<String>();
 		
 		stateAndCodeList = client
-				.codeTable(codeTableRequest);System.out.println(stateAndCodeList);
+				.codeTable(codeTableRequest,"USA");System.out.println(stateAndCodeList);
 		int index = 0;
 		for (index =0 ; index < stateAndCodeList.size(); index = index + 2) {
 			stateAndCodeHashTable.put(

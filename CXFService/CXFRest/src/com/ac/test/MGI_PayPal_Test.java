@@ -48,17 +48,23 @@ public class MGI_PayPal_Test {
 		
 		// "{\"FeeLookupInputBean\":{\"amount\":\"100\"}}";
 
-		String string4 = "{\"UserData\":" +
-//				"{\"address\":{\"postal_code\":\"07901\",\"locality\":\"Summ" +
-//				"it\",\"region\":\"NJ\",\"country\":\"US\",\"street_address\":\"4807384 5th" +
-//				" Street, 3272844 4th Street\"}," +
-				"{\"family_name\":\"Fundsout11\",\"verified\":\"true\",\"phone" +
+		String string4 = 
+				"{\"address\":{\"postal_code\":\"07901\",\"locality\":\"Summ" +
+				"it\",\"region\":\"NJ\",\"country\":\"US\",\"street_address\":\"4807384 5th" +
+				" Street, 3272844 4th Street\"}," +
+				"\"family_name\":\"Fundsout11\",\"verified\":\"true\",\"phone" +
 				"_number\":\"6023820578\",\"zoneinfo\":\"America/Los_Angeles\",\"name\":\"MGI F" +
-				"undsout11\",\"email\":\"testuser@moneygram.com\",\"given_name\":\"MGI\",\"user_id\":\"https://www.pa" +
-				"ypal.com/webapps/auth/identity/user/dCn3hbvb2NWbecoGgSGz41zZ5jGdcYvQAr3zmwEZxUo\"}}";
-		UserData userData =null;	try {
-		userData = (UserData) new Gson().fromJson(string4, UserData.class);
-		} catch (JsonSyntaxException exception){
+ "undsout11\",\"email\":\"testuser@moneygram.com\",\"given_name\":\"MGI\",\"user_id\":\"https://www.pa"
+				+ "ypal.com/webapps/auth/identity/user/dCn3hbvb2NWbecoGgSGz41zZ5jGdcYvQAr3zmwEZxUo\"}";
+//		String string4 =/* "{\"UserData\":" +*/
+//				"{\"family_name\":\"Fundsout11\",\"verified\":\"true\",\"phone" +
+//				"_number\":\"6023820578\",\"zoneinfo\":\"America/Los_Angeles\",\"name\":\"MGI F" +
+// "undsout11\",\"email\":\"testuser@moneygram.com\",\"given_name\":\"MGI\",\"user_id\":\"https://www.pa"
+//				+ "ypal.com/webapps/auth/identity/user/dCn3hbvb2NWbecoGgSGz41zZ5jGdcYvQAr3zmwEZxUo\"}";
+		UserData userData = new UserData();
+		try {
+			userData = (UserData) new Gson().fromJson(string4, UserData.class);
+		} catch (JsonSyntaxException exception) {
 			exception.printStackTrace();
 		}
 		

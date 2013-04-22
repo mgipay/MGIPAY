@@ -17,10 +17,9 @@ public class PropertyUtil {
 		try {
 			constant = new PropertiesConfiguration(
 					"/var/lib/tomcat7/conf/Constants.properties");
-// "C:\\Documents and Settings\\538540\\09_04_2013\\MGIPAY\\CXFService\\CXFRest\\Constants.properties");
-		} catch (ConfigurationException e1) {
-			// TODO Auto-generated catch block
-			((Throwable) e1).printStackTrace();
+			// "C:\\Documents and Settings\\538540\\09_04_2013\\MGIPAY\\CXFService\\CXFRest\\Constants.properties");
+		} catch (ConfigurationException configurationException) {
+			((Throwable) configurationException).printStackTrace();
 		}
 		constant.setReloadingStrategy(new FileChangedReloadingStrategy());
 		return this.constant;
@@ -30,11 +29,10 @@ public class PropertyUtil {
 		try {
 			message = new PropertiesConfiguration(
 					"/var/lib/tomcat7/conf/Message.properties");
-//					"C:\\Documents and Settings\\538540\\09_04_2013\\MGIPAY\\CXFService\\CXFRest\\Message.properties");
+			// "C:\\Documents and Settings\\538540\\09_04_2013\\MGIPAY\\CXFService\\CXFRest\\Message.properties");
 
-		} catch (ConfigurationException e1) {
-			 //TODO Auto-generated catch block
-			((Throwable) e1).printStackTrace();
+		} catch (ConfigurationException configurationException) {
+			((Throwable) configurationException).printStackTrace();
 		}
 		message.setReloadingStrategy(new FileChangedReloadingStrategy());
 		return this.message;

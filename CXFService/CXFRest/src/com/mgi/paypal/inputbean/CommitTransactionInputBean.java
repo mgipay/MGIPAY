@@ -22,7 +22,6 @@ public class CommitTransactionInputBean {
 	private String mgiTransactionStatus;
 	private String mgiReferenceNumber;
 	private String payPalTransactionStatus;
-
 	private String token;
 
 	public String getToken() {

@@ -278,22 +278,14 @@ public class MoneyGramPayPalDAO {
 			String mgiTransactionSessionID) throws ClassNotFoundException,
 			SQLException {
 
-		LOGGER.debug("Enter updateHistoryDetail.");
+		LOGGER.debug("Enter updateHistoryDetailAfterCommitTransaction.");
+		
 			Class.forName("oracle.jdbc.OracleDriver");
 			DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 			Connection connection = DriverManager.getConnection(
 					constantFromProperties.getString("ORACLE_DB_URL"),
 					constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
 					constantFromProperties.getString("ORACLE_DB_PASSWORD"));
-
-			// String strQuery = constantFromProperties
-			// .getString("UPDATE_HISTORY_DETAIL");
-			// update history table with
-			// setPayPalTransactionStatus,setPaypalTransactionID
-			/*
-			 * AL_TRAN_HIST (TRAN_ID,CUST_EMAIL, CUST_NAME, CUST_PHONE
-			 * , PAYPAL_TRAN_ID, MGI_REF_NUM, TRAN_DATE, TRAN_AMT, TRAN_FEE, TRAN_STATUS,PayPal_TRAN_STATUS
-			 */
 
 			String strQuery = "Update MGI_PAYPAL_TRAN_HIST set PayPal_TRAN_STATUS" +
 					" = ? where PAYPAL_TRAN_ID = ? and  MGI_SESS_ID = ?";
@@ -304,7 +296,8 @@ public class MoneyGramPayPalDAO {
 			preparedStatement.setString(3, mgiTransactionSessionID);
 			preparedStatement.executeUpdate();
 			connection.close();
-		LOGGER.debug("Exit updateHistoryDetail.");
+			
+		LOGGER.debug("Exit updateHistoryDetailAfterCommitTransaction.");
 	}
 	public void updateHistoryDetailStatusReversedAndRejected(
 			List<HistoryStatusReverseBean> historyStatusReverseBeanList,

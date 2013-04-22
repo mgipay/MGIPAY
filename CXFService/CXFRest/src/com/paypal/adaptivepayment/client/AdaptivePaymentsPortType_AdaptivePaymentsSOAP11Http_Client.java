@@ -122,10 +122,23 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 	}
 
 	private static void setCredentials() {
-		Security.setProperty("ssl.SocketFactory.provider",
-				"com.ibm.jsse2.SSLSocketFactoryImpl");
-		Security.setProperty("ssl.ServerSocketFactory.provider",
-				"com.ibm.jsse2.SSLServerSocketFactoryImpl");
+//		Security.setProperty("ssl.SocketFactory.provider",
+//				"com.ibm.jsse2.SSLSocketFactoryImpl");
+//		Security.setProperty("ssl.ServerSocketFactory.provider",
+//				"com.ibm.jsse2.SSLServerSocketFactoryImpl");
+		
+		
+		Security.setProperty("ssl.SocketFactory.provider", "sun.security.ssl.SSLSocketFactoryImpl");
+		Security.setProperty("ssl.ServerSocketFactory.provider", "sun.security.ssl.SSLServerSocketFactoryImpl");
+		
+		
+//		System.setProperty("javax.net.ssl.trustStoreType", "JKS"); 
+//		System.setProperty("javax.net.ssl.trustStore", "/usr/share/tomcat7/conf/certificates/truststore.jks"); 
+//		System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
+//		System.setProperty("javax.net.ssl.keyStoreType", "pkcs12");
+//		System.setProperty("javax.net.ssl.keyStore", "/usr/share/tomcat7/conf/certificates/paypal_cert.p12"); 
+//		System.setProperty("javax.net.ssl.keyStorePassword", "prompt");
+
 		// System.setProperty("javax.net.ssl.trustStoreType", "JKS");
 		// System.setProperty("javax.net.ssl.trustStore",
 		// "CXFRest/WebContent/WEB-INF/truststore.jks");

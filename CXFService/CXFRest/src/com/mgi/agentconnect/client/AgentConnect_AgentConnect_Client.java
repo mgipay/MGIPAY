@@ -42,7 +42,8 @@ public final class AgentConnect_AgentConnect_Client {
 	}
 
 	public  List<String> codeTable(
-			com.mgi.agentconnect.client.CodeTableRequest codeTableRequest)
+			com.mgi.agentconnect.client.CodeTableRequest codeTableRequest,
+			String countryCode)
 			throws Exception {
 
 		AgentConnect port = getPort();
@@ -50,7 +51,7 @@ public final class AgentConnect_AgentConnect_Client {
 		_codeTable__return = port.codeTable(codeTableRequest);
 		List<String> stateNameAndCodeList = new ArrayList<String>();
 		for (StateProvinceInfo stateProvinceInfo : _codeTable__return.stateProvinceInfo) {
-			if (stateProvinceInfo.getCountryCode().equals("USA")) {
+			if (stateProvinceInfo.getCountryCode().equals(countryCode)) {
 				stateNameAndCodeList.add(stateProvinceInfo.getStateProvinceName());
 				stateNameAndCodeList.add(stateProvinceInfo.getStateProvinceCode());
 			}

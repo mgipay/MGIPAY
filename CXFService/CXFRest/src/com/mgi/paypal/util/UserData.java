@@ -6,23 +6,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class UserData {
 
 	public UserData() {
-		// TODO Auto-generated constructor stub
+
 	}
 
-	/*
-	 * "{"address":{"postal_code":"07901","locality":"Summit","region":"NJ","country
-	 * ":"US","street_address":"4807384 5th Street, 3272844 4th
-	 * Street"},"family_name
-	 * ":"Fundsout11","verified":"true","phone_number":"6023820578
-	 * ","zoneinfo":"America/Los_Angeles","name":"MGI
-	 * Fundsout11","email":"testuser
-	 * 
-	 * @moneygram.com","given_name":"MGI","user_id":"
-	 * https://www.paypal.com/webapps
-	 * /auth/identity/user/dCn3hbvb2NWbecoGgSGz41zZ5jGdcYvQAr3zmwEZxUo"}"
-	 */
-
-	private String address;
 	private String family_name;
 	private boolean verified;
 	private String phone_number;
@@ -32,12 +18,31 @@ public class UserData {
 	private String given_name;
 	private String user_id;
 	private String token;
+	private Address address;
+	private boolean transactionSuccess;
+	private String errorMessage;
+	
+	public boolean isTransactionSuccess() {
+		return transactionSuccess;
+	}
 
-	public String getAddress() {
+	public void setTransactionSuccess(boolean transactionSuccess) {
+		this.transactionSuccess = transactionSuccess;
+	}
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+
+	public Address getAddress() {
 		return address;
 	}
 
-	public void setAddress(String address) {
+	public void setAddress(Address address) {
 		this.address = address;
 	}
 

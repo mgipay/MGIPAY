@@ -12,6 +12,7 @@ import com.mgi.paypal.inputbean.SendMailInputBean;
 import com.mgi.paypal.inputbean.SendProofInputBean;
 import com.mgi.paypal.inputbean.SendReversalInputBean;
 import com.mgi.paypal.inputbean.SendValidationInputBean;
+import com.mgi.paypal.inputbean.TransactionInformationMailInputBean;
 import com.mgi.paypal.inputbean.UserDataInputBean;
 import com.mgi.paypal.inputbean.UserLimitInputBean;
 
@@ -40,6 +41,9 @@ public interface ACInterface {
 
 	String getFeeLinkValue(FeeLinkValueInputBean feeLinkValueInputBean);
 
-//	String sendProofMessage(SendProofInputBean sendProofInputBean);
+	String sendProofMessage(SendProofInputBean sendProofInputBean);
+
+	String sendTransactionInformationMail(
+			TransactionInformationMailInputBean transactionInformationMailinputBean);
 
 }
