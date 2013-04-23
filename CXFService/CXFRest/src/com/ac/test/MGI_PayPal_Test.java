@@ -31,7 +31,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client;
 import com.mgi.agentconnect.client.TransactionStatus;
-import com.mgi.paypal.inputbean.CommitTransactionInputBean;
 import com.mgi.paypal.util.HistoryDetails;
 import com.mgi.paypal.util.UserData;
 

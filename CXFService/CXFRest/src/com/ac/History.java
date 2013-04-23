@@ -97,7 +97,6 @@ public class History {
 				return historyDetails2.getTransactionID().compareTo(
 						historyDetails1.getTransactionID());
 			}
-
 		});
 
 		histroyLookupResponse.setHistoryDetailsList(historyDetailsList);
@@ -132,6 +131,7 @@ public class History {
 
 		return detailLookupResponse.getTransactionStatus().value();
 	}
+	
 	private DetailLookupRequest createDetailLookupRequest(
 			 String mgiTransactionSessionID) {
 		DetailLookupRequest detailLookupRequest = new DetailLookupRequest();

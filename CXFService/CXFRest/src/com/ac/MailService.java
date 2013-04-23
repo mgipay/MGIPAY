@@ -72,7 +72,7 @@ public class MailService {
 			// message.setRecipients(Message.RecipientType.TO,
 			// InternetAddress.parse(customerEmailID));
 
-			message.setSubject("MoneyGram_PayPal_Transaction_Details"
+			message.setSubject("MoneyGram_PayPal_Transaction_Details_"
 					.concat(new SimpleDateFormat("_MM-dd-yyyy").format(Calendar
 							.getInstance().getTime())));
 			message.setText("The reference number for your amount "
@@ -82,9 +82,9 @@ public class MailService {
 			Transport.send(message);
 
 		} catch (MessagingException messagingException) {
-			LOGGER.error("Send Mial failed for : " + customerEmailID
-					+ " amount : " + amount.toString() + " referenceNumber : "
-					+ referenceNumber);
+			LOGGER.error("Send Transaction Information Mial failed for : "
+					+ customerEmailID + " amount : " + amount.toString()
+					+ " referenceNumber : " + referenceNumber);
 
 			return "Sending mail failed. Please try again.";
 		}

@@ -104,7 +104,7 @@ public class MoneyGramPayPalDAO {
 			throws ClassNotFoundException, SQLException {
 
 		LOGGER.debug("Enter retrieveHistroyDetails.");
-
+		// TODO delete below line
 		LOGGER.debug("emailId for retrive History  : " + emailId);
 
 		Class.forName("oracle.jdbc.OracleDriver");
@@ -115,13 +115,13 @@ public class MoneyGramPayPalDAO {
 				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
 		String strQuery = "SELECT * FROM (SELECT * FROM MGI_PAYPAL_TRAN_HIST "
-				+ "WHERE CUST_EMAIL = ? and MGI_REF_NUM <> '' "
+				+ "WHERE CUST_EMAIL = ?  and TRAN_STATUS <> ? "
 				+ "order by TRAN_DATE desc) a where rownum < 11";
-		//				constantFromProperties
-//				.getString("RETRIEVE_HISTORY_DETAILS_QUERY");
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1, emailId);
+		preparedStatement.setString(2, TransactionStatus.PAYPAL_COMMITTED.value());
+		
 		ResultSet resultSet = preparedStatement.executeQuery();
 		List<HistoryDetails> historyDetailsList = new ArrayList<HistoryDetails>();
 		while (resultSet.next()) {
@@ -166,32 +166,17 @@ public class MoneyGramPayPalDAO {
 				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
 				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
-		String strQuery = constantFromProperties
-				.getString("RETRIEVE_HISTORY_DETAILS_FOR_BATCH_QUERY");
+		String strQuery = "SELECT * FROM (SELECT * FROM MGI_PAYPAL_TRAN_HIST "
+				+ "WHERE PAYPAL_TRAN_STATUS <> 'COLLECTED' order by TRAN_DATE desc) a where rownum < 1001";
+
+		// constantFromProperties
+		// .getString("RETRIEVE_HISTORY_DETAILS_FOR_BATCH_QUERY");
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
-		// preparedStatement.setString(1, emailId);
 		ResultSet resultSet = preparedStatement.executeQuery();
 		List<HistoryDetails> historyDetailsList = new ArrayList<HistoryDetails>();
 		while (resultSet.next()) {
 			HistoryDetails historyDetails = new HistoryDetails();
-			historyDetails.setCustomerEmail(resultSet.getString("CUST_EMAIL"));
-			historyDetails.setCustomerName(resultSet.getString("CUST_NAME"));
-			historyDetails.setCustomerPhone(resultSet.getString("CUST_PHONE"));
-			historyDetails.setMgiReferenceNumber(resultSet
-					.getString("MGI_REF_NUM"));
-			historyDetails.setPaypalTransactionID(resultSet
-					.getString("PAYPAL_TRAN_ID"));
-			historyDetails.setTransactionAmount(resultSet
-					.getBigDecimal("TRAN_AMT"));
-			historyDetails.setTransactionFee(resultSet
-					.getBigDecimal("TRAN_FEE"));
-			historyDetails.setTransactionID(resultSet.getBigDecimal("TRAN_ID"));
-			historyDetails.setTransactionStatus(resultSet
-					.getString("TRAN_STATUS"));
-			Date transactionDate = resultSet.getDate(("TRAN_DATE"));
-			DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-			historyDetails.setTransactionDate(df.format(transactionDate));
 			historyDetails.setMgiTransactionSessionID(resultSet
 					.getString("MGI_SESS_ID"));
 			historyDetailsList.add(historyDetails);
@@ -254,7 +239,7 @@ public class MoneyGramPayPalDAO {
 		preparedStatement.setBigDecimal(7, sendValidationInputBean.getAmount());
 		preparedStatement.setBigDecimal(8,
 				sendValidationInputBean.getFeeAmount());
-		preparedStatement.setString(9, TransactionStatus.AVAIL.value());
+		preparedStatement.setString(9, TransactionStatus.IN_PROGRESS.value());
 		preparedStatement.setString(10, "");// PayPal_TRAN_STATUS
 		preparedStatement.setString(11,
 				sendValidationInputBean.getMgiTransactionSessionID());
@@ -266,11 +251,11 @@ public class MoneyGramPayPalDAO {
 
 	}
 
-	public void updateHistoryAfterCommit(String mgiTransactionSessionID,
+	public void updateHistoryAfterCommitTransaction(String mgiTransactionSessionID,
 			String mgiReferenceNumber) throws ClassNotFoundException,
 			SQLException {
 
-		LOGGER.debug("Enter updateHistoryDetail.");
+		LOGGER.debug("Enter updateHistoryAfterCommitTransaction.");
 
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
@@ -279,22 +264,24 @@ public class MoneyGramPayPalDAO {
 				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
 				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
-		String strQuery = "update MGI_PAYPAL_TRAN_HIST set MGI_REF_NUM = ? where MGI_SESS_ID = ?";
+		String strQuery = "update MGI_PAYPAL_TRAN_HIST set MGI_REF_NUM = ?" +
+				" and TRAN_STATUS = ? where MGI_SESS_ID = ?";
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1, mgiReferenceNumber);
-		preparedStatement.setString(2, mgiTransactionSessionID);
+		preparedStatement.setString(2, TransactionStatus.MGI_COMMITED.value());
+		preparedStatement.setString(3, mgiTransactionSessionID);
 		preparedStatement.executeUpdate();
 		connection.close();
 
-		LOGGER.debug("Exit updateHistoryDetail.");
+		LOGGER.debug("Exit updateHistoryAfterCommitTransaction.");
 	}
 
 	public void updateHistoryAfterPay(String mgiTransactionSessionID,
 			String payPalTransactionID) throws ClassNotFoundException,
 			SQLException {
 
-		LOGGER.debug("Enter updateHistoryDetail.");
+		LOGGER.debug("Enter updateHistoryAfterPay.");
 
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
@@ -304,40 +291,20 @@ public class MoneyGramPayPalDAO {
 				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
 		String strQuery = "update MGI_PAYPAL_TRAN_HIST set PAYPAL_TRAN_ID = ? "
-				+ "and PayPal_TRAN_STATUS = 'COLLECTED' where MGI_SESS_ID = ?";
+				+ "and TRAN_STATUS = ? where MGI_SESS_ID = ?";
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1, payPalTransactionID);
-		preparedStatement.setString(2, mgiTransactionSessionID);
+		preparedStatement.setString(2,
+				TransactionStatus.PAYPAL_COMMITTED.value());
+		preparedStatement.setString(3, mgiTransactionSessionID);
+		
 		preparedStatement.executeUpdate();
 		connection.close();
 
-		LOGGER.debug("Exit updateHistoryDetail.");
+		LOGGER.debug("Exit updateHistoryAfterPay.");
 	}
 
-	public void deleteHistoryForMGISessionID(String mgiTransactionSessionID) {
-
-		LOGGER.debug("Enter updateHistoryDetail.");
-		try {
-			Class.forName("oracle.jdbc.OracleDriver");
-			DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-			Connection connection = DriverManager.getConnection(
-					constantFromProperties.getString("ORACLE_DB_URL"),
-					constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
-					constantFromProperties.getString("ORACLE_DB_PASSWORD"));
-
-			String strQuery = "delete from MGI_PAYPAL_TRAN_HIST where MGI_SESS_ID = ?";
-			PreparedStatement preparedStatement = connection
-					.prepareStatement(strQuery);
-			preparedStatement.setString(1, mgiTransactionSessionID);
-			preparedStatement.executeUpdate();
-			connection.close();
-		} catch (Exception exception) {
-			LOGGER.error("sendValidation Failed. delete from history failed for mgiTransactionSessionID : "
-					+ mgiTransactionSessionID);
-		}
-		LOGGER.debug("Exit updateHistoryDetail.");
-	}
 
 	public void updateHistoryDetail(String mgiTransactionStatus,
 			String mgiReferenceNumber, String customerEmail)

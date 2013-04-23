@@ -35,11 +35,12 @@ public class ACImpl implements ACInterface {
 	public ACImpl() {
 
 	}
-	
+
 	private static Logger LOGGER = Logger.getLogger(ACImpl.class);
 
 	PropertiesConfiguration messageFromProperties = new PropertyUtil()
-	.getMessagePropertyConfig();
+			.getMessagePropertyConfig();
+
 	/**
 	 * getFee. This method will return fee in USD for given input amount.
 	 * 
@@ -76,15 +77,17 @@ public class ACImpl implements ACInterface {
 	@Override
 	public String getUserLimits(UserLimitInputBean userLimitInputBean) {
 
-		return new PayPalBO().getUserLimits(userLimitInputBean);
+		PayPalBO payPalBO = new PayPalBO();
+		return payPalBO.getUserLimits(userLimitInputBean);
 	}
 
 	@POST
 	@Path("/getUserData")
 	@Override
 	public String getUserData(UserDataInputBean userDataInputBean) {
-
-		return new PayPalBO().getUserData(userDataInputBean);
+		
+		PayPalBO payPalBO = new PayPalBO();
+		return payPalBO.getUserData(userDataInputBean);
 	}
 
 	/**
@@ -100,7 +103,6 @@ public class ACImpl implements ACInterface {
 	public String getFeeLinkValue(FeeLinkValueInputBean feeLinkValueInputBean) {
 
 		FeeDetails feeDetails = new FeeDetails();
-
 		return feeDetails.getFeeLinkValue(feeLinkValueInputBean);
 	}
 
@@ -110,7 +112,6 @@ public class ACImpl implements ACInterface {
 	public String sendMail(SendMailInputBean sendMailInputBean) {
 
 		MailService mailService = new MailService();
-
 		return mailService.sendReportInformationMail(sendMailInputBean);
 	}
 
@@ -120,7 +121,6 @@ public class ACImpl implements ACInterface {
 	public String sendProofMessage(SendProofInputBean sendProofInputBean) {
 
 		SignUp signUp = new SignUp();
-
 		return signUp.sendProofMessage(sendProofInputBean);
 	}
 
@@ -129,6 +129,7 @@ public class ACImpl implements ACInterface {
 	@Override
 	public String sendTransactionInformationMail(
 			TransactionInformationMailInputBean transactionInformationMailInputBean) {
+		
 		MailService mailService = new MailService();
 		return mailService.sendTransactionInformationMail(
 				transactionInformationMailInputBean.getCustomerEmail(),
@@ -154,11 +155,8 @@ public class ACImpl implements ACInterface {
 			HistroyLookupInputBean histroyLookupInputBean) {
 
 		History history = new History();
-		
-
 		return history.retrieveHistoryDetails(histroyLookupInputBean);
 	}
-
 
 	/**
 	 * getState. This method will call codeTable API for only one time in a day
@@ -200,27 +198,19 @@ public class ACImpl implements ACInterface {
 					.insertHistoryDetailsBeforeSendValidation(sendValidationInputBean);
 		} catch (Exception exception) {
 			// If insert DB failed , then return error msg to UI.
-			
+			LOGGER.error(exception.getLocalizedMessage());
 			sendValidationResponse.setTransactionSuccess(false);
 			sendValidationResponse.setErrorMessage(messageFromProperties
 					.getString("TRANSACTION_FAILED_RETRY"));
 			return new Gson().toJson(sendValidationResponse);
 		}
-		
-		
+
 		Transaction transaction = new Transaction();
 		sendValidationResponse = transaction.validate(sendValidationInputBean);
-		if (!sendValidationResponse.isTransactionSuccess()) {
-			// delete history table for mgi Session ID
 
-			moneyGramPayPalDAO
-					.deleteHistoryForMGISessionID(sendValidationInputBean
-							.getMgiTransactionSessionID());
-		}
-		
 		return new Gson().toJson(sendValidationResponse);
 	}
-	
+
 	/**
 	 * commitTransaction. This method will call commitTransaction API and it
 	 * will generate referenceNumber for the transaction.After committing the
@@ -237,9 +227,9 @@ public class ACImpl implements ACInterface {
 	@Override
 	public String commitTransaction(
 			CommitTransactionInputBean commitTransactionInputBean) {
-		
+
 		LOGGER.debug("Enter commitTransaction.");
-		
+
 		Transaction transaction = new Transaction();
 		CommitTransactionResponse commitTransactionResponse = new CommitTransactionResponse();
 		MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
@@ -255,7 +245,7 @@ public class ACImpl implements ACInterface {
 
 		// If Commit Success then update history with MGIReference Number.
 		try {
-			moneyGramPayPalDAO.updateHistoryAfterCommit(
+			moneyGramPayPalDAO.updateHistoryAfterCommitTransaction(
 					commitTransactionInputBean.getMgiTransactionSessionID(),
 					commitTransactionResponse.getReferenceNumber());
 		} catch (Exception exception) {
@@ -264,6 +254,7 @@ public class ACImpl implements ACInterface {
 					+ commitTransactionResponse.getReferenceNumber()
 					+ " Failed for MgiTransactionSessionID : "
 					+ commitTransactionInputBean.getMgiTransactionSessionID());
+			LOGGER.error(exception.getLocalizedMessage());
 			exception.printStackTrace();
 		}
 
@@ -277,6 +268,7 @@ public class ACImpl implements ACInterface {
 					commitTransactionInputBean.getCustomerEmail());
 		} catch (Exception exception) {
 			// If PAY API call failed
+			LOGGER.error(exception.getLocalizedMessage());
 			exception.printStackTrace();
 			return payAPIFailed(commitTransactionInputBean.getCustomerEmail(),
 					commitTransactionInputBean.getMgiTransactionSessionID(),
@@ -285,6 +277,10 @@ public class ACImpl implements ACInterface {
 		}
 		if (payResponse == null) {
 			// If PAY API call failed
+			LOGGER.error("Response for PAY API is null. CustomerEmailId :"
+					+ commitTransactionInputBean.getCustomerEmail()
+					+ ". MgiTransactionSessionID : "
+					+ commitTransactionInputBean.getMgiTransactionSessionID());
 			return payAPIFailed(commitTransactionInputBean.getCustomerEmail(),
 					commitTransactionInputBean.getMgiTransactionSessionID(),
 					commitTransactionResponse.getReferenceNumber());
@@ -304,27 +300,28 @@ public class ACImpl implements ACInterface {
 					+ payResponse.getPayKey()
 					+ " MgiTransactionSessionID : "
 					+ commitTransactionInputBean.getMgiTransactionSessionID());
+			LOGGER.error(exception.getLocalizedMessage());
 			exception.printStackTrace();
 		}
 
 		LOGGER.debug("Exit commitTransaction.");
-		
+
 		return new Gson().toJson(commitTransactionResponse);
 	}
 
 	private String payAPIFailed(String customerEmail,
 			String mgiTransactionSessionID, String referenceNumber) {
-		
+
 		LOGGER.error("Pay API Call failed for email Id : " + customerEmail
 				+ " MgiTransactionSessionID : " + mgiTransactionSessionID
 				+ " MgiReferenceNumber : " + referenceNumber);
-		
+
 		CommitTransactionResponse commitTransactionResponse = new CommitTransactionResponse();
 		commitTransactionResponse.setTransactionSuccess(false);
 		commitTransactionResponse.setErrorMessage(messageFromProperties
 				.getString("TRANSACTION_FAILED_RETRY"));
-		
+
 		return new Gson().toJson(commitTransactionResponse);
-		
+
 	}
 }
