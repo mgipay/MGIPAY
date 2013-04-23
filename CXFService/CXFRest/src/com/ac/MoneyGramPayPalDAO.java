@@ -16,7 +16,9 @@ import java.util.List;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 
+import com.mgi.agentconnect.client.TransactionStatus;
 import com.mgi.paypal.inputbean.CommitTransactionInputBean;
+import com.mgi.paypal.inputbean.SendValidationInputBean;
 import com.mgi.paypal.util.FeeLinkValues;
 import com.mgi.paypal.util.HistoryDetails;
 import com.mgi.paypal.util.HistoryStatusReverseBean;
@@ -196,6 +198,58 @@ public class MoneyGramPayPalDAO {
 		LOGGER.debug("Exit retrieveHistroyDetails.");
 
 		return historyDetailsList;
+	}
+
+	public void insertHistoryDetailsBeforeSendValidation(
+			SendValidationInputBean sendValidationInputBean)
+			throws ClassNotFoundException, SQLException {
+
+		LOGGER.debug("Enter insertHistoryDetails.");
+
+		Class.forName("oracle.jdbc.OracleDriver");
+		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+		Connection connection = DriverManager.getConnection(
+				constantFromProperties.getString("ORACLE_DB_URL"),
+				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
+				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
+		String strQuery = null;
+		strQuery = constantFromProperties
+				.getString("INSERT INTO MGI_PAYPAL_TRAN_HIST (TRAN_ID, CUST_EMAIL, CUST_NAME, " +
+						"CUST_PHONE, PAYPAL_TRAN_ID, MGI_REF_NUM, TRAN_DATE, TRAN_AMT, TRAN_FEE, " +
+						"TRAN_STATUS, PayPal_TRAN_STATUS, MGI_SESS_ID) " +
+						"VALUES (mgi_paypal_tranid_seq.nextval,?,?,?,?,?,?,?,?,?,?,?)");
+
+		PreparedStatement preparedStatement = connection
+				.prepareStatement(strQuery);
+		preparedStatement.setString(1, sendValidationInputBean
+				.getSenderEmail().toLowerCase());
+		preparedStatement.setString(2,
+				sendValidationInputBean.getSenderFirstName());
+		preparedStatement.setString(3,
+				sendValidationInputBean.getSenderHomePhone());
+//		preparedStatement.setString(4,
+//				sendValidationInputBean.getPaypalTransactionID());
+//		preparedStatement.setString(5,
+//				sendValidationInputBean.getMgiReferenceNumber());
+		java.util.Date sysDate = new java.util.Date();
+		java.sql.Date sqlDate = new java.sql.Date(sysDate.getTime());
+		preparedStatement.setDate(6, sqlDate);
+		preparedStatement.setBigDecimal(7,
+				sendValidationInputBean.getAmount());
+		preparedStatement.setBigDecimal(8,
+				sendValidationInputBean.getFeeAmount());
+		preparedStatement.setString(9,
+				TransactionStatus.AVAIL.value());
+//		preparedStatement.setString(10,
+//				sendValidationInputBean.getPayPalTransactionStatus());
+		preparedStatement.setString(11,
+				sendValidationInputBean.getMgiTransactionSessionID());
+
+		preparedStatement.execute();
+		connection.close();
+
+		LOGGER.debug("Exit insertHistoryDetails.");
+
 	}
 
 	public void insertHistoryDetails(

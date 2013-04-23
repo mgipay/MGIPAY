@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="SendReversalInputBean")
 public class SendReversalInputBean {
-
+// TODO delete this class
 	public SendReversalInputBean() {
 
 	}

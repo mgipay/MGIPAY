@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "DetailLookupInputBean")
 public class DetailLookupInputBean {
-
+	// TODO delete this class
 	public DetailLookupInputBean() {
 		
 	}

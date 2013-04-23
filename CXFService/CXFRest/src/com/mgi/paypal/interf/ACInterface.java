@@ -10,7 +10,6 @@ import com.mgi.paypal.inputbean.FeeLookupInputBean;
 import com.mgi.paypal.inputbean.HistroyLookupInputBean;
 import com.mgi.paypal.inputbean.SendMailInputBean;
 import com.mgi.paypal.inputbean.SendProofInputBean;
-import com.mgi.paypal.inputbean.SendReversalInputBean;
 import com.mgi.paypal.inputbean.SendValidationInputBean;
 import com.mgi.paypal.inputbean.TransactionInformationMailInputBean;
 import com.mgi.paypal.inputbean.UserDataInputBean;
@@ -27,7 +26,7 @@ public interface ACInterface {
 
 	String getState();
 
-	String sendReversal(SendReversalInputBean sendReversalInputBean);
+//	String sendReversal(SendReversalInputBean sendReversalInputBean);
 
 	String sendValidation(SendValidationInputBean sendValidationInputBean);
 

@@ -2,11 +2,6 @@ package com.ac;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
@@ -18,6 +13,7 @@ import com.mgi.agentconnect.client.FeeLookupResponse;
 import com.mgi.agentconnect.client.ProductType;
 import com.mgi.paypal.inputbean.FeeLinkValueInputBean;
 import com.mgi.paypal.inputbean.FeeLookupInputBean;
+import com.mgi.paypal.util.CalendarUtil;
 import com.mgi.paypal.util.FeeLinkValues;
 import com.mgi.paypal.util.PropertyUtil;
 
@@ -140,7 +136,7 @@ public class FeeDetails {
 		feeLookupRequest.setAgentSequence(constantFromProperties
 				.getString("AGENT_SEQUENCE"));
 		feeLookupRequest.setToken(constantFromProperties.getString("TOKEN"));
-		feeLookupRequest.setTimeStamp(getTimeStamp());
+		feeLookupRequest.setTimeStamp(CalendarUtil.getTimeStamp());
 		feeLookupRequest.setApiVersion(constantFromProperties
 				.getString("API_VERSION"));
 		feeLookupRequest.setClientSoftwareVersion(constantFromProperties
@@ -166,19 +162,6 @@ public class FeeDetails {
 		LOGGER.debug("Exit createFeeLookupInput.");
 
 		return feeLookupRequest;
-	}
-
-	private static XMLGregorianCalendar getTimeStamp() {
-		XMLGregorianCalendar xgcal = null;
-		try {
-			xgcal = DatatypeFactory.newInstance().newXMLGregorianCalendar(
-					new GregorianCalendar());
-		} catch (DatatypeConfigurationException datatypeConfigurationException) {
-			LOGGER.error("Error while getting TimeStamp:"
-					+ datatypeConfigurationException);
-			datatypeConfigurationException.printStackTrace();
-		}
-		return xgcal;
 	}
 
 	/**
