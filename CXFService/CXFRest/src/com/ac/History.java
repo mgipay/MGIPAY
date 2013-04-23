@@ -58,17 +58,18 @@ public class History {
 			// TODO
 			LOGGER.debug("CustomerEmailId"
 					+ histroyLookupInputBean.getCustomerEmailId());
-			 historyDetailsList = moneyGramPayPalDAO
-			 .retrieveHistroyDetails(histroyLookupInputBean
-			 .getCustomerEmailId());
-			 
+			historyDetailsList = moneyGramPayPalDAO
+					.retrieveHistroyDetails(histroyLookupInputBean
+							.getCustomerEmailId());
+
 			for (HistoryDetails historyDetails : historyDetailsList) {
 				// checking status is 'received' or not in history table
 				if (!historyDetails.getTransactionStatus().equals(
 						TransactionStatus.RECVD.value())) {
 
-					String statusFromDetailLookUp = detailLookUpForRetrieveHistory(historyDetails
-							.getMgiReferenceNumber(),historyDetails.getMgiTransactionSessionID());
+					String statusFromDetailLookUp = detailLookUpForRetrieveHistory(
+							historyDetails.getMgiReferenceNumber(),
+							historyDetails.getMgiTransactionSessionID());
 					if (!statusFromDetailLookUp.equals(historyDetails
 							.getTransactionStatus())) {
 						moneyGramPayPalDAO.updateHistoryDetail(

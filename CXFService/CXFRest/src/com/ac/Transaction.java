@@ -10,12 +10,10 @@ import com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client;
 import com.mgi.agentconnect.client.CommitTransactionRequest;
 import com.mgi.agentconnect.client.CommitTransactionResponse;
 import com.mgi.agentconnect.client.ProductType;
-import com.mgi.agentconnect.client.TransactionStatus;
 import com.mgi.paypal.inputbean.CommitTransactionInputBean;
 import com.mgi.paypal.inputbean.SendValidationInputBean;
 import com.mgi.paypal.util.CalendarUtil;
 import com.mgi.paypal.util.PropertyUtil;
-import com.paypal.adaptivepayment.client.PayResponse;
 
 public class Transaction {
 
@@ -32,7 +30,7 @@ public class Transaction {
 	public static Hashtable<String, String> stateCodeHashTable = new Hashtable<String, String>();
 	
 	
-	public String validate(SendValidationInputBean sendValidationInputBean) {
+	public com.mgi.paypal.response.SendValidationResponse validate(SendValidationInputBean sendValidationInputBean) {
 
 		LOGGER.debug("Enter sendValidation.");
 
@@ -122,7 +120,7 @@ public class Transaction {
 					sendValidationResponseForUI
 							.setErrorMessage(messageFromProperties
 									.getString("TRANSACTION_FAILED_RETRY"));
-					return new Gson().toJson(sendValidationResponse);
+					return sendValidationResponseForUI;
 				}
 			}
 		}
@@ -142,7 +140,7 @@ public class Transaction {
 
 		LOGGER.debug("Exit sendValidation.");
 
-		return new Gson().toJson(sendValidationResponseForUI);
+		return sendValidationResponseForUI;
 	}
 
 	private void setSenderName(
@@ -171,9 +169,6 @@ public class Transaction {
 
 		LOGGER.debug("Exit setSenderName.");
 	}
-
-	
-	
 	
 	/**
 	 * commitTransaction. This method will call commitTransaction API and it
@@ -186,7 +181,9 @@ public class Transaction {
 	 * @return CommitTransactionResponse which contains reference number as JSON
 	 *         object.
 	 */
-	public String commit(
+	
+	
+	public com.mgi.paypal.response.CommitTransactionResponse commitTransaction(
 			CommitTransactionInputBean commitTransactionInputBean) {
 
 		LOGGER.debug("Enter commitTransaction.");
@@ -212,7 +209,6 @@ public class Transaction {
 		commitTransactionRequest.setProductType(ProductType.SEND);
 		com.mgi.paypal.response.CommitTransactionResponse commitTransactionResponseForUI 
 		= new com.mgi.paypal.response.CommitTransactionResponse();
-		MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
 		byte retryCount = 3;
 		while (retryCount >= 1) {
 			try {
@@ -221,8 +217,6 @@ public class Transaction {
 						.commitTransaction(commitTransactionRequest);
 				break;
 			} catch (Exception exception) {
-				LOGGER.error("Retrying Commit Transaction because of: "
-						+ exception);
 				retryCount--;
 				if (retryCount == 0) {
 					exception.printStackTrace();
@@ -231,24 +225,13 @@ public class Transaction {
 					commitTransactionResponseForUI
 							.setErrorMessage(messageFromProperties
 									.getString("TRANSACTION_FAILED_RETRY"));
-					commitTransactionResponseForUI
-							.setTransactionSuccess(false);
-					commitTransactionInputBean
-							.setMgiReferenceNumber("");
-					commitTransactionInputBean
-							.setMgiTransactionStatus(TransactionStatus.FAILED
-									.value());
-					commitTransactionInputBean
-							.setPayPalTransactionStatus("PayPal_Not_Collected");
-					insertToHistory(commitTransactionInputBean);
+					commitTransactionResponseForUI.setTransactionSuccess(false);
 
 					LOGGER.debug("Exit commitTransaction.");
 
-					return new Gson()
-							.toJson(commitTransactionResponseForUI);
+					return commitTransactionResponseForUI;
 				}
 			}
-
 		}
 		if (commitTransactionResponse != null) {
 			// Commit Transaction success
@@ -257,91 +240,16 @@ public class Transaction {
 			commitTransactionResponseForUI
 					.setReferenceNumber(commitTransactionResponse
 							.getReferenceNumber());
-			commitTransactionInputBean
-					.setMgiReferenceNumber(commitTransactionResponse
-							.getReferenceNumber());
-			commitTransactionInputBean
-					.setMgiTransactionStatus(TransactionStatus.AVAIL.value());
-			commitTransactionInputBean
-					.setPayPalTransactionStatus("PayPal_Not_Collected");
-			commitTransactionInputBean.setPaypalTransactionID("");
-
-			insertToHistory(commitTransactionInputBean);
-
-			PayPalBO payPalBO = new PayPalBO();
-			try {
-				// calling PAY API of payPal.
-				PayResponse payResponse = payPalBO.payToMoneyGram(
-						commitTransactionInputBean.getToken(),
-						commitTransactionInputBean.getCustomerEmail());
-
-				if (payResponse != null) {
-					// update history table with
-					// setPayPalTransactionStatus,setPaypalTransactionID
-
-					try {
-						moneyGramPayPalDAO
-								.updateHistoryDetailAfterCommitTransaction(
-										"Paypal_Collected", payResponse
-												.getPayKey(),
-										commitTransactionInputBean
-												.getMgiTransactionSessionID());
-					} catch (Exception exception) {
-						LOGGER.error("Insert to History table failed for MgiTransactionSessionID : "
-								+ commitTransactionInputBean
-										.getMgiTransactionSessionID()
-								+ ". PayPal Transaction ID : "
-								+ payResponse.getPayKey());
-					}
-					
-
-				} else {
-
-					commitTransactionResponseForUI
-							.setErrorMessage(messageFromProperties
-									.getString("TRANSACTION_FAILED_RETRY"));
-					commitTransactionResponseForUI.setTransactionSuccess(false);
-
-				}
-
-			} catch (Exception exception) {
-				commitTransactionResponseForUI
-						.setErrorMessage(messageFromProperties
-								.getString("TRANSACTION_FAILED_RETRY"));
-				commitTransactionResponseForUI.setTransactionSuccess(false);
-			}
 
 		} else {
 			commitTransactionResponseForUI
 					.setErrorMessage(messageFromProperties
 							.getString("TRANSACTION_FAILED_RETRY"));
 			commitTransactionResponseForUI.setTransactionSuccess(false);
-			commitTransactionInputBean.setMgiReferenceNumber("");
-			commitTransactionInputBean
-					.setMgiTransactionStatus(TransactionStatus.FAILED.value());
-			commitTransactionInputBean
-					.setPayPalTransactionStatus("PayPal_Not_Collected");
-			insertToHistory(commitTransactionInputBean);
-			commitTransactionInputBean.setPaypalTransactionID("");
 		}
-		
+
 		LOGGER.debug("Exit commitTransaction.");
 
-		return new Gson().toJson(commitTransactionResponseForUI);
+		return commitTransactionResponseForUI;
 	}
-
-	private void insertToHistory(
-			CommitTransactionInputBean commitTransactionInputBean) {
-		try {
-			MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
-			moneyGramPayPalDAO.insertHistoryDetails(commitTransactionInputBean);
-		} catch (Exception exception) {
-			LOGGER.error("Insert Into HistroyTable failed : "
-					+ new Gson().toJson(commitTransactionInputBean));
-			LOGGER.error(exception.getLocalizedMessage());
-			exception.printStackTrace();
-			LOGGER.error(System.getProperty("line.separator"));
-		}
-	}
-
 }
