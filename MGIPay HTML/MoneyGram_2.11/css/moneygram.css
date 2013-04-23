@@ -1206,3 +1206,11 @@ ol .listnumbers li h2{font-weight:bold;}
 #no_cursor{cursor:default}
 .signupform p .requiredField{border:1px solid red !important;}
 .signupform p .txt_signup{color:#333}
+
+/* Firefox */
+@-moz-document url-prefix() {
+
+.tabbed_area #content_4 .mapbgalign{ 
+margin-top:5.2% !important 
+} 
+}
