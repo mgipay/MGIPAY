@@ -115,7 +115,7 @@ public class MoneyGramPayPalDAO {
 				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
 		String strQuery = "SELECT * FROM (SELECT * FROM MGI_PAYPAL_TRAN_HIST "
-				+ "WHERE CUST_EMAIL = ?  and TRAN_STATUS <> ? "
+				+ "WHERE CUST_EMAIL = ?  and TRAN_STATUS = ? "
 				+ "order by TRAN_DATE desc) a where rownum < 11";
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
@@ -167,12 +167,15 @@ public class MoneyGramPayPalDAO {
 				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
 		String strQuery = "SELECT * FROM (SELECT * FROM MGI_PAYPAL_TRAN_HIST "
-				+ "WHERE PAYPAL_TRAN_STATUS <> 'COLLECTED' order by TRAN_DATE desc) a where rownum < 1001";
+				+ "WHERE TRAN_STATUS in (?,?) and  order by TRAN_DATE desc) a where rownum < 1001";
 
 		// constantFromProperties
 		// .getString("RETRIEVE_HISTORY_DETAILS_FOR_BATCH_QUERY");
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
+		preparedStatement.setString(1, TransactionStatus.SEND_VALIDATION_FAILED.value());
+		preparedStatement.setString(2, TransactionStatus.COMMIT_TRANSACTION_FAILED.value());
+		
 		ResultSet resultSet = preparedStatement.executeQuery();
 		List<HistoryDetails> historyDetailsList = new ArrayList<HistoryDetails>();
 		while (resultSet.next()) {
@@ -203,20 +206,23 @@ public class MoneyGramPayPalDAO {
 		String strQuery = null;
 
 
+//		SQL> desc MGI_PAYPAL_TRAN_HIST
 //		 Name                                      Null?    Type
-//				 ----------------------------------------- -------- ----------------------------
-//				 TRAN_ID                                   NOT NULL NUMBER(30)
-//				 CUST_EMAIL                                NOT NULL VARCHAR2(200)
-//				 CUST_NAME                                          VARCHAR2(200)
-//				 CUST_PHONE                                         VARCHAR2(20)
-//				 PAYPAL_TRAN_ID                            NOT NULL VARCHAR2(200)
-//				 MGI_REF_NUM                               NOT NULL VARCHAR2(200)//
-//				 TRAN_DATE                                 NOT NULL DATE
-//				 TRAN_AMT                                  NOT NULL NUMBER(10,2)
-//				 TRAN_FEE                                  NOT NULL NUMBER(10,2)
-//				 TRAN_STATUS                               NOT NULL VARCHAR2(50)//
-//				 PAYPAL_TRAN_STATUS                        NOT NULL VARCHAR2(100)//
-//				 MGI_SESS_ID                                        VARCHAR2(200)
+//		 ----------------------------------------- -------- ----------------------------
+//		 TRAN_ID                                   NOT NULL NUMBER(30)
+//		 CUST_EMAIL                                NOT NULL VARCHAR2(200)
+//		 CUST_NAME                                          VARCHAR2(200)
+//		 CUST_PHONE                                         VARCHAR2(20)
+//		 PAYPAL_TRAN_ID                            NOT NULL VARCHAR2(200)
+//		 MGI_REF_NUM                               NOT NULL VARCHAR2(200)
+//		 TRAN_DATE                                 NOT NULL DATE
+//		 CREATION_DATE                                      TIMESTAMP(6)
+//		 LAST_UPDATE_DATE                                   TIMESTAMP(6)
+//		 TRAN_AMT                                  NOT NULL NUMBER(10,2)
+//		 TRAN_FEE                                  NOT NULL NUMBER(10,2)
+//		 TRAN_STATUS                               NOT NULL VARCHAR2(50)
+//		 PAYPAL_TRAN_STATUS                        NOT NULL VARCHAR2(100)
+//		 MGI_SESS_ID                                        VARCHAR2(200)
 		
 		strQuery = "INSERT INTO MGI_PAYPAL_TRAN_HIST (TRAN_ID, CUST_EMAIL, CUST_NAME, "
 				+ "CUST_PHONE, PAYPAL_TRAN_ID, MGI_REF_NUM, TRAN_DATE, TRAN_AMT, TRAN_FEE, "
@@ -277,6 +283,32 @@ public class MoneyGramPayPalDAO {
 		LOGGER.debug("Exit updateHistoryAfterCommitTransaction.");
 	}
 
+	public void updateHistorySendValidationOrCommitTransactionFailed(String mgiTransactionSessionID
+			, String transactionStatus)
+			throws ClassNotFoundException, SQLException {
+
+		LOGGER.debug("Enter updateHistorySendValidationOrCommitTransactionFailed.");
+
+		Class.forName("oracle.jdbc.OracleDriver");
+		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+		Connection connection = DriverManager.getConnection(
+				constantFromProperties.getString("ORACLE_DB_URL"),
+				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
+				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
+
+		String strQuery = "update MGI_PAYPAL_TRAN_HIST set " +
+				" TRAN_STATUS = ? where MGI_SESS_ID = ?";
+		PreparedStatement preparedStatement = connection
+				.prepareStatement(strQuery);
+		preparedStatement.setString(1, transactionStatus);
+		preparedStatement.setString(2, mgiTransactionSessionID);
+		preparedStatement.executeUpdate();
+		connection.close();
+
+		LOGGER.debug("Exit updateHistorySendValidationOrCommitTransactionFailed.");
+	}
+	
+	
 	public void updateHistoryAfterPay(String mgiTransactionSessionID,
 			String payPalTransactionID) throws ClassNotFoundException,
 			SQLException {

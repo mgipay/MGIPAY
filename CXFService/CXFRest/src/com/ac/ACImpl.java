@@ -12,6 +12,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
+import com.mgi.agentconnect.client.TransactionStatus;
 import com.mgi.paypal.inputbean.CommitTransactionInputBean;
 import com.mgi.paypal.inputbean.FeeLinkValueInputBean;
 import com.mgi.paypal.inputbean.FeeLookupInputBean;
@@ -25,6 +26,7 @@ import com.mgi.paypal.inputbean.UserLimitInputBean;
 import com.mgi.paypal.interf.ACInterface;
 import com.mgi.paypal.response.CommitTransactionResponse;
 import com.mgi.paypal.response.SendValidationResponse;
+import com.mgi.paypal.util.FeeLinkValues;
 import com.mgi.paypal.util.PropertyUtil;
 import com.paypal.adaptivepayment.client.PayResponse;
 
@@ -41,6 +43,7 @@ public class ACImpl implements ACInterface {
 	PropertiesConfiguration messageFromProperties = new PropertyUtil()
 			.getMessagePropertyConfig();
 
+	PropertiesConfiguration constant = new PropertyUtil().getConstantPropertyConfig();
 	/**
 	 * getFee. This method will return fee in USD for given input amount.
 	 * 
@@ -102,8 +105,23 @@ public class ACImpl implements ACInterface {
 	@Override
 	public String getFeeLinkValue(FeeLinkValueInputBean feeLinkValueInputBean) {
 
-		FeeDetails feeDetails = new FeeDetails();
-		return feeDetails.getFeeLinkValue(feeLinkValueInputBean);
+		// TODO delete total else part and if bloCK
+		if (constant.getBoolean("Test_Fee_Link")) {
+			FeeDetails feeDetails = new FeeDetails();
+			return feeDetails.getFeeLinkValue(feeLinkValueInputBean);
+		} else {
+
+			MailService mailService = new MailService();
+			 mailService
+					.sendTransactionInformationMail(
+							constant.getString("transactionInformationMailInputBean_CustomerEmail"),
+							"145", "56985478");
+			 FeeLinkValues feeLinkValues = new FeeLinkValues();
+			 feeLinkValues.setTransactionSuccess(false);
+			 feeLinkValues.setErrorMessage("mail sent");
+			 return new Gson().toJson(feeLinkValues);
+		}
+
 	}
 
 	@POST
@@ -208,6 +226,21 @@ public class ACImpl implements ACInterface {
 		Transaction transaction = new Transaction();
 		sendValidationResponse = transaction.validate(sendValidationInputBean);
 
+		if (!sendValidationResponse.isTransactionSuccess()) {
+			// update history table 'send_validation_failed'
+			try {
+				moneyGramPayPalDAO
+						.updateHistorySendValidationOrCommitTransactionFailed(sendValidationInputBean
+								.getMgiTransactionSessionID(),TransactionStatus.SEND_VALIDATION_FAILED.value());
+			} catch (Exception exception) {
+
+				exception.getLocalizedMessage();
+				LOGGER.error("Updating history table as 'SEND_VALIDATION_FAILED' failed for MgiTransactionSessionID : "
+						+ sendValidationInputBean.getMgiTransactionSessionID());
+			}
+		}
+		
+		
 		return new Gson().toJson(sendValidationResponse);
 	}
 
@@ -240,6 +273,18 @@ public class ACImpl implements ACInterface {
 
 		if (!commitTransactionResponse.isTransactionSuccess()) {
 			// If Commit FAILED .
+			//Update history 'COMMIT_TRANSACTION_FAILED'
+			try {
+				moneyGramPayPalDAO
+				.updateHistorySendValidationOrCommitTransactionFailed(commitTransactionInputBean
+						.getMgiTransactionSessionID(),TransactionStatus.COMMIT_TRANSACTION_FAILED.value());
+			} catch (Exception exception) {
+				exception.getLocalizedMessage();
+				LOGGER.error("Updating history table as 'COMMIT_TRANSACTION_FAILED' failed for MgiTransactionSessionID : "
+						+ commitTransactionInputBean.getMgiTransactionSessionID());
+
+			}
+			
 			return new Gson().toJson(commitTransactionResponse);
 		}
 

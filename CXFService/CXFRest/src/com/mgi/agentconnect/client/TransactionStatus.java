@@ -39,7 +39,9 @@ public enum TransactionStatus {
     REJECTED,
     IN_PROGRESS,
     MGI_COMMITED,
-    PAYPAL_COMMITTED;
+    PAYPAL_COMMITTED,
+    SEND_VALIDATION_FAILED,
+    COMMIT_TRANSACTION_FAILED;
 
     public String value() {
         return name();

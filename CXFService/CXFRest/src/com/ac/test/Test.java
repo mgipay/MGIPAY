@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.List;
@@ -23,14 +21,14 @@ import com.mgi.paypal.inputbean.TransactionInformationMailInputBean;
 
 public class Test {
 	private static Hashtable<String, String> stateAndCodeHashTable = new Hashtable<String, String>();
-	public static void main1(String[] args) {
+	public static void main(String[] args) {
 
-		List<String> list = new ArrayList<String>();
-		list.add("ba");
-		list.add("ab");
-		list.add("aa");
-		Collections.sort(list);
-		System.out.println(list);
+//		List<String> list = new ArrayList<String>();
+//		list.add("ba");
+//		list.add("ab");
+//		list.add("aa");
+//		Collections.sort(list);
+//		System.out.println(list);
 		
 //		java.sql.Date transactionDate = (java.sql.Date) Calendar.getInstance()
 //				.getTime();
@@ -188,7 +186,7 @@ public class Test {
 		}
 		return xgcal;
 	}
-	public static void main(String[] args) throws Exception {
+	public static void main1(String[] args) throws Exception {
 		
 		
 		
@@ -224,7 +222,7 @@ public class Test {
 		 System.setProperty("http.proxyHost", "proxy.tcs.com");
 		 System.setProperty("http.proxyPort", "8080");
 		 System.setProperty("http.proxyUser", "538540");
-		 System.setProperty("http.proxyPassword", "Bala@Apr84");
+		 System.setProperty("http.proxyPassword", "Bala@May84");
 		 com.mgi.agentconnect.client.CommitTransactionRequest commitTransactionRequest = new com.mgi.agentconnect.client.CommitTransactionRequest();
 		com.mgi.agentconnect.client.CommitTransactionResponse commitTransactionResponse = null;
 

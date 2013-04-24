@@ -41,7 +41,7 @@ public class MailService {
 
 	public MailService() {
 		properties.put("mail.smtp.auth", "true");
-		/* props.put("mail.smtp.starttls.enable","true"); */
+		properties.put("mail.smtp.starttls.enable","true"); 
 		// TODO
 		properties.put("mail.smtp.host", "smtp.gmail.com");
 		properties.put("mail.smtp.port", "587");
@@ -82,6 +82,8 @@ public class MailService {
 			Transport.send(message);
 
 		} catch (MessagingException messagingException) {
+			LOGGER.error(messagingException.getLocalizedMessage());
+			messagingException.printStackTrace();
 			LOGGER.error("Send Transaction Information Mial failed for : "
 					+ customerEmailID + " amount : " + amount.toString()
 					+ " referenceNumber : " + referenceNumber);

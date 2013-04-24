@@ -43,9 +43,30 @@ public class FeeDetails {
 
 		LOGGER.debug("Enter getFee.");
 
-		FeeLookupRequest feeLookupRequest = null;
+		FeeLookupRequest feeLookupRequest = new FeeLookupRequest();
 		feeLookupRequest = createFeeLookupInput(feeLookupInputBean.getAmount(),
 				false);
+		
+		
+//		System.setProperty("http.proxyHost", "proxy.tcs.com");
+//		 System.setProperty("http.proxyPort", "8080");
+//		 System.setProperty("http.proxyUser", "538540");
+//		 System.setProperty("http.proxyPassword", "Bala@May84");
+//			feeLookupRequest.setAgentID("30014943");
+//			feeLookupRequest.setAgentSequence("9");
+//			feeLookupRequest.setToken("TEST");
+//			feeLookupRequest.setTimeStamp(CalendarUtil.getTimeStamp());
+//			feeLookupRequest.setApiVersion("1211");
+//			feeLookupRequest.setClientSoftwareVersion("v1");
+//			feeLookupRequest.setAmountExcludingFee(new BigDecimal(100));
+//			feeLookupRequest.setProductType(com.mgi.agentconnect.client.ProductType.SEND);
+//			feeLookupRequest.setReceiveCountry("USA");
+//			feeLookupRequest.setDeliveryOption("WILL_CALL");
+//			feeLookupRequest.setReceiveCurrency("USD");
+//			feeLookupRequest.setSendCurrency("USD");
+//			feeLookupRequest.setAllOptions(false);
+		
+		
 		com.mgi.paypal.response.FeeLookupResponse feeLookupResponseUI = new com.mgi.paypal.response.FeeLookupResponse();
 		FeeLookupResponse feeLookupResponse = null;
 		byte retryCount = 3;

@@ -41,7 +41,7 @@ import com.mgi.paypal.util.UserData;
 public class MGI_PayPal_Test {
 	
 	private static Logger LOGGER = Logger.getLogger(MGI_PayPal_Test.class);
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({  "unused" })
 	@Test
 	public void test() throws FileNotFoundException, IOException {
 		
