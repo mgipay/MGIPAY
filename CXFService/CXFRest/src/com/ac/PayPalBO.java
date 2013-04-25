@@ -40,13 +40,13 @@ public class PayPalBO {
 	public PayPalBO() {
 	}
 
-	PropertiesConfiguration constantFromProperties = new PropertyUtil()
+	private static PropertiesConfiguration constantFromProperties = new PropertyUtil()
 			.getConstantPropertyConfig();
-	PropertiesConfiguration messageFromProperties = new PropertyUtil()
+	private static PropertiesConfiguration messageFromProperties = new PropertyUtil()
 			.getMessagePropertyConfig();
 	private static Logger LOGGER = Logger.getLogger(PayPalBO.class);
 
-	public PayResponse payToMoneyGram(String token, String cutomerEmail)
+	public static PayResponse payToMoneyGram(String token, String cutomerEmail)
 			throws Exception {
 
 		LOGGER.debug("Enter payToMoneyGram.");
@@ -92,7 +92,7 @@ public class PayPalBO {
 		return payResponse;
 	}
 
-	public String getUserLimits(UserLimitInputBean userLimitInputBean) {
+	public static String getUserLimits(UserLimitInputBean userLimitInputBean) {
 
 		LOGGER.debug("Enter getUserLimits.");
 
@@ -173,8 +173,8 @@ public class PayPalBO {
 
 		return gson.toJson(getUserLimitsResponseForReturn);
 	}
-	
-	private String createToken(String codeValue) {
+
+	private static String createToken(String codeValue) {
 
 		LOGGER.debug("Enter Create Token");
 
@@ -196,12 +196,12 @@ public class PayPalBO {
 			postMethod.addParameter("scope", ScopeValue);
 			postMethod.addParameter("code", codeValue);
 			LOGGER.debug(codeValue);
-			int statusCode = client.executeMethod(postMethod);	
-			// TODO 
+			int statusCode = client.executeMethod(postMethod);
+			// TODO
 			LOGGER.debug(statusCode);
 			if (statusCode != HttpStatus.SC_NOT_IMPLEMENTED) {
 				String string = postMethod.getResponseBodyAsString();
-				// TODO 
+				// TODO
 				LOGGER.debug(string);
 				accessToken = (AccessToken) new Gson().fromJson(string,
 						AccessToken.class);
@@ -211,18 +211,18 @@ public class PayPalBO {
 			LOGGER.error(e, e);
 			e.printStackTrace();
 		}
-		
+
 		LOGGER.debug("Exit Create Token");
-		
+
 		return accessToken.getAccess_token();
 	}
 
-	private String processToken(String tokenData) {
-		
+	private static String processToken(String tokenData) {
+
 		LOGGER.debug("Enter processToken");
-		
+
 		LOGGER.debug(tokenData);
-		
+
 		String responseBody = null;
 		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
 				+ "/v1/userinfo?schema=openid";
@@ -244,20 +244,26 @@ public class PayPalBO {
 			LOGGER.error(e, e);
 			e.printStackTrace();
 		}
-		
+
 		LOGGER.debug("Exit processToken");
 
 		return responseBody;
 	}
-	public String getUserData(UserDataInputBean userDataInputBean) {
+
+	public static String getUserData(UserDataInputBean userDataInputBean) {
 
 		LOGGER.debug("Enter getUserData.");
 
-		String token = createToken(userDataInputBean.getCode());
-		String userDataString = processToken(token);
-
-		UserData userData = new UserData();
 		Gson gson = new Gson();
+		LOGGER.debug(gson.toJson(userDataInputBean));
+
+		String token = createToken(userDataInputBean.getCode());
+		LOGGER.debug(token);
+
+		String userDataString = processToken(token);
+		LOGGER.debug(userDataString);
+		UserData userData = new UserData();
+
 		try {
 			userData = (UserData) gson.fromJson(userDataString, UserData.class);
 		} catch (JsonSyntaxException jsonSyntaxException) {
@@ -269,7 +275,9 @@ public class PayPalBO {
 			return gson.toJson(userData);
 		}
 		userData.setToken(token);
-		
+
+		LOGGER.debug(gson.toJson(userData));
+
 		LOGGER.debug("Exit getUserData.");
 
 		return gson.toJson(userData);

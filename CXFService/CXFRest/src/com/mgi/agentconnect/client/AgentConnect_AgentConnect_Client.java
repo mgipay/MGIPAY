@@ -9,10 +9,13 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.log4j.Logger;
 
 import com.mgi.paypal.util.PropertyUtil;
 
 public final class AgentConnect_AgentConnect_Client {
+	private static Logger LOGGER = Logger.getLogger(AgentConnect_AgentConnect_Client.class);
+
 	private static final QName SERVICE_NAME = new QName(
 			"http://www.moneygram.com/AgentConnect1211", "AgentConnectService");
 	
@@ -33,18 +36,22 @@ public final class AgentConnect_AgentConnect_Client {
 
 	/** * @return * @throws MalformedURLException */
 	private  AgentConnect getPort() throws MalformedURLException {
-		URL wsdlURL = new URL(/*"https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211"*/
-				constantFromProperties.getString("AGENT_CONNECT_PORT_URL")
-				);
+		// TODO delete logger
+		LOGGER.debug("Enter getPort.");
+
+		URL wsdlURL = new URL(
+				constantFromProperties.getString("AGENT_CONNECT_PORT_URL"));
 		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
 		AgentConnect port = ss.getAgentConnect();
+		
+		LOGGER.debug("Exit getPort.");
+		
 		return port;
 	}
 
-	public  List<String> codeTable(
+	public List<String> codeTable(
 			com.mgi.agentconnect.client.CodeTableRequest codeTableRequest,
-			String countryCode)
-			throws Exception {
+			String countryCode) throws Exception {
 
 		AgentConnect port = getPort();
 		com.mgi.agentconnect.client.CodeTableResponse _codeTable__return = null;

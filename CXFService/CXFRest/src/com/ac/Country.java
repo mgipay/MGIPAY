@@ -21,7 +21,7 @@ public class Country {
 	}
 	private static Logger LOGGER = Logger.getLogger(Country.class);
 
-	PropertiesConfiguration constantFromProperties = new PropertyUtil()
+	private static PropertiesConfiguration constantFromProperties = new PropertyUtil()
 			.getConstantPropertyConfig();
 
 	private static String STATES_IN_USA = "";
@@ -36,7 +36,7 @@ public class Country {
 	 * 
 	 * @return list of states in USA in JSON format.
 	 */
-	public String getStateForUSA() {
+	public static String getStateForUSA() {
 
 		LOGGER.debug("Enter getStateCode.");
 
@@ -79,11 +79,21 @@ public class Country {
 								"USA");
 
 						for (int index = 0; index < stateAndCodeList.size(); index = index + 2) {
+							// setting state name as key and state code as value.
+							
 							Transaction.stateCodeHashTable.put(
 									stateAndCodeList.get(index),
 									stateAndCodeList.get(index + 1));
 							tempStateList.add(stateAndCodeList.get(index));
 						}
+						
+						// TODO delete below for loop
+						
+						for (String stateCode : Transaction.stateCodeHashTable
+								.values()) {
+							LOGGER.debug(stateCode);
+						}						
+						
 						
 						for(String statemName : tempStateList) {
 							statemName = statemName.toLowerCase();

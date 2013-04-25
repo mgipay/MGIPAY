@@ -16,8 +16,8 @@ public class PropertyUtil {
 	public PropertiesConfiguration getConstantPropertyConfig() {
 		try {
 			constant = new PropertiesConfiguration(
-					"/var/lib/tomcat7/conf/Constants.properties");
-//			 "C:\\Documents and Settings\\538540\\09_04_2013\\MGIPAY\\CXFService\\CXFRest\\Constants.properties");
+			 "/var/lib/tomcat7/conf/Constants.properties");
+//					"Constants.properties");
 		} catch (ConfigurationException configurationException) {
 			((Throwable) configurationException).printStackTrace();
 		}
@@ -28,9 +28,8 @@ public class PropertyUtil {
 	public PropertiesConfiguration getMessagePropertyConfig() {
 		try {
 			message = new PropertiesConfiguration(
-					"/var/lib/tomcat7/conf/Message.properties");
-//			 "C:\\Documents and Settings\\538540\\09_04_2013\\MGIPAY\\CXFService\\CXFRest\\Message.properties");
-
+			 "/var/lib/tomcat7/conf/Message.properties");
+//					"Message.properties");
 		} catch (ConfigurationException configurationException) {
 			((Throwable) configurationException).printStackTrace();
 		}

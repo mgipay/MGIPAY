@@ -33,13 +33,13 @@ public class FeeDetails {
 
 	}
 
-	PropertiesConfiguration constantFromProperties = new PropertyUtil()
+	 PropertiesConfiguration constantFromProperties = new PropertyUtil()
 			.getConstantPropertyConfig();
-	PropertiesConfiguration messageFromProperties = new PropertyUtil()
+	 PropertiesConfiguration messageFromProperties = new PropertyUtil()
 			.getMessagePropertyConfig();
 	private static Logger LOGGER = Logger.getLogger(FeeDetails.class);
 
-	public String getFee(FeeLookupInputBean feeLookupInputBean) {
+	public  String getFee(FeeLookupInputBean feeLookupInputBean) {
 
 		LOGGER.debug("Enter getFee.");
 
@@ -52,19 +52,6 @@ public class FeeDetails {
 //		 System.setProperty("http.proxyPort", "8080");
 //		 System.setProperty("http.proxyUser", "538540");
 //		 System.setProperty("http.proxyPassword", "Bala@May84");
-//			feeLookupRequest.setAgentID("30014943");
-//			feeLookupRequest.setAgentSequence("9");
-//			feeLookupRequest.setToken("TEST");
-//			feeLookupRequest.setTimeStamp(CalendarUtil.getTimeStamp());
-//			feeLookupRequest.setApiVersion("1211");
-//			feeLookupRequest.setClientSoftwareVersion("v1");
-//			feeLookupRequest.setAmountExcludingFee(new BigDecimal(100));
-//			feeLookupRequest.setProductType(com.mgi.agentconnect.client.ProductType.SEND);
-//			feeLookupRequest.setReceiveCountry("USA");
-//			feeLookupRequest.setDeliveryOption("WILL_CALL");
-//			feeLookupRequest.setReceiveCurrency("USD");
-//			feeLookupRequest.setSendCurrency("USD");
-//			feeLookupRequest.setAllOptions(false);
 		
 		
 		com.mgi.paypal.response.FeeLookupResponse feeLookupResponseUI = new com.mgi.paypal.response.FeeLookupResponse();
@@ -145,7 +132,7 @@ public class FeeDetails {
 	 * 
 	 * @return FeeLookupResponse.
 	 */
-	private FeeLookupRequest createFeeLookupInput(BigDecimal amount,
+	private  FeeLookupRequest createFeeLookupInput(BigDecimal amount,
 			boolean fundsIn) {
 
 		LOGGER.debug("Enter createFeeLookupInput.");
@@ -193,7 +180,7 @@ public class FeeDetails {
 	 * 
 	 * @return feeAmount.
 	 */
-	private BigDecimal getFeeForFeeLink(BigDecimal amount, boolean fundsIn) {
+	private  BigDecimal getFeeForFeeLink(BigDecimal amount, boolean fundsIn) {
 
 		LOGGER.debug("Enter getFeeForFeeLink.");
 
@@ -224,7 +211,7 @@ public class FeeDetails {
 
 	}
 
-	public String getFeeLinkValue(FeeLinkValueInputBean feeLinkValueInputBean) {
+	public  String getFeeLinkValue(FeeLinkValueInputBean feeLinkValueInputBean) {
 
 		LOGGER.debug("Enter getFeeLinkValue.");
 

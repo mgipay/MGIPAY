@@ -12,16 +12,41 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.commons.configuration.PropertiesConfiguration;
+
 import com.google.gson.Gson;
 import com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client;
 import com.mgi.agentconnect.client.CodeTableRequest;
 import com.mgi.agentconnect.client.FeeLookupResponse;
 import com.mgi.paypal.inputbean.SendProofInputBean;
 import com.mgi.paypal.inputbean.TransactionInformationMailInputBean;
+import com.mgi.paypal.util.CalendarUtil;
+import com.mgi.paypal.util.PropertyUtil;
+import com.thoughtworks.xstream.XStream;
 
 public class Test {
 	private static Hashtable<String, String> stateAndCodeHashTable = new Hashtable<String, String>();
-	public static void main(String[] args) {
+	
+	private static PropertiesConfiguration messageFromProperties = new PropertyUtil()
+	.getMessagePropertyConfig();
+
+private static PropertiesConfiguration constant = new PropertyUtil().getConstantPropertyConfig();
+	public static void main(String[] args) throws InterruptedException {
+		
+		while(true){
+		System.out.println(messageFromProperties.getString("RETRY"));
+		
+		Thread.sleep(3000);
+		}
+//		System.out.println(messageFromProperties.getString("RETRY"));
+//		
+//		System.out.println("gg");
+	}
+	
+	
+	
+	
+	public static void main5(String[] args) {
 
 //		List<String> list = new ArrayList<String>();
 //		list.add("ba");
@@ -66,6 +91,10 @@ public class Test {
 //		System.out.println(getUserLimitsResponse.getUserLimit().get(0)
 //				.getLimitAmount().getAmount());
 		try {
+			System.setProperty("http.proxyHost", "proxy.tcs.com");
+			 System.setProperty("http.proxyPort", "8080");
+			 System.setProperty("http.proxyUser", "538540");
+			 System.setProperty("http.proxyPassword", "Bala@May84");
 			com.mgi.agentconnect.client.FeeLookupRequest feeLookupRequest = new com.mgi.agentconnect.client.FeeLookupRequest();
 
 			feeLookupRequest.setAgentID("30014943");
@@ -82,6 +111,9 @@ public class Test {
 			feeLookupRequest.setSendCurrency("USD");
 			feeLookupRequest.setAllOptions(false);
 
+			XStream xStream = new XStream();
+			System.out.println(xStream.toXML(feeLookupRequest));
+			
 			System.out.println(gson.toJson(feeLookupRequest));
 			AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 			FeeLookupResponse feeLookupResponse =client
@@ -103,32 +135,44 @@ public class Test {
 							.getMgiTransactionSessionID());
 			commitTransactionRequest
 					.setProductType(com.mgi.agentconnect.client.ProductType.SEND);
-			System.out.println(gson.toJson(commitTransactionRequest));
+//			System.out.println(gson.toJson(commitTransactionRequest));
 			commitTransactionResponse = client
 					.commitTransaction(commitTransactionRequest);
-			System.out.println(commitTransactionResponse.getReferenceNumber());
+			System.out.println(xStream.toXML(commitTransactionRequest));
+			System.out.println(xStream.toXML(commitTransactionResponse));
+			
+//			System.out.println(commitTransactionResponse.getReferenceNumber());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	
-	private static com.mgi.agentconnect.client.SendValidationResponse sendValidation(
-			Gson gson, FeeLookupResponse feeLookupResponse,
-			XMLGregorianCalendar xmlGregorianCalendar) throws Exception {
+	private void x(){
+		com.mgi.agentconnect.client.FeeLookupRequest feeLookupRequest = new com.mgi.agentconnect.client.FeeLookupRequest();
+
+		feeLookupRequest.setAgentID("30014943");
+		feeLookupRequest.setAgentSequence("9");
+		feeLookupRequest.setToken("TEST");
+		feeLookupRequest.setTimeStamp(getTimeStamp());
+		feeLookupRequest.setApiVersion("1211");
+		feeLookupRequest.setClientSoftwareVersion("v1");
+		feeLookupRequest.setAmountExcludingFee(new BigDecimal(100));
+		feeLookupRequest.setProductType(com.mgi.agentconnect.client.ProductType.SEND);
+		feeLookupRequest.setReceiveCountry("USA");
+		feeLookupRequest.setDeliveryOption("WILL_CALL");
+		feeLookupRequest.setReceiveCurrency("USD");
+		feeLookupRequest.setSendCurrency("USD");
+		feeLookupRequest.setAllOptions(false);
+
 		com.mgi.agentconnect.client.SendValidationRequest sendValidationRequest = new com.mgi.agentconnect.client.SendValidationRequest();
-		// sendValidationRequest.setMgiTransactionSessionID(feeLookupResponse
-		// .getMgiTransactionSessionID());
-		// sendValidationRequest.setFeeAmount(feeLookupResponse.getFeeInfo()
-		// .get(0).getTotalAmount().subtract(new BigDecimal(100)));
 		
 		sendValidationRequest.setMgiTransactionSessionID("9708729E1572561364843019504");
 		sendValidationRequest.setFeeAmount(new BigDecimal(12));
 		sendValidationRequest.setAgentID("30014943");
 		sendValidationRequest.setAgentSequence("9");
 		sendValidationRequest.setToken("TEST");
-		sendValidationRequest.setTimeStamp(xmlGregorianCalendar);
+		sendValidationRequest.setTimeStamp(CalendarUtil.getTimeStamp());
 		sendValidationRequest.setApiVersion("1211");
 		sendValidationRequest.setClientSoftwareVersion("v1");
 		sendValidationRequest.setOperatorName("pgui");
@@ -166,12 +210,74 @@ public class Test {
 		sendValidationRequest.setPrimaryReceiptLanguage("eng");//hardcode
 		sendValidationRequest.setSecondaryReceiptLanguage("spa");//hardcode\
 		
+		
+		
+		XStream xStream = new XStream();
+		System.out.println(xStream.toXML(feeLookupRequest));
+	}
+	private static com.mgi.agentconnect.client.SendValidationResponse sendValidation(
+			Gson gson, FeeLookupResponse feeLookupResponse,
+			XMLGregorianCalendar xmlGregorianCalendar) throws Exception {
+		com.mgi.agentconnect.client.SendValidationRequest sendValidationRequest = new com.mgi.agentconnect.client.SendValidationRequest();
+		// sendValidationRequest.setMgiTransactionSessionID(feeLookupResponse
+		// .getMgiTransactionSessionID());
+		// sendValidationRequest.setFeeAmount(feeLookupResponse.getFeeInfo()
+		// .get(0).getTotalAmount().subtract(new BigDecimal(100)));
+		
+		sendValidationRequest.setMgiTransactionSessionID(feeLookupResponse.getMgiTransactionSessionID());
+		sendValidationRequest.setFeeAmount(feeLookupResponse.getFeeInfo()
+				.get(0).getTotalAmount().subtract(new BigDecimal("100")));
+		
+		sendValidationRequest.setAgentID("30014943");
+		sendValidationRequest.setAgentSequence("9");
+		sendValidationRequest.setToken("TEST");
+		sendValidationRequest.setTimeStamp(xmlGregorianCalendar);
+		sendValidationRequest.setApiVersion("1211");
+		sendValidationRequest.setClientSoftwareVersion("v1");
+//		sendValidationRequest.setOperatorName("pgui");
+		sendValidationRequest.setAmount(new BigDecimal(100));
+		/*
+		 * "{"address":{"postal_code":"07901","locality":"Summit","region":"NJ",
+		 * "country":"US","street_address":"4807384 5th Street, 3272844 4th Street"},
+		 * "family_name":"Fundsout11","verified":"true","phone_number":" 6023820578",
+		 * "zoneinfo":"America/Los_Angeles","name":"MGI Fundsout11",
+		 * "email":"testuser@moneygram.com","given_name":"MGI",
+		 * "user_id":"https://www.paypal.com/webapps/auth/identity/user/
+		 * dCn3hbvb2NWbecoGgSGz41zZ5jGdcYvQAr3zmwEZxUo"}"
+		 */
+		
+		sendValidationRequest.setDestinationState("MN");// from UI
+		sendValidationRequest.setSenderFirstName("SF");//"given_name":"MGI"
+		sendValidationRequest.setSenderLastName("SL");//"family_name":"Fundsout11",
+		sendValidationRequest.setSenderAddress("1351 H AVE S");//"street_address":"4807384 5th Street, 3272844 4th Street "},
+		sendValidationRequest.setSenderCity("CHNMPLS");// "zoneinfo":"America/Los_Angeles" after slash
+		sendValidationRequest.setSenderState("MN");//"region":"NJ",
+		sendValidationRequest.setSenderZipCode("55416");//"postal_code":"07901"
+		sendValidationRequest.setSenderCountry("USA");//hardcode
+		sendValidationRequest.setSenderHomePhone("9522320253");//"phone_number":" 6023820578",
+		sendValidationRequest.setReceiverFirstName("N R F");//"given_name":"MGI"
+		sendValidationRequest.setReceiverLastName("N R L");//"family_name":"Fundsout11",
+		sendValidationRequest.setAgentUseSendData("testuser@moneygram.com");
+		
+		sendValidationRequest.setDeliveryOption("WILL_CALL");//hardcode
+		sendValidationRequest.setReceiveCurrency("USD");//hardcode
+		sendValidationRequest.setDestinationCountry("USA");//hardcode
+		sendValidationRequest.setSendCurrency("USD");//hardcode
+		sendValidationRequest.setConsumerId("0");//hardcode
+		sendValidationRequest.setFormFreeStaging(false);//hardcode
+		sendValidationRequest.setTimeToLive(new java.math.BigInteger("30"));//hardcode
+		sendValidationRequest.setPrimaryReceiptLanguage("eng");//hardcode
+		sendValidationRequest.setSecondaryReceiptLanguage("spa");//hardcode\
+		
 		com.mgi.agentconnect.client.SendValidationResponse sendValidationResponse = null;
-		System.out.println(gson.toJson(sendValidationRequest));
+		
+		
+		System.out.println(new XStream().toXML(sendValidationRequest));
+//		System.out.println(gson.toJson(sendValidationRequest));
 		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 		sendValidationResponse = client
 				.sendValidation(sendValidationRequest);
-		System.out.println(sendValidationResponse);
+//		System.out.println(sendValidationResponse);
 		return sendValidationResponse;
 	}
 

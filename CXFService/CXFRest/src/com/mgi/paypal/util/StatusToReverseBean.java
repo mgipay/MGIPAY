@@ -1,8 +1,8 @@
 package com.mgi.paypal.util;
 
-public class HistoryStatusReverseBean {
+public class StatusToReverseBean {
 
-	public HistoryStatusReverseBean() {
+	public StatusToReverseBean() {
 
 	}
 
