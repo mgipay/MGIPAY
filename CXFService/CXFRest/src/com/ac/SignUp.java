@@ -21,8 +21,8 @@ public class SignUp {
 			System.out.println("Invoking sendProofMessage...");
 //			System.setProperty("http.proxyHost", "proxy.tcs.com");
 //			System.setProperty("http.proxyPort", "8080");
-//			System.setProperty("http.proxyUser", "351189");
-//			System.setProperty("http.proxyPassword", "Maha@apr13");
+//			System.setProperty("http.proxyUser", "538540");
+//			System.setProperty("http.proxyPassword", "Bala@May84");
 			/*String messageName = "EXAMPLETRIGGER";
 
 			List<String> replacementAddressList = new ArrayList<String>();

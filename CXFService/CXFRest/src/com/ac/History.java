@@ -26,10 +26,10 @@ public class History {
 	}
 	private static Logger LOGGER = Logger.getLogger(History.class);
 
-	PropertiesConfiguration messageFromProperties = new PropertyUtil()
+	private static PropertiesConfiguration messageFromProperties = new PropertyUtil()
 			.getMessagePropertyConfig();
 
-	PropertiesConfiguration constantFromProperties = new PropertyUtil()
+	private static PropertiesConfiguration constantFromProperties = new PropertyUtil()
 			.getConstantPropertyConfig();
 
 	/**
@@ -43,7 +43,7 @@ public class History {
 	 * @return histroyLookupResponse. This return object will contain last ten
 	 *         transaction in JSON format.
 	 */
-	public String retrieveHistoryDetails(
+	public static String retrieveHistoryDetails(
 			HistroyLookupInputBean histroyLookupInputBean) {
 
 		LOGGER.debug("Enter getHistoryDetails.");
@@ -114,7 +114,7 @@ public class History {
 	 * 
 	 * @return status of transaction as String.
 	 */
-	private String detailLookUpForRetrieveHistory(String referenceNumber,
+	private static String detailLookUpForRetrieveHistory(String referenceNumber,
 			String mgiTransactionSessionID) throws Exception {
 
 		LOGGER.debug("Enter detailLookUpForRetrieveHistory.");
@@ -132,7 +132,7 @@ public class History {
 		return detailLookupResponse.getTransactionStatus().value();
 	}
 	
-	private DetailLookupRequest createDetailLookupRequest(
+	private static DetailLookupRequest createDetailLookupRequest(
 			 String mgiTransactionSessionID) {
 		DetailLookupRequest detailLookupRequest = new DetailLookupRequest();
 

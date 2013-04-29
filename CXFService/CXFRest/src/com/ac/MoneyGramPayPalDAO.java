@@ -20,8 +20,8 @@ import com.mgi.agentconnect.client.TransactionStatus;
 import com.mgi.paypal.inputbean.SendValidationInputBean;
 import com.mgi.paypal.util.FeeLinkValues;
 import com.mgi.paypal.util.HistoryDetails;
-import com.mgi.paypal.util.HistoryStatusReverseBean;
 import com.mgi.paypal.util.PropertyUtil;
+import com.mgi.paypal.util.StatusToReverseBean;
 
 public class MoneyGramPayPalDAO {
 
@@ -120,7 +120,7 @@ public class MoneyGramPayPalDAO {
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1, emailId);
-		preparedStatement.setString(2, TransactionStatus.PAYPAL_COMMITTED.value());
+		preparedStatement.setString(2, TransactionStatus.AVAILABLE.value());
 		
 		ResultSet resultSet = preparedStatement.executeQuery();
 		List<HistoryDetails> historyDetailsList = new ArrayList<HistoryDetails>();
@@ -167,19 +167,25 @@ public class MoneyGramPayPalDAO {
 				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
 		String strQuery = "SELECT * FROM (SELECT * FROM MGI_PAYPAL_TRAN_HIST "
-				+ "WHERE TRAN_STATUS in (?,?) and  order by TRAN_DATE desc) a where rownum < 1001";
+				+ "WHERE TRAN_STATUS = ? and  order by TRAN_DATE desc) a where rownum < 1001";
 
 		// constantFromProperties
 		// .getString("RETRIEVE_HISTORY_DETAILS_FOR_BATCH_QUERY");
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
-		preparedStatement.setString(1, TransactionStatus.SEND_VALIDATION_FAILED.value());
-		preparedStatement.setString(2, TransactionStatus.COMMIT_TRANSACTION_FAILED.value());
+//		preparedStatement.setString(1, TransactionStatus.SEND_VALIDATION_FAILED.value());
+		preparedStatement.setString(1, TransactionStatus.MGI_FAILED.value());
 		
 		ResultSet resultSet = preparedStatement.executeQuery();
 		List<HistoryDetails> historyDetailsList = new ArrayList<HistoryDetails>();
 		while (resultSet.next()) {
 			HistoryDetails historyDetails = new HistoryDetails();
+			historyDetails.setMgiReferenceNumber(resultSet
+					.getString("MGI_REF_NUM"));
+			historyDetails.setTransactionAmount(resultSet
+					.getBigDecimal("TRAN_AMT"));
+			historyDetails.setTransactionFee(resultSet
+					.getBigDecimal("TRAN_FEE"));
 			historyDetails.setMgiTransactionSessionID(resultSet
 					.getString("MGI_SESS_ID"));
 			historyDetailsList.add(historyDetails);
@@ -284,7 +290,7 @@ public class MoneyGramPayPalDAO {
 	}
 
 	public void updateHistorySendValidationOrCommitTransactionFailed(String mgiTransactionSessionID
-			, String transactionStatus)
+			)
 			throws ClassNotFoundException, SQLException {
 
 		LOGGER.debug("Enter updateHistorySendValidationOrCommitTransactionFailed.");
@@ -300,14 +306,37 @@ public class MoneyGramPayPalDAO {
 				" TRAN_STATUS = ? where MGI_SESS_ID = ?";
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
-		preparedStatement.setString(1, transactionStatus);
+		preparedStatement.setString(1, TransactionStatus.MGI_FAILED.value());
 		preparedStatement.setString(2, mgiTransactionSessionID);
 		preparedStatement.executeUpdate();
 		connection.close();
 
 		LOGGER.debug("Exit updateHistorySendValidationOrCommitTransactionFailed.");
 	}
-	
+
+	public void updatePaypalFailed(String mgiTransactionSessionID)
+			throws ClassNotFoundException, SQLException {
+
+		LOGGER.debug("Enter updateHistorySendValidationOrCommitTransactionFailed.");
+
+		Class.forName("oracle.jdbc.OracleDriver");
+		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+		Connection connection = DriverManager.getConnection(
+				constantFromProperties.getString("ORACLE_DB_URL"),
+				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
+				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
+
+		String strQuery = "update MGI_PAYPAL_TRAN_HIST set " +
+				" TRAN_STATUS = ? where MGI_SESS_ID = ?";
+		PreparedStatement preparedStatement = connection
+				.prepareStatement(strQuery);
+		preparedStatement.setString(1, TransactionStatus.PAYPAL_FAILED.value());
+		preparedStatement.setString(2, mgiTransactionSessionID);
+		preparedStatement.executeUpdate();
+		connection.close();
+
+		LOGGER.debug("Exit updateHistorySendValidationOrCommitTransactionFailed.");
+	}
 	
 	public void updateHistoryAfterPay(String mgiTransactionSessionID,
 			String payPalTransactionID) throws ClassNotFoundException,
@@ -365,8 +394,8 @@ public class MoneyGramPayPalDAO {
 	}
 
 	public void updateHistoryDetailStatusReversedAndRejected(
-			List<HistoryStatusReverseBean> historyStatusReverseBeanList,
-			List<String> histroyStatusRejectedList)
+			List<StatusToReverseBean> statusToReverseBeanList,
+			List<String> stausToRejectBeanList)
 			throws ClassNotFoundException, SQLException {
 
 		LOGGER.debug("Enter updateHistoryDetailStatusReversedAndRejected.");
@@ -378,21 +407,36 @@ public class MoneyGramPayPalDAO {
 				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
 				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 		Statement statement = connection.createStatement();
-		for (HistoryStatusReverseBean historyStatusReverseBean : historyStatusReverseBeanList) {
-			String quesrToUpdateReverse = constantFromProperties
-					.getString("UPDATE_HISTORY_STAUS_REVERSED_PART1")
-					.concat(historyStatusReverseBean.getMgiReferenceNumber())
-					.concat(constantFromProperties
-							.getString("UPDATE_HISTORY_STAUS_REVERSED_PART2"))
-					.concat(historyStatusReverseBean
-							.getMgiTransactionSessionID()).concat("'");
+		for (StatusToReverseBean statusToReverseBean : statusToReverseBeanList) {
+			
+			String queryToUpdateReverse = " Update MGI_PAYPAL_TRAN_HIST set TRAN_STATUS = '"
+					.concat(TransactionStatus.REVERSED.value())
+					.concat("' and MGI_REF_NUM = '")
+					.concat(statusToReverseBean.getMgiReferenceNumber())
+					.concat("' where MGI_SESS_ID = '".concat(statusToReverseBean
+							.getMgiTransactionSessionID())).concat("'");
+			
+			//TODO delete below line
+			LOGGER.debug(queryToUpdateReverse);		
+//					constantFromProperties
+//					.getString("UPDATE_HISTORY_STAUS_REVERSED_PART1")
+//					.concat(statusToReverseBean.getMgiReferenceNumber())
+//					.concat(constantFromProperties
+//							.getString("UPDATE_HISTORY_STAUS_REVERSED_PART2"))
+//					.concat(statusToReverseBean
+//							.getMgiTransactionSessionID()).concat("'");
 
-			statement.addBatch(quesrToUpdateReverse);
+			statement.addBatch(queryToUpdateReverse);
 		}
-		for (String mgiTransactionSessionID : histroyStatusRejectedList) {
-			String queryToUpdateReject = constantFromProperties
-					.getString("UPDATE_HISTORY_STAUS_REJECTED")
+		for (String mgiTransactionSessionID : stausToRejectBeanList) {
+			String queryToUpdateReject = "Update MGI_PAYPAL_TRAN_HIST set TRAN_STATUS = '"
+					.concat(TransactionStatus.REJECTED.value())
+					.concat("' where MGI_SESS_ID = '")
 					.concat(mgiTransactionSessionID).concat("'");
+					
+//					constantFromProperties
+//					.getString("UPDATE_HISTORY_STAUS_REJECTED")
+//					.concat(mgiTransactionSessionID).concat("'");
 			statement.addBatch(queryToUpdateReject);
 
 		}

@@ -22,15 +22,15 @@ public class Transaction {
 	}
 	private static Logger LOGGER = Logger.getLogger(Transaction.class);
 
-	PropertiesConfiguration constantFromProperties = new PropertyUtil()
+	private static PropertiesConfiguration constantFromProperties = new PropertyUtil()
 			.getConstantPropertyConfig();
-	PropertiesConfiguration messageFromProperties = new PropertyUtil()
+	private static PropertiesConfiguration messageFromProperties = new PropertyUtil()
 			.getMessagePropertyConfig();
 
 	public static Hashtable<String, String> stateCodeHashTable = new Hashtable<String, String>();
 	
 	
-	public com.mgi.paypal.response.SendValidationResponse validate(SendValidationInputBean sendValidationInputBean) {
+	public static com.mgi.paypal.response.SendValidationResponse validate(SendValidationInputBean sendValidationInputBean) {
 
 		LOGGER.debug("Enter sendValidation.");
 
@@ -143,7 +143,7 @@ public class Transaction {
 		return sendValidationResponseForUI;
 	}
 
-	private void setSenderName(
+	private static void setSenderName(
 			SendValidationInputBean sendValidationInputBean,
 			com.mgi.agentconnect.client.SendValidationRequest sendValidationRequest) {
 
@@ -183,7 +183,7 @@ public class Transaction {
 	 */
 	
 	
-	public com.mgi.paypal.response.CommitTransactionResponse commitTransaction(
+	public static  com.mgi.paypal.response.CommitTransactionResponse commitTransaction(
 			CommitTransactionInputBean commitTransactionInputBean) {
 
 		LOGGER.debug("Enter commitTransaction.");

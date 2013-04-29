@@ -6,7 +6,6 @@ import java.util.Properties;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -40,60 +39,42 @@ public class MailService {
 	private static Logger LOGGER = Logger.getLogger(MailService.class);
 
 	public MailService() {
-		properties.put("mail.smtp.auth", "true");
-		properties.put("mail.smtp.starttls.enable","true"); 
-		// TODO
-		properties.put("mail.smtp.host", "smtp.gmail.com");
-		properties.put("mail.smtp.port", "587");
 
-		session = Session.getInstance(properties,
-				new javax.mail.Authenticator() {
-					protected PasswordAuthentication getPasswordAuthentication() {
-						return new PasswordAuthentication(
-								// TODO
-								"TestAccmgipay@gmail.com", "Test@1234");
-					}
-				});
 	}
 
 	public String sendTransactionInformationMail(String customerEmailID,
 			String amount, String referenceNumber) {
 
 		LOGGER.debug("Enter sendTransactionInformationMail.");
+		
+		Properties properties = System.getProperties();
+		properties.setProperty("smtp.gmail.com", "localhost");
+		Session session = Session.getDefaultInstance(properties);
 
 		try {
-			Message message = new MimeMessage(session);
-			// TODO
+			MimeMessage message = new MimeMessage(session);
 			message.setFrom(new InternetAddress("TestAccmgipay@gmail.com"));
-
-			// TODO delete below code.
-			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse("TestAccmgipay@gmail.com"));
-			// message.setRecipients(Message.RecipientType.TO,
-			// InternetAddress.parse(customerEmailID));
+			message.addRecipient(Message.RecipientType.TO, new InternetAddress(
+					customerEmailID));
 
 			message.setSubject("MoneyGram_PayPal_Transaction_Details_"
 					.concat(new SimpleDateFormat("_MM-dd-yyyy").format(Calendar
 							.getInstance().getTime())));
 			message.setText("The reference number for your amount "
-					.concat(amount).concat(" is : ")
-					.concat(referenceNumber));
+					.concat(amount).concat(" is : ").concat(referenceNumber));
 
 			Transport.send(message);
-
 		} catch (MessagingException messagingException) {
-			LOGGER.error(messagingException.getLocalizedMessage());
 			messagingException.printStackTrace();
-			LOGGER.error("Send Transaction Information Mial failed for : "
-					+ customerEmailID + " amount : " + amount.toString()
-					+ " referenceNumber : " + referenceNumber);
 
-			return "Sending mail failed. Please try again.";
+			LOGGER.error(messagingException.getLocalizedMessage());
+			return "Mail not sent. please try Agaiin";
 		}
 
 		LOGGER.debug("Exit sendTransactionInformationMail.");
-		
-		return "Transaction details successfully sent to mail ID : ".concat(customerEmailID);
+
+		return "Transaction details successfully sent to mail ID : "
+				.concat(customerEmailID);
 	}
 
 	public String sendReportInformationMail(SendMailInputBean sendMailInputBean) {
@@ -131,6 +112,7 @@ public class MailService {
 			header.setProcessingInstruction(processingInstruction);
 			insertRecsIntoCRMExtWebFormRequest.setHeader(header);
 
+			// TODO delete below line
 			LOGGER.debug(new Gson().toJson(insertRecsIntoCRMExtWebFormRequest));
 			ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client client = new ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client();
 			insertRecsIntoCRMExtWebFormResponse = client
@@ -138,16 +120,11 @@ public class MailService {
 		} catch (Exception exception) {
 			LOGGER.debug("Send Mail Failed because of :" + exception);
 			exception.printStackTrace();
-			LOGGER.debug(new Gson().toJson(sendMailInputBean));
-			sendMailOutputBean.setTransactionSuccess(false);
-			sendMailOutputBean.setMailSubject(sendMailInputBean
-					.getMailSubject());
-			sendMailOutputBean.setMailText(sendMailInputBean.getMailText());
-			sendMailOutputBean.setCustomerEmailId(sendMailInputBean
-					.getCustomerEmailId());
-			sendMailOutputBean.setMessageToUser(messageFromProperties
-					.getString("RESEND_MAIL"));
-			return new Gson().toJson(sendMailOutputBean);
+			return cpsFailed(sendMailInputBean, sendMailOutputBean);
+		}
+
+		if (insertRecsIntoCRMExtWebFormResponse == null) {
+			return cpsFailed(sendMailInputBean, sendMailOutputBean);
 		}
 
 		sendMailOutputBean.setTransactionSuccess(true);
@@ -159,6 +136,20 @@ public class MailService {
 
 		LOGGER.debug("Exit sendReportInformationMail.");
 
+		return new Gson().toJson(sendMailOutputBean);
+	}
+
+	private String cpsFailed(SendMailInputBean sendMailInputBean,
+			SendMailOutputBean sendMailOutputBean) {
+
+		LOGGER.debug(new Gson().toJson(sendMailInputBean));
+		sendMailOutputBean.setTransactionSuccess(false);
+		sendMailOutputBean.setMailSubject(sendMailInputBean.getMailSubject());
+		sendMailOutputBean.setMailText(sendMailInputBean.getMailText());
+		sendMailOutputBean.setCustomerEmailId(sendMailInputBean
+				.getCustomerEmailId());
+		sendMailOutputBean.setMessageToUser(messageFromProperties
+				.getString("RESEND_MAIL"));
 		return new Gson().toJson(sendMailOutputBean);
 	}
 

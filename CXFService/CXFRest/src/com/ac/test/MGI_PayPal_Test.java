@@ -193,6 +193,47 @@ public class MGI_PayPal_Test {
 			e.printStackTrace();
 		}
 	}
+
+	@Test
+	public void TestSignUp() {
+		setCredentials();
+		try {
+
+			URL url = new URL(
+					"http://localhost:8092/CXFRest/rest/sendProofMessage");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-Type", "application/json");
+
+			String inputJsonObject = "{\"SendProofInputBean\":{\"customerEmail\":\"ndubey@moneygra"
+					+ "m.com\",\"zipCode\":\"01568\"}}";
+
+			OutputStream os = conn.getOutputStream();
+			os.write(inputJsonObject.getBytes());
+			os.flush();
+			Scanner scanner;
+			String response;
+			if (conn.getResponseCode() != 200) {
+				scanner = new Scanner(conn.getErrorStream());
+				response = "Error From Server \n\n";
+			} else {
+				scanner = new Scanner(conn.getInputStream());
+				response = "Response From Server \n\n";
+			}
+			scanner.useDelimiter("\\Z");
+
+			LOGGER.debug(response + scanner.next());
+
+			scanner.close();
+			conn.disconnect();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Test
 	public void TestGetUserData() { setCredentials();
 		try {
@@ -321,7 +362,7 @@ public class MGI_PayPal_Test {
 	@Test
 	public void TestDetailLookup() { setCredentials();
 		try {
-			System.out.println(TransactionStatus.AVAIL.value());
+			System.out.println(TransactionStatus.AVAILABLE.value());
 			URL url = new URL(
 					"http://localhost:8092/CXFRest/rest/detailLookUp");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
