@@ -29,7 +29,7 @@ public class MoneyGramPayPalDAO {
 
 	}
 
-	PropertiesConfiguration constantFromProperties = new PropertyUtil()
+	private static PropertiesConfiguration constantFromProperties = new PropertyUtil()
 			.getConstantPropertyConfig();
 	private static Logger LOGGER = Logger.getLogger(MoneyGramPayPalDAO.class);
 
@@ -101,7 +101,7 @@ public class MoneyGramPayPalDAO {
 		return feeLinkValues;
 	}
 
-	public List<HistoryDetails> retrieveHistroyDetails(String emailId)
+	public static List<HistoryDetails> retrieveHistroyDetails(String emailId)
 			throws ClassNotFoundException, SQLException {
 
 		LOGGER.debug("Enter retrieveHistroyDetails.");
@@ -123,6 +123,9 @@ public class MoneyGramPayPalDAO {
 		preparedStatement.setString(3, TransactionStatus.CANCELLED.value());
 		preparedStatement.setString(4, TransactionStatus.RECVD.value());
 		preparedStatement.setString(5, TransactionStatus.REFND.value());
+		
+		// TODO delete below line.
+		LOGGER.debug(strQuery);
 		
 		ResultSet resultSet = preparedStatement.executeQuery();
 		List<HistoryDetails> historyDetailsList = new ArrayList<HistoryDetails>();

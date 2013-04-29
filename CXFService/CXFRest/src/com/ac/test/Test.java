@@ -20,7 +20,12 @@ import com.mgi.agentconnect.client.CodeTableRequest;
 import com.mgi.agentconnect.client.FeeLookupResponse;
 import com.mgi.paypal.inputbean.SendProofInputBean;
 import com.mgi.paypal.inputbean.TransactionInformationMailInputBean;
+import com.mgi.paypal.response.CommitTransactionResponse;
+import com.mgi.paypal.response.GetUserLimitsResponse;
+import com.mgi.paypal.response.HistroyLookupResponse;
+import com.mgi.paypal.response.SendValidationResponse;
 import com.mgi.paypal.util.CalendarUtil;
+import com.mgi.paypal.util.FeeLinkValues;
 import com.mgi.paypal.util.PropertyUtil;
 import com.thoughtworks.xstream.XStream;
 
@@ -47,6 +52,39 @@ private static PropertiesConfiguration constant = new PropertyUtil().getConstant
 	
 	
 	public static void main(String[] args) {
+		
+		
+		Gson gson = new Gson();
+		
+		com.mgi.paypal.response.FeeLookupResponse feeLookupResponse = new com.mgi.paypal.response.FeeLookupResponse();
+		feeLookupResponse.setTransactionSuccess(false);
+		feeLookupResponse.setErrorMessage("error Message");
+		System.out.println(gson.toJson(feeLookupResponse));
+		SendValidationResponse sendValidationResponse = new SendValidationResponse();
+		sendValidationResponse.setTransactionSuccess(false);
+		sendValidationResponse.setErrorMessage("error Message");
+		System.out.println(gson.toJson(sendValidationResponse));
+		CommitTransactionResponse commitTransactionResponse = new  CommitTransactionResponse();
+		commitTransactionResponse.setTransactionSuccess(false);
+		commitTransactionResponse.setErrorMessage("error Message");
+		System.out.println(gson.toJson(commitTransactionResponse));
+		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
+		getUserLimitsResponse.setTransactionSuccess(false);
+		getUserLimitsResponse.setErrorMessage("error Message");
+		System.out.println(gson.toJson(getUserLimitsResponse));
+		FeeLinkValues feeLinkValues = new FeeLinkValues();
+		feeLinkValues.setTransactionSuccess(false);
+		feeLinkValues.setErrorMessage("error Message");
+		System.out.println(gson.toJson(feeLinkValues));
+		HistroyLookupResponse histroyLookupResponse = new HistroyLookupResponse();
+		histroyLookupResponse.setTransactionSuccess(true);
+		histroyLookupResponse.setErrorMessage("error Message");
+		System.out.println(gson.toJson(histroyLookupResponse));
+		
+		
+	}
+	
+	public static void main4(String[] args) {
 
 //		List<String> list = new ArrayList<String>();
 //		list.add("ba");

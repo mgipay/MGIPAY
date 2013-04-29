@@ -151,7 +151,7 @@ public class ACImpl implements ACInterface {
 	public String getHistoryDetails(
 			HistroyLookupInputBean histroyLookupInputBean) {
 
-		return History.retrieveHistoryDetails(histroyLookupInputBean);
+		return HistoryBO.retrieveHistoryDetails(histroyLookupInputBean);
 	}
 
 	/**
