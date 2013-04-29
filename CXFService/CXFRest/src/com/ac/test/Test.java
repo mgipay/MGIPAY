@@ -31,7 +31,7 @@ public class Test {
 	.getMessagePropertyConfig();
 
 private static PropertiesConfiguration constant = new PropertyUtil().getConstantPropertyConfig();
-	public static void main(String[] args) throws InterruptedException {
+	public static void main8(String[] args) throws InterruptedException {
 		
 		while(true){
 		System.out.println(messageFromProperties.getString("RETRY"));
@@ -46,7 +46,7 @@ private static PropertiesConfiguration constant = new PropertyUtil().getConstant
 	
 	
 	
-	public static void main5(String[] args) {
+	public static void main(String[] args) {
 
 //		List<String> list = new ArrayList<String>();
 //		list.add("ba");

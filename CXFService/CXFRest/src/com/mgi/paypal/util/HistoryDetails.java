@@ -19,7 +19,16 @@ public class HistoryDetails {
 	private BigDecimal transactionFee;
 	private String transactionStatus;
 	private String MgiTransactionSessionID;
+	private String paypalTransactionStatus;
 	
+	public String getPaypalTransactionStatus() {
+		return paypalTransactionStatus;
+	}
+
+	public void setPaypalTransactionStatus(String paypalTransactionStatus) {
+		this.paypalTransactionStatus = paypalTransactionStatus;
+	}
+
 	public String getMgiTransactionSessionID() {
 		return MgiTransactionSessionID;
 	}

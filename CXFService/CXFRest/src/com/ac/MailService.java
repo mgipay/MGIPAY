@@ -111,10 +111,8 @@ public class MailService {
 			processingInstruction.setRollbackTransaction(false);
 			header.setProcessingInstruction(processingInstruction);
 			insertRecsIntoCRMExtWebFormRequest.setHeader(header);
-
-			// TODO delete below line
-			LOGGER.debug(new Gson().toJson(insertRecsIntoCRMExtWebFormRequest));
-			ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client client = new ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client();
+			ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client client 
+			= new ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client();
 			insertRecsIntoCRMExtWebFormResponse = client
 					.insertRecsIntoCRMExtWebForm(insertRecsIntoCRMExtWebFormRequest);
 		} catch (Exception exception) {

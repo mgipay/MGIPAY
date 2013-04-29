@@ -16,10 +16,11 @@ import com.mgi.agentconnect.client.SendReversalType;
 import com.mgi.paypal.inputbean.SendReversalInputBean;
 import com.mgi.paypal.util.CalendarUtil;
 import com.mgi.paypal.util.HistoryDetails;
-import com.mgi.paypal.util.StatusToReverseBean;
 import com.mgi.paypal.util.PropertyUtil;
+import com.mgi.paypal.util.StatusToReverseBean;
 
-public class BatchProcess {
+
+public class BatchProcess  {
 
 	public BatchProcess() {
 
@@ -32,6 +33,8 @@ public class BatchProcess {
 
 	public void doBatchForSendReversal() {
 
+		LOGGER.debug("Enter doBatchForSendReversal.");
+		
 		MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
 
 		while (true) {
@@ -91,6 +94,7 @@ public class BatchProcess {
 				exception.printStackTrace();
 			}
 		}
+		LOGGER.debug("Exit doBatchForSendReversal.");
 	}
 
 	private DetailLookupResponse detailLookUpForBatchProcess(
@@ -143,7 +147,8 @@ public class BatchProcess {
 				.getString("AGENT_ID"));
 		sendReversalRequest.setAgentSequence(constantFromProperties
 				.getString("AGENT_SEQUENCE"));
-		sendReversalRequest.setToken("456");
+		sendReversalRequest.setToken(constantFromProperties
+				.getString("TOKEN"));
 
 		sendReversalRequest.setTimeStamp(CalendarUtil.getTimeStamp());
 		sendReversalRequest.setApiVersion(constantFromProperties
@@ -161,12 +166,10 @@ public class BatchProcess {
 		sendReversalRequest
 				.setSendReversalReason(SendReversalReasonCode.MS_NOT_USED);
 		sendReversalRequest.setFeeRefund("Y");
-//		SendReversalResponse sendReversalResponse = null;
 
 		try {
 			AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
-			/*sendReversalResponse = */client
-					.sendReversal(sendReversalRequest);
+			client.sendReversal(sendReversalRequest);
 		} catch (Exception exception) {
 			LOGGER.error("SendReversal Failed for MgiReferenceNumber : "
 					+ sendReversalInputBean.getReferenceNumber()
@@ -179,8 +182,21 @@ public class BatchProcess {
 
 		LOGGER.debug("Exit sendReversal.");
 
-//		return new Gson().toJson(sendReversalResponse);
 	}
 
-	// TODO write a batch method to update AVAIL to RECD
+	public static void main(String[] args) {
+		BatchProcess batchProcess = new BatchProcess();
+		while (true) {
+			batchProcess.doBatchForSendReversal();
+			try {
+				Thread.sleep(30 * 60 * 1000);
+			} catch (InterruptedException interruptedException) {
+				LOGGER.error("Batch process stopped beacause of : "
+						+ interruptedException.getLocalizedMessage());
+				interruptedException.printStackTrace();
+			}
+		}
+	}
+	
+	
 }

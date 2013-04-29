@@ -46,14 +46,6 @@ public class FeeDetails {
 		FeeLookupRequest feeLookupRequest = new FeeLookupRequest();
 		feeLookupRequest = createFeeLookupInput(feeLookupInputBean.getAmount(),
 				false);
-		
-		
-//		System.setProperty("http.proxyHost", "proxy.tcs.com");
-//		 System.setProperty("http.proxyPort", "8080");
-//		 System.setProperty("http.proxyUser", "538540");
-//		 System.setProperty("http.proxyPassword", "Bala@May84");
-		
-		
 		com.mgi.paypal.response.FeeLookupResponse feeLookupResponseUI = new com.mgi.paypal.response.FeeLookupResponse();
 		FeeLookupResponse feeLookupResponse = null;
 		byte retryCount = 3;
@@ -71,8 +63,7 @@ public class FeeDetails {
 							+ exception.getLocalizedMessage());
 					exception.printStackTrace();
 					LOGGER.debug("Maximum Number of Retries reached. FeeLookUp Response Failed.");
-					feeLookupResponseUI.setErrorMessage(messageFromProperties
-							.getString("RETRY_IN_SOMETIME"));
+					feeLookupResponseUI.setErrorMessage(exception.getLocalizedMessage());
 
 					feeLookupResponseUI.setTransactionSuccess(false);
 

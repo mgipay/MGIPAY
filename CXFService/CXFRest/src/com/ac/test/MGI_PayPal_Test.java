@@ -44,50 +44,48 @@ public class MGI_PayPal_Test {
 	@SuppressWarnings({  "unused" })
 	@Test
 	public void test() throws FileNotFoundException, IOException {
-		
+
 		// "{\"FeeLookupInputBean\":{\"amount\":\"100\"}}";
 
-		String string4 = 
-				"{\"address\":{\"postal_code\":\"07901\",\"locality\":\"Summ" +
-				"it\",\"region\":\"NJ\",\"country\":\"US\",\"street_address\":\"4807384 5th" +
-				" Street, 3272844 4th Street\"}," +
-				"\"family_name\":\"Fundsout11\",\"verified\":\"true\",\"phone" +
-				"_number\":\"6023820578\",\"zoneinfo\":\"America/Los_Angeles\",\"name\":\"MGI F" +
- "undsout11\",\"email\":\"testuser@moneygram.com\",\"given_name\":\"MGI\",\"user_id\":\"https://www.pa"
+		String string4 = "{\"address\":{\"postal_code\":\"07901\",\"locality\":\"Summ"
+				+ "it\",\"region\":\"NJ\",\"country\":\"US\",\"street_address\":\"4807384 5th"
+				+ " Street, 3272844 4th Street\"},"
+				+ "\"family_name\":\"Fundsout11\",\"verified\":\"true\",\"phone"
+				+ "_number\":\"6023820578\",\"zoneinfo\":\"America/Los_Angeles\",\"name\":\"MGI F"
+				+ "undsout11\",\"email\":\"testuser@moneygram.com\",\"given_name\":\"MGI\",\"user_id\":\"https://www.pa"
 				+ "ypal.com/webapps/auth/identity/user/dCn3hbvb2NWbecoGgSGz41zZ5jGdcYvQAr3zmwEZxUo\"}";
-//		String string4 =/* "{\"UserData\":" +*/
-//				"{\"family_name\":\"Fundsout11\",\"verified\":\"true\",\"phone" +
-//				"_number\":\"6023820578\",\"zoneinfo\":\"America/Los_Angeles\",\"name\":\"MGI F" +
-// "undsout11\",\"email\":\"testuser@moneygram.com\",\"given_name\":\"MGI\",\"user_id\":\"https://www.pa"
-//				+ "ypal.com/webapps/auth/identity/user/dCn3hbvb2NWbecoGgSGz41zZ5jGdcYvQAr3zmwEZxUo\"}";
+		// String string4 =/* "{\"UserData\":" +*/
+		// "{\"family_name\":\"Fundsout11\",\"verified\":\"true\",\"phone" +
+		// "_number\":\"6023820578\",\"zoneinfo\":\"America/Los_Angeles\",\"name\":\"MGI F"
+		// +
+		// "undsout11\",\"email\":\"testuser@moneygram.com\",\"given_name\":\"MGI\",\"user_id\":\"https://www.pa"
+		// +
+		// "ypal.com/webapps/auth/identity/user/dCn3hbvb2NWbecoGgSGz41zZ5jGdcYvQAr3zmwEZxUo\"}";
 		UserData userData = new UserData();
 		try {
 			userData = (UserData) new Gson().fromJson(string4, UserData.class);
 		} catch (JsonSyntaxException exception) {
 			exception.printStackTrace();
 		}
-		
-		
+
 		String string = "BALA";
 		String string2 = "MURALI";
 		List<String> list = new ArrayList<String>();
 		list.add(string);
 		list.add(string2);
-		for(String statemName : list){
+		for (String statemName : list) {
 			statemName = statemName.toLowerCase();
 			char[] stringArray = statemName.toCharArray();
 			stringArray[0] = Character.toUpperCase(stringArray[0]);
 			statemName = new String(stringArray);
 		}
-	
-		
-		
-//		BigDecimal bigDecimal = new BigDecimal("6057100363.234");
-//		System.out.println(bigDecimal.setScale(0,RoundingMode.DOWN));
-////		System.out.println(Integer.parseInt(bigDecimal.toString()));
-//		String string2 = "ABC@GMAil.com";
-//		System.out.println(string2.toLowerCase());
-		
+
+		// BigDecimal bigDecimal = new BigDecimal("6057100363.234");
+		// System.out.println(bigDecimal.setScale(0,RoundingMode.DOWN));
+		// // System.out.println(Integer.parseInt(bigDecimal.toString()));
+		// String string2 = "ABC@GMAil.com";
+		// System.out.println(string2.toLowerCase());
+
 		HistoryDetails details = new HistoryDetails();
 		HistoryDetails details2 = new HistoryDetails();
 		HistoryDetails details3 = new HistoryDetails();
@@ -96,26 +94,22 @@ public class MGI_PayPal_Test {
 		details2.setTransactionID(new BigDecimal(2));
 		details3.setTransactionID(new BigDecimal(3));
 		details4.setTransactionID(new BigDecimal(4));
-		
+
 		List<HistoryDetails> historyDetailsList = new ArrayList<HistoryDetails>();
-		
+
 		historyDetailsList.add(details3);
 		historyDetailsList.add(details4);
 		historyDetailsList.add(details);
 		historyDetailsList.add(details2);
 		/*
-		 *  Collections.sort(employeeList, new Comparator() {  
-            @Override  
-            public int compare(Object obj1, Object obj2) {  
-                Employee emp1 = (Employee)obj1;  
-                Employee emp2 = (Employee)obj2;  
-                return emp1.getFirstName().compareToIgnoreCase(emp2.getFirstName());  
-            }  
-        });  
-        
+		 * Collections.sort(employeeList, new Comparator() {
+		 * 
+		 * @Override public int compare(Object obj1, Object obj2) { Employee
+		 * emp1 = (Employee)obj1; Employee emp2 = (Employee)obj2; return
+		 * emp1.getFirstName().compareToIgnoreCase(emp2.getFirstName()); } });
 		 */
-		
-		for(HistoryDetails historyDetails :  historyDetailsList){
+
+		for (HistoryDetails historyDetails : historyDetailsList) {
 			System.out.println(historyDetails.getTransactionID());
 		}
 
@@ -126,37 +120,40 @@ public class MGI_PayPal_Test {
 						historyDetails1.getTransactionID());
 			}
 
-		});		 
-		 
-		for(HistoryDetails historyDetails :  historyDetailsList){
+		});
+
+		for (HistoryDetails historyDetails : historyDetailsList) {
 			System.out.println(historyDetails.getTransactionID());
 		}
-//		
-////		Integer i = new Integer(999999999);
-////java.util.Date sysDate = new java.util.Date();
-////java.sql.Date sqlDate = new java.sql.Date(sysDate.getTime());
-////System.out.println(sqlDate);
-//
-//		UserDataInputBean userDataInputBean = new UserDataInputBean();
-//		userDataInputBean.setCode(".7M-j4lm-wvADrkX6I5KEH3mcjTobdEyEYioavl3woQ");
-//		System.out.println(new Gson().toJson(userDataInputBean));
-//		
-//		String string = "{\"family_name\":\"FundsInI\",\"language\":\"en_US\",\"veri" +
-//				"fied\":\"true\",\"locale\":\"en_US\",\"zoneinfo\":\"America/Los" +
-//				"_Angeles\",\"name\":\"MGI FundsInI\",\"given_name\":\"MGI\",\"user_id\":\"url\"}";
-//		
-//		Gson gson = new Gson();
-//		
-//		java.sql.Date transactionDate = (java.sql.Date) Calendar.getInstance()
-//				.getTime();
-//		
-		
+		//
+		// // Integer i = new Integer(999999999);
+		// //java.util.Date sysDate = new java.util.Date();
+		// //java.sql.Date sqlDate = new java.sql.Date(sysDate.getTime());
+		// //System.out.println(sqlDate);
+		//
+		// UserDataInputBean userDataInputBean = new UserDataInputBean();
+		// userDataInputBean.setCode(".7M-j4lm-wvADrkX6I5KEH3mcjTobdEyEYioavl3woQ");
+		// System.out.println(new Gson().toJson(userDataInputBean));
+		//
+		// String string =
+		// "{\"family_name\":\"FundsInI\",\"language\":\"en_US\",\"veri" +
+		// "fied\":\"true\",\"locale\":\"en_US\",\"zoneinfo\":\"America/Los" +
+		// "_Angeles\",\"name\":\"MGI FundsInI\",\"given_name\":\"MGI\",\"user_id\":\"url\"}";
+		//
+		// Gson gson = new Gson();
+		//
+		// java.sql.Date transactionDate = (java.sql.Date)
+		// Calendar.getInstance()
+		// .getTime();
+		//
+
 		Properties properties = new Properties();
 		properties.load(new FileInputStream("Constants.properties"));
 		String name = properties.getProperty("TWO_HUNDRED_US_DOLLARS");
 		System.err.println(properties.getProperty("AGENT_ID"));
 		System.out.println(name);
 	}
+	
 	@Test
 	public void TestFeeLookUp() { setCredentials();
 		try {
@@ -362,7 +359,7 @@ public class MGI_PayPal_Test {
 	@Test
 	public void TestDetailLookup() { setCredentials();
 		try {
-			System.out.println(TransactionStatus.AVAILABLE.value());
+			System.out.println(TransactionStatus.AVAIL.value());
 			URL url = new URL(
 					"http://localhost:8092/CXFRest/rest/detailLookUp");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -398,10 +395,10 @@ public class MGI_PayPal_Test {
 	}
 	
 private void setCredentials(){
-//	System.setProperty("http.proxyHost", "proxy.tcs.com");
-//	System.setProperty("http.proxyPort", "8080");
-//	System.setProperty("http.proxyUser", "538540");
-//	System.setProperty("http.proxyPassword", "Bala@Apr84");
+	System.setProperty("http.proxyHost", "proxy.tcs.com");
+	System.setProperty("http.proxyPort", "8080");
+	System.setProperty("http.proxyUser", "538540");
+	System.setProperty("http.proxyPassword", "Bala@Apr84");
 }
 	@Test
 	public void TestUserLimit() {
