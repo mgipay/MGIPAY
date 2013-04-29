@@ -17,15 +17,16 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import com.google.gson.Gson;
 import com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client;
 import com.mgi.agentconnect.client.CodeTableRequest;
+import com.mgi.agentconnect.client.DetailLookupRequest;
+import com.mgi.agentconnect.client.DetailLookupResponse;
 import com.mgi.agentconnect.client.FeeLookupResponse;
+import com.mgi.agentconnect.client.SendReversalReasonCode;
+import com.mgi.agentconnect.client.SendReversalRequest;
+import com.mgi.agentconnect.client.SendReversalType;
 import com.mgi.paypal.inputbean.SendProofInputBean;
+import com.mgi.paypal.inputbean.SendReversalInputBean;
 import com.mgi.paypal.inputbean.TransactionInformationMailInputBean;
-import com.mgi.paypal.response.CommitTransactionResponse;
-import com.mgi.paypal.response.GetUserLimitsResponse;
-import com.mgi.paypal.response.HistroyLookupResponse;
-import com.mgi.paypal.response.SendValidationResponse;
 import com.mgi.paypal.util.CalendarUtil;
-import com.mgi.paypal.util.FeeLinkValues;
 import com.mgi.paypal.util.PropertyUtil;
 import com.thoughtworks.xstream.XStream;
 
@@ -51,140 +52,7 @@ private static PropertiesConfiguration constant = new PropertyUtil().getConstant
 	
 	
 	
-	public static void main(String[] args) {
-		
-		
-		Gson gson = new Gson();
-		
-		com.mgi.paypal.response.FeeLookupResponse feeLookupResponse = new com.mgi.paypal.response.FeeLookupResponse();
-		feeLookupResponse.setTransactionSuccess(false);
-		feeLookupResponse.setErrorMessage("error Message");
-		System.out.println(gson.toJson(feeLookupResponse));
-		SendValidationResponse sendValidationResponse = new SendValidationResponse();
-		sendValidationResponse.setTransactionSuccess(false);
-		sendValidationResponse.setErrorMessage("error Message");
-		System.out.println(gson.toJson(sendValidationResponse));
-		CommitTransactionResponse commitTransactionResponse = new  CommitTransactionResponse();
-		commitTransactionResponse.setTransactionSuccess(false);
-		commitTransactionResponse.setErrorMessage("error Message");
-		System.out.println(gson.toJson(commitTransactionResponse));
-		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
-		getUserLimitsResponse.setTransactionSuccess(false);
-		getUserLimitsResponse.setErrorMessage("error Message");
-		System.out.println(gson.toJson(getUserLimitsResponse));
-		FeeLinkValues feeLinkValues = new FeeLinkValues();
-		feeLinkValues.setTransactionSuccess(false);
-		feeLinkValues.setErrorMessage("error Message");
-		System.out.println(gson.toJson(feeLinkValues));
-		HistroyLookupResponse histroyLookupResponse = new HistroyLookupResponse();
-		histroyLookupResponse.setTransactionSuccess(true);
-		histroyLookupResponse.setErrorMessage("error Message");
-		System.out.println(gson.toJson(histroyLookupResponse));
-		
-		
-	}
 	
-	public static void main4(String[] args) {
-
-//		List<String> list = new ArrayList<String>();
-//		list.add("ba");
-//		list.add("ab");
-//		list.add("aa");
-//		Collections.sort(list);
-//		System.out.println(list);
-		
-//		java.sql.Date transactionDate = (java.sql.Date) Calendar.getInstance()
-//				.getTime();
-		
-		
-		// TODO delete this class
-//		GetUserLimitsRequest getUserLimitsRequest = new GetUserLimitsRequest();
-//		PhoneNumberType phoneNumberType = new PhoneNumberType();
-//		AccountIdentifier accountIdentifier = new AccountIdentifier();
-//		phoneNumberType.setCountryCode("1");
-//		phoneNumberType.setExtension("4237");
-//		phoneNumberType.setPhoneNumber("6057100363");
-//		accountIdentifier.setPhone(phoneNumberType);
-//		getUserLimitsRequest.setUser(accountIdentifier);
-//		accountIdentifier.setEmail("vbalki@ebay.com");
-//		RequestEnvelope requestEnvelope = new RequestEnvelope();
-//		requestEnvelope.setDetailLevel(DetailLevelCode.RETURN_ALL);
-//		requestEnvelope.setErrorLanguage("NA");
-//		getUserLimitsRequest.setRequestEnvelope(requestEnvelope);
-//		getUserLimitsRequest.setCountry("US");
-//		getUserLimitsRequest.setCurrencyCode("USD");
-//		getUserLimitsRequest.getLimitType().add("WITHDRAWAL");
-//
-//		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
-		Gson gson = new Gson();
-//
-//		try {
-//			getUserLimitsResponse = AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client
-//					.getUserLimit(getUserLimitsRequest);
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-
-//		System.out.println(getUserLimitsResponse.getUserLimit().get(0)
-//				.getLimitAmount().getAmount());
-		try {
-			System.setProperty("http.proxyHost", "proxy.tcs.com");
-			 System.setProperty("http.proxyPort", "8080");
-			 System.setProperty("http.proxyUser", "538540");
-			 System.setProperty("http.proxyPassword", "Bala@May84");
-			com.mgi.agentconnect.client.FeeLookupRequest feeLookupRequest = new com.mgi.agentconnect.client.FeeLookupRequest();
-
-			feeLookupRequest.setAgentID("30014943");
-			feeLookupRequest.setAgentSequence("9");
-			feeLookupRequest.setToken("TEST");
-			feeLookupRequest.setTimeStamp(getTimeStamp());
-			feeLookupRequest.setApiVersion("1211");
-			feeLookupRequest.setClientSoftwareVersion("v1");
-			feeLookupRequest.setAmountExcludingFee(new BigDecimal(100));
-			feeLookupRequest.setProductType(com.mgi.agentconnect.client.ProductType.SEND);
-			feeLookupRequest.setReceiveCountry("USA");
-			feeLookupRequest.setDeliveryOption("WILL_CALL");
-			feeLookupRequest.setReceiveCurrency("USD");
-			feeLookupRequest.setSendCurrency("USD");
-			feeLookupRequest.setAllOptions(false);
-
-			XStream xStream = new XStream();
-			System.out.println(xStream.toXML(feeLookupRequest));
-			
-			System.out.println(gson.toJson(feeLookupRequest));
-			AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
-			FeeLookupResponse feeLookupResponse =client
-					.feeLookup(feeLookupRequest);
-			XMLGregorianCalendar xmlGregorianCalendar = getTimeStamp();
-			com.mgi.agentconnect.client.SendValidationResponse sendValidationResponse = sendValidation(
-					gson, feeLookupResponse, xmlGregorianCalendar);
-			com.mgi.agentconnect.client.CommitTransactionRequest commitTransactionRequest = new com.mgi.agentconnect.client.CommitTransactionRequest();
-			com.mgi.agentconnect.client.CommitTransactionResponse commitTransactionResponse = null;
-
-			commitTransactionRequest.setAgentID("30014943");
-			commitTransactionRequest.setAgentSequence("9");
-			commitTransactionRequest.setToken("TEST");
-			commitTransactionRequest.setTimeStamp(getTimeStamp());
-			commitTransactionRequest.setApiVersion("1211");
-			commitTransactionRequest.setClientSoftwareVersion("v1");
-			commitTransactionRequest
-					.setMgiTransactionSessionID(sendValidationResponse
-							.getMgiTransactionSessionID());
-			commitTransactionRequest
-					.setProductType(com.mgi.agentconnect.client.ProductType.SEND);
-//			System.out.println(gson.toJson(commitTransactionRequest));
-			commitTransactionResponse = client
-					.commitTransaction(commitTransactionRequest);
-			System.out.println(xStream.toXML(commitTransactionRequest));
-			System.out.println(xStream.toXML(commitTransactionResponse));
-			
-//			System.out.println(commitTransactionResponse.getReferenceNumber());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 
 	private void x(){
 		com.mgi.agentconnect.client.FeeLookupRequest feeLookupRequest = new com.mgi.agentconnect.client.FeeLookupRequest();
@@ -251,8 +119,111 @@ private static PropertiesConfiguration constant = new PropertyUtil().getConstant
 		
 		
 		XStream xStream = new XStream();
-		System.out.println(xStream.toXML(feeLookupRequest));
+		// System.out.println(xStream.toXML(feeLookupRequest));
 	}
+	public static void main5(String[] args) {
+
+//		List<String> list = new ArrayList<String>();
+//		list.add("ba");
+//		list.add("ab");
+//		list.add("aa");
+//		Collections.sort(list);
+//		System.out.println(list);
+		
+//		java.sql.Date transactionDate = (java.sql.Date) Calendar.getInstance()
+//				.getTime();
+		
+		
+		// TODO delete this class
+//		GetUserLimitsRequest getUserLimitsRequest = new GetUserLimitsRequest();
+//		PhoneNumberType phoneNumberType = new PhoneNumberType();
+//		AccountIdentifier accountIdentifier = new AccountIdentifier();
+//		phoneNumberType.setCountryCode("1");
+//		phoneNumberType.setExtension("4237");
+//		phoneNumberType.setPhoneNumber("6057100363");
+//		accountIdentifier.setPhone(phoneNumberType);
+//		getUserLimitsRequest.setUser(accountIdentifier);
+//		accountIdentifier.setEmail("vbalki@ebay.com");
+//		RequestEnvelope requestEnvelope = new RequestEnvelope();
+//		requestEnvelope.setDetailLevel(DetailLevelCode.RETURN_ALL);
+//		requestEnvelope.setErrorLanguage("NA");
+//		getUserLimitsRequest.setRequestEnvelope(requestEnvelope);
+//		getUserLimitsRequest.setCountry("US");
+//		getUserLimitsRequest.setCurrencyCode("USD");
+//		getUserLimitsRequest.getLimitType().add("WITHDRAWAL");
+//
+//		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
+		Gson gson = new Gson();
+//
+//		try {
+//			getUserLimitsResponse = AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client
+//					.getUserLimit(getUserLimitsRequest);
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+
+//		System.out.println(getUserLimitsResponse.getUserLimit().get(0)
+//				.getLimitAmount().getAmount());
+		try {
+			System.setProperty("http.proxyHost", "proxy.tcs.com");
+			 System.setProperty("http.proxyPort", "8080");
+			 System.setProperty("http.proxyUser", "538540");
+			 System.setProperty("http.proxyPassword", "Bala@May84");
+			com.mgi.agentconnect.client.FeeLookupRequest feeLookupRequest = new com.mgi.agentconnect.client.FeeLookupRequest();
+
+			feeLookupRequest.setAgentID("30014943");
+			feeLookupRequest.setAgentSequence("9");
+			feeLookupRequest.setToken("TEST");
+			feeLookupRequest.setTimeStamp(getTimeStamp());
+			feeLookupRequest.setApiVersion("1211");
+			feeLookupRequest.setClientSoftwareVersion("v1");
+			feeLookupRequest.setAmountExcludingFee(new BigDecimal(100));
+			feeLookupRequest.setProductType(com.mgi.agentconnect.client.ProductType.SEND);
+			feeLookupRequest.setReceiveCountry("USA");
+			feeLookupRequest.setDeliveryOption("WILL_CALL");
+			feeLookupRequest.setReceiveCurrency("USD");
+			feeLookupRequest.setSendCurrency("USD");
+			feeLookupRequest.setAllOptions(false);
+
+			XStream xStream = new XStream();
+//			  System.out.println(xStream.toXML(feeLookupRequest));
+			
+//			System.out.println(gson.toJson(feeLookupRequest));
+			AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
+			FeeLookupResponse feeLookupResponse =client
+					.feeLookup(feeLookupRequest);
+			System.out.println(gson.toJson(feeLookupResponse));
+			XMLGregorianCalendar xmlGregorianCalendar = getTimeStamp();
+			com.mgi.agentconnect.client.SendValidationResponse sendValidationResponse = sendValidation(
+					gson, feeLookupResponse, xmlGregorianCalendar);
+			com.mgi.agentconnect.client.CommitTransactionRequest commitTransactionRequest = new com.mgi.agentconnect.client.CommitTransactionRequest();
+			com.mgi.agentconnect.client.CommitTransactionResponse commitTransactionResponse = null;
+
+			commitTransactionRequest.setAgentID("30014943");
+			commitTransactionRequest.setAgentSequence("9");
+			commitTransactionRequest.setToken("TEST");
+			commitTransactionRequest.setTimeStamp(getTimeStamp());
+			commitTransactionRequest.setApiVersion("1211");
+			commitTransactionRequest.setClientSoftwareVersion("v1");
+			commitTransactionRequest
+					.setMgiTransactionSessionID(sendValidationResponse
+							.getMgiTransactionSessionID());
+			commitTransactionRequest
+					.setProductType(com.mgi.agentconnect.client.ProductType.SEND);
+//			System.out.println(gson.toJson(commitTransactionRequest));
+			commitTransactionResponse = client
+					.commitTransaction(commitTransactionRequest);
+			// System.out.println(xStream.toXML(commitTransactionRequest));
+			 System.out.println(xStream.toXML(commitTransactionResponse));
+			
+//			System.out.println(commitTransactionResponse.getReferenceNumber());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	private static com.mgi.agentconnect.client.SendValidationResponse sendValidation(
 			Gson gson, FeeLookupResponse feeLookupResponse,
 			XMLGregorianCalendar xmlGregorianCalendar) throws Exception {
@@ -442,53 +413,77 @@ private static PropertiesConfiguration constant = new PropertyUtil().getConstant
 		
 		
 	}
-//	// TODO delete below method.
-//	@POST
-//	@Path("/detailLookUp")
-//	@Override
-//	public String detailLookUp(DetailLookupInputBean detailLookupInputBean) {
-//
-//		LOGGER.debug("Enter detailLookUp.");
-//
-//		DetailLookupRequest detailLookupRequest = new DetailLookupRequest();
-//
-//		detailLookupRequest.setAgentID(constantFromProperties
-//				.getString("AGENT_ID"));
-//		detailLookupRequest.setAgentSequence(constantFromProperties
-//				.getString("AGENT_SEQUENCE"));
-//		detailLookupRequest.setApiVersion(constantFromProperties
-//				.getString("API_VERSION"));
-//		detailLookupRequest.setClientSoftwareVersion(constantFromProperties
-//				.getString("CLIENT_SOFTWARE_VERSION"));
-//		detailLookupRequest.setIncludeUseData(false);
-//		detailLookupRequest.setLanguage(constantFromProperties
-//				.getString("LANGUAGE_CODE_ENGLISH"));
-//		detailLookupRequest.setReferenceNumber(detailLookupInputBean
-//				.getReferenceNumber());
-//
-//		detailLookupRequest.setTimeStamp(getTimeStamp());
-//
-//		detailLookupRequest.setToken(constantFromProperties.getString("TOKEN"));
-//		detailLookupRequest.setUnitProfileID(constantFromProperties
-//				.getInt("UNIT_PROFILE_ID"));
-//		DetailLookupResponse detailLookupResponse = null;
-//		try {
-//			AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
-//			detailLookupResponse = client
-//					.detailLookup(detailLookupRequest);
-//		} catch (Exception exception) {
-//			LOGGER.error("Detail Lookup Failed:" + exception);
-//			if (LOGGER.isDebugEnabled()) {
-//				LOGGER.debug("detailLookupRequest: "
-//						+ new Gson().toJson(detailLookupRequest));
-//			}
-//
-//			exception.printStackTrace();
-//		}
-//
-//		LOGGER.debug("Exit detailLookUp.");
-//
-//		return new Gson().toJson(detailLookupResponse);
-//	}
+	// TODO delete below method.
+	public static void main(String... detailLookupInputBean) {
+
+		DetailLookupRequest detailLookupRequest = new DetailLookupRequest();
+		System.setProperty("http.proxyHost", "proxy.tcs.com");
+		System.setProperty("http.proxyPort", "8080");
+		System.setProperty("http.proxyUser", "538540");
+		System.setProperty("http.proxyPassword", "Bala@May84");
+		detailLookupRequest.setAgentID("30014943");
+		detailLookupRequest.setAgentSequence("9");
+		detailLookupRequest.setApiVersion("1211");
+		detailLookupRequest.setClientSoftwareVersion("v1");
+		detailLookupRequest.setIncludeUseData(false);
+		detailLookupRequest.setLanguage("eng");
+		// detailLookupRequest.setReferenceNumber(detailLookupInputBean
+		// .getReferenceNumber());
+		detailLookupRequest
+				.setMgiTransactionSessionID("9708729E1572561367252261137");
+
+		detailLookupRequest.setTimeStamp(getTimeStamp());
+
+		detailLookupRequest.setToken("TEST");
+		// detailLookupRequest.setUnitProfileID(57256);
+		DetailLookupResponse detailLookupResponse = null;
+		try {
+			AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
+			detailLookupResponse = client.detailLookup(detailLookupRequest);
+		} catch (Exception exception) {
+
+			exception.printStackTrace();
+		}
+
+		System.out.println(new Gson().toJson(detailLookupResponse));
+	}
+
+	public static void main7(String... sendReversalInputBean) {
+
+
+		SendReversalRequest sendReversalRequest = new SendReversalRequest();
+		System.setProperty("http.proxyHost", "proxy.tcs.com");
+		 System.setProperty("http.proxyPort", "8080");
+		 System.setProperty("http.proxyUser", "538540");
+		 System.setProperty("http.proxyPassword", "Bala@May84");
+		 
+		sendReversalRequest.setAgentID("30014943");
+		sendReversalRequest.setAgentSequence("9");
+		sendReversalRequest.setToken("TEST");
+
+		sendReversalRequest.setTimeStamp(CalendarUtil.getTimeStamp());
+		sendReversalRequest.setApiVersion("1211");
+		sendReversalRequest.setClientSoftwareVersion("v1");
+		sendReversalRequest
+				.setSendAmount(new BigDecimal(100));
+		sendReversalRequest.setFeeAmount(new BigDecimal(12));
+		sendReversalRequest.setSendCurrency("USD");
+		sendReversalRequest.setReferenceNumber("29292578");
+		sendReversalRequest.setReversalType(SendReversalType.C);
+		sendReversalRequest
+				.setSendReversalReason(SendReversalReasonCode.MS_NOT_USED);
+		sendReversalRequest.setFeeRefund("Y");
+
+		try {
+			AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
+			System.out.println(new Gson().toJson(client
+					.sendReversal(sendReversalRequest)));
+		} catch (Exception exception) {
+
+			exception.printStackTrace();
+		}
+
+
+	}
 
 }

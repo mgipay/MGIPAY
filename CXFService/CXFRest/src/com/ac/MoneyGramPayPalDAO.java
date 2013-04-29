@@ -243,7 +243,7 @@ public class MoneyGramPayPalDAO {
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1, sendValidationInputBean.getSenderEmail()
-				.toLowerCase());
+				.toLowerCase().trim());
 		preparedStatement.setString(2,
 				sendValidationInputBean.getSenderFirstName());
 		preparedStatement.setString(3,
@@ -378,23 +378,27 @@ public class MoneyGramPayPalDAO {
 			SQLException {
 
 		LOGGER.debug("Enter updateHistoryDetail.");
+		try {
+			Class.forName("oracle.jdbc.OracleDriver");
+			DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+			Connection connection = DriverManager.getConnection(
+					constantFromProperties.getString("ORACLE_DB_URL"),
+					constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
+					constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
-		Class.forName("oracle.jdbc.OracleDriver");
-		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-		Connection connection = DriverManager.getConnection(
-				constantFromProperties.getString("ORACLE_DB_URL"),
-				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
-				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
-
-		String strQuery = "update MGI_PAYPAL_TRAN_HIST set " +
-				"PAYPAL_TRAN_STATUS = ? where MGI_SESS_ID = ?";
-		PreparedStatement preparedStatement = connection
-				.prepareStatement(strQuery);
-		preparedStatement.setString(1, transactionStatus);
-		preparedStatement.setString(2, mgiTransactionSessionID);
-		preparedStatement.executeUpdate();
-		connection.close();
-
+			String strQuery = "update MGI_PAYPAL_TRAN_HIST set "
+					+ "PAYPAL_TRAN_STATUS = ? where MGI_SESS_ID = ?";
+			PreparedStatement preparedStatement = connection
+					.prepareStatement(strQuery);
+			preparedStatement.setString(1, transactionStatus);
+			preparedStatement.setString(2, mgiTransactionSessionID);
+			preparedStatement.executeUpdate();
+			connection.close();
+		} catch (Exception exception) {
+			LOGGER.error("Updating History failed for PAYPAL_TRAN_STATUS : "
+					+ transactionStatus + " and MGI_SESS_ID : "
+					+ mgiTransactionSessionID);
+		}
 		LOGGER.debug("Exit updateHistoryDetail.");
 	}
 
@@ -423,7 +427,10 @@ public class MoneyGramPayPalDAO {
 					.concat("' where MGI_SESS_ID = '"
 							.concat(statusToReverseBean
 									.getMgiTransactionSessionID())).concat("'");
-
+//TODO
+			LOGGER.debug(queryToUpdateReverse);
+			
+			
 			statement.addBatch(queryToUpdateReverse);
 		}
 		for (String mgiTransactionSessionID : stausToRejectBeanList) {
@@ -432,6 +439,8 @@ public class MoneyGramPayPalDAO {
 					.concat("' where MGI_SESS_ID = '")
 					.concat(mgiTransactionSessionID).concat("'");
 
+			LOGGER.debug(queryToUpdateReject);
+			
 			statement.addBatch(queryToUpdateReject);
 
 		}
