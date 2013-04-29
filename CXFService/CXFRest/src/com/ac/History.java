@@ -24,6 +24,7 @@ public class History {
 	public History() {
 
 	}
+
 	private static Logger LOGGER = Logger.getLogger(History.class);
 
 	private static PropertiesConfiguration messageFromProperties = new PropertyUtil()
@@ -55,9 +56,6 @@ public class History {
 			histroyLookupInputBean.setCustomerEmailId(histroyLookupInputBean
 					.getCustomerEmailId().toLowerCase());
 			MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
-			// TODO
-			LOGGER.debug("CustomerEmailId"
-					+ histroyLookupInputBean.getCustomerEmailId());
 			historyDetailsList = moneyGramPayPalDAO
 					.retrieveHistroyDetails(histroyLookupInputBean
 							.getCustomerEmailId());
@@ -67,15 +65,13 @@ public class History {
 				if (!historyDetails.getTransactionStatus().equals(
 						TransactionStatus.RECVD.value())) {
 
-					String statusFromDetailLookUp = detailLookUpForRetrieveHistory(
-							historyDetails.getMgiReferenceNumber(),
-							historyDetails.getMgiTransactionSessionID());
+					String statusFromDetailLookUp = detailLookUpForRetrieveHistory(historyDetails
+							.getMgiTransactionSessionID());
 					if (!statusFromDetailLookUp.equals(historyDetails
 							.getTransactionStatus())) {
 						moneyGramPayPalDAO.updateHistoryDetail(
 								statusFromDetailLookUp,
-								historyDetails.getMgiReferenceNumber(),
-								historyDetails.getCustomerEmail());
+								historyDetails.getMgiReferenceNumber());
 						historyDetails
 								.setTransactionStatus(statusFromDetailLookUp);
 					}
@@ -106,6 +102,7 @@ public class History {
 
 		return new Gson().toJson(histroyLookupResponse);
 	}
+
 	/**
 	 * detailLookUp. This method will call detailLookUp API of AgentConnet.
 	 * 
@@ -114,26 +111,11 @@ public class History {
 	 * 
 	 * @return status of transaction as String.
 	 */
-	private static String detailLookUpForRetrieveHistory(String referenceNumber,
+	private static String detailLookUpForRetrieveHistory(
 			String mgiTransactionSessionID) throws Exception {
 
 		LOGGER.debug("Enter detailLookUpForRetrieveHistory.");
 
-		DetailLookupRequest detailLookupRequest = createDetailLookupRequest(
-				 mgiTransactionSessionID);
-		detailLookupRequest.setReferenceNumber(referenceNumber);
-		DetailLookupResponse detailLookupResponse = null;
-		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
-		detailLookupResponse = client
-				.detailLookup(detailLookupRequest);
-
-		LOGGER.debug("Exit detailLookUpForRetrieveHistory.");
-
-		return detailLookupResponse.getTransactionStatus().value();
-	}
-	
-	private static DetailLookupRequest createDetailLookupRequest(
-			 String mgiTransactionSessionID) {
 		DetailLookupRequest detailLookupRequest = new DetailLookupRequest();
 
 		detailLookupRequest.setAgentID(constantFromProperties
@@ -152,9 +134,13 @@ public class History {
 		detailLookupRequest.setUnitProfileID(constantFromProperties
 				.getInt("UNIT_PROFILE_ID"));
 		detailLookupRequest.setMgiTransactionSessionID(mgiTransactionSessionID);
-		return detailLookupRequest;
+		DetailLookupResponse detailLookupResponse = null;
+		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
+		detailLookupResponse = client.detailLookup(detailLookupRequest);
+
+		LOGGER.debug("Exit detailLookUpForRetrieveHistory.");
+
+		return detailLookupResponse.getTransactionStatus().value();
 	}
-
-
 
 }

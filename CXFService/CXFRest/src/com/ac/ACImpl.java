@@ -25,7 +25,6 @@ import com.mgi.paypal.inputbean.UserLimitInputBean;
 import com.mgi.paypal.interf.ACInterface;
 import com.mgi.paypal.response.CommitTransactionResponse;
 import com.mgi.paypal.response.SendValidationResponse;
-import com.mgi.paypal.util.FeeLinkValues;
 import com.mgi.paypal.util.PropertyUtil;
 import com.paypal.adaptivepayment.client.PayResponse;
 
@@ -42,7 +41,6 @@ public class ACImpl implements ACInterface {
 	private static PropertiesConfiguration messageFromProperties = new PropertyUtil()
 			.getMessagePropertyConfig();
 
-	private PropertiesConfiguration constant = new PropertyUtil().getConstantPropertyConfig();
 	/**
 	 * getFee. This method will return fee in USD for given input amount.
 	 * 
@@ -101,19 +99,8 @@ public class ACImpl implements ACInterface {
 	@Override
 	public String getFeeLinkValue(FeeLinkValueInputBean feeLinkValueInputBean) {
 
-		if (constant.getBoolean("Test_Fee_Link")) {
-			FeeDetails feeDetails = new FeeDetails();
-			return feeDetails.getFeeLinkValue(feeLinkValueInputBean);
-		} else {
-			MailService mailService = new MailService();
-			FeeLinkValues feeLinkValues = new FeeLinkValues();
-			feeLinkValues.setTransactionSuccess(false);
-			feeLinkValues
-					.setErrorMessage(mailService.sendTransactionInformationMail(
-							constant.getString("transactionInformationMailInputBean_CustomerEmail"),
-							"125", "54896985"));
-			return new Gson().toJson(feeLinkValues);
-		}
+		FeeDetails feeDetails = new FeeDetails();
+		return feeDetails.getFeeLinkValue(feeLinkValueInputBean);
 	}
 
 	@POST

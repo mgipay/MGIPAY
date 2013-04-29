@@ -28,8 +28,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum TransactionStatus {
 
-    AVAILABLE,
-    CANCL,
+    AVAIL,
+    CANCELLED,
     RECVD,
     REFND,
     AFR,
@@ -41,7 +41,7 @@ public enum TransactionStatus {
     MGI_COMMITED,
     PAYPAL_COMMITTED, 
     MGI_FAILED, 	
-    PAYPAL_FAILED;   
+    PAYPAL_FAILED;
 
     public String value() {
         return name();
