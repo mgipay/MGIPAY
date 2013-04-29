@@ -19,13 +19,13 @@ import com.mgi.paypal.util.CalendarUtil;
 import com.mgi.paypal.util.HistoryDetails;
 import com.mgi.paypal.util.PropertyUtil;
 
-public class History {
+public class HistoryBO {
 
-	public History() {
+	public HistoryBO() {
 
 	}
 
-	private static Logger LOGGER = Logger.getLogger(History.class);
+	private static Logger LOGGER = Logger.getLogger(HistoryBO.class);
 
 	private static PropertiesConfiguration messageFromProperties = new PropertyUtil()
 			.getMessagePropertyConfig();
@@ -51,22 +51,34 @@ public class History {
 
 		HistroyLookupResponse histroyLookupResponse = new HistroyLookupResponse();
 
+		
+		LOGGER.debug("CustomerEmailId :  " + histroyLookupInputBean.getCustomerEmailId());
+		
 		List<HistoryDetails> historyDetailsList = new ArrayList<HistoryDetails>();
 		try {
 			histroyLookupInputBean.setCustomerEmailId(histroyLookupInputBean
 					.getCustomerEmailId().toLowerCase());
 			MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
-			historyDetailsList = moneyGramPayPalDAO
+			historyDetailsList = MoneyGramPayPalDAO
 					.retrieveHistroyDetails(histroyLookupInputBean
 							.getCustomerEmailId());
 
+			// TODO delete unwanted logger.
+			LOGGER.debug("size : " + historyDetailsList.size());
+			LOGGER.debug("history details : " + new Gson().toJson(historyDetailsList));
+			
 			for (HistoryDetails historyDetails : historyDetailsList) {
-				// checking status is 'received' or not in history table
+				// checking status, if 'received' or not in history table
 				if (!historyDetails.getTransactionStatus().equals(
 						TransactionStatus.RECVD.value())) {
 
 					String statusFromDetailLookUp = detailLookUpForRetrieveHistory(historyDetails
 							.getMgiTransactionSessionID());
+					
+					LOGGER.debug("status form table : " + historyDetails.getTransactionStatus());
+					
+					LOGGER.debug("status from detail Lookup : " + statusFromDetailLookUp);
+					
 					if (!statusFromDetailLookUp.equals(historyDetails
 							.getTransactionStatus())) {
 						moneyGramPayPalDAO.updateHistoryDetail(
@@ -134,6 +146,9 @@ public class History {
 		detailLookupRequest.setUnitProfileID(constantFromProperties
 				.getInt("UNIT_PROFILE_ID"));
 		detailLookupRequest.setMgiTransactionSessionID(mgiTransactionSessionID);
+		
+		LOGGER.debug("detail look up request : " + new Gson().toJson(detailLookupRequest));
+		
 		DetailLookupResponse detailLookupResponse = null;
 		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 		detailLookupResponse = client.detailLookup(detailLookupRequest);
