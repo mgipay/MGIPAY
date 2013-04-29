@@ -39,8 +39,9 @@ public final class AgentConnect_AgentConnect_Client {
 		// TODO delete logger
 		LOGGER.debug("Enter getPort.");
 
-		URL wsdlURL = new URL(
-				constantFromProperties.getString("AGENT_CONNECT_PORT_URL"));
+		URL wsdlURL = new URL("https://extws.moneygram.com/extws/AgentConnectWSDL?Version=1211"
+//				constantFromProperties.getString("AGENT_CONNECT_PORT_URL")
+				);
 		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
 		AgentConnect port = ss.getAgentConnect();
 		

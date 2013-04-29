@@ -13,6 +13,7 @@ import com.mgi.agentconnect.client.DetailLookupResponse;
 import com.mgi.agentconnect.client.SendReversalReasonCode;
 import com.mgi.agentconnect.client.SendReversalRequest;
 import com.mgi.agentconnect.client.SendReversalType;
+import com.mgi.agentconnect.client.TransactionStatus;
 import com.mgi.paypal.inputbean.SendReversalInputBean;
 import com.mgi.paypal.util.CalendarUtil;
 import com.mgi.paypal.util.HistoryDetails;
@@ -49,16 +50,18 @@ public class BatchProcess  {
 						new ArrayList<StatusToReverseBean>();
 				List<String> statusToRejectList = new ArrayList<String>();
 				
-				
+				LOGGER.debug("size : " + historyDetailList.size());
 				
 				for (HistoryDetails historyDetails : historyDetailList) {
 					DetailLookupResponse detailLookupResponse 
 					= detailLookUpForBatchProcess(historyDetails
 							.getMgiTransactionSessionID());
-					String mgiReferenceNumber = detailLookupResponse
-							.getReferenceNumber();
+//					String mgiReferenceNumber = detailLookupResponse
+//							.getReferenceNumber();
 					
-					if (mgiReferenceNumber != null) {
+					if (detailLookupResponse != null
+							&& !detailLookupResponse.getTransactionStatus()
+									.equals(TransactionStatus.UNCOMMITED)) {
 						
 						// DO Send Reversal
 						
@@ -73,7 +76,8 @@ public class BatchProcess  {
 						// Update history with reference number and status as
 						// 'REVERSED'
 						StatusToReverseBean statusToReverseBean = new StatusToReverseBean();
-						statusToReverseBean.setMgiReferenceNumber(mgiReferenceNumber);
+						statusToReverseBean.setMgiReferenceNumber(detailLookupResponse
+								.getReferenceNumber());
 						statusToReverseBean
 								.setMgiTransactionSessionID(historyDetails
 										.getMgiTransactionSessionID());
@@ -132,8 +136,6 @@ public class BatchProcess  {
 				.getString("LANGUAGE_CODE_ENGLISH"));
 		detailLookupRequest.setTimeStamp(CalendarUtil.getTimeStamp());
 		detailLookupRequest.setToken(constantFromProperties.getString("TOKEN"));
-		detailLookupRequest.setUnitProfileID(constantFromProperties
-				.getInt("UNIT_PROFILE_ID"));
 		detailLookupRequest.setMgiTransactionSessionID(mgiTransactionSessionID);
 		return detailLookupRequest;
 	}

@@ -52,12 +52,13 @@ public class HistoryBO {
 		HistroyLookupResponse histroyLookupResponse = new HistroyLookupResponse();
 
 		
-		LOGGER.debug("CustomerEmailId :  " + histroyLookupInputBean.getCustomerEmailId());
+		LOGGER.debug("CustomerEmailId :  " + "'"
+				+ histroyLookupInputBean.getCustomerEmailId() + "'");
 		
 		List<HistoryDetails> historyDetailsList = new ArrayList<HistoryDetails>();
 		try {
 			histroyLookupInputBean.setCustomerEmailId(histroyLookupInputBean
-					.getCustomerEmailId().toLowerCase());
+					.getCustomerEmailId().toLowerCase().trim());
 			MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
 			historyDetailsList = MoneyGramPayPalDAO
 					.retrieveHistroyDetails(histroyLookupInputBean
@@ -74,19 +75,22 @@ public class HistoryBO {
 
 					String statusFromDetailLookUp = detailLookUpForRetrieveHistory(historyDetails
 							.getMgiTransactionSessionID());
-					
-					LOGGER.debug("status form table : " + historyDetails.getTransactionStatus());
-					
-					LOGGER.debug("status from detail Lookup : " + statusFromDetailLookUp);
-					
-					if (!statusFromDetailLookUp.equals(historyDetails
-							.getTransactionStatus())) {
-						moneyGramPayPalDAO.updateHistoryDetail(
-								statusFromDetailLookUp,
-								historyDetails.getMgiReferenceNumber());
-						historyDetails
-								.setTransactionStatus(statusFromDetailLookUp);
-					}
+
+					LOGGER.debug("status from detail Lookup : "
+							+ statusFromDetailLookUp);
+
+						LOGGER.debug("status form table : "
+								+ historyDetails.getTransactionStatus());
+
+					if (statusFromDetailLookUp != null
+							&& !statusFromDetailLookUp.equals(historyDetails
+									.getTransactionStatus())) {
+							moneyGramPayPalDAO.updateHistoryDetail(
+									statusFromDetailLookUp,
+									historyDetails.getMgiReferenceNumber());
+							historyDetails
+									.setTransactionStatus(statusFromDetailLookUp);
+						}
 
 				}
 			}
@@ -124,7 +128,7 @@ public class HistoryBO {
 	 * @return status of transaction as String.
 	 */
 	private static String detailLookUpForRetrieveHistory(
-			String mgiTransactionSessionID) throws Exception {
+			String mgiTransactionSessionID)  {
 
 		LOGGER.debug("Enter detailLookUpForRetrieveHistory.");
 
@@ -143,15 +147,23 @@ public class HistoryBO {
 				.getString("LANGUAGE_CODE_ENGLISH"));
 		detailLookupRequest.setTimeStamp(CalendarUtil.getTimeStamp());
 		detailLookupRequest.setToken(constantFromProperties.getString("TOKEN"));
-		detailLookupRequest.setUnitProfileID(constantFromProperties
-				.getInt("UNIT_PROFILE_ID"));
 		detailLookupRequest.setMgiTransactionSessionID(mgiTransactionSessionID);
 		
 		LOGGER.debug("detail look up request : " + new Gson().toJson(detailLookupRequest));
 		
 		DetailLookupResponse detailLookupResponse = null;
 		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
-		detailLookupResponse = client.detailLookup(detailLookupRequest);
+		try {
+			detailLookupResponse = client.detailLookup(detailLookupRequest);
+		} catch (Exception exception) {
+			
+			exception.printStackTrace();
+			return null;
+		}
+		
+		if (detailLookupResponse == null) {
+			return null;
+		}
 
 		LOGGER.debug("Exit detailLookUpForRetrieveHistory.");
 
