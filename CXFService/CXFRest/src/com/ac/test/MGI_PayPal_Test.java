@@ -158,7 +158,7 @@ public class MGI_PayPal_Test {
 	public void TestFeeLookUp() { setCredentials();
 		try {
 			
-			URL url = new URL("http://localhost:8092/CXFRest/rest/getFee");
+			URL url = new URL("http://localhost:8080/CXFRest/rest/getFee");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");
@@ -235,13 +235,13 @@ public class MGI_PayPal_Test {
 	public void TestGetUserData() { setCredentials();
 		try {
 			
-			URL url = new URL("http://localhost:8092/CXFRest/rest/getUserData");
+			URL url = new URL("http://localhost:8080/CXFRest/rest/getUserData");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");
 			conn.setRequestProperty("Content-Type", "application/json");
 
-			String inputJsonObject = "{\"UserDataInputBean\":{\"code\":\"100\"}}";
+			String inputJsonObject = "{\"UserDataInputBean\":{\"code\":\"_3vwm09yy7qpl-oem_yxsFY0sHam3oq_M8WXZj4ApDrwft2JFxHxYcdK3z7Yrzrmm_Y8hmNzTRerDxzpnXp9wnEb8v7OzQrhdKBCTtWLhujAswrgqEst8D4POWp_u2_bJ_BSAI8ob2Df_2YR\"}}";
 
 			OutputStream os = conn.getOutputStream();
 			os.write(inputJsonObject.getBytes());
@@ -395,22 +395,22 @@ public class MGI_PayPal_Test {
 	}
 	
 private void setCredentials(){
-	System.setProperty("http.proxyHost", "proxy.tcs.com");
+	/*System.setProperty("http.proxyHost", "proxy.tcs.com");
 	System.setProperty("http.proxyPort", "8080");
 	System.setProperty("http.proxyUser", "538540");
-	System.setProperty("http.proxyPassword", "Bala@Apr84");
+	System.setProperty("http.proxyPassword", "Bala@Apr84");*/
 }
 	@Test
 	public void TestUserLimit() {
-		setCredentials();
+		
 		try {
 			URL url = new URL(
-					"http://localhost:8092/CXFRest/rest/getUserLimits");
+					"http://localhost:8080/CXFRest/rest/getUserLimits");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");
 			conn.setRequestProperty("Content-Type", "application/json");
-			String inputJsonObject = "{\"UserLimitInputBean\":{\"emailID\":\"vbalki@ebay.com\"}}";
+			String inputJsonObject = "{\"UserLimitInputBean\":{\"emailID\":\"mgi_fundsout_test@moneygram.com\"}}";
 			
 //			String inputJsonObject = "{\"UserLimitInputBean\":{\"emailID\":\"mgi_consumer_tes" +
 //					"t@moneygram.com\"}}";
