@@ -105,10 +105,9 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 		// String wsdlURL =
 		// "https://svcs.sandbox.paypal.com/AdaptivePayments/GetUserLimits";
 		setCredentials();
-		String wsdlURL = constantFromProperties
+		//String wsdlURL ="https://api.stage2cp07.stage.paypal.com:9090/AdaptivePayments/GetUserLimits";
+		String wsdlURL =constantFromProperties
 				.getString("ADAPTIVE_PAYMENTS_GET_USERLIMIT_URL");
-
-		System.out.println("get User Limit URL : " + wsdlURL);
 		
 		AdaptivePayments ss = new AdaptivePayments();
 		AdaptivePaymentsPortType port = ss.getAdaptivePaymentsSOAP11Http();
@@ -121,14 +120,6 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 	}
 
 	private  void setCredentials() {
-//		Security.setProperty("ssl.SocketFactory.provider",
-//				"com.ibm.jsse2.SSLSocketFactoryImpl");
-//		Security.setProperty("ssl.ServerSocketFactory.provider",
-//				"com.ibm.jsse2.SSLServerSocketFactoryImpl");
-		
-		
-//		Security.setProperty("ssl.SocketFactory.provider", "sun.security.ssl.SSLSocketFactoryImpl");
-//		Security.setProperty("ssl.ServerSocketFactory.provider", "sun.security.ssl.SSLServerSocketFactoryImpl");
 
 		System.setProperty("javax.net.ssl.trustStoreType",
 				constantFromProperties.getString("trustStoreType"));
@@ -143,14 +134,13 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 		System.setProperty("javax.net.ssl.keyStorePassword",
 				constantFromProperties.getString("keyStorePassword"));
 
-		// System.setProperty("javax.net.ssl.trustStoreType", "JKS");
-		// System.setProperty("javax.net.ssl.trustStore",
-		// "CXFRest/WebContent/WEB-INF/truststore.jks");
-		// System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
-		// System.setProperty("javax.net.ssl.keyStoreType", "pkcs12");
-		// System.setProperty("javax.net.ssl.keyStore",
-		// "CXFRest/WebContent/WEB-INF/paypal_cert.p12");
-		// System.setProperty("javax.net.ssl.keyStorePassword", "changeit");
+/*		 System.setProperty("javax.net.ssl.trustStoreType", "JKS");
+		 System.setProperty("javax.net.ssl.trustStore", "C:/Documents and Settings/va72/Desktop/Cert1/truststore.jks");
+		 System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
+		 System.setProperty("javax.net.ssl.keyStoreType", "pkcs12");
+		System.setProperty("javax.net.ssl.keyStore","C:/Documents and Settings/va72/Desktop/Cert1/paypal_cert.p12");
+		 System.setProperty("javax.net.ssl.keyStore","etc/tomcat7/paypal_cert.p12");
+		 System.setProperty("javax.net.ssl.keyStorePassword", "prompt");*/
 
 	}
 
@@ -170,32 +160,17 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 	public  void setupHeaders(BindingProvider bp) {
 
 		Map<String, List<String>> headers = new HashMap<String, List<String>>();
-		// headers.put("X-PAYPAL-SECURITY-PASSWORD",
-		// Collections.singletonList("1360057509"));
-		// headers.put("X-PAYPAL-APPLICATION-ID",
-		// Collections.singletonList("APP-80W284485P519543T"));
 		headers.put("X-PAYPAL-SECURITY-PASSWORD",
 				Collections.singletonList(constantFromProperties.getString("X_PAYPAL_SECURITY_PASSWORD")));
-
 		headers.put("X-PAYPAL-APPLICATION-ID",
 				Collections.singletonList(constantFromProperties.getString("X_PAYPAL_APPLICATION_ID")));
 		headers.put("X-PAYPAL-SECURITY-USERID", Collections
 				.singletonList(constantFromProperties.getString("X_PAYPAL_SECURITY_USERID")));
 		
-		System.out.println("Header Values");
-		System.out.println("        ");
-		System.out.println(headers.get("X-PAYPAL-SECURITY-PASSWORD"));
-		System.out.println("        ");
-		System.out.println(headers.get("X-PAYPAL-APPLICATION-ID"));
-		System.out.println("        ");
-		System.out.println(headers.get("X-PAYPAL-SECURITY-USERID"));
-
-		// headers.put("X-PAYPAL-SECURITY-USERID", Collections
-		// .singletonList("yathi_1360057489_biz_api1.gmail.com"));
-		// headers.put(
-		// "X-PAYPAL-SECURITY-SIGNATURE",
-		// Collections
-		// .singletonList("AnuN4vab8al1SfyKRXM4mSMYZQAmA8IvJIBGoIZVkt7XxF7W--tLgaXw"));
+		/*headers.put("X-PAYPAL-SECURITY-USERID", Collections.singletonList("mgi_fundsout_test_api1.moneygram.com"));
+		headers.put("X-PAYPAL-SECURITY-PASSWORD", Collections.singletonList("SSARWLBQRLFMDLHH"));
+	    headers.put("X-PAYPAL-APPLICATION-ID", Collections.singletonList("APP-1JE4291016473214C"));
+		*/
 		bp.getRequestContext()
 				.put(MessageContext.HTTP_REQUEST_HEADERS, headers);
 
@@ -203,12 +178,6 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 
 	public static void setupHeadersForPay(BindingProvider bp, String token) {
 
-		/*
-		 * System.out.println("Setting HTTP Header"); AccessToken accessToken =
-		 * new AccessToken(); String Token = accessToken.getAccess_token();
-		 */
-
-		// String Tok="F2DcXe38dhK.Pxw1N.fhS9KJYed3lQAnPCnSCKYTj1Q";
 		Map<String, List<String>> headers = new HashMap<String, List<String>>();
 		headers.put("X-PAYPAL-SECURITY-PASSWORD",
 				Collections.singletonList("SSARWLBQRLFMDLHH"));

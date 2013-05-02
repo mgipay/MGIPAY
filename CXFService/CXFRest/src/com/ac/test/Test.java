@@ -123,37 +123,37 @@ private static PropertiesConfiguration constant = new PropertyUtil().getConstant
 	}
 	public static void main5(String[] args) {
 
-//		List<String> list = new ArrayList<String>();
-//		list.add("ba");
-//		list.add("ab");
-//		list.add("aa");
-//		Collections.sort(list);
-//		System.out.println(list);
-		
-//		java.sql.Date transactionDate = (java.sql.Date) Calendar.getInstance()
-//				.getTime();
-		
-		
-		// TODO delete this class
-//		GetUserLimitsRequest getUserLimitsRequest = new GetUserLimitsRequest();
-//		PhoneNumberType phoneNumberType = new PhoneNumberType();
-//		AccountIdentifier accountIdentifier = new AccountIdentifier();
-//		phoneNumberType.setCountryCode("1");
-//		phoneNumberType.setExtension("4237");
-//		phoneNumberType.setPhoneNumber("6057100363");
-//		accountIdentifier.setPhone(phoneNumberType);
-//		getUserLimitsRequest.setUser(accountIdentifier);
-//		accountIdentifier.setEmail("vbalki@ebay.com");
-//		RequestEnvelope requestEnvelope = new RequestEnvelope();
-//		requestEnvelope.setDetailLevel(DetailLevelCode.RETURN_ALL);
-//		requestEnvelope.setErrorLanguage("NA");
-//		getUserLimitsRequest.setRequestEnvelope(requestEnvelope);
-//		getUserLimitsRequest.setCountry("US");
-//		getUserLimitsRequest.setCurrencyCode("USD");
-//		getUserLimitsRequest.getLimitType().add("WITHDRAWAL");
-//
-//		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
-		Gson gson = new Gson();
+///*////		List<String> list = new ArrayList<String>();
+//////		list.add("ba");
+//////		list.add("ab");
+//////		list.add("aa");
+//////		Collections.sort(list);
+//////		System.out.println(list);
+////		
+//////		java.sql.Date transactionDate = (java.sql.Date) Calendar.getInstance()
+//////				.getTime();
+////		
+////		
+////		// TODO delete this class
+//////		GetUserLimitsRequest getUserLimitsRequest = new GetUserLimitsRequest();
+//////		PhoneNumberType phoneNumberType = new PhoneNumberType();
+//////		AccountIdentifier accountIdentifier = new AccountIdentifier();
+//////		phoneNumberType.setCountryCode("1");
+//////		phoneNumberType.setExtension("4237");
+//////		phoneNumberType.setPhoneNumber("6057100363");
+//////		accountIdentifier.setPhone(phoneNumberType);
+//////		getUserLimitsRequest.setUser(accountIdentifier);
+//////		accountIdentifier.setEmail("vbalki@ebay.com");
+//////		RequestEnvelope requestEnvelope = new RequestEnvelope();
+//////		requestEnvelope.setDetailLevel(DetailLevelCode.RETURN_ALL);
+//////		requestEnvelope.setErrorLanguage("NA");
+//////		getUserLimitsRequest.setRequestEnvelope(requestEnvelope);
+//////		getUserLimitsRequest.setCountry("US");
+//////		getUserLimitsRequest.setCurrencyCode("USD");
+//////		getUserLimitsRequest.getLimitType().add("WITHDRAWAL");
+//////
+//////		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
+//*/		Gson gson = new Gson();
 //
 //		try {
 //			getUserLimitsResponse = AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client
@@ -193,7 +193,7 @@ private static PropertiesConfiguration constant = new PropertyUtil().getConstant
 			AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 			FeeLookupResponse feeLookupResponse =client
 					.feeLookup(feeLookupRequest);
-			System.out.println(gson.toJson(feeLookupResponse));
+			/*System.out.println(gson.toJson(feeLookupResponse));
 			XMLGregorianCalendar xmlGregorianCalendar = getTimeStamp();
 			com.mgi.agentconnect.client.SendValidationResponse sendValidationResponse = sendValidation(
 					gson, feeLookupResponse, xmlGregorianCalendar);
@@ -215,7 +215,7 @@ private static PropertiesConfiguration constant = new PropertyUtil().getConstant
 			commitTransactionResponse = client
 					.commitTransaction(commitTransactionRequest);
 			// System.out.println(xStream.toXML(commitTransactionRequest));
-			 System.out.println(xStream.toXML(commitTransactionResponse));
+			 System.out.println(xStream.toXML(commitTransactionResponse));*/
 			
 //			System.out.println(commitTransactionResponse.getReferenceNumber());
 		} catch (Exception e) {
