@@ -544,7 +544,7 @@ private void setCredentials(){
 
 		try {
 
-			URL url = new URL("http://localhost:8092/CXFRest/rest/getHistoryDetails");
+			URL url = new URL("http://localhost:8080/CXFRest/rest/getHistoryDetails");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");

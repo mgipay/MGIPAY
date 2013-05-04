@@ -3,6 +3,7 @@ package com.ac;
 import java.util.Hashtable;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
@@ -60,7 +61,10 @@ public class Transaction {
 				.getString("CLIENT_SOFTWARE_VERSION"));
 		sendValidationRequest.setDeliveryOption(constantFromProperties
 				.getString("DELIVER_OPTION_WILL_CALL"));
+		sendValidationRequest.setSenderCity(StringUtils.abbreviate(sendValidationInputBean.getSenderCity(), constantFromProperties.getInt("SENDER_CITY_WIDTH")));
+		//TODO Add this also to property file
 		sendValidationRequest.setAmount(sendValidationInputBean.getAmount());
+		
 		sendValidationRequest
 				.setMgiTransactionSessionID(sendValidationInputBean
 						.getMgiTransactionSessionID());
@@ -71,20 +75,19 @@ public class Transaction {
 		 sendValidationRequest.setDestinationState(stateCodeHashTable
 		 .get(sendValidationInputBean.getDestinationState()
 		 .toUpperCase()));
-		sendValidationRequest.setDestinationState(sendValidationInputBean
-				.getDestinationState());
-
+		
 		sendValidationRequest.setReceiveCurrency(sendValidationInputBean
 				.getReceiveCurrency());
 
 		setSenderName(sendValidationInputBean, sendValidationRequest);
 
-		sendValidationRequest.setSenderAddress(sendValidationInputBean
-				.getSenderAddress());
-		sendValidationRequest.setSenderCity(sendValidationInputBean
-				.getSenderCity());
-		sendValidationRequest.setSenderState(sendValidationInputBean
-				.getSenderState());
+		sendValidationRequest.setSenderAddress(StringUtils.abbreviate(sendValidationInputBean
+				.getSenderAddress(), constantFromProperties.getInt("SENDER_ADDRESS_WIDTH")));
+		//TODO Add the entry in Constants.properties
+		
+	
+		sendValidationRequest.setSenderState(sendValidationInputBean.getSenderState());
+
 		sendValidationRequest.setSenderZipCode(sendValidationInputBean
 				.getSenderZipCode());
 		sendValidationRequest.setSenderCountry(sendValidationInputBean

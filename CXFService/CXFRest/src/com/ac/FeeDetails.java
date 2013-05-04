@@ -156,7 +156,8 @@ public class FeeDetails {
 				.getString("CURRENCY_CODE_USA"));
 		feeLookupRequest.setSendCurrency(constantFromProperties
 				.getString("CURRENCY_CODE_USA"));
-		feeLookupRequest.setAllOptions(false);
+		feeLookupRequest.setAllOptions(constantFromProperties
+				.getString("ALL_OPTIONS"));
 
 		LOGGER.debug("Exit createFeeLookupInput.");
 

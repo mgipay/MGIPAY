@@ -176,6 +176,8 @@ public class PayPalBO {
 	private static String createToken(String codeValue) {
 
 		LOGGER.debug("Enter Create Token");
+		System.out.println("Code Value ::::::"+ codeValue);
+		LOGGER.debug(codeValue);
 
 		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
 				+ "/v1/tokenservice";
@@ -204,12 +206,14 @@ public class PayPalBO {
 			postMethod.addParameter("scope", ScopeValue);
 			postMethod.addParameter("code", codeValue);
 			LOGGER.debug(codeValue);
+			
 			int statusCode = client.executeMethod(postMethod);
 			// TODO
 			LOGGER.debug(statusCode);
 			if (statusCode != HttpStatus.SC_NOT_IMPLEMENTED) {
 				String string = postMethod.getResponseBodyAsString();
 				// TODO
+				System.out.println("string ::::::"+ string);
 				LOGGER.debug(string);
 				accessToken = (AccessToken) new Gson().fromJson(string,
 						AccessToken.class);
