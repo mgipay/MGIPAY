@@ -107,8 +107,28 @@ public class FeeLookupRequest
     protected BigDecimal defaultInformationalFee;
     protected String serviceOfferingID;
     protected Boolean defaultMaxFee;
-    protected boolean allOptions;
-    protected FeeLookupRequest.PromoCodeValues promoCodeValues;
+    protected String allOptions;
+    
+    
+  
+
+
+	/**
+	 * @return the allOptions
+	 */
+	public String getAllOptions() {
+		return allOptions;
+	}
+
+	/**
+	 * @param allOptions the allOptions to set
+	 */
+	public void setAllOptions(String allOptions) {
+		this.allOptions = allOptions;
+	}
+
+
+	protected FeeLookupRequest.PromoCodeValues promoCodeValues;
 
     /**
      * Gets the value of the productType property.
@@ -542,21 +562,6 @@ public class FeeLookupRequest
         this.defaultMaxFee = value;
     }
 
-    /**
-     * Gets the value of the allOptions property.
-     * 
-     */
-    public boolean isAllOptions() {
-        return allOptions;
-    }
-
-    /**
-     * Sets the value of the allOptions property.
-     * 
-     */
-    public void setAllOptions(boolean value) {
-        this.allOptions = value;
-    }
 
     /**
      * Gets the value of the promoCodeValues property.

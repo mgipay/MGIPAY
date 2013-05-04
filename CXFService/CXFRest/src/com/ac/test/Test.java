@@ -13,6 +13,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.lang.StringUtils;
 
 import com.google.gson.Gson;
 import com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client;
@@ -33,14 +34,14 @@ import com.thoughtworks.xstream.XStream;
 public class Test {
 	private static Hashtable<String, String> stateAndCodeHashTable = new Hashtable<String, String>();
 	
-	private static PropertiesConfiguration messageFromProperties = new PropertyUtil()
+	/*private static PropertiesConfiguration messageFromProperties = new PropertyUtil()
 	.getMessagePropertyConfig();
-
-private static PropertiesConfiguration constant = new PropertyUtil().getConstantPropertyConfig();
+*/
+//private static PropertiesConfiguration constant = new PropertyUtil().getConstantPropertyConfig();
 	public static void main8(String[] args) throws InterruptedException {
 		
 		while(true){
-		System.out.println(messageFromProperties.getString("RETRY"));
+//		System.out.println(messageFromProperties.getString("RETRY"));
 		
 		Thread.sleep(3000);
 		}
@@ -69,7 +70,7 @@ private static PropertiesConfiguration constant = new PropertyUtil().getConstant
 		feeLookupRequest.setDeliveryOption("WILL_CALL");
 		feeLookupRequest.setReceiveCurrency("USD");
 		feeLookupRequest.setSendCurrency("USD");
-		feeLookupRequest.setAllOptions(false);
+		feeLookupRequest.setAllOptions("true");
 
 		com.mgi.agentconnect.client.SendValidationRequest sendValidationRequest = new com.mgi.agentconnect.client.SendValidationRequest();
 		
@@ -96,7 +97,7 @@ private static PropertiesConfiguration constant = new PropertyUtil().getConstant
 		sendValidationRequest.setDestinationState("MN");// from UI
 		sendValidationRequest.setSenderFirstName("SF");//"given_name":"MGI"
 		sendValidationRequest.setSenderLastName("SL");//"family_name":"Fundsout11",
-		sendValidationRequest.setSenderAddress("1351 H AVE S");//"street_address":"4807384 5th Street, 3272844 4th Street "},
+		sendValidationRequest.setSenderAddress("XTYZ");//"street_address":"4807384 5th Street, 3272844 4th Street "},
 		sendValidationRequest.setSenderCity("CHNMPLS");// "zoneinfo":"America/Los_Angeles" after slash
 		sendValidationRequest.setSenderState("MN");//"region":"NJ",
 		sendValidationRequest.setSenderZipCode("55416");//"postal_code":"07901"
@@ -121,7 +122,7 @@ private static PropertiesConfiguration constant = new PropertyUtil().getConstant
 		XStream xStream = new XStream();
 		// System.out.println(xStream.toXML(feeLookupRequest));
 	}
-	public static void main5(String[] args) {
+	public static void main3(String[] args) {
 
 ///*////		List<String> list = new ArrayList<String>();
 //////		list.add("ba");
@@ -184,7 +185,7 @@ private static PropertiesConfiguration constant = new PropertyUtil().getConstant
 			feeLookupRequest.setDeliveryOption("WILL_CALL");
 			feeLookupRequest.setReceiveCurrency("USD");
 			feeLookupRequest.setSendCurrency("USD");
-			feeLookupRequest.setAllOptions(false);
+			feeLookupRequest.setAllOptions("true");
 
 			XStream xStream = new XStream();
 //			  System.out.println(xStream.toXML(feeLookupRequest));
@@ -193,11 +194,11 @@ private static PropertiesConfiguration constant = new PropertyUtil().getConstant
 			AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 			FeeLookupResponse feeLookupResponse =client
 					.feeLookup(feeLookupRequest);
-			/*System.out.println(gson.toJson(feeLookupResponse));
+//			System.out.println(gson.toJson(feeLookupResponse));
 			XMLGregorianCalendar xmlGregorianCalendar = getTimeStamp();
 			com.mgi.agentconnect.client.SendValidationResponse sendValidationResponse = sendValidation(
-					gson, feeLookupResponse, xmlGregorianCalendar);
-			com.mgi.agentconnect.client.CommitTransactionRequest commitTransactionRequest = new com.mgi.agentconnect.client.CommitTransactionRequest();
+					 feeLookupResponse, xmlGregorianCalendar);
+			/*com.mgi.agentconnect.client.CommitTransactionRequest commitTransactionRequest = new com.mgi.agentconnect.client.CommitTransactionRequest();
 			com.mgi.agentconnect.client.CommitTransactionResponse commitTransactionResponse = null;
 
 			commitTransactionRequest.setAgentID("30014943");
@@ -225,7 +226,7 @@ private static PropertiesConfiguration constant = new PropertyUtil().getConstant
 	}
 
 	private static com.mgi.agentconnect.client.SendValidationResponse sendValidation(
-			Gson gson, FeeLookupResponse feeLookupResponse,
+			 FeeLookupResponse feeLookupResponse,
 			XMLGregorianCalendar xmlGregorianCalendar) throws Exception {
 		com.mgi.agentconnect.client.SendValidationRequest sendValidationRequest = new com.mgi.agentconnect.client.SendValidationRequest();
 		// sendValidationRequest.setMgiTransactionSessionID(feeLookupResponse
@@ -254,14 +255,14 @@ private static PropertiesConfiguration constant = new PropertyUtil().getConstant
 		 * "user_id":"https://www.paypal.com/webapps/auth/identity/user/
 		 * dCn3hbvb2NWbecoGgSGz41zZ5jGdcYvQAr3zmwEZxUo"}"
 		 */
-		
+		String add  = "4807384 5th Street, 3272844 4th Street";
 		sendValidationRequest.setDestinationState("MN");// from UI
 		sendValidationRequest.setSenderFirstName("SF");//"given_name":"MGI"
 		sendValidationRequest.setSenderLastName("SL");//"family_name":"Fundsout11",
-		sendValidationRequest.setSenderAddress("1351 H AVE S");//"street_address":"4807384 5th Street, 3272844 4th Street "},
+		sendValidationRequest.setSenderAddress(StringUtils.abbreviate(add, 12));//"street_address":"4807384 5th Street, 3272844 4th Street "},
 		sendValidationRequest.setSenderCity("CHNMPLS");// "zoneinfo":"America/Los_Angeles" after slash
 		sendValidationRequest.setSenderState("MN");//"region":"NJ",
-		sendValidationRequest.setSenderZipCode("55416");//"postal_code":"07901"
+		sendValidationRequest.setSenderZipCode("07901");//"postal_code":"07901"  55416
 		sendValidationRequest.setSenderCountry("USA");//hardcode
 		sendValidationRequest.setSenderHomePhone("9522320253");//"phone_number":" 6023820578",
 		sendValidationRequest.setReceiverFirstName("N R F");//"given_name":"MGI"
@@ -354,7 +355,7 @@ private static PropertiesConfiguration constant = new PropertyUtil().getConstant
 				.commitTransaction(commitTransactionRequest);
 		System.out.println(new Gson().toJson(commitTransactionResponse));
 	}
-	public static void main3(String[] args) throws Exception {
+	public static void main(String[] args) throws Exception {
 		 System.setProperty("http.proxyHost", "proxy.tcs.com");
 				 System.setProperty("http.proxyPort", "8080");
 				 System.setProperty("http.proxyUser", "538540");
@@ -382,6 +383,7 @@ private static PropertiesConfiguration constant = new PropertyUtil().getConstant
 					stateAndCodeList.get(index),
 					stateAndCodeList.get(index + 1));
 		}
+		System.out.println(stateAndCodeHashTable);
 		System.err.println(tempStateList);
 	}
 	public static void main2(String[] args) {
@@ -414,7 +416,7 @@ private static PropertiesConfiguration constant = new PropertyUtil().getConstant
 		
 	}
 	// TODO delete below method.
-	public static void main(String... detailLookupInputBean) {
+	public static void main5(String... detailLookupInputBean) {
 
 		DetailLookupRequest detailLookupRequest = new DetailLookupRequest();
 		System.setProperty("http.proxyHost", "proxy.tcs.com");

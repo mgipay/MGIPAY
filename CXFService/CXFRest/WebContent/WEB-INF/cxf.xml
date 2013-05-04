@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" 
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-xmlns:sec="http://cxf.apache.org/configuration/security" 
-xmlns:http="http://cxf.apache.org/transports/http/configuration" 
-xmlns:jaxws="http://java.sun.com/xml/ns/jaxws" 
-xmlns:jaxrs="http://cxf.apache.org/jaxrs" 
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:sec="http://cxf.apache.org/configuration/security"
+xmlns:http="http://cxf.apache.org/transports/http/configuration"
+xmlns:jaxws="http://java.sun.com/xml/ns/jaxws"
+xmlns:jaxrs="http://cxf.apache.org/jaxrs"
 xsi:schemaLocation="http://cxf.apache.org/configuration/security http://cxf.apache.org/schemas/configuration/security.xsd http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 
 <import resource="classpath:META-INF/cxf/cxf.xml"/>
 <jaxrs:server id="base" address="/rest">
-<jaxrs:serviceBeans>
-<ref bean="ACService"/>
-</jaxrs:serviceBeans>
+ <jaxrs:serviceBeans>
+  <ref bean="ACService"/>
+ </jaxrs:serviceBeans>
 </jaxrs:server>
+
 <bean id="ACService" class="com.ac.ACImpl"/>
 
-<http:conduit name="https://api.stage2cp07.stage.paypal.com:9090/AdaptivePayments/.*">
-<http:tlsClientParameters>
-<sec:keyManagers keyPassword="prompt">
-<sec:keyStore type="pkcs12" password="prompt" file="/etc/tomcat7/certificates/paypal_cert.p12"/>
-</sec:keyManagers>
-<sec:trustManagers>
-<sec:keyStore type="JKS" password="changeit" file="/etc/tomcat7/certificates/PaypalTrustStore.jks"/>
-</sec:trustManagers>
-
-<sec:cipherSuitesFilter>
-<sec:include>.*_WITH_3DES_.*</sec:include>
-<sec:include>.*_WITH_DES_.*</sec:include>
-<sec:exclude>.*_WITH_NULL_.*</sec:exclude>
-<sec:exclude>.*_DH_anon_.*</sec:exclude>
-</sec:cipherSuitesFilter>
-</http:tlsClientParameters>
-</http:conduit> 
+<http:conduit name="*.http-conduit">
+ <http:tlsClientParameters>
+  <sec:keyManagers keyPassword="prompt">
+   <sec:keyStore type="pkcs12" password="prompt" file="/etc/tomcat7/certificates/paypal_cert.p12"/>
+  </sec:keyManagers>
+  <sec:trustManagers>
+   <sec:keyStore type="JKS" password="changeit" file="/etc/tomcat7/certificates/PaypalTrustStore.jks"/>
+  </sec:trustManagers>
+  <sec:cipherSuitesFilter>
+   <sec:include>.*_WITH_3DES_.*</sec:include>
+   <sec:include>.*_WITH_DES_.*</sec:include>
+   <sec:exclude>.*_WITH_NULL_.*</sec:exclude>
+   <sec:exclude>.*_DH_anon_.*</sec:exclude>
+   </sec:cipherSuitesFilter>
+ </http:tlsClientParameters>
+</http:conduit>
 </beans>
