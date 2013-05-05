@@ -186,7 +186,7 @@ public class PayPalBO {
 			System.setProperty("javax.net.ssl.trustStoreType",
 					constantFromProperties.getString("trustStoreType"));
 			System.setProperty("javax.net.ssl.trustStore",
-					constantFromProperties.getString("trustStoreLogin"));
+					constantFromProperties.getString("trustStore"));
 			System.setProperty("javax.net.ssl.trustStorePassword",
 					constantFromProperties.getString("trustStorePassword"));
 			HttpClient client = new HttpClient();
@@ -199,9 +199,9 @@ public class PayPalBO {
 //			postMethod
 //					.addRequestHeader("Authorization",
 //							"Basic bWdpX2Z1bmRzX291dC5tb25leWdyYW0uY29tOlNTQVJXTEJRUkxGTURMSEg=");
+			String AUTHORIZATION_BASIC_VALUE=constantFromProperties.getString("AUTHORIZATION_BASIC");
 			postMethod
-			.addRequestHeader("Authorization",
-					"Basic bWdpX2Z1bmRzb3V0X2Rldl9lbnYubW9uZXlncmFtLmNvbTpBOFZFUllETUdJREVWRU5WU0RUOFZBTFVFMA==");
+			.addRequestHeader("Authorization",AUTHORIZATION_BASIC_VALUE);
 			postMethod.addParameter("grant_type", "authorization_code");
 			postMethod.addParameter("scope", ScopeValue);
 			postMethod.addParameter("code", codeValue);

@@ -97,7 +97,7 @@ public class Test {
 		sendValidationRequest.setDestinationState("MN");// from UI
 		sendValidationRequest.setSenderFirstName("SF");//"given_name":"MGI"
 		sendValidationRequest.setSenderLastName("SL");//"family_name":"Fundsout11",
-		sendValidationRequest.setSenderAddress("XTYZ");//"street_address":"4807384 5th Street, 3272844 4th Street "},
+		sendValidationRequest.setSenderAddress("12easdfa");//"street_address":"4807384 5th Street, 3272844 4th Street "},
 		sendValidationRequest.setSenderCity("CHNMPLS");// "zoneinfo":"America/Los_Angeles" after slash
 		sendValidationRequest.setSenderState("MN");//"region":"NJ",
 		sendValidationRequest.setSenderZipCode("55416");//"postal_code":"07901"
@@ -255,11 +255,11 @@ public class Test {
 		 * "user_id":"https://www.paypal.com/webapps/auth/identity/user/
 		 * dCn3hbvb2NWbecoGgSGz41zZ5jGdcYvQAr3zmwEZxUo"}"
 		 */
-		String add  = "4807384 5th Street, 3272844 4th Street";
+		
 		sendValidationRequest.setDestinationState("MN");// from UI
 		sendValidationRequest.setSenderFirstName("SF");//"given_name":"MGI"
 		sendValidationRequest.setSenderLastName("SL");//"family_name":"Fundsout11",
-		sendValidationRequest.setSenderAddress(StringUtils.abbreviate(add, 12));//"street_address":"4807384 5th Street, 3272844 4th Street "},
+		sendValidationRequest.setSenderAddress("1351 H AVE S");//"street_address":"4807384 5th Street, 3272844 4th Street "},
 		sendValidationRequest.setSenderCity("CHNMPLS");// "zoneinfo":"America/Los_Angeles" after slash
 		sendValidationRequest.setSenderState("MN");//"region":"NJ",
 		sendValidationRequest.setSenderZipCode("07901");//"postal_code":"07901"  55416
