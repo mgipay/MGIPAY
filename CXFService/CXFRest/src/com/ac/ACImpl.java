@@ -280,7 +280,7 @@ public class ACImpl implements ACInterface {
 
 		// Call PAY API of Paypal.
 
-		PayResponse payResponse = null;
+		/*PayResponse payResponse = null;
 		try {
 			payResponse = PayPalBO.payToMoneyGram(
 					commitTransactionInputBean.getToken(),
@@ -323,7 +323,7 @@ public class ACImpl implements ACInterface {
 			exception.printStackTrace();
 		}
 
-		LOGGER.debug("Exit commitTransaction.");
+		LOGGER.debug("Exit commitTransaction.");*/
 
 		return new Gson().toJson(commitTransactionResponse);
 	}

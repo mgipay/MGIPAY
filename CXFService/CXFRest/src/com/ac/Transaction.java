@@ -61,8 +61,11 @@ public class Transaction {
 				.getString("CLIENT_SOFTWARE_VERSION"));
 		sendValidationRequest.setDeliveryOption(constantFromProperties
 				.getString("DELIVER_OPTION_WILL_CALL"));
-		sendValidationRequest.setSenderCity(StringUtils.abbreviate(sendValidationInputBean.getSenderCity(), constantFromProperties.getInt("SENDER_CITY_WIDTH")));
+		
+//		sendValidationRequest.setSenderCity(StringUtils.left(sendValidationInputBean.getSenderCity(), constantFromProperties.getInt("SENDER_CITY_WIDTH")));
+		sendValidationRequest.setSenderCity(constantFromProperties.getString("SENDERCITY"));
 		//TODO Add this also to property file
+		//StringUtils.left is used to get a string within the limit and also to avoid any exceptions
 		sendValidationRequest.setAmount(sendValidationInputBean.getAmount());
 		
 		sendValidationRequest
@@ -81,8 +84,8 @@ public class Transaction {
 
 		setSenderName(sendValidationInputBean, sendValidationRequest);
 
-		sendValidationRequest.setSenderAddress(StringUtils.abbreviate(sendValidationInputBean
-				.getSenderAddress(), constantFromProperties.getInt("SENDER_ADDRESS_WIDTH")));
+		sendValidationRequest.setSenderAddress(StringUtils.left(sendValidationInputBean
+				.getSenderAddress(),constantFromProperties.getInt("SENDER_ADDRESS_WIDTH")));
 		//TODO Add the entry in Constants.properties
 		
 	
@@ -115,7 +118,7 @@ public class Transaction {
 			} catch (Exception exception) {
 				retryCount--;
 				if (retryCount == 0) {
-					LOGGER.error("SendValidation Request: "
+					LOGGER.debug("SendValidation Request: "
 							+ new Gson().toJson(sendValidationRequest));
 					exception.printStackTrace();
 					sendValidationResponseForUI
@@ -136,6 +139,7 @@ public class Transaction {
 
 		} else {
 			sendValidationResponseForUI.setTransactionSuccess(false);
+			LOGGER.error("Send Validation Response: Null");
 			sendValidationResponseForUI
 					.setErrorMessage(messageFromProperties
 							.getString("TRANSACTION_FAILED_RETRY"));
