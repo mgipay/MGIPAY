@@ -594,11 +594,11 @@ var sendMailSuccessHandler = function(response){
 	$('#preview').hide();
 	if(response.transactionSuccess == true)
 	{
-		alert(response.messageToUser);
+		alert(response);
 	}
 	else
 	{
-		alert(response.messageToUser);
+		alert(response);
 	}
 	
 	
