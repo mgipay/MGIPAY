@@ -26,7 +26,6 @@ import com.mgi.paypal.interf.ACInterface;
 import com.mgi.paypal.response.CommitTransactionResponse;
 import com.mgi.paypal.response.SendValidationResponse;
 import com.mgi.paypal.util.PropertyUtil;
-import com.paypal.adaptivepayment.client.PayResponse;
 
 @Consumes("application/json")
 @Produces("application/JSON")

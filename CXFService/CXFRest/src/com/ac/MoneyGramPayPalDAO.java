@@ -280,14 +280,17 @@ public class MoneyGramPayPalDAO {
 				constantFromProperties.getString("ORACLE_DB_URL"),
 				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
 				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
-
+		// TODO remove PayPal_TRAN_STATUS update.
 		String strQuery = "update MGI_PAYPAL_TRAN_HIST set MGI_REF_NUM = ?" +
-				" and TRAN_STATUS = ? where MGI_SESS_ID = ?";
+				" and TRAN_STATUS = ? and PayPal_TRAN_STATUS = ? where MGI_SESS_ID = ?";
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1, mgiReferenceNumber);
 		preparedStatement.setString(2, TransactionStatus.MGI_COMMITED.value());
-		preparedStatement.setString(3, mgiTransactionSessionID);
+		// TODO remove below line
+		preparedStatement.setString(3, TransactionStatus.AVAIL.value());
+		preparedStatement.setString(4, mgiTransactionSessionID);
+		
 		preparedStatement.executeUpdate();
 		connection.close();
 
