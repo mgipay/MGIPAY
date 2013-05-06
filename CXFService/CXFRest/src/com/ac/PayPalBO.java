@@ -104,7 +104,7 @@ public class PayPalBO {
 		AccountIdentifier accountIdentifier = new AccountIdentifier();
 		LOGGER.debug("from ui " + userLimitInputBean.getEmailID());
 		// TODO MODIFY BELOW LINE.
-		accountIdentifier.setEmail("mgi_fundsout_test@moneygram.com");
+		accountIdentifier.setEmail(userLimitInputBean.getEmailID());
 		accountIdentifier.setPhone(phoneNumberType);
 
 		RequestEnvelope requestEnvelope = new RequestEnvelope();
