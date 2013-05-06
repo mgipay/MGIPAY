@@ -62,8 +62,8 @@ public class Transaction {
 		sendValidationRequest.setDeliveryOption(constantFromProperties
 				.getString("DELIVER_OPTION_WILL_CALL"));
 		
-//		sendValidationRequest.setSenderCity(StringUtils.left(sendValidationInputBean.getSenderCity(), constantFromProperties.getInt("SENDER_CITY_WIDTH")));
-		sendValidationRequest.setSenderCity(constantFromProperties.getString("SENDERCITY"));
+		sendValidationRequest.setSenderCity(StringUtils.left(sendValidationInputBean.getSenderCity(), constantFromProperties.getInt("SENDER_CITY_WIDTH")));
+//		sendValidationRequest.setSenderCity(constantFromProperties.getString("SENDERCITY"));
 		//TODO Add this also to property file
 		//StringUtils.left is used to get a string within the limit and also to avoid any exceptions
 		sendValidationRequest.setAmount(sendValidationInputBean.getAmount());
