@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=0, maximum-scale=0, minimum-scale=1, user-scalable=no" />
+<title>Withdraw Cash from PayPal</title>
+<link href="css/styles.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="scripts/topmenu.js"></script>
+<script type="text/javascript" src="scripts/tabContent.js"></script>
+<script type="text/javascript" src="scripts/tooltip.js"></script>
+<script type="text/javascript" src="scripts/jquery.cookie.js"></script>
+<script type="text/javascript" src="scripts/common.js"></script>
+<script type="text/javascript" src="scripts/spinmin.js"></script>
+<script type="text/javascript" src="scripts/global.js"></script>
+<script type="text/javascript" src="scripts/service.js"></script>
+<script type="text/javascript" src="scripts/genric.js"></script>
+<script type="text/javascript" src="scripts/utility.js"></script>
+<script type="text/javascript" src="scripts/Nonauthenticatedwithdraw.js"></script>
+
+</head>
+
+<body>
+<div id="preview" style="display:none">
+            <div class="loading_content" id="loadingContent">
+               <p>Processing your request.</p><p> This will take just a moment</p>
+               <div class="clear"></div>
+               <div id="loading_div" style="margin-left:50%;margin-top:5%">
+               </div>
+            </div>
+</div>
+<div id="wrapper">
+		<!-- #header -->
+		<div id="header">
+        <header>
+  <ul class="menuheader">
+  	<li class="btnnav"><a href="javascript:history.back()"><img src="images/btn_arrow.png"></a></li>
+    <li class="logomoneygramblock"><a href="home.html"><img src="images/logo.png"></a></li>
+    <li class="logopaypalblock"><a href="home.html"><img src="images/logoPaypal.png"></a></li>
+    <li class="menu" id="menu_active"><a href="#" class="topmenulink"><img src="images/icon_menu.png" id="menuActive"></a></li>
+  </ul>
+</header>
+<!-- Dropdown Menu -->
+ <ul class="topmenu">
+  <li> <a href="faqs.html"> FAQs</a> </li>
+  <li> <a href="contactus.html">Contact Us</a> </li>
+  <li> <a href="AutherticatedHome.html">History</a> </li>
+  <li> <a href="privacypolicy.html">Privacy Policy</a> </li>
+   <li> <a href="termsofuse.html"> Terms of Use</a> </li>
+  <li> <a href="terms_and_conditions.html">Terms and Conditions</a> </li>
+  <li> <a href="aboutmoneygram.html">About MoneyGram</a> </li>
+  <li> <a href="home.html">Logout</a> </li>
+</ul> 
+<!-- Dropdown Menu End -->
+		</div>
+        
+        
+		<!-- #content -->
+		<div id="content">
+		<section>
+  <div class="staticcontainer">
+    <h1>Withdraw Cash from PayPal – 3 Steps</h1>
+   
+    <hr/>
+   <div class="staicContent">
+		 <p>Withdraw cash out of your PayPal balance - cash is available in as little as 10 minutes*. </p>
+	    <p><span class='txtbold'>Step 1: </span>Log in with <a href="https://www.paypal.com/in/cgi-bin/webscr?cmd=_login-submit " target='_blank'>PayPal Access </a></p>
+   <p>This step allows you to securely access your PayPal account for withdrawals from your computer or mobile device.</p>
+   <p><span class='txtbold'>Step 2: </span>Enter your amount and select  state</p>
+   <p>Once you enter the amount you want to withdraw (from your available balance) and choose a location (US locations only) to pick up your cash.  A transaction <a id="fee_withdrawCash">fee </a> will be deducted and a MoneyGram Reference Number will be provided. </p>
+    <!-- Fee tooltip box -->
+   <div id="fee_tooltip_withdrawCash" class="displaynone">
+	<a  id="fancybox-close_withdrawCash"></a>
+	<div class="feecontainer" id="withdrawCashFee">
+       <!-- <ul class="tablegrid">
+          <li class="thead">
+            <div> Recent History </div>
+            <div> Amount </div>
+            <div> Fee </div>
+          </li>
+          <li class="trow">
+            <div>Add Cash</div>
+            <div>1- xxxxx USD</div>
+            <div>(xxx.xx) USD</div>
+          </li>
+          <li class="trow altrow">
+            <div>Add Cash</div>
+            <div>xxx.xx - xxx.xx USD</div>
+            <div>(xxx.xx) USD</div>
+          </li>
+          <li class="trow">
+            <div>Withdraw Cash</div>
+            <div>1- xxxxx USD</div>
+            <div>(xxx.xx) USD</div>
+          </li>
+          <li class="trow altrow">
+            <div>Withdraw Cash</div>
+            <div>xxx.xx - xxx.xx USD</div>
+            <div>(xxx.xx) USD</div>
+          </li>
+        </ul>-->
+      </div>
+    </div>
+    <!-- Fee tooltip end -->
+   <p><span class='txtbold'>Step 3: </span>Visit MoneyGram to get your cash</p>
+   <p>Take your MoneyGram Reference Number, complete the “Receive Money” form, and hand it in. Be ready to show your ID – find a  <a href="http://mobile.where2getit.com/moneygram/en.html">MoneyGram location to withdraw cash</a> today! </p>   
+   <p>To view fees and transaction limits, see<a  id="fee_limitFee"> Fees page.</a></p>
+   <!-- Fee tooltip box -->
+     <div id="fee_tooltip_limitFee"  class="displaynone"> 
+    <a id="fancybox-close_limitFee"></a>
+      <div class="feecontainer" id="limitFee">
+<!--        <ul class="tablegrid">
+          <li class="thead">
+            <div> Recent History </div>
+            <div> Amount </div>
+            <div> Fee </div>
+          </li>
+          <li class="trow">
+            <div>Add Cash</div>
+            <div>1- xxxxx USD</div>
+            <div>(xxx.xx) USD</div>
+          </li>
+          <li class="trow altrow">
+            <div>Add Cash</div>
+            <div>xxx.xx - xxx.xx USD</div>
+            <div>(xxx.xx) USD</div>
+          </li>
+          <li class="trow">
+            <div>Withdraw Cash</div>
+            <div>1- xxxxx USD</div>
+            <div>(xxx.xx) USD</div>
+          </li>
+          <li class="trow altrow">
+            <div>Withdraw Cash</div>
+            <div>xxx.xx - xxx.xx USD</div>
+            <div>(xxx.xx) USD</div>
+          </li>
+        </ul>-->
+      </div>
+    </div>
+    <!-- Fee tooltip end -->
+   
+   </div>
+   
+    <div class="clear"></div>
+   
+     <div  class="disclaimer"><p><sup>*</sup>Subject to agent operating hours, availability, local laws and regulations.</p></div>
+  </div>
+
+</section>
+        </div>
+        
+        
+		<!-- #footer -->
+		<div id="footer">
+        <div class="footertogglemenu"> 
+	
+
+
+ <fieldset id='menuFieldSet' >
+ 	
+	<legend><a  id='menuexpandId'   class="menuexpand disblock" onClick="cickExpand();"></a></legend>
+    <nav id="navfootermenu">
+           <a href="addcash.html" class="addcash1" onClick="abc();"></a>
+            <a href="NonauthenWithdraw.html" class="withdrawcash1"></a>
+            <a href="locations.html" class="locations1"></a> 
+   		 </nav>
+</fieldset>
+ </div>
+<footer>
+  <div class="copyright"> <a href="https://devpaypal.qa.moneygram.com/home.html">Visit Full Site</a> <span>© <label class="footer_year"></label> MoneyGram. All rights reserved</span> </div>
+</footer>
+		</div>
+		
+	</div>
+
+
+
+</body>
+</html>
