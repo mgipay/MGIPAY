@@ -70,7 +70,7 @@ public class HistoryBO {
 			
 			for (HistoryDetails historyDetails : historyDetailsList) {
 				// checking status, if 'received' or not in history table
-				if (!historyDetails.getTransactionStatus().equals(
+				if (!historyDetails.getMgiTransactionStatus().equals(
 						TransactionStatus.RECVD.value())) {
 
 					String statusFromDetailLookUp = detailLookUpForRetrieveHistory(historyDetails
@@ -84,14 +84,36 @@ public class HistoryBO {
 
 					if (statusFromDetailLookUp != null
 							&& !statusFromDetailLookUp.equals(historyDetails
-									.getTransactionStatus())) {
+									.getMgiTransactionStatus())) {
 							moneyGramPayPalDAO.updateHistoryDetail(
 									statusFromDetailLookUp,
 									historyDetails.getMgiReferenceNumber());
+//							historyDetails
+//									.setTransactionStatus(statusFromDetailLookUp);
+							
+						if (statusFromDetailLookUp
+								.equals(TransactionStatus.AVAIL.value())) {
 							historyDetails
-									.setTransactionStatus(statusFromDetailLookUp);
+									.setUiTransactionStatus(TransactionStatus.AVAILABLE
+											.value());
+						} else if (statusFromDetailLookUp
+								.equals(TransactionStatus.RECVD.value())) {
+							historyDetails
+									.setUiTransactionStatus(TransactionStatus.RECIEVED
+											.value());
+						} else if (statusFromDetailLookUp
+								.equals(TransactionStatus.REFND.value())) {
+							historyDetails
+									.setUiTransactionStatus(TransactionStatus.REFUNDED
+											.value());
+						} else if (statusFromDetailLookUp
+								.equals(TransactionStatus.CANCL.value())) {
+							historyDetails
+									.setUiTransactionStatus(TransactionStatus.CANCELLED
+											.value());
 						}
-
+							
+						}
 				}
 			}
 		} catch (Exception exception) {

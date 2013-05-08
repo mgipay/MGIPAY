@@ -19,14 +19,23 @@ public class HistoryDetails {
 	private BigDecimal transactionFee;
 	private String transactionStatus;
 	private String MgiTransactionSessionID;
-	private String paypalTransactionStatus;
-	
-	public String getPaypalTransactionStatus() {
-		return paypalTransactionStatus;
+	private String uiTransactionStatus;
+	private String mgiTransactionStatus;
+
+	public String getMgiTransactionStatus() {
+		return mgiTransactionStatus;
 	}
 
-	public void setPaypalTransactionStatus(String paypalTransactionStatus) {
-		this.paypalTransactionStatus = paypalTransactionStatus;
+	public void setMgiTransactionStatus(String mgiTransactionStatus) {
+		this.mgiTransactionStatus = mgiTransactionStatus;
+	}
+
+	public String getUiTransactionStatus() {
+		return uiTransactionStatus;
+	}
+
+	public void setUiTransactionStatus(String uiTransactionStatus) {
+		this.uiTransactionStatus = uiTransactionStatus;
 	}
 
 	public String getMgiTransactionSessionID() {
@@ -77,13 +86,13 @@ public class HistoryDetails {
 		this.customerName = customerName;
 	}
 
-//	public Integer getCustomerPhone() {
-//		return customerPhone;
-//	}
-//
-//	public void setCustomerPhone(Integer customerPhone) {
-//		this.customerPhone = customerPhone;
-//	}
+	// public Integer getCustomerPhone() {
+	// return customerPhone;
+	// }
+	//
+	// public void setCustomerPhone(Integer customerPhone) {
+	// this.customerPhone = customerPhone;
+	// }
 
 	public String getPaypalTransactionID() {
 		return paypalTransactionID;

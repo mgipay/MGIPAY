@@ -29,8 +29,12 @@ import javax.xml.bind.annotation.XmlType;
 public enum TransactionStatus {
 
     AVAIL,
+    AVAILABLE,
+    CANCL,
     CANCELLED,
     RECVD,
+    RECIEVED,
+    REFUNDED,
     REFND,
     AFR,
     UNCOMMITED,

@@ -356,6 +356,13 @@ public class Test {
 		System.out.println(new Gson().toJson(commitTransactionResponse));
 	}
 	public static void main(String[] args) throws Exception {
+		
+		
+		Hashtable<String, String> hashtable = new Hashtable<String, String>();
+		System.out.println(hashtable.get("NJ"));
+		
+		
+		
 		 System.setProperty("http.proxyHost", "proxy.tcs.com");
 				 System.setProperty("http.proxyPort", "8080");
 				 System.setProperty("http.proxyUser", "538540");

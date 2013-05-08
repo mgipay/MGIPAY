@@ -26,7 +26,6 @@ import com.mgi.paypal.interf.ACInterface;
 import com.mgi.paypal.response.CommitTransactionResponse;
 import com.mgi.paypal.response.SendValidationResponse;
 import com.mgi.paypal.util.PropertyUtil;
-import com.paypal.adaptivepayment.client.PayResponse;
 
 @Consumes("application/json")
 @Produces("application/JSON")
@@ -312,7 +311,6 @@ public class ACImpl implements ACInterface {
 
 		// If PAY API Call success.
 		// update history PAYPAL_TRAN_ID = payResponse.getPayKey() and
-		// PayPal_TRAN_STATUS = "COLLECTED"
 
 		try {
 			moneyGramPayPalDAO.updateHistoryAfterPay(
