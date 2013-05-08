@@ -148,8 +148,6 @@ public class MoneyGramPayPalDAO {
 			Date transactionDate = resultSet.getDate(("TRAN_DATE"));
 			DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 			historyDetails.setTransactionDate(df.format(transactionDate));
-//			historyDetails.setUiTransactionStatus(resultSet
-//					.getString("UI_TRAN_STATUS"));
 			historyDetails.setMgiTransactionStatus(resultSet
 					.getString("MGI_TRAN_STATUS"));
 			historyDetails.setMgiTransactionSessionID(resultSet
@@ -234,7 +232,6 @@ public class MoneyGramPayPalDAO {
 //		 TRAN_AMT                                  NOT NULL NUMBER(10,2)
 //		 TRAN_FEE                                  NOT NULL NUMBER(10,2)
 //		 TRAN_STATUS                               NOT NULL VARCHAR2(50)
-//		 UI_TRAN_STATUS                     	   NOT NULL VARCHAR2(100)
 //		 MGI_SESS_ID                                        VARCHAR2(200)
 //		 MGI_TRAN_STATUS								    VARCHAR2(50)
 		
@@ -260,7 +257,6 @@ public class MoneyGramPayPalDAO {
 		preparedStatement.setBigDecimal(8,
 				sendValidationInputBean.getFeeAmount());
 		preparedStatement.setString(9, TransactionStatus.IN_PROGRESS.value());//TRAN_STATUS
-//		preparedStatement.setString(10, "");// UI_TRAN_STATUS
 		preparedStatement.setString(10,
 				sendValidationInputBean.getMgiTransactionSessionID());
 		preparedStatement.setString(11, "");//MGI_TRAN_STATUS
@@ -365,9 +361,7 @@ public class MoneyGramPayPalDAO {
 				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
 		String strQuery = "update MGI_PAYPAL_TRAN_HIST set PAYPAL_TRAN_ID = ? "
-				+ ", TRAN_STATUS = ? , MGI_TRAN_STATUS = ? , " +
-//				"UI_TRAN_STATUS = ? " +
-				"where MGI_SESS_ID = ?";
+				+ ", TRAN_STATUS = ? , MGI_TRAN_STATUS = ? where MGI_SESS_ID = ?";
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1, payPalTransactionID);
@@ -397,9 +391,7 @@ public class MoneyGramPayPalDAO {
 					constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
 			String strQuery = "update MGI_PAYPAL_TRAN_HIST set "
-					+ "MGI_TRAN_STATUS = ? " +
-//					"UI_TRAN_STATUS = ? " +
-					"where MGI_SESS_ID = ?";
+					+ "MGI_TRAN_STATUS = ? where MGI_SESS_ID = ?";
 			PreparedStatement preparedStatement = connection
 					.prepareStatement(strQuery);
 			preparedStatement.setString(1, detailLookUpStatus);
