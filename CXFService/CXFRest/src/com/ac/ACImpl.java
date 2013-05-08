@@ -131,7 +131,11 @@ public class ACImpl implements ACInterface {
 		return mailService.sendTransactionInformationMail(
 				transactionInformationMailInputBean.getCustomerEmail(),
 				transactionInformationMailInputBean.getTransactionAmount(),
-				transactionInformationMailInputBean.getReferenceNumber());
+				transactionInformationMailInputBean.getReferenceNumber(),
+				transactionInformationMailInputBean.getCustomerName(),
+				transactionInformationMailInputBean.getStateName(),
+				transactionInformationMailInputBean.getFee());
+			
 	}
 
 	/**

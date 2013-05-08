@@ -2,6 +2,7 @@ package com.ac;
 
 import java.math.BigDecimal;
 import java.net.URLEncoder;
+import java.util.Hashtable;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
@@ -13,7 +14,6 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.mgi.paypal.inputbean.UserDataInputBean;
 import com.mgi.paypal.inputbean.UserLimitInputBean;
 import com.mgi.paypal.util.AccessToken;
@@ -42,9 +42,13 @@ public class PayPalBO {
 
 	private static PropertiesConfiguration constantFromProperties = new PropertyUtil()
 			.getConstantPropertyConfig();
+
 	private static PropertiesConfiguration messageFromProperties = new PropertyUtil()
 			.getMessagePropertyConfig();
+
 	private static Logger LOGGER = Logger.getLogger(PayPalBO.class);
+
+	public static Hashtable<String, String> stateNameAndCodeHashtable = new Hashtable<String, String>();
 
 	public static PayResponse payToMoneyGram(String token, String cutomerEmail)
 			throws Exception {
@@ -104,7 +108,7 @@ public class PayPalBO {
 		AccountIdentifier accountIdentifier = new AccountIdentifier();
 		LOGGER.debug("from ui " + userLimitInputBean.getEmailID());
 		// TODO MODIFY BELOW LINE.
-		accountIdentifier.setEmail("mgi_fundsout_test@moneygram.com");
+		accountIdentifier.setEmail(userLimitInputBean.getEmailID());
 		accountIdentifier.setPhone(phoneNumberType);
 
 		RequestEnvelope requestEnvelope = new RequestEnvelope();
@@ -173,55 +177,48 @@ public class PayPalBO {
 		return gson.toJson(getUserLimitsResponseForReturn);
 	}
 
-	private static String createToken(String codeValue) {
+	private static String createToken(String codeValue) throws Exception {
 
 		LOGGER.debug("Enter Create Token");
-		System.out.println("Code Value ::::::"+ codeValue);
+		System.out.println("Code Value ::::::" + codeValue);
 		LOGGER.debug(codeValue);
 
 		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
 				+ "/v1/tokenservice";
 		AccessToken accessToken = new AccessToken();
-		try {
-			System.setProperty("javax.net.ssl.trustStoreType",
-					constantFromProperties.getString("trustStoreType"));
-			System.setProperty("javax.net.ssl.trustStore",
-					constantFromProperties.getString("trustStore"));
-			System.setProperty("javax.net.ssl.trustStorePassword",
-					constantFromProperties.getString("trustStorePassword"));
-			HttpClient client = new HttpClient();
-			PostMethod postMethod = new PostMethod(uri);
-			String myQuery = "profile https://uri.paypal.com/services/AdaptivePaymentsPayAPI openid";
-			String ScopeValue = URLEncoder.encode(myQuery, "ISO-8859-1")
-					.toString();
-			postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-					new DefaultHttpMethodRetryHandler(3, false));
-//			postMethod
-//					.addRequestHeader("Authorization",
-//							"Basic bWdpX2Z1bmRzX291dC5tb25leWdyYW0uY29tOlNTQVJXTEJRUkxGTURMSEg=");
-			String AUTHORIZATION_BASIC_VALUE=constantFromProperties.getString("AUTHORIZATION_BASIC");
-			postMethod
-			.addRequestHeader("Authorization",AUTHORIZATION_BASIC_VALUE);
-			postMethod.addParameter("grant_type", "authorization_code");
-			postMethod.addParameter("scope", ScopeValue);
-			postMethod.addParameter("code", codeValue);
-			LOGGER.debug(codeValue);
-			
-			int statusCode = client.executeMethod(postMethod);
-			// TODO
-			LOGGER.debug(statusCode);
-			if (statusCode != HttpStatus.SC_NOT_IMPLEMENTED) {
-				String string = postMethod.getResponseBodyAsString();
-				// TODO
-				System.out.println("string ::::::"+ string);
-				LOGGER.debug(string);
-				accessToken = (AccessToken) new Gson().fromJson(string,
-						AccessToken.class);
-			}
+		System.setProperty("javax.net.ssl.trustStoreType",
+				constantFromProperties.getString("trustStoreType"));
+		System.setProperty("javax.net.ssl.trustStore",
+				constantFromProperties.getString("trustStore"));
+		System.setProperty("javax.net.ssl.trustStorePassword",
+				constantFromProperties.getString("trustStorePassword"));
+		HttpClient client = new HttpClient();
+		PostMethod postMethod = new PostMethod(uri);
+		String myQuery = "profile https://uri.paypal.com/services/AdaptivePaymentsPayAPI openid";
+		String ScopeValue = URLEncoder.encode(myQuery, "ISO-8859-1").toString();
+		postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+				new DefaultHttpMethodRetryHandler(3, false));
+		// postMethod
+		// .addRequestHeader("Authorization",
+		// "Basic bWdpX2Z1bmRzX291dC5tb25leWdyYW0uY29tOlNTQVJXTEJRUkxGTURMSEg=");
+		String AUTHORIZATION_BASIC_VALUE = constantFromProperties
+				.getString("AUTHORIZATION_BASIC");
+		postMethod.addRequestHeader("Authorization", AUTHORIZATION_BASIC_VALUE);
+		postMethod.addParameter("grant_type", "authorization_code");
+		postMethod.addParameter("scope", ScopeValue);
+		postMethod.addParameter("code", codeValue);
+		LOGGER.debug(codeValue);
 
-		} catch (Exception e) {
-			LOGGER.error(e, e);
-			e.printStackTrace();
+		int statusCode = client.executeMethod(postMethod);
+		// TODO
+		LOGGER.debug(statusCode);
+		if (statusCode != HttpStatus.SC_NOT_IMPLEMENTED) {
+			String string = postMethod.getResponseBodyAsString();
+			// TODO
+			System.out.println("string ::::::" + string);
+			LOGGER.debug(string);
+			accessToken = (AccessToken) new Gson().fromJson(string,
+					AccessToken.class);
 		}
 
 		LOGGER.debug("Exit Create Token");
@@ -229,7 +226,7 @@ public class PayPalBO {
 		return accessToken.getAccess_token();
 	}
 
-	private static String processToken(String tokenData) {
+	private static String processToken(String tokenData) throws Exception {
 
 		LOGGER.debug("Enter processToken");
 
@@ -239,22 +236,15 @@ public class PayPalBO {
 		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
 				+ "/v1/userinfo?schema=openid";
 
-		try {
-			HttpClient client = new HttpClient();
-			GetMethod method2 = new GetMethod(uri);
-			method2.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-					new DefaultHttpMethodRetryHandler(3, false));
-			method2.addRequestHeader("Authorization",
-					"Bearer ".concat(tokenData));
-			int statusCode = client.executeMethod(method2);
+		HttpClient client = new HttpClient();
+		GetMethod method2 = new GetMethod(uri);
+		method2.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+				new DefaultHttpMethodRetryHandler(3, false));
+		method2.addRequestHeader("Authorization", "Bearer ".concat(tokenData));
+		int statusCode = client.executeMethod(method2);
 
-			if (statusCode != HttpStatus.SC_NOT_IMPLEMENTED) {
-				responseBody = method2.getResponseBodyAsString();
-			}
-
-		} catch (Exception e) {
-			LOGGER.error(e, e);
-			e.printStackTrace();
+		if (statusCode != HttpStatus.SC_NOT_IMPLEMENTED) {
+			responseBody = method2.getResponseBodyAsString();
 		}
 
 		LOGGER.debug("Exit processToken");
@@ -267,18 +257,22 @@ public class PayPalBO {
 		LOGGER.debug("Enter getUserData.");
 
 		Gson gson = new Gson();
-		LOGGER.debug(gson.toJson(userDataInputBean));
-
-		String token = createToken(userDataInputBean.getCode());
-		LOGGER.debug(token);
-
-		String userDataString = processToken(token);
-		LOGGER.debug(userDataString);
 		UserData userData = new UserData();
-
+		LOGGER.debug(gson.toJson(userDataInputBean));
 		try {
+			String token = createToken(userDataInputBean.getCode());
+			LOGGER.debug(token);
+
+			String userDataString = processToken(token);
+			LOGGER.debug(userDataString);
+
 			userData = (UserData) gson.fromJson(userDataString, UserData.class);
-		} catch (JsonSyntaxException jsonSyntaxException) {
+			userData.setToken(token);
+			String stateName = stateNameAndCodeHashtable.get(userData.getAddress()
+					.getRegion());
+			userData.getAddress().setStateName(stateName);
+			
+		} catch (Exception jsonSyntaxException) {
 			jsonSyntaxException.printStackTrace();
 			LOGGER.error(jsonSyntaxException.getLocalizedMessage());
 			userData.setTransactionSuccess(false);
@@ -286,7 +280,6 @@ public class PayPalBO {
 					.getString("RETRY_IN_SOMETIME"));
 			return gson.toJson(userData);
 		}
-		userData.setToken(token);
 
 		LOGGER.debug(gson.toJson(userData));
 

@@ -6,16 +6,20 @@ public class Address {
 
 	}
 
-	/*
-	 * "{\"address\":{\"postal_code\":\"07901\",\"locality\":\"Summ" +
-	 * "it\",\"region\":\"NJ\",\"country\":\"US\",\"street_address\":\"4807384 5th"
-	 * + " Street, 3272844 4th Street\"}," +
-	 */
 	private String postal_code;
 	private String locality;
 	private String region;
 	private String country;
 	private String street_address;
+	private String stateName;
+
+	public String getStateName() {
+		return stateName;
+	}
+
+	public void setStateName(String stateName) {
+		this.stateName = stateName;
+	}
 
 	public String getPostal_code() {
 		return postal_code;

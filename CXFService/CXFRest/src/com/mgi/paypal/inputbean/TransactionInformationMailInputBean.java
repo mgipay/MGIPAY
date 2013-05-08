@@ -9,32 +9,50 @@ public class TransactionInformationMailInputBean {
 
 	}
 
-	private String CustomerEmail;
-	private String TransactionAmount;
-	private String ReferenceNumber;
-
+	private String customerEmail;
+	private String transactionAmount;
+	private String referenceNumber;
+	private String customerName;
+	private String stateName;
+	private String fee;
+	
+	public String getFee() {
+		return fee;
+	}
+	public void setFee(String fee) {
+		this.fee = fee;
+	}
+	public String getStateName() {
+		return stateName;
+	}
+	public void setStateName(String stateName) {
+		this.stateName = stateName;
+	}
 	public String getCustomerEmail() {
-		return CustomerEmail;
+		return customerEmail;
 	}
-
 	public void setCustomerEmail(String customerEmail) {
-		CustomerEmail = customerEmail;
+		this.customerEmail = customerEmail;
 	}
-
 	public String getTransactionAmount() {
-		return TransactionAmount;
+		return transactionAmount;
 	}
-
 	public void setTransactionAmount(String transactionAmount) {
-		TransactionAmount = transactionAmount;
+		this.transactionAmount = transactionAmount;
 	}
-
 	public String getReferenceNumber() {
-		return ReferenceNumber;
+		return referenceNumber;
+	}
+	public void setReferenceNumber(String referenceNumber) {
+		this.referenceNumber = referenceNumber;
+	}
+	public String getCustomerName() {
+		return customerName;
+	}
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
 	}
 
-	public void setReferenceNumber(String referenceNumber) {
-		ReferenceNumber = referenceNumber;
-	}
+
 
 }

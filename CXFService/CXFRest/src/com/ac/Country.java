@@ -73,37 +73,45 @@ public class Country {
 					try {
 						AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 						List<String> tempStateList = new ArrayList<String>();
-						List<String> stateList = new ArrayList<String>();
+//						List<String> stateList = new ArrayList<String>();
 						List<String> stateAndCodeList = new ArrayList<String>();
 						stateAndCodeList = client.codeTable(codeTableRequest,
 								"USA");
 
 						for (int index = 0; index < stateAndCodeList.size(); index = index + 2) {
 							// setting state name as key and state code as value.
+							String stateName = stateAndCodeList.get(index);
+							String stateCode = stateAndCodeList.get(index + 1);
 							
-							Transaction.stateCodeHashTable.put(
-									stateAndCodeList.get(index),
-									stateAndCodeList.get(index + 1));
-							tempStateList.add(stateAndCodeList.get(index));
+							stateName = stateName.toLowerCase();
+							char[] stringArray = stateName.toCharArray();
+							stringArray[0] = Character.toUpperCase(stringArray[0]);
+							stateName = new String(stringArray);
+							
+							Transaction.stateCodeHashTable.put(stateName,
+									stateCode);
+							PayPalBO.stateNameAndCodeHashtable.put(stateCode,
+									stateName);
+							tempStateList.add(stateName);
 						}
 						
 						// TODO delete below for loop
 						
-						for (String stateCode : Transaction.stateCodeHashTable
-								.values()) {
-							LOGGER.debug(stateCode);
-						}						
+//						for (String stateCode : Transaction.stateCodeHashTable
+//								.values()) {
+//							LOGGER.debug(stateCode);
+//						}						
+//						
 						
-						
-						for(String statemName : tempStateList) {
+						/*for(String statemName : tempStateList) {
 							statemName = statemName.toLowerCase();
 							char[] stringArray = statemName.toCharArray();
 							stringArray[0] = Character.toUpperCase(stringArray[0]);
 							statemName = new String(stringArray);
 							stateList.add(statemName);
-						}
-						Collections.sort(stateList);
-						STATES_IN_USA = new Gson().toJson(stateList);
+						}*/
+						Collections.sort(tempStateList);
+						STATES_IN_USA = new Gson().toJson(tempStateList);
 						responseRecived = true;
 					} catch (Exception exception) {
 						LOGGER.error("Retrying Codetable Request because of :"

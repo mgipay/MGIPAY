@@ -75,9 +75,12 @@ public class Transaction {
 				.getFeeAmount());
 		sendValidationRequest.setDestinationCountry(sendValidationInputBean
 				.getDestinationCountry());
+
+		LOGGER.debug(stateCodeHashTable.get(sendValidationInputBean
+				.getDestinationState()));
+		
 		 sendValidationRequest.setDestinationState(stateCodeHashTable
-		 .get(sendValidationInputBean.getDestinationState()
-		 .toUpperCase()));
+		 .get(sendValidationInputBean.getDestinationState()));
 		
 		sendValidationRequest.setReceiveCurrency(sendValidationInputBean
 				.getReceiveCurrency());
