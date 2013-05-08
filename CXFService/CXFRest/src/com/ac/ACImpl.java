@@ -26,6 +26,7 @@ import com.mgi.paypal.interf.ACInterface;
 import com.mgi.paypal.response.CommitTransactionResponse;
 import com.mgi.paypal.response.SendValidationResponse;
 import com.mgi.paypal.util.PropertyUtil;
+import com.paypal.adaptivepayment.client.PayResponse;
 
 @Consumes("application/json")
 @Produces("application/JSON")
@@ -283,11 +284,12 @@ public class ACImpl implements ACInterface {
 
 		// Call PAY API of Paypal.
 
-		/*PayResponse payResponse = null;
+		PayResponse payResponse = null;
 		try {
 			payResponse = PayPalBO.payToMoneyGram(
 					commitTransactionInputBean.getToken(),
-					commitTransactionInputBean.getCustomerEmail());
+					commitTransactionInputBean.getCustomerEmail(),
+					commitTransactionInputBean.getTransactionAmount());
 		} catch (Exception exception) {
 			// If PAY API call failed
 			LOGGER.error(exception.getLocalizedMessage());
@@ -325,7 +327,7 @@ public class ACImpl implements ACInterface {
 			exception.printStackTrace();
 		}
 
-		LOGGER.debug("Exit commitTransaction.");*/
+		LOGGER.debug("Exit commitTransaction.");
 
 		return new Gson().toJson(commitTransactionResponse);
 	}

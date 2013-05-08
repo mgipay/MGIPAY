@@ -50,7 +50,7 @@ public class PayPalBO {
 
 	public static Hashtable<String, String> stateNameAndCodeHashtable = new Hashtable<String, String>();
 
-	public static PayResponse payToMoneyGram(String token, String cutomerEmail)
+	public static PayResponse payToMoneyGram(String token, String customerEmail, BigDecimal amount)
 			throws Exception {
 
 		LOGGER.debug("Enter payToMoneyGram.");
@@ -61,9 +61,9 @@ public class PayPalBO {
 		PayRequest payRequest = new PayRequest();
 
 		Receiver receiver = new Receiver();
-		receiver.setAmount(new BigDecimal(2));
+		receiver.setAmount(amount);
 		// receiver.setEmail("lsoni@moneygram.com");
-		receiver.setEmail(cutomerEmail);
+		receiver.setEmail(constantFromProperties.getString("RECEIVER_EMAIL_PAY"));
 		receiver.setPaymentType("WITHDRAWAL");
 		ReceiverList receiverList = new ReceiverList();
 		receiverList.getReceiver().add(receiver);
@@ -75,7 +75,7 @@ public class PayPalBO {
 		payRequest.setCancelUrl("https://noop");
 		payRequest.setFeesPayer("NOFEE");
 		// mgi_fundsout_test@moneygram.com
-		payRequest.setSenderEmail(cutomerEmail);
+		payRequest.setSenderEmail(customerEmail);
 		FundingTypeInfo fundingTypeInfo = new FundingTypeInfo();
 		fundingTypeInfo.setFundingType("BALANCE");
 		FundingTypeList fundingTypeList = new FundingTypeList();
