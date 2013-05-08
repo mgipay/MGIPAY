@@ -55,23 +55,23 @@ public class HistoryBO {
 		LOGGER.debug("CustomerEmailId :  " + "'"
 				+ histroyLookupInputBean.getCustomerEmailId() + "'");
 		
-		List<HistoryDetails> historyDetailsList = new ArrayList<HistoryDetails>();
+		List<HistoryDetails> historyDetailList = new ArrayList<HistoryDetails>();
 		try {
 			histroyLookupInputBean.setCustomerEmailId(histroyLookupInputBean
 					.getCustomerEmailId().toLowerCase().trim());
 			MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
-			historyDetailsList = MoneyGramPayPalDAO
+			historyDetailList = MoneyGramPayPalDAO
 					.retrieveHistroyDetails(histroyLookupInputBean
 							.getCustomerEmailId());
 
 			// TODO delete unwanted logger.
-			LOGGER.debug("size : " + historyDetailsList.size());
-			LOGGER.debug("history details : " + new Gson().toJson(historyDetailsList));
+			LOGGER.debug("size : " + historyDetailList.size());
+			LOGGER.debug("history details : " + new Gson().toJson(historyDetailList));
 			
-			for (HistoryDetails historyDetails : historyDetailsList) {
+			for (HistoryDetails historyDetails : historyDetailList) {
 				// checking status, if 'received' or not in history table
-				if (!historyDetails.getMgiTransactionStatus().equals(
-						TransactionStatus.RECVD.value())) {
+				if (historyDetails.getMgiTransactionStatus().equals(
+						TransactionStatus.AVAIL.value())) {
 
 					String statusFromDetailLookUp = detailLookUpForRetrieveHistory(historyDetails
 							.getMgiTransactionSessionID());
@@ -79,43 +79,29 @@ public class HistoryBO {
 					LOGGER.debug("status from detail Lookup : "
 							+ statusFromDetailLookUp);
 
-						LOGGER.debug("status form table : "
-								+ historyDetails.getTransactionStatus());
+					LOGGER.debug("status form table : "
+							+ historyDetails.getTransactionStatus());
 
 					if (statusFromDetailLookUp != null
 							&& !statusFromDetailLookUp.equals(historyDetails
 									.getMgiTransactionStatus())) {
-							moneyGramPayPalDAO.updateHistoryDetail(
-									statusFromDetailLookUp,
-									historyDetails.getMgiReferenceNumber());
-//							historyDetails
-//									.setTransactionStatus(statusFromDetailLookUp);
-							
-						if (statusFromDetailLookUp
-								.equals(TransactionStatus.AVAIL.value())) {
-							historyDetails
-									.setUiTransactionStatus(TransactionStatus.AVAILABLE
-											.value());
-						} else if (statusFromDetailLookUp
-								.equals(TransactionStatus.RECVD.value())) {
-							historyDetails
-									.setUiTransactionStatus(TransactionStatus.RECIEVED
-											.value());
-						} else if (statusFromDetailLookUp
-								.equals(TransactionStatus.REFND.value())) {
-							historyDetails
-									.setUiTransactionStatus(TransactionStatus.REFUNDED
-											.value());
-						} else if (statusFromDetailLookUp
-								.equals(TransactionStatus.CANCL.value())) {
-							historyDetails
-									.setUiTransactionStatus(TransactionStatus.CANCELLED
-											.value());
-						}
-							
-						}
+						moneyGramPayPalDAO.updateHistoryDetail(
+								statusFromDetailLookUp,
+								historyDetails.getMgiTransactionSessionID());
+						historyDetails
+								.setMgiTransactionStatus(statusFromDetailLookUp);
+
+					}
 				}
 			}
+			
+			for (HistoryDetails historyDetails : historyDetailList) {
+				historyDetails
+						.setTransactionStatus(constantFromProperties
+								.getString(historyDetails
+										.getMgiTransactionStatus()));
+			}
+			
 		} catch (Exception exception) {
 			LOGGER.error("getHistory failed because of:" + exception);
 			exception.printStackTrace();
@@ -125,7 +111,7 @@ public class HistoryBO {
 			return new Gson().toJson(histroyLookupResponse);
 		}
 
-		Collections.sort(historyDetailsList, new Comparator<HistoryDetails>() {
+		Collections.sort(historyDetailList, new Comparator<HistoryDetails>() {
 			public int compare(HistoryDetails historyDetails1,
 					HistoryDetails historyDetails2) {
 				return historyDetails2.getTransactionID().compareTo(
@@ -133,7 +119,7 @@ public class HistoryBO {
 			}
 		});
 
-		histroyLookupResponse.setHistoryDetailsList(historyDetailsList);
+		histroyLookupResponse.setHistoryDetailsList(historyDetailList);
 		histroyLookupResponse.setTransactionSuccess(true);
 
 		LOGGER.debug("Exit getHistoryDetails.");

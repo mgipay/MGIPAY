@@ -148,8 +148,8 @@ public class MoneyGramPayPalDAO {
 			Date transactionDate = resultSet.getDate(("TRAN_DATE"));
 			DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 			historyDetails.setTransactionDate(df.format(transactionDate));
-			historyDetails.setUiTransactionStatus(resultSet
-					.getString("UI_TRAN_STATUS"));
+//			historyDetails.setUiTransactionStatus(resultSet
+//					.getString("UI_TRAN_STATUS"));
 			historyDetails.setMgiTransactionStatus(resultSet
 					.getString("MGI_TRAN_STATUS"));
 			historyDetails.setMgiTransactionSessionID(resultSet
@@ -208,7 +208,7 @@ public class MoneyGramPayPalDAO {
 			SendValidationInputBean sendValidationInputBean)
 			throws ClassNotFoundException, SQLException {
 
-		LOGGER.debug("Enter insertHistoryDetails.");
+		LOGGER.debug("Enter insertHistoryDetailsBeforeSendValidation.");
 
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
@@ -240,7 +240,7 @@ public class MoneyGramPayPalDAO {
 		
 		strQuery = "INSERT INTO MGI_PAYPAL_TRAN_HIST (TRAN_ID, CUST_EMAIL, CUST_NAME, "
 				+ "CUST_PHONE, PAYPAL_TRAN_ID, MGI_REF_NUM, TRAN_DATE, TRAN_AMT, TRAN_FEE, "
-				+ "TRAN_STATUS, UI_TRAN_STATUS, MGI_SESS_ID,MGI_TRAN_STATUS) "
+				+ "TRAN_STATUS, MGI_SESS_ID,MGI_TRAN_STATUS) "
 				+ "VALUES (mgi_paypal_tranid_seq.nextval,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 		PreparedStatement preparedStatement = connection
@@ -260,15 +260,15 @@ public class MoneyGramPayPalDAO {
 		preparedStatement.setBigDecimal(8,
 				sendValidationInputBean.getFeeAmount());
 		preparedStatement.setString(9, TransactionStatus.IN_PROGRESS.value());//TRAN_STATUS
-		preparedStatement.setString(10, "");// UI_TRAN_STATUS
-		preparedStatement.setString(11,
+//		preparedStatement.setString(10, "");// UI_TRAN_STATUS
+		preparedStatement.setString(10,
 				sendValidationInputBean.getMgiTransactionSessionID());
-		preparedStatement.setString(12, "");//MGI_TRAN_STATUS
+		preparedStatement.setString(11, "");//MGI_TRAN_STATUS
 
 		preparedStatement.execute();
 		connection.close();
 
-		LOGGER.debug("Exit insertHistoryDetails.");
+		LOGGER.debug("Exit insertHistoryDetailsBeforeSendValidation.");
 
 	}
 
@@ -292,6 +292,7 @@ public class MoneyGramPayPalDAO {
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1, mgiReferenceNumber);
 		preparedStatement.setString(2, TransactionStatus.MGI_COMMITED.value());
+		// TODO remove below line...
 		preparedStatement.setString(3, TransactionStatus.AVAIL.value());
 		preparedStatement.setString(4, mgiTransactionSessionID);
 		preparedStatement.executeUpdate();
@@ -364,15 +365,17 @@ public class MoneyGramPayPalDAO {
 				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
 		String strQuery = "update MGI_PAYPAL_TRAN_HIST set PAYPAL_TRAN_ID = ? "
-				+ ", TRAN_STATUS = ? , MGI_TRAN_STATUS = ? , UI_TRAN_STATUS = ? where MGI_SESS_ID = ?";
+				+ ", TRAN_STATUS = ? , MGI_TRAN_STATUS = ? , " +
+//				"UI_TRAN_STATUS = ? " +
+				"where MGI_SESS_ID = ?";
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1, payPalTransactionID);
 		preparedStatement.setString(2,
 				TransactionStatus.PAYPAL_COMMITTED.value());
 		preparedStatement.setString(3, TransactionStatus.AVAIL.value());
-		preparedStatement.setString(4, TransactionStatus.AVAILABLE.value());
-		preparedStatement.setString(5, mgiTransactionSessionID);
+//		preparedStatement.setString(4, TransactionStatus.AVAILABLE.value());
+		preparedStatement.setString(4, mgiTransactionSessionID);
 		preparedStatement.executeUpdate();
 		connection.close();
 
@@ -394,31 +397,12 @@ public class MoneyGramPayPalDAO {
 					constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
 			String strQuery = "update MGI_PAYPAL_TRAN_HIST set "
-					+ "MGI_TRAN_STATUS = ?, UI_TRAN_STATUS = ? where MGI_SESS_ID = ?";
+					+ "MGI_TRAN_STATUS = ? " +
+//					"UI_TRAN_STATUS = ? " +
+					"where MGI_SESS_ID = ?";
 			PreparedStatement preparedStatement = connection
 					.prepareStatement(strQuery);
 			preparedStatement.setString(1, detailLookUpStatus);
-			
-
-			if (detailLookUpStatus.equals(TransactionStatus.AVAIL.value())) {
-				preparedStatement.setString(2,
-						TransactionStatus.AVAILABLE.value());
-			} else if (detailLookUpStatus.equals(TransactionStatus.RECVD
-					.value())) {
-				preparedStatement.setString(2,
-						TransactionStatus.RECIEVED.value());
-			} else if (detailLookUpStatus.equals(TransactionStatus.REFND
-					.value())) {
-				preparedStatement.setString(2,
-						TransactionStatus.REFUNDED.value());
-			} else if (detailLookUpStatus.equals(TransactionStatus.CANCL
-					.value())) {
-				preparedStatement.setString(2,
-						TransactionStatus.CANCELLED.value());
-			}
-			
-			
-			
 			
 			preparedStatement.setString(2, mgiTransactionSessionID);
 			preparedStatement.executeUpdate();
