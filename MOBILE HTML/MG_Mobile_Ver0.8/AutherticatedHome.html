@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=0, maximum-scale=0, minimum-scale=1, user-scalable=no" />
+<title>Untitled Document</title>
+<link href="css/styles.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="scripts/topmenu.js"></script>
+<script type="text/javascript" src="scripts/tabContent.js"></script>
+<script type="text/javascript" src="scripts/jquery.cookie.js"></script>
+<script type="text/javascript" src="scripts/common.js"></script>
+<script type="text/javascript" src="scripts/spinmin.js"></script>
+<script type="text/javascript" src="scripts/history.js"></script>
+<script type="text/javascript" src="scripts/global.js"></script>
+<script type="text/javascript" src="scripts/service.js"></script>
+<script type="text/javascript" src="scripts/utility.js"></script>
+<script type="text/javascript" src="scripts/genric.js"></script>
+
+
+</head>
+
+<body>
+<div id="preview" style="display:none">
+            <div class="loading_content" id="loadingContent">
+               <p>Processing your request.</p><p> This will take just a moment</p>
+               <div class="clear"></div>
+               <div id="loading_div">
+               </div>
+            </div>
+</div>
+<div id="wrapper"> 
+  <!-- #header -->
+  <div id="header">
+    <header>
+      <ul class="menuheader">
+        <li class="btnnav"><a href="javascript:history.back()"><img src="images/btn_arrow.png"></a></li>
+        <li class="logomoneygramblock"><a href="home.html"><img src="images/logo.png"></a></li>
+        <li class="logopaypalblock"><a href="home.html"><img src="images/logoPaypal.png"></a></li>
+        <li class="menu" id="menu_active"><a href="#" class="topmenulink"><img src="images/icon_menu.png" id="menuActive"></a></li>
+      </ul>
+    </header>
+    <!-- Dropdown Menu -->
+<ul class="topmenu">
+  <li> <a href="faqs.html"> FAQs</a> </li>
+  <li> <a href="contactus.html">Contact Us</a> </li>
+  <li id="historyLink" class="displaynone"> <a href="AutherticatedHome.html">History</a> </li>
+  <li> <a href="privacypolicy.html">Privacy Policy</a> </li>
+ <li> <a href="termsofuse.html"> Terms of Use</a> </li>
+  <li> <a href="terms_and_conditions.html">Terms and Conditions</a> </li>
+  <li> <a href="aboutmoneygram.html">About MoneyGram</a> </li>
+  <li id="loginLink" class="displayblock"> <a href="home.html">Login</a> </li>
+  <li id="logoutLink" class="displaynone"> <a href="home.html">Logout</a> </li>
+</ul>
+
+    <!-- Dropdown Menu End --> 
+  </div>
+  
+  <!-- #content -->
+  <div id="content">
+    <section class="sectioncontent">
+      <div class="staticcontainer">
+        <div class="authenticatedhome">
+     
+         
+           
+            <p>Use MoneyGram & PayPal to start your cash withdrawal or find a location to add cash. 
+              <!--<a href="#">view fees for service</a>--></p>
+          
+        </div>
+        <div class="authenticateGrid">
+         <ul class="tablegrid" id="historyTable">
+            <!-- <li class="thead">
+              <div> Recent History </div>
+            </li>
+            <li class="trow ">
+              <div class="year">
+                <h2>1/10/2013</h2>
+                <h4>-s$105.95 USD</h4>
+              </div>
+              <div class="amount">
+                <h5>To: John Doe #00003126</h5>
+                <h1>Sent: $100.00 USD</h1>
+              </div>
+            </li>
+            <li class="trow altrow">
+              <div class="year">
+                <h2>1/10/2013</h2>
+                <h4>-s$105.95 USD</h4>
+              </div>
+              <div class="amount">
+                <h5>To: John Doe #00003126</h5>
+                <h1>Sent: $100.00 USD</h1>
+              </div>
+            </li>-->
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+  <!-- #footer -->
+  <div id="footer">
+    <div class="footertogglemenu">
+      <fieldset id='menuFieldSet' >
+        <legend><a  id='menuexpandId'   class="menuexpand disblock"></a></legend>
+        <nav id="navfootermenu"> <a href="addcash.html" class="addcash1"></a> <a href="NonauthenWithdraw.html" class="withdrawcash1"></a> <a href="locations.html" class="locations1"></a> </nav>
+      </fieldset>
+    </div>
+    <footer >
+      <div class="copyright"> <a href="#">Visit Full Site</a> <span>© <label class="footer_year"></label> MoneyGram. All rights reserved</span> </div>
+    </footer>
+  </div>
+</div>
+</body>
+</html>
