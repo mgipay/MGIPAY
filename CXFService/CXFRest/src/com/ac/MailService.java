@@ -208,10 +208,10 @@ public class MailService {
 	}
 	public String sendReportInformationMail(SendMailInputBean sendMailInputBean) {
 	
-		if (sendMailInputBean.getMailSubject().trim().toLowerCase()
-				.equals("general")) {
+//		if (sendMailInputBean.getMailSubject().trim().toLowerCase()
+//				.equals("general")) {
 			return sendReportInformationMailIfGeneral(sendMailInputBean);
-		} else {
+		/*} else {
 			SendMailOutputBean sendMailOutputBean = new SendMailOutputBean();
 			if (sendMailIfRefund()) {
 				sendMailOutputBean.setTransactionSuccess(true);
@@ -228,7 +228,7 @@ public class MailService {
 
 			}
 			return new Gson().toJson(sendMailOutputBean);
-		}
+		}*/
 	}
 	
 	private String sendReportInformationMailIfGeneral(SendMailInputBean sendMailInputBean) {

@@ -245,7 +245,8 @@ public class MoneyGramPayPalDAO {
 		preparedStatement.setString(1, sendValidationInputBean.getSenderEmail()
 				.toLowerCase().trim());
 		preparedStatement.setString(2,
-				sendValidationInputBean.getSenderFirstName());
+				sendValidationInputBean.getSenderFirstName().concat(" ")
+						.concat(sendValidationInputBean.getSenderLastName()));
 		preparedStatement.setString(3,
 				sendValidationInputBean.getSenderHomePhone());
 		preparedStatement.setString(4, "");// PAYPAL_TRAN_ID
