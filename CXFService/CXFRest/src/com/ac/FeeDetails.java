@@ -16,6 +16,7 @@ import com.mgi.paypal.inputbean.FeeLookupInputBean;
 import com.mgi.paypal.util.CalendarUtil;
 import com.mgi.paypal.util.FeeLinkValues;
 import com.mgi.paypal.util.PropertyUtil;
+import com.thoughtworks.xstream.XStream;
 
 public class FeeDetails {
 
@@ -48,12 +49,18 @@ public class FeeDetails {
 				false);
 		com.mgi.paypal.response.FeeLookupResponse feeLookupResponseUI = new com.mgi.paypal.response.FeeLookupResponse();
 		FeeLookupResponse feeLookupResponse = null;
+		
+		// TODO 
+		System.out.println( new XStream().toXML(feeLookupRequest));
+		
 		byte retryCount = 3;
 		while (retryCount >= 1) {
 
 			try {
 				AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 				feeLookupResponse = client.feeLookup(feeLookupRequest);
+				// TODO
+				System.out.println( new XStream().toXML(feeLookupResponse));
 				break;
 			} catch (Exception exception) {
 

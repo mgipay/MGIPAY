@@ -15,6 +15,7 @@ import com.mgi.paypal.inputbean.CommitTransactionInputBean;
 import com.mgi.paypal.inputbean.SendValidationInputBean;
 import com.mgi.paypal.util.CalendarUtil;
 import com.mgi.paypal.util.PropertyUtil;
+import com.thoughtworks.xstream.XStream;
 
 public class Transaction {
 
@@ -100,10 +101,10 @@ public class Transaction {
 				.getSenderCountry());
 		sendValidationRequest.setSenderHomePhone(sendValidationInputBean
 				.getSenderHomePhone());
-		sendValidationRequest.setReceiverFirstName(sendValidationInputBean
+		/*sendValidationRequest.setReceiverFirstName(sendValidationInputBean
 				.getReceiverFirstName());
 		sendValidationRequest.setReceiverLastName(sendValidationInputBean
-				.getReceiverLastName());
+				.getReceiverLastName());*/
 		sendValidationRequest.setSendCurrency(sendValidationInputBean
 				.getSendCurrency());
 		sendValidationRequest.setAgentUseSendData(sendValidationInputBean
@@ -112,11 +113,18 @@ public class Transaction {
 		com.mgi.paypal.response.SendValidationResponse sendValidationResponseForUI 
 		= new com.mgi.paypal.response.SendValidationResponse();
 		byte retryCount = 3;
+		
+		// TODO 
+		
+		System.out.println(new XStream().toXML(sendValidationRequest));
+		
+		
 		while (retryCount >= 1) {
 			try {
 				AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 				sendValidationResponse = client
 						.sendValidation(sendValidationRequest);
+				System.out.println(new XStream().toXML(sendValidationResponse));
 				break;
 			} catch (Exception exception) {
 				retryCount--;
@@ -158,25 +166,37 @@ public class Transaction {
 			com.mgi.agentconnect.client.SendValidationRequest sendValidationRequest) {
 
 		LOGGER.debug("Enter setSenderName.");
-
+		
 		String firstName = sendValidationInputBean.getSenderFirstName();
 		String lastName = sendValidationInputBean.getSenderLastName();
-		if (firstName.length() < 40) {
-			firstName = firstName.concat(
-					"                                        ")
-					.substring(0, 39);
-		}
-		if (lastName.length() < 60) {
-			lastName = lastName
-					.concat("                                                            ")
-					.substring(0, 59);
+		
+		if (firstName.length() <= 20) {
+			sendValidationRequest.setSenderFirstName(firstName);
+			sendValidationRequest.setReceiverFirstName(firstName);
+		} else {
+			String senderFirstName = firstName.substring(0, 19);
+			String senderMiddleName = firstName.substring(20,
+					firstName.length() - 1);
+			sendValidationRequest.setSenderFirstName(senderFirstName);
+			sendValidationRequest.setSenderMiddleName(senderMiddleName);
+			
+			sendValidationRequest.setReceiverFirstName(senderFirstName);
 		}
 
-		sendValidationRequest.setSenderFirstName(firstName.substring(0, 14));
-		sendValidationRequest.setSenderMiddleName(firstName.substring(0, 1));
-		sendValidationRequest.setSenderLastName(lastName.substring(0, 20));
-		// sendValidationRequest.setSenderLastName2(lastName.substring(0, 5));
+		if (lastName.length() <= 30) {
+			sendValidationRequest.setSenderLastName(lastName);
+			sendValidationRequest.setReceiverLastName(lastName);
+		} else {
+			String senderLastName = lastName.substring(0, 29);
+			String senderLastName2 = lastName.substring(30,
+					lastName.length() - 1);
+			sendValidationRequest.setSenderLastName(senderLastName);
+			sendValidationRequest.setSenderLastName2(senderLastName2);
+			
+			sendValidationRequest.setReceiverLastName(senderLastName);
+		}
 
+		
 		LOGGER.debug("Exit setSenderName.");
 	}
 	
@@ -219,12 +239,16 @@ public class Transaction {
 		commitTransactionRequest.setProductType(ProductType.SEND);
 		com.mgi.paypal.response.CommitTransactionResponse commitTransactionResponseForUI 
 		= new com.mgi.paypal.response.CommitTransactionResponse();
+		
+		LOGGER.debug(new XStream().toXML(commitTransactionRequest));
+		
 		byte retryCount = 3;
 		while (retryCount >= 1) {
 			try {
 				AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 				commitTransactionResponse = client
 						.commitTransaction(commitTransactionRequest);
+				LOGGER.debug(new XStream().toXML(commitTransactionResponse));
 				break;
 			} catch (Exception exception) {
 				retryCount--;

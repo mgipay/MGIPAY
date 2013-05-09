@@ -83,7 +83,7 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 	}
 
 	private AdaptivePaymentsPortType getPortForPay(String token) {
-		setCredentials();
+		setCredentialsforPay();
 		// String wsdlURL
 		// ="https://svcs.sandbox.paypal.com/AdaptivePayments/Pay";
 		String wsdlURL = constantFromProperties
@@ -143,6 +143,24 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 		 System.setProperty("javax.net.ssl.keyStorePassword", "prompt");*/
 
 	}
+	
+	private  void setCredentialsforPay() {
+
+		System.setProperty("javax.net.ssl.trustStoreType",
+				constantFromProperties.getString("trustStoreType"));
+		System.setProperty("javax.net.ssl.trustStore",
+				constantFromProperties.getString("trustStoreforPay"));
+		System.setProperty("javax.net.ssl.trustStorePassword",
+				constantFromProperties.getString("trustStorePassword"));
+		System.setProperty("javax.net.ssl.keyStoreType",
+				constantFromProperties.getString("keyStoreType"));
+		System.setProperty("javax.net.ssl.keyStore",
+				constantFromProperties.getString("keyStoreforPay"));
+		System.setProperty("javax.net.ssl.keyStorePassword",
+				constantFromProperties.getString("keyStorePassword"));
+
+	
+	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void addLogHandler(BindingProvider bp) {
@@ -176,21 +194,21 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 
 	}
 
-	public static void setupHeadersForPay(BindingProvider bp, String token) {
+	public  void setupHeadersForPay(BindingProvider bp, String token) {
 
 		Map<String, List<String>> headers = new HashMap<String, List<String>>();
 		headers.put("X-PAYPAL-SECURITY-PASSWORD",
-				Collections.singletonList("SSARWLBQRLFMDLHH"));
+				Collections.singletonList(constantFromProperties.getString("X_PAYPAL_SECURITY_PASSWORD")));
 
 		headers.put("X-PAYPAL-APPLICATION-ID",
-				Collections.singletonList("APP-1JE4291016473214C"));
+				Collections.singletonList(constantFromProperties.getString("X_PAYPAL_APPLICATION_ID")));
 		headers.put("X-PAYPAL-SECURITY-USERID", Collections
-				.singletonList("mgi_fundsout_test_api1.moneygram.com"));
+				.singletonList(constantFromProperties.getString("X_PAYPAL_SECURITY_USERID")));
 
 		headers.put(
 				"X-PAYPAL-SECONDARY-AUTH-UNIVERSAL-TOKEN ",
 				Collections
-						.singletonList(/* "Hia6.IbEOZ1kV-KvqETllw9vPBtrH-QoXu297bVRqy8" */token));
+						.singletonList(token));
 		bp.getRequestContext()
 				.put(MessageContext.HTTP_REQUEST_HEADERS, headers);
 
