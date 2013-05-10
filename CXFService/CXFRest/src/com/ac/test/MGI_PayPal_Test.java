@@ -158,7 +158,7 @@ public class MGI_PayPal_Test {
 	public void TestFeeLookUp() { setCredentials();
 		try {
 			
-			URL url = new URL("http://localhost:8080/CXFRest/rest/getFee");
+			URL url = new URL("http://localhost:8092/CXFRest/rest/getFee");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");

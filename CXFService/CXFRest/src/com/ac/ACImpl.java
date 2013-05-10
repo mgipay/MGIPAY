@@ -8,7 +8,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
@@ -38,9 +37,6 @@ public class ACImpl implements ACInterface {
 
 	private static Logger LOGGER = Logger.getLogger(ACImpl.class);
 
-	private static PropertiesConfiguration messageFromProperties = new PropertyUtil()
-			.getMessagePropertyConfig();
-
 	/**
 	 * getFee. This method will return fee in USD for given input amount.
 	 * 
@@ -56,6 +52,7 @@ public class ACImpl implements ACInterface {
 			@Context HttpServletResponse response,
 			FeeLookupInputBean feeLookupInputBean) {
 
+		
 		LOGGER.debug("IP Address : " + request.getRemoteAddr());
 
 		FeeDetails feeDetails = new FeeDetails();
@@ -199,7 +196,7 @@ public class ACImpl implements ACInterface {
 			// If insert DB failed , then return error msg to UI.
 			LOGGER.error(exception.getLocalizedMessage());
 			sendValidationResponse.setTransactionSuccess(false);
-			sendValidationResponse.setErrorMessage(messageFromProperties
+			sendValidationResponse.setErrorMessage(PropertyUtil.messageFromProperties
 					.getString("TRANSACTION_FAILED_RETRY"));
 			return new Gson().toJson(sendValidationResponse);
 		}
@@ -350,7 +347,7 @@ public class ACImpl implements ACInterface {
 		}
 		CommitTransactionResponse commitTransactionResponse = new CommitTransactionResponse();
 		commitTransactionResponse.setTransactionSuccess(false);
-		commitTransactionResponse.setErrorMessage(messageFromProperties
+		commitTransactionResponse.setErrorMessage(PropertyUtil.messageFromProperties
 				.getString("TRANSACTION_FAILED_RETRY"));
 
 		return new Gson().toJson(commitTransactionResponse);

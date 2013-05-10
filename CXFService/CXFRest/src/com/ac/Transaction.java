@@ -2,7 +2,6 @@ package com.ac;
 
 import java.util.Hashtable;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -14,6 +13,7 @@ import com.mgi.agentconnect.client.ProductType;
 import com.mgi.paypal.inputbean.CommitTransactionInputBean;
 import com.mgi.paypal.inputbean.SendValidationInputBean;
 import com.mgi.paypal.util.CalendarUtil;
+import com.mgi.paypal.util.Mgi_Paypal_Constants;
 import com.mgi.paypal.util.PropertyUtil;
 import com.thoughtworks.xstream.XStream;
 
@@ -23,11 +23,6 @@ public class Transaction {
 
 	}
 	private static Logger LOGGER = Logger.getLogger(Transaction.class);
-
-	private static PropertiesConfiguration constantFromProperties = new PropertyUtil()
-			.getConstantPropertyConfig();
-	private static PropertiesConfiguration messageFromProperties = new PropertyUtil()
-			.getMessagePropertyConfig();
 
 	public static Hashtable<String, String> stateCodeHashTable = new Hashtable<String, String>();
 	
@@ -42,29 +37,29 @@ public class Transaction {
 		= new com.mgi.agentconnect.client.SendValidationRequest();
 		sendValidationRequest.setConsumerId("0");
 		sendValidationRequest.setFormFreeStaging(false);
-		sendValidationRequest.setTimeToLive(constantFromProperties
+		sendValidationRequest.setTimeToLive(PropertyUtil.constantFromProperties
 				.getBigInteger("TIME_TO_LIVE_THIRTY"));
-		sendValidationRequest.setPrimaryReceiptLanguage(constantFromProperties
+		sendValidationRequest.setPrimaryReceiptLanguage(PropertyUtil.constantFromProperties
 				.getString("LANGUAGE_CODE_ENGLISH"));
 		sendValidationRequest
-				.setSecondaryReceiptLanguage(constantFromProperties
+				.setSecondaryReceiptLanguage(PropertyUtil.constantFromProperties
 						.getString("LANGUAGE_CODE_SPANISH"));
-		sendValidationRequest.setAgentID(constantFromProperties
+		sendValidationRequest.setAgentID(PropertyUtil.constantFromProperties
 				.getString("AGENT_ID"));
-		sendValidationRequest.setAgentSequence(constantFromProperties
+		sendValidationRequest.setAgentSequence(PropertyUtil.constantFromProperties
 				.getString("AGENT_SEQUENCE"));
-		sendValidationRequest.setToken(constantFromProperties
+		sendValidationRequest.setToken(PropertyUtil.constantFromProperties
 				.getString("TOKEN"));
 		sendValidationRequest.setTimeStamp(CalendarUtil.getTimeStamp());
-		sendValidationRequest.setApiVersion(constantFromProperties
+		sendValidationRequest.setApiVersion(PropertyUtil.constantFromProperties
 				.getString("API_VERSION"));
-		sendValidationRequest.setClientSoftwareVersion(constantFromProperties
+		sendValidationRequest.setClientSoftwareVersion(PropertyUtil.constantFromProperties
 				.getString("CLIENT_SOFTWARE_VERSION"));
-		sendValidationRequest.setDeliveryOption(constantFromProperties
+		sendValidationRequest.setDeliveryOption(PropertyUtil.constantFromProperties
 				.getString("DELIVER_OPTION_WILL_CALL"));
 		
-		sendValidationRequest.setSenderCity(StringUtils.left(sendValidationInputBean.getSenderCity(), constantFromProperties.getInt("SENDER_CITY_WIDTH")));
-//		sendValidationRequest.setSenderCity(constantFromProperties.getString("SENDERCITY"));
+		sendValidationRequest.setSenderCity(StringUtils.left(sendValidationInputBean.getSenderCity(), PropertyUtil.constantFromProperties.getInt("SENDER_CITY_WIDTH")));
+//		sendValidationRequest.setSenderCity(PropertyUtil.constantFromProperties.getString("SENDERCITY"));
 		//TODO Add this also to property file
 		//StringUtils.left is used to get a string within the limit and also to avoid any exceptions
 		sendValidationRequest.setAmount(sendValidationInputBean.getAmount());
@@ -89,10 +84,9 @@ public class Transaction {
 		setSenderName(sendValidationInputBean, sendValidationRequest);
 
 		sendValidationRequest.setSenderAddress(StringUtils.left(sendValidationInputBean
-				.getSenderAddress(),constantFromProperties.getInt("SENDER_ADDRESS_WIDTH")));
+				.getSenderAddress(),PropertyUtil.constantFromProperties.getInt("SENDER_ADDRESS_WIDTH")));
 		//TODO Add the entry in Constants.properties
 		
-	
 		sendValidationRequest.setSenderState(sendValidationInputBean.getSenderState());
 
 		sendValidationRequest.setSenderZipCode(sendValidationInputBean
@@ -101,10 +95,6 @@ public class Transaction {
 				.getSenderCountry());
 		sendValidationRequest.setSenderHomePhone(sendValidationInputBean
 				.getSenderHomePhone());
-		/*sendValidationRequest.setReceiverFirstName(sendValidationInputBean
-				.getReceiverFirstName());
-		sendValidationRequest.setReceiverLastName(sendValidationInputBean
-				.getReceiverLastName());*/
 		sendValidationRequest.setSendCurrency(sendValidationInputBean
 				.getSendCurrency());
 		sendValidationRequest.setAgentUseSendData(sendValidationInputBean
@@ -112,7 +102,7 @@ public class Transaction {
 
 		com.mgi.paypal.response.SendValidationResponse sendValidationResponseForUI 
 		= new com.mgi.paypal.response.SendValidationResponse();
-		byte retryCount = 3;
+		int retryCount = Mgi_Paypal_Constants.retryCount;
 		
 		// TODO 
 		
@@ -135,7 +125,7 @@ public class Transaction {
 					sendValidationResponseForUI
 							.setTransactionSuccess(false);
 					sendValidationResponseForUI
-							.setErrorMessage(messageFromProperties
+							.setErrorMessage(PropertyUtil.messageFromProperties
 									.getString("TRANSACTION_FAILED_RETRY"));
 					return sendValidationResponseForUI;
 				}
@@ -152,7 +142,7 @@ public class Transaction {
 			sendValidationResponseForUI.setTransactionSuccess(false);
 			LOGGER.error("Send Validation Response: Null");
 			sendValidationResponseForUI
-					.setErrorMessage(messageFromProperties
+					.setErrorMessage(PropertyUtil.messageFromProperties
 							.getString("TRANSACTION_FAILED_RETRY"));
 		}
 
@@ -221,17 +211,17 @@ public class Transaction {
 		CommitTransactionRequest commitTransactionRequest = new CommitTransactionRequest();
 		CommitTransactionResponse commitTransactionResponse = null;
 
-		commitTransactionRequest.setAgentID(constantFromProperties
+		commitTransactionRequest.setAgentID(PropertyUtil.constantFromProperties
 				.getString("AGENT_ID"));
-		commitTransactionRequest.setAgentSequence(constantFromProperties
+		commitTransactionRequest.setAgentSequence(PropertyUtil.constantFromProperties
 				.getString("AGENT_SEQUENCE"));
-		commitTransactionRequest.setToken(constantFromProperties
+		commitTransactionRequest.setToken(PropertyUtil.constantFromProperties
 				.getString("TOKEN"));
 		commitTransactionRequest.setTimeStamp(CalendarUtil.getTimeStamp());
-		commitTransactionRequest.setApiVersion(constantFromProperties
+		commitTransactionRequest.setApiVersion(PropertyUtil.constantFromProperties
 				.getString("API_VERSION"));
 		commitTransactionRequest
-				.setClientSoftwareVersion(constantFromProperties
+				.setClientSoftwareVersion(PropertyUtil.constantFromProperties
 						.getString("CLIENT_SOFTWARE_VERSION"));
 		commitTransactionRequest
 				.setMgiTransactionSessionID(commitTransactionInputBean
@@ -242,7 +232,7 @@ public class Transaction {
 		
 		LOGGER.debug(new XStream().toXML(commitTransactionRequest));
 		
-		byte retryCount = 3;
+		int retryCount = Mgi_Paypal_Constants.retryCount;
 		while (retryCount >= 1) {
 			try {
 				AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
@@ -257,7 +247,7 @@ public class Transaction {
 					LOGGER.debug("Max number of retries reached. Commit Trasaction Failed.");
 
 					commitTransactionResponseForUI
-							.setErrorMessage(messageFromProperties
+							.setErrorMessage(PropertyUtil.messageFromProperties
 									.getString("TRANSACTION_FAILED_RETRY"));
 					commitTransactionResponseForUI.setTransactionSuccess(false);
 
@@ -277,7 +267,7 @@ public class Transaction {
 
 		} else {
 			commitTransactionResponseForUI
-					.setErrorMessage(messageFromProperties
+					.setErrorMessage(PropertyUtil.messageFromProperties
 							.getString("TRANSACTION_FAILED_RETRY"));
 			commitTransactionResponseForUI.setTransactionSuccess(false);
 		}

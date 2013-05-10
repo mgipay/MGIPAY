@@ -9,6 +9,11 @@ public class PropertyUtil {
 	PropertiesConfiguration constant = null;
 	PropertiesConfiguration message = null;
 
+	public static PropertiesConfiguration constantFromProperties = new PropertyUtil()
+			.getConstantPropertyConfig();
+	public static PropertiesConfiguration messageFromProperties = new PropertyUtil()
+			.getMessagePropertyConfig();
+
 	public PropertyUtil() {
 
 	}
@@ -16,8 +21,8 @@ public class PropertyUtil {
 	public PropertiesConfiguration getConstantPropertyConfig() {
 		try {
 			constant = new PropertiesConfiguration(
-		 "/var/lib/tomcat7/conf/Constants.properties");
-				//	"Constants.properties");
+					"/var/lib/tomcat7/conf/Constants.properties");
+//			 "Constants.properties");
 		} catch (ConfigurationException configurationException) {
 			((Throwable) configurationException).printStackTrace();
 		}
@@ -28,8 +33,8 @@ public class PropertyUtil {
 	public PropertiesConfiguration getMessagePropertyConfig() {
 		try {
 			message = new PropertiesConfiguration(
-			 "/var/lib/tomcat7/conf/Message.properties");
-					//"Message.properties");
+					"/var/lib/tomcat7/conf/Message.properties");
+//			 "Message.properties");
 		} catch (ConfigurationException configurationException) {
 			((Throwable) configurationException).printStackTrace();
 		}

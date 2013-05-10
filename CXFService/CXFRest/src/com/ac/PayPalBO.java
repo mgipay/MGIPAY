@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.Hashtable;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -40,11 +39,6 @@ public class PayPalBO {
 	public PayPalBO() {
 	}
 
-	private static PropertiesConfiguration constantFromProperties = new PropertyUtil()
-			.getConstantPropertyConfig();
-
-	private static PropertiesConfiguration messageFromProperties = new PropertyUtil()
-			.getMessagePropertyConfig();
 
 	private static Logger LOGGER = Logger.getLogger(PayPalBO.class);
 
@@ -63,7 +57,7 @@ public class PayPalBO {
 		Receiver receiver = new Receiver();
 		receiver.setAmount(amount);
 		// receiver.setEmail("lsoni@moneygram.com");
-		receiver.setEmail(constantFromProperties.getString("RECEIVER_EMAIL_PAY"));
+		receiver.setEmail(PropertyUtil.constantFromProperties.getString("RECEIVER_EMAIL_PAY"));
 		receiver.setPaymentType("WITHDRAWAL");
 		ReceiverList receiverList = new ReceiverList();
 		receiverList.getReceiver().add(receiver);
@@ -118,12 +112,12 @@ public class PayPalBO {
 		GetUserLimitsRequest getUserLimitsRequest = new GetUserLimitsRequest();
 		getUserLimitsRequest.setUser(accountIdentifier);
 		getUserLimitsRequest.setRequestEnvelope(requestEnvelope);
-		getUserLimitsRequest.setCountry(constantFromProperties
+		getUserLimitsRequest.setCountry(PropertyUtil.constantFromProperties
 				.getString("PP_COUNTRY_CODE_US"));
-		getUserLimitsRequest.setCurrencyCode(constantFromProperties
+		getUserLimitsRequest.setCurrencyCode(PropertyUtil.constantFromProperties
 				.getString("PP_CURRENCY_CODE_USA"));
 		getUserLimitsRequest.getLimitType().add(
-				constantFromProperties.getString("PP_LIMIT_TYPE"));
+				PropertyUtil.constantFromProperties.getString("PP_LIMIT_TYPE"));
 
 		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
 		Gson gson = new Gson();
@@ -144,7 +138,7 @@ public class PayPalBO {
 					LOGGER.debug("Max number of retries for GetUserLimits reached. Call Failed.");
 					getUserLimitsResponseForReturn.setTransactionSuccess(false);
 					getUserLimitsResponseForReturn
-							.setErrorMessage(messageFromProperties
+							.setErrorMessage(PropertyUtil.messageFromProperties
 									.getString("SESSION_EXPIRED"));
 
 					return new Gson().toJson(getUserLimitsResponse);
@@ -169,7 +163,7 @@ public class PayPalBO {
 			getUserLimitsResponseForReturn.setCurrencyType(currencyType);
 			getUserLimitsResponseForReturn.setTransactionSuccess(false);
 			getUserLimitsResponseForReturn
-					.setErrorMessage(messageFromProperties
+					.setErrorMessage(PropertyUtil.messageFromProperties
 							.getString("SESSION_EXPIRED"));
 		}
 		LOGGER.debug("Exit getUserLimits.");
@@ -187,11 +181,11 @@ public class PayPalBO {
 				+ "/v1/tokenservice";
 		AccessToken accessToken = new AccessToken();
 		System.setProperty("javax.net.ssl.trustStoreType",
-				constantFromProperties.getString("trustStoreType"));
+				PropertyUtil.constantFromProperties.getString("trustStoreType"));
 		System.setProperty("javax.net.ssl.trustStore",
-				constantFromProperties.getString("trustStore"));
+				PropertyUtil.constantFromProperties.getString("trustStore"));
 		System.setProperty("javax.net.ssl.trustStorePassword",
-				constantFromProperties.getString("trustStorePassword"));
+				PropertyUtil.constantFromProperties.getString("trustStorePassword"));
 		HttpClient client = new HttpClient();
 		PostMethod postMethod = new PostMethod(uri);
 		String myQuery = "profile https://uri.paypal.com/services/AdaptivePaymentsPayAPI openid";
@@ -201,7 +195,7 @@ public class PayPalBO {
 		// postMethod
 		// .addRequestHeader("Authorization",
 		// "Basic bWdpX2Z1bmRzX291dC5tb25leWdyYW0uY29tOlNTQVJXTEJRUkxGTURMSEg=");
-		String AUTHORIZATION_BASIC_VALUE = constantFromProperties
+		String AUTHORIZATION_BASIC_VALUE = PropertyUtil.constantFromProperties
 				.getString("AUTHORIZATION_BASIC");
 		postMethod.addRequestHeader("Authorization", AUTHORIZATION_BASIC_VALUE);
 		postMethod.addParameter("grant_type", "authorization_code");
@@ -276,7 +270,7 @@ public class PayPalBO {
 			jsonSyntaxException.printStackTrace();
 			LOGGER.error(jsonSyntaxException.getLocalizedMessage());
 			userData.setTransactionSuccess(false);
-			userData.setErrorMessage(messageFromProperties
+			userData.setErrorMessage(PropertyUtil.messageFromProperties
 					.getString("RETRY_IN_SOMETIME"));
 			return gson.toJson(userData);
 		}

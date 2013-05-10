@@ -11,7 +11,6 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
@@ -27,11 +26,6 @@ import com.mgi.paypal.response.TransactionInformationMailResponse;
 import com.mgi.paypal.util.PropertyUtil;
 
 public class MailService {
-	PropertiesConfiguration constantFromProperties = new PropertyUtil()
-			.getConstantPropertyConfig();
-
-	PropertiesConfiguration messageFromProperties = new PropertyUtil()
-			.getMessagePropertyConfig();
 
  
 	 Properties props = new Properties(); 
@@ -264,7 +258,7 @@ public class MailService {
 			Header header = new Header();
 			AgentHeader agentHeader = new AgentHeader();
 			agentHeader
-					.setAgentId(constantFromProperties.getString("AGENT_ID"));
+					.setAgentId(PropertyUtil.constantFromProperties.getString("AGENT_ID"));
 			header.setAgent(agentHeader);
 			ProcessingInstruction processingInstruction = new ProcessingInstruction();
 			processingInstruction.setAction("InsertRecsIntoCRMExtWebForm");
@@ -286,7 +280,7 @@ public class MailService {
 		}
 
 		sendMailOutputBean.setTransactionSuccess(true);
-		sendMailOutputBean.setMessageToUser(messageFromProperties
+		sendMailOutputBean.setMessageToUser(PropertyUtil.messageFromProperties
 				.getString("MAIL_SUCCESS")
 				.concat(insertRecsIntoCRMExtWebFormResponse
 						.getInsertRecsIntoCRMExtWebFormResult()));
@@ -305,7 +299,7 @@ public class MailService {
 		sendMailOutputBean.setMailText(sendMailInputBean.getMailText());
 		sendMailOutputBean.setCustomerEmailId(sendMailInputBean
 				.getCustomerEmailId());
-		sendMailOutputBean.setMessageToUser(messageFromProperties
+		sendMailOutputBean.setMessageToUser(PropertyUtil.messageFromProperties
 				.getString("RESEND_MAIL"));
 		return new Gson().toJson(sendMailOutputBean);
 	}

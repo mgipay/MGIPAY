@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
@@ -27,11 +26,6 @@ public class HistoryBO {
 
 	private static Logger LOGGER = Logger.getLogger(HistoryBO.class);
 
-	private static PropertiesConfiguration messageFromProperties = new PropertyUtil()
-			.getMessagePropertyConfig();
-
-	private static PropertiesConfiguration constantFromProperties = new PropertyUtil()
-			.getConstantPropertyConfig();
 
 	/**
 	 * getHistoryDetails. This method will return last ten transaction from
@@ -80,7 +74,7 @@ public class HistoryBO {
 							+ statusFromDetailLookUp);
 
 					LOGGER.debug("status form table : "
-							+ historyDetails.getTransactionStatus());
+							+ historyDetails.getMgiTransactionStatus());
 
 					if (statusFromDetailLookUp != null
 							&& !statusFromDetailLookUp.equals(historyDetails
@@ -97,7 +91,7 @@ public class HistoryBO {
 			
 			for (HistoryDetails historyDetails : historyDetailList) {
 				historyDetails
-						.setTransactionStatus(constantFromProperties
+						.setTransactionStatus(PropertyUtil.constantFromProperties
 								.getString(historyDetails
 										.getMgiTransactionStatus()));
 			}
@@ -106,7 +100,7 @@ public class HistoryBO {
 			LOGGER.error("getHistory failed because of:" + exception);
 			exception.printStackTrace();
 			histroyLookupResponse.setTransactionSuccess(false);
-			histroyLookupResponse.setErrorMessage(messageFromProperties
+			histroyLookupResponse.setErrorMessage(PropertyUtil.messageFromProperties
 					.getString("RETRY"));
 			return new Gson().toJson(histroyLookupResponse);
 		}
@@ -142,19 +136,19 @@ public class HistoryBO {
 
 		DetailLookupRequest detailLookupRequest = new DetailLookupRequest();
 
-		detailLookupRequest.setAgentID(constantFromProperties
+		detailLookupRequest.setAgentID(PropertyUtil.constantFromProperties
 				.getString("AGENT_ID"));
-		detailLookupRequest.setAgentSequence(constantFromProperties
+		detailLookupRequest.setAgentSequence(PropertyUtil.constantFromProperties
 				.getString("AGENT_SEQUENCE"));
-		detailLookupRequest.setApiVersion(constantFromProperties
+		detailLookupRequest.setApiVersion(PropertyUtil.constantFromProperties
 				.getString("API_VERSION"));
-		detailLookupRequest.setClientSoftwareVersion(constantFromProperties
+		detailLookupRequest.setClientSoftwareVersion(PropertyUtil.constantFromProperties
 				.getString("CLIENT_SOFTWARE_VERSION"));
 		detailLookupRequest.setIncludeUseData(false);
-		detailLookupRequest.setLanguage(constantFromProperties
+		detailLookupRequest.setLanguage(PropertyUtil.constantFromProperties
 				.getString("LANGUAGE_CODE_ENGLISH"));
 		detailLookupRequest.setTimeStamp(CalendarUtil.getTimeStamp());
-		detailLookupRequest.setToken(constantFromProperties.getString("TOKEN"));
+		detailLookupRequest.setToken(PropertyUtil.constantFromProperties.getString("TOKEN"));
 		detailLookupRequest.setMgiTransactionSessionID(mgiTransactionSessionID);
 		
 		LOGGER.debug("detail look up request : " + new Gson().toJson(detailLookupRequest));

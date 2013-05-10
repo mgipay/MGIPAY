@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 
 import com.mgi.agentconnect.client.TransactionStatus;
@@ -29,8 +28,6 @@ public class MoneyGramPayPalDAO {
 
 	}
 
-	private static PropertiesConfiguration constantFromProperties = new PropertyUtil()
-			.getConstantPropertyConfig();
 	private static Logger LOGGER = Logger.getLogger(MoneyGramPayPalDAO.class);
 
 	public void updateFeeFeeDetailTable(BigDecimal upperLimit,
@@ -43,11 +40,11 @@ public class MoneyGramPayPalDAO {
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 		
 		Connection connection = DriverManager.getConnection(
-				constantFromProperties.getString("ORACLE_DB_URL"),
-				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
-				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_URL"),
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
-		String strQuery = constantFromProperties
+		String strQuery = PropertyUtil.constantFromProperties
 				.getString("UPDATE_FEE_DETAIL_QUERY");
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
@@ -73,11 +70,11 @@ public class MoneyGramPayPalDAO {
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 		Connection connection = DriverManager.getConnection(
-				constantFromProperties.getString("ORACLE_DB_URL"),
-				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
-				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_URL"),
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
-		String strQuery = constantFromProperties
+		String strQuery = PropertyUtil.constantFromProperties
 				.getString("SELECT_FEE_DETAIL_QUERY");
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
@@ -109,9 +106,9 @@ public class MoneyGramPayPalDAO {
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 		Connection connection = DriverManager.getConnection(
-				constantFromProperties.getString("ORACLE_DB_URL"),
-				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
-				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_URL"),
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
 		String strQuery = "SELECT * FROM (SELECT * FROM MGI_PAYPAL_TRAN_HIST "
 				+ "WHERE CUST_EMAIL = ?  and MGI_TRAN_STATUS  in (?,?,?,?) "
@@ -169,9 +166,9 @@ public class MoneyGramPayPalDAO {
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 		Connection connection = DriverManager.getConnection(
-				constantFromProperties.getString("ORACLE_DB_URL"),
-				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
-				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_URL"),
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
 		String strQuery = "SELECT * FROM (SELECT * FROM MGI_PAYPAL_TRAN_HIST "
 				+ "WHERE TRAN_STATUS = ? and  order by TRAN_DATE desc) a where rownum < 1001";
@@ -211,9 +208,9 @@ public class MoneyGramPayPalDAO {
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 		Connection connection = DriverManager.getConnection(
-				constantFromProperties.getString("ORACLE_DB_URL"),
-				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
-				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_URL"),
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 		String strQuery = null;
 
 
@@ -278,9 +275,9 @@ public class MoneyGramPayPalDAO {
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 		Connection connection = DriverManager.getConnection(
-				constantFromProperties.getString("ORACLE_DB_URL"),
-				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
-				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_URL"),
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
 		//TODO remove MGI_TRAN_STATUS  from below query.
 		String strQuery = "update MGI_PAYPAL_TRAN_HIST set MGI_REF_NUM = ?" +
@@ -308,9 +305,9 @@ public class MoneyGramPayPalDAO {
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 		Connection connection = DriverManager.getConnection(
-				constantFromProperties.getString("ORACLE_DB_URL"),
-				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
-				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_URL"),
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
 		String strQuery = "update MGI_PAYPAL_TRAN_HIST set " +
 				" TRAN_STATUS = ? where MGI_SESS_ID = ?";
@@ -332,9 +329,9 @@ public class MoneyGramPayPalDAO {
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 		Connection connection = DriverManager.getConnection(
-				constantFromProperties.getString("ORACLE_DB_URL"),
-				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
-				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_URL"),
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
 		String strQuery = "update MGI_PAYPAL_TRAN_HIST set " +
 				" TRAN_STATUS = ? where MGI_SESS_ID = ?";
@@ -357,9 +354,9 @@ public class MoneyGramPayPalDAO {
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 		Connection connection = DriverManager.getConnection(
-				constantFromProperties.getString("ORACLE_DB_URL"),
-				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
-				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_URL"),
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
 		String strQuery = "update MGI_PAYPAL_TRAN_HIST set PAYPAL_TRAN_ID = ? "
 				+ ", TRAN_STATUS = ? , MGI_TRAN_STATUS = ? where MGI_SESS_ID = ?";
@@ -387,9 +384,9 @@ public class MoneyGramPayPalDAO {
 			Class.forName("oracle.jdbc.OracleDriver");
 			DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 			Connection connection = DriverManager.getConnection(
-					constantFromProperties.getString("ORACLE_DB_URL"),
-					constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
-					constantFromProperties.getString("ORACLE_DB_PASSWORD"));
+					PropertyUtil.constantFromProperties.getString("ORACLE_DB_URL"),
+					PropertyUtil.constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
+					PropertyUtil.constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
 			String strQuery = "update MGI_PAYPAL_TRAN_HIST set "
 					+ "MGI_TRAN_STATUS = ? where MGI_SESS_ID = ?";
@@ -418,9 +415,9 @@ public class MoneyGramPayPalDAO {
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
 		Connection connection = DriverManager.getConnection(
-				constantFromProperties.getString("ORACLE_DB_URL"),
-				constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
-				constantFromProperties.getString("ORACLE_DB_PASSWORD"));
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_URL"),
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 		Statement statement = connection.createStatement();
 		for (StatusToReverseBean statusToReverseBean : statusToReverseBeanList) {
 

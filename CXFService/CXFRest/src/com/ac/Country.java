@@ -5,13 +5,13 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client;
 import com.mgi.agentconnect.client.CodeTableRequest;
 import com.mgi.paypal.util.CalendarUtil;
+import com.mgi.paypal.util.Mgi_Paypal_Constants;
 import com.mgi.paypal.util.PropertyUtil;
 
 public class Country {
@@ -20,9 +20,6 @@ public class Country {
 
 	}
 	private static Logger LOGGER = Logger.getLogger(Country.class);
-
-	private static PropertiesConfiguration constantFromProperties = new PropertyUtil()
-			.getConstantPropertyConfig();
 
 	private static String STATES_IN_USA = "";
 
@@ -52,21 +49,21 @@ public class Country {
 
 				CodeTableRequest codeTableRequest = new CodeTableRequest();
 				codeTableRequest.setAgentAllowedOnly(true);
-				codeTableRequest.setApiVersion(constantFromProperties
+				codeTableRequest.setApiVersion(PropertyUtil.constantFromProperties
 						.getString("API_VERSION"));
 				codeTableRequest
-						.setClientSoftwareVersion(constantFromProperties
+						.setClientSoftwareVersion(PropertyUtil.constantFromProperties
 								.getString("CLIENT_SOFTWARE_VERSION"));
-				codeTableRequest.setUnitProfileID(constantFromProperties
+				codeTableRequest.setUnitProfileID(PropertyUtil.constantFromProperties
 						.getInt("UNIT_PROFILE_ID"));
-				codeTableRequest.setToken(constantFromProperties
+				codeTableRequest.setToken(PropertyUtil.constantFromProperties
 						.getString("TOKEN"));
-				codeTableRequest.setAgentSequence(constantFromProperties
+				codeTableRequest.setAgentSequence(PropertyUtil.constantFromProperties
 						.getString("AGENT_SEQUENCE"));
 				codeTableRequest.setTimeStamp(CalendarUtil.getTimeStamp());
-				codeTableRequest.setLanguage(constantFromProperties
+				codeTableRequest.setLanguage(PropertyUtil.constantFromProperties
 						.getString("LANGUAGE_CODE_ENGLISH"));
-				byte retryCount = 3;
+				int retryCount = Mgi_Paypal_Constants.retryCount;
 				boolean responseRecived = false;
 				while (retryCount >= 1) {
 

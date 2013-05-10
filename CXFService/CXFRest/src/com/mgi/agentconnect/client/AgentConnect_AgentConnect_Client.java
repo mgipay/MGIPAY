@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 
 import com.mgi.paypal.util.PropertyUtil;
@@ -19,9 +18,6 @@ public final class AgentConnect_AgentConnect_Client {
 	private static final QName SERVICE_NAME = new QName(
 			"http://www.moneygram.com/AgentConnect1211", "AgentConnectService");
 	
-	PropertiesConfiguration constantFromProperties = new PropertyUtil()
-			.getConstantPropertyConfig();
-
 	public AgentConnect_AgentConnect_Client() {
 	}
 
@@ -40,7 +36,7 @@ public final class AgentConnect_AgentConnect_Client {
 		LOGGER.debug("Enter getPort.");
 
 		URL wsdlURL = new URL(
-				constantFromProperties.getString("AGENT_CONNECT_PORT_URL"));
+				PropertyUtil.constantFromProperties.getString("AGENT_CONNECT_PORT_URL"));
 		AgentConnectService ss = new AgentConnectService(wsdlURL, SERVICE_NAME);
 		AgentConnect port = ss.getAgentConnect();
 		

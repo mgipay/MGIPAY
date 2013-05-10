@@ -3,7 +3,6 @@ package com.ac;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
@@ -28,9 +27,6 @@ public class BatchProcess  {
 	}
 
 	private static Logger LOGGER = Logger.getLogger(BatchProcess.class);
-
-	PropertiesConfiguration constantFromProperties = new PropertyUtil()
-			.getConstantPropertyConfig();
 
 	public void doBatchForSendReversal() {
 
@@ -123,19 +119,19 @@ public class BatchProcess  {
 			 String mgiTransactionSessionID) {
 		DetailLookupRequest detailLookupRequest = new DetailLookupRequest();
 
-		detailLookupRequest.setAgentID(constantFromProperties
+		detailLookupRequest.setAgentID(PropertyUtil.constantFromProperties
 				.getString("AGENT_ID"));
-		detailLookupRequest.setAgentSequence(constantFromProperties
+		detailLookupRequest.setAgentSequence(PropertyUtil.constantFromProperties
 				.getString("AGENT_SEQUENCE"));
-		detailLookupRequest.setApiVersion(constantFromProperties
+		detailLookupRequest.setApiVersion(PropertyUtil.constantFromProperties
 				.getString("API_VERSION"));
-		detailLookupRequest.setClientSoftwareVersion(constantFromProperties
+		detailLookupRequest.setClientSoftwareVersion(PropertyUtil.constantFromProperties
 				.getString("CLIENT_SOFTWARE_VERSION"));
 		detailLookupRequest.setIncludeUseData(false);
-		detailLookupRequest.setLanguage(constantFromProperties
+		detailLookupRequest.setLanguage(PropertyUtil.constantFromProperties
 				.getString("LANGUAGE_CODE_ENGLISH"));
 		detailLookupRequest.setTimeStamp(CalendarUtil.getTimeStamp());
-		detailLookupRequest.setToken(constantFromProperties.getString("TOKEN"));
+		detailLookupRequest.setToken(PropertyUtil.constantFromProperties.getString("TOKEN"));
 		detailLookupRequest.setMgiTransactionSessionID(mgiTransactionSessionID);
 		return detailLookupRequest;
 	}
@@ -145,17 +141,17 @@ public class BatchProcess  {
 		LOGGER.debug("Enter sendReversal.");
 
 		SendReversalRequest sendReversalRequest = new SendReversalRequest();
-		sendReversalRequest.setAgentID(constantFromProperties
+		sendReversalRequest.setAgentID(PropertyUtil.constantFromProperties
 				.getString("AGENT_ID"));
-		sendReversalRequest.setAgentSequence(constantFromProperties
+		sendReversalRequest.setAgentSequence(PropertyUtil.constantFromProperties
 				.getString("AGENT_SEQUENCE"));
-		sendReversalRequest.setToken(constantFromProperties
+		sendReversalRequest.setToken(PropertyUtil.constantFromProperties
 				.getString("TOKEN"));
 
 		sendReversalRequest.setTimeStamp(CalendarUtil.getTimeStamp());
-		sendReversalRequest.setApiVersion(constantFromProperties
+		sendReversalRequest.setApiVersion(PropertyUtil.constantFromProperties
 				.getString("API_VERSION"));
-		sendReversalRequest.setClientSoftwareVersion(constantFromProperties
+		sendReversalRequest.setClientSoftwareVersion(PropertyUtil.constantFromProperties
 				.getString("CLIENT_SOFTWARE_VERSION"));
 		sendReversalRequest
 				.setSendAmount(sendReversalInputBean.getSendAmount());

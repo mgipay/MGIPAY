@@ -34,18 +34,18 @@ import com.thoughtworks.xstream.XStream;
 public class Test {
 	private static Hashtable<String, String> stateAndCodeHashTable = new Hashtable<String, String>();
 	
-	/*private static PropertiesConfiguration messageFromProperties = new PropertyUtil()
+	/*private static PropertiesConfiguration PropertyUtil.messageFromProperties = new PropertyUtil()
 	.getMessagePropertyConfig();
 */
 //private static PropertiesConfiguration constant = new PropertyUtil().getConstantPropertyConfig();
 	public static void main8(String[] args) throws InterruptedException {
 		
 		while(true){
-//		System.out.println(messageFromProperties.getString("RETRY"));
+//		System.out.println(PropertyUtil.messageFromProperties.getString("RETRY"));
 		
 		Thread.sleep(3000);
 		}
-//		System.out.println(messageFromProperties.getString("RETRY"));
+//		System.out.println(PropertyUtil.messageFromProperties.getString("RETRY"));
 //		
 //		System.out.println("gg");
 	}

@@ -10,7 +10,6 @@ import java.net.URL;
 
 import javax.xml.namespace.QName;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 
 import com.mgi.paypal.util.PropertyUtil;
@@ -23,8 +22,6 @@ import com.mgi.paypal.util.PropertyUtil;
 public final class ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client {
 	private static Logger LOGGER = Logger
 			.getLogger(ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client.class);
-	PropertiesConfiguration constantFromProperties = new PropertyUtil()
-	.getConstantPropertyConfig();
 	private static final QName SERVICE_NAME = new QName(
 			"http://moneygram.com/service/ComplaintProxyService_v1",
 			"ComplaintProxyService_v1");
@@ -50,7 +47,7 @@ public final class ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Clien
 //				"https://q2mgiapps.qa.moneygram.com/ComplaintProxyService/Complaint"
 //						+ "ProxyService_v1/META-INF/wsdl/ComplaintProxyService_v1.wsdl");
 		
-		URL wsdlURL = new URL(constantFromProperties.getString("COMPLAINT_PROXY_PORT_URL"));
+		URL wsdlURL = new URL(PropertyUtil.constantFromProperties.getString("COMPLAINT_PROXY_PORT_URL"));
 //				"http://extwsintsvcs.corp.moneygram.com/ComplaintPr" +
 //				"oxyService/ComplaintProxyService_v1/META-INF/wsdl/ComplaintProxyService_v1.wsdl");
 

@@ -16,8 +16,6 @@ import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.MessageContext;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
-
 import com.mgi.paypal.util.PropertyUtil;
 import com.mgi.paypal.util.SOAPMessageLoggingHandler;
 import com.mgi.paypal.util.StringOutputStream;
@@ -33,9 +31,6 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 	public AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client() {
 
 	}
-
-	PropertiesConfiguration constantFromProperties = new PropertyUtil()
-			.getConstantPropertyConfig();
 
 	public GetUserLimitsResponse getUserLimit(
 			GetUserLimitsRequest getUserLimitsRequest)
@@ -86,7 +81,7 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 		setCredentialsforPay();
 		// String wsdlURL
 		// ="https://svcs.sandbox.paypal.com/AdaptivePayments/Pay";
-		String wsdlURL = constantFromProperties
+		String wsdlURL = PropertyUtil.constantFromProperties
 				.getString("ADAPTIVE_PAYMENTS_PAY_URL");
 		// "https://api.stage2cp07.stage.paypal.com/AdaptivePayments/Pay";
 
@@ -106,7 +101,7 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 		// "https://svcs.sandbox.paypal.com/AdaptivePayments/GetUserLimits";
 		setCredentials();
 		//String wsdlURL ="https://api.stage2cp07.stage.paypal.com:9090/AdaptivePayments/GetUserLimits";
-		String wsdlURL =constantFromProperties
+		String wsdlURL =PropertyUtil.constantFromProperties
 				.getString("ADAPTIVE_PAYMENTS_GET_USERLIMIT_URL");
 		
 		AdaptivePayments ss = new AdaptivePayments();
@@ -122,17 +117,17 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 	private  void setCredentials() {
 
 		System.setProperty("javax.net.ssl.trustStoreType",
-				constantFromProperties.getString("trustStoreType"));
+				PropertyUtil.constantFromProperties.getString("trustStoreType"));
 		System.setProperty("javax.net.ssl.trustStore",
-				constantFromProperties.getString("trustStore"));
+				PropertyUtil.constantFromProperties.getString("trustStore"));
 		System.setProperty("javax.net.ssl.trustStorePassword",
-				constantFromProperties.getString("trustStorePassword"));
+				PropertyUtil.constantFromProperties.getString("trustStorePassword"));
 		System.setProperty("javax.net.ssl.keyStoreType",
-				constantFromProperties.getString("keyStoreType"));
+				PropertyUtil.constantFromProperties.getString("keyStoreType"));
 		System.setProperty("javax.net.ssl.keyStore",
-				constantFromProperties.getString("keyStore"));
+				PropertyUtil.constantFromProperties.getString("keyStore"));
 		System.setProperty("javax.net.ssl.keyStorePassword",
-				constantFromProperties.getString("keyStorePassword"));
+				PropertyUtil.constantFromProperties.getString("keyStorePassword"));
 
 /*		 System.setProperty("javax.net.ssl.trustStoreType", "JKS");
 		 System.setProperty("javax.net.ssl.trustStore", "C:/Documents and Settings/va72/Desktop/Cert1/truststore.jks");
@@ -147,17 +142,17 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 	private  void setCredentialsforPay() {
 
 		System.setProperty("javax.net.ssl.trustStoreType",
-				constantFromProperties.getString("trustStoreType"));
+				PropertyUtil.constantFromProperties.getString("trustStoreType"));
 		System.setProperty("javax.net.ssl.trustStore",
-				constantFromProperties.getString("trustStoreforPay"));
+				PropertyUtil.constantFromProperties.getString("trustStoreforPay"));
 		System.setProperty("javax.net.ssl.trustStorePassword",
-				constantFromProperties.getString("trustStorePassword"));
+				PropertyUtil.constantFromProperties.getString("trustStorePassword"));
 		System.setProperty("javax.net.ssl.keyStoreType",
-				constantFromProperties.getString("keyStoreType"));
+				PropertyUtil.constantFromProperties.getString("keyStoreType"));
 		System.setProperty("javax.net.ssl.keyStore",
-				constantFromProperties.getString("keyStoreforPay"));
+				PropertyUtil.constantFromProperties.getString("keyStoreforPay"));
 		System.setProperty("javax.net.ssl.keyStorePassword",
-				constantFromProperties.getString("keyStorePassword"));
+				PropertyUtil.constantFromProperties.getString("keyStorePassword"));
 
 	
 	}
@@ -179,11 +174,11 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 
 		Map<String, List<String>> headers = new HashMap<String, List<String>>();
 		headers.put("X-PAYPAL-SECURITY-PASSWORD",
-				Collections.singletonList(constantFromProperties.getString("X_PAYPAL_SECURITY_PASSWORD")));
+				Collections.singletonList(PropertyUtil.constantFromProperties.getString("X_PAYPAL_SECURITY_PASSWORD")));
 		headers.put("X-PAYPAL-APPLICATION-ID",
-				Collections.singletonList(constantFromProperties.getString("X_PAYPAL_APPLICATION_ID")));
+				Collections.singletonList(PropertyUtil.constantFromProperties.getString("X_PAYPAL_APPLICATION_ID")));
 		headers.put("X-PAYPAL-SECURITY-USERID", Collections
-				.singletonList(constantFromProperties.getString("X_PAYPAL_SECURITY_USERID")));
+				.singletonList(PropertyUtil.constantFromProperties.getString("X_PAYPAL_SECURITY_USERID")));
 		
 		/*headers.put("X-PAYPAL-SECURITY-USERID", Collections.singletonList("mgi_fundsout_test_api1.moneygram.com"));
 		headers.put("X-PAYPAL-SECURITY-PASSWORD", Collections.singletonList("SSARWLBQRLFMDLHH"));
@@ -198,12 +193,12 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 
 		Map<String, List<String>> headers = new HashMap<String, List<String>>();
 		headers.put("X-PAYPAL-SECURITY-PASSWORD",
-				Collections.singletonList(constantFromProperties.getString("X_PAYPAL_SECURITY_PASSWORD")));
+				Collections.singletonList(PropertyUtil.constantFromProperties.getString("X_PAYPAL_SECURITY_PASSWORD")));
 
 		headers.put("X-PAYPAL-APPLICATION-ID",
-				Collections.singletonList(constantFromProperties.getString("X_PAYPAL_APPLICATION_ID")));
+				Collections.singletonList(PropertyUtil.constantFromProperties.getString("X_PAYPAL_APPLICATION_ID")));
 		headers.put("X-PAYPAL-SECURITY-USERID", Collections
-				.singletonList(constantFromProperties.getString("X_PAYPAL_SECURITY_USERID")));
+				.singletonList(PropertyUtil.constantFromProperties.getString("X_PAYPAL_SECURITY_USERID")));
 
 		headers.put(
 				"X-PAYPAL-SECONDARY-AUTH-UNIVERSAL-TOKEN ",
