@@ -20,7 +20,7 @@ import com.thoughtworks.xstream.XStream;
 
 public class FeeDetails {
 
-	private static Integer FEELINK_DAY_IDENTIFIER = 9;
+//	private static Integer FEELINK_DAY_IDENTIFIER = 9;
 
 	private static BigDecimal FEE_FOR_TWO_HUNDRED_FUNDS_IN = BigDecimal.ZERO;
 
@@ -206,7 +206,7 @@ public class FeeDetails {
 		return new BigDecimal(0);
 
 	}
-
+/*
 	public String getFeeLinkValue1(FeeLinkValueInputBean feeLinkValueInputBean) {
 
 		LOGGER.debug("Enter getFeeLinkValue.");
@@ -334,7 +334,7 @@ public class FeeDetails {
 		LOGGER.debug("Exit getFeeLinkValue.");
 
 		return new Gson().toJson(feeLinkValues);
-	}
+	}*/
 
 	public String getFeeLinkValue(FeeLinkValueInputBean feeLinkValueInputBean) {
 		
@@ -349,6 +349,9 @@ public class FeeDetails {
 	private static Integer FEELINK_DAY_IDENTIFIER_FOR_FUND_IN = 9;
 
 	private String getFeeForFeeLinkFundsIn() {
+		LOGGER.debug("Enter getFeeForFeeLinkFundsIn.");
+		
+		
 		int yesterday = 8;
 		FeeLinkValues feeLinkValues = new FeeLinkValues();
 		if (FEELINK_DAY_IDENTIFIER_FOR_FUND_IN != Calendar.getInstance().get(
@@ -419,12 +422,17 @@ public class FeeDetails {
 			feeLinkValues.setFeeForFiveHundred(FEE_FOR_FIVE_HUNDRED_FUNDS_IN);
 
 		}
+		LOGGER.debug("Exit getFeeForFeeLinkFundsIn.");
 		return new Gson().toJson(feeLinkValues);
 	}
 
 	private static Integer FEELINK_DAY_IDENTIFIER_FOR_FUND_OUT = 9;
 
 	private String getFeeForFeeLinkFundsOut() {
+		
+		
+		LOGGER.debug("Enter getFeeForFeeLinkFundsOut.");
+		
 		int yesterday = 8;
 		FeeLinkValues feeLinkValues = new FeeLinkValues();
 		if (FEELINK_DAY_IDENTIFIER_FOR_FUND_OUT != Calendar.getInstance().get(
@@ -496,6 +504,9 @@ public class FeeDetails {
 			feeLinkValues.setFeeForFiveHundred(FEE_FOR_FIVE_HUNDRED_FUNDS_OUT);
 
 		}
+		
+		LOGGER.debug("Exit getFeeForFeeLinkFundsOut.");
+		
 		return new Gson().toJson(feeLinkValues);
 	}
 

@@ -148,7 +148,7 @@ public class MailService {
 				   + referenceNumber
 				   + "</strong></p>"
 				   + " </div> <p><a href='http://hosted.where2stageit.com/moneygram/en.html'>Find a MoneyGram location</a></p><p><strong>Thank you for using MoneyGram & PayPal</strong></p>"
-				   + "  <div style='margin:auto; padding-top:1%; background: #303030; color: #999999; font-size: 12px; margin-top: 3em;'><span>©2013 MoneyGram. All rights reserved&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#'  title='Back to Top'></a></span><a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://qapaypal.qa.moneygram.com/privacypolicy.html'>Privacy Policy</a>&nbsp;<a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://qapaypal.qa.moneygram.com/termsofuse.html'>Terms of Use</a>&nbsp;<a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://qapaypal.qa.moneygram.com/terms_conditions.html'>Terms and Conditions</a>&nbsp;<a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://qapaypal.qa.moneygram.com/about-moneygram-paypal.html'>About MoneyGram</a>&nbsp;"
+				   + "  <div style='margin:auto; padding-top:1%; background: #303030; color: #999999; font-size: 12px; margin-top: 3em;'><span>ï¿½2013 MoneyGram. All rights reserved&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#'  title='Back to Top'></a></span><a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://qapaypal.qa.moneygram.com/privacypolicy.html'>Privacy Policy</a>&nbsp;<a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://qapaypal.qa.moneygram.com/termsofuse.html'>Terms of Use</a>&nbsp;<a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://qapaypal.qa.moneygram.com/terms_conditions.html'>Terms and Conditions</a>&nbsp;<a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://qapaypal.qa.moneygram.com/about-moneygram-paypal.html'>About MoneyGram</a>&nbsp;"
 				   + "<p style='padding-top:1%'>Licensed as a Money Transmitter by the Banking Department of the State of New York</p></div>"
 				   + "</body></html>";
 		   
@@ -158,15 +158,16 @@ public class MailService {
 		   Transport.send(message); 
 		   } catch(Exception exception){
 			   exception.printStackTrace();
+			   LOGGER.warn("Mail not sent!!! :(");
 			   LOGGER.error(exception.getLocalizedMessage());
 			   response.setTransactionSuccess(false);
-			   response.setMessageToUser("Mail not sent!!! :(");
+			   response.setMessageToUser("Mail sending failed.");
 			   return new Gson().toJson(response);
 			   
 		   }
 		   LOGGER.info("Sent message successfully...."); 
 		   response.setTransactionSuccess(true);
-		   response.setMessageToUser("Sent message successfully....");
+		   response.setMessageToUser("Email sent successfully to customer's email ID.");
 		   return new Gson().toJson(response);
 	}
 
@@ -191,13 +192,13 @@ public class MailService {
 			exception.printStackTrace();
 			LOGGER.error(exception.getLocalizedMessage());
 			response.setTransactionSuccess(false);
-			response.setMessageToUser("Mail not sent!!! :(");
+			response.setMessageToUser("Mail sending failed.");
 			return false;
 
 		}
 		LOGGER.info("Sent message successfully....");
 		response.setTransactionSuccess(true);
-		response.setMessageToUser("Sent message successfully....");
+		response.setMessageToUser("Email sent successfully to customer's email ID.");
 		return true;
 	}
 	public String sendReportInformationMail(SendMailInputBean sendMailInputBean) {

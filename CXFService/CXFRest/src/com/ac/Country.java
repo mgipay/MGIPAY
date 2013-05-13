@@ -54,12 +54,14 @@ public class Country {
 				codeTableRequest
 						.setClientSoftwareVersion(PropertyUtil.constantFromProperties
 								.getString("CLIENT_SOFTWARE_VERSION"));
-				codeTableRequest.setUnitProfileID(PropertyUtil.constantFromProperties
-						.getInt("UNIT_PROFILE_ID"));
-				codeTableRequest.setToken(PropertyUtil.constantFromProperties
-						.getString("TOKEN"));
+//				codeTableRequest.setUnitProfileID(PropertyUtil.constantFromProperties
+//						.getInt("UNIT_PROFILE_ID"));
+				codeTableRequest.setAgentID(PropertyUtil.constantFromProperties
+						.getString("AGENT_ID"));				
 				codeTableRequest.setAgentSequence(PropertyUtil.constantFromProperties
 						.getString("AGENT_SEQUENCE"));
+				codeTableRequest.setToken(PropertyUtil.constantFromProperties
+						.getString("TOKEN"));
 				codeTableRequest.setTimeStamp(CalendarUtil.getTimeStamp());
 				codeTableRequest.setLanguage(PropertyUtil.constantFromProperties
 						.getString("LANGUAGE_CODE_ENGLISH"));

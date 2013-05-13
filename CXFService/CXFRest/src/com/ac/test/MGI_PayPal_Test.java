@@ -470,7 +470,7 @@ private void setCredentials(){
 	public void TestFeeLinkValue() { setCredentials();
 
 		try {
-			URL url = new URL("http://localhost:8092/CXFRest/rest/getFeeLinkValue");
+			URL url = new URL("http://localhost:8080/CXFRest/rest/getFeeLinkValue");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");
@@ -549,9 +549,9 @@ private void setCredentials(){
 			conn.setRequestMethod("POST");
 			conn.setRequestProperty("Content-Type", "application/json");
 
-			String inputJsonObject = "{\"TransactionInformationMailInputBean\":{\"customerEmail\":\"yathi.bm@tcs.com\",\"transaction"
-					+ "Amount\":\"100\",\"referenceNumber\":\"45321456\",\"customer"
-					+ "Name\":\"yathi\",\"stateName\":\"new jersy\",\"fee\":\"12\"}}";
+			String inputJsonObject = "{\"TransactionInformationMailInputBean\":{\"customerEmail\":\"bm.thunderemperor@gmail.com\",\"transaction"
+					+ "Amount\":\"130\",\"referenceNumber\":\"45321456\",\"customer"
+					+ "Name\":\"Yathi\",\"stateName\":\"new jersy\",\"fee\":\"14\"}}";
 
 			OutputStream os = conn.getOutputStream();
 			os.write(inputJsonObject.getBytes());
