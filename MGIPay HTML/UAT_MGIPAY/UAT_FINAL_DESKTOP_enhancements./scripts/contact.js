@@ -144,8 +144,6 @@ function selectedValue()
 	{
 		$("#referenceNumber").removeClass("impFields");
 		$("#refnum").removeClass("txtbold");
-		$("#referenceNumber").removeClass("requiredField");
-		$(".contact_us_byEmail ul:eq(6) li .lblerror").html("");
 		flagClass = false;
 	}
 }
