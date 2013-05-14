@@ -355,7 +355,7 @@ public class Test {
 				.commitTransaction(commitTransactionRequest);
 		System.out.println(new Gson().toJson(commitTransactionResponse));
 	}
-	public static void main(String[] args) throws Exception {
+	public static void main2(String[] args) throws Exception {
 		
 		
 		Hashtable<String, String> hashtable = new Hashtable<String, String>();
@@ -393,7 +393,7 @@ public class Test {
 		System.out.println(stateAndCodeHashTable);
 		System.err.println(tempStateList);
 	}
-	public static void main2(String[] args) {
+	public static void main(String[] args) {
 		
 		
 //		SendProofMessage sendProofMessage = new SendProofMessage();
@@ -413,10 +413,14 @@ public class Test {
 //
 //		sendProofMessage.setProperty(propertyTypes);
 //		
-		Hashtable<String,String> hashtable = new Hashtable<String, String>();
+	/*	Hashtable<String,String> hashtable = new Hashtable<String, String>();
 		hashtable.put("ALASKA", "q");
 
-		System.out.println(hashtable.get("Alaska".toUpperCase()));
+		System.out.println(hashtable.get("Alaska".toUpperCase()));*/
+		if ("General".trim().toLowerCase().equals("General"))
+		System.out.println("HI" + "General".trim().toLowerCase());
+		else
+			System.out.println("failed");
 //		SdkServiceStub sdkServiceStub = new SdkServiceStub();
 //	SendProofMessageResponse sendProofMessageResponse = sdkServiceStub.sendProofMessage("EXAMPLETRIGGER", strings, propertyTypes);
 		

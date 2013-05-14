@@ -57,13 +57,17 @@ public class Transaction {
 				.getString("CLIENT_SOFTWARE_VERSION"));
 		sendValidationRequest.setDeliveryOption(PropertyUtil.constantFromProperties
 				.getString("DELIVER_OPTION_WILL_CALL"));
-		
-		sendValidationRequest.setSenderCity(StringUtils.left(sendValidationInputBean.getSenderCity(), PropertyUtil.constantFromProperties.getInt("SENDER_CITY_WIDTH")));
-//		sendValidationRequest.setSenderCity(PropertyUtil.constantFromProperties.getString("SENDERCITY"));
-		//TODO Add this also to property file
-		//StringUtils.left is used to get a string within the limit and also to avoid any exceptions
+
+		sendValidationRequest
+				.setSenderCity(StringUtils.left(sendValidationInputBean
+						.getSenderCity(), PropertyUtil.constantFromProperties
+						.getInt("SENDER_CITY_WIDTH")));
+		// sendValidationRequest.setSenderCity(PropertyUtil.constantFromProperties.getString("SENDERCITY"));
+		// TODO Add this also to property file
+		// StringUtils.left is used to get a string within the limit and also to
+		// avoid any exceptions
 		sendValidationRequest.setAmount(sendValidationInputBean.getAmount());
-		
+
 		sendValidationRequest
 				.setMgiTransactionSessionID(sendValidationInputBean
 						.getMgiTransactionSessionID());
