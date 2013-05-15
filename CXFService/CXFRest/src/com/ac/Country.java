@@ -54,8 +54,6 @@ public class Country {
 				codeTableRequest
 						.setClientSoftwareVersion(PropertyUtil.constantFromProperties
 								.getString("CLIENT_SOFTWARE_VERSION"));
-//				codeTableRequest.setUnitProfileID(PropertyUtil.constantFromProperties
-//						.getInt("UNIT_PROFILE_ID"));
 				codeTableRequest.setAgentID(PropertyUtil.constantFromProperties
 						.getString("AGENT_ID"));				
 				codeTableRequest.setAgentSequence(PropertyUtil.constantFromProperties
@@ -72,15 +70,14 @@ public class Country {
 					try {
 						AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 						List<String> tempStateList = new ArrayList<String>();
-//						List<String> stateList = new ArrayList<String>();
-						List<String> stateAndCodeList = new ArrayList<String>();
-						stateAndCodeList = client.codeTable(codeTableRequest,
+						List<String> stateNameAndCodeList = new ArrayList<String>();
+						stateNameAndCodeList = client.codeTable(codeTableRequest,
 								"USA");
 
-						for (int index = 0; index < stateAndCodeList.size(); index = index + 2) {
+						for (int index = 0; index < stateNameAndCodeList.size(); index = index + 2) {
 							// setting state name as key and state code as value.
-							String stateName = stateAndCodeList.get(index);
-							String stateCode = stateAndCodeList.get(index + 1);
+							String stateName = stateNameAndCodeList.get(index);
+							String stateCode = stateNameAndCodeList.get(index + 1);
 							
 							stateName = stateName.toLowerCase();
 							char[] stringArray = stateName.toCharArray();
@@ -94,21 +91,6 @@ public class Country {
 							tempStateList.add(stateName);
 						}
 						
-						// TODO delete below for loop
-						
-//						for (String stateCode : Transaction.stateCodeHashTable
-//								.values()) {
-//							LOGGER.debug(stateCode);
-//						}						
-//						
-						
-						/*for(String statemName : tempStateList) {
-							statemName = statemName.toLowerCase();
-							char[] stringArray = statemName.toCharArray();
-							stringArray[0] = Character.toUpperCase(stringArray[0]);
-							statemName = new String(stringArray);
-							stateList.add(statemName);
-						}*/
 						Collections.sort(tempStateList);
 						STATES_IN_USA = new Gson().toJson(tempStateList);
 						responseRecived = true;

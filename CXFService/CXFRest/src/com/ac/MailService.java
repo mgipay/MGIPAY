@@ -168,30 +168,30 @@ public class MailService {
 		LOGGER.debug("sendMailInputBean.getMailSubject().trim().toLowerCase()"
 				+ sendMailInputBean.getMailSubject());
 
-		// if (sendMailInputBean.getMailSubject().trim().toLowerCase()
-		// .equals("general")) {
-		return sendReportInformationMailIfGeneral(sendMailInputBean);
-		// } else {
-		// SendMailOutputBean sendMailOutputBean = new SendMailOutputBean();
-		// if (sendMailIfRefund(sendMailInputBean)) {
-		// sendMailOutputBean.setTransactionSuccess(true);
-		// sendMailOutputBean.setMessageToUser("Mail sent successfully.");
-		//
-		// } else {
-		// sendMailOutputBean.setTransactionSuccess(false);
-		// sendMailOutputBean.setMailSubject(sendMailInputBean
-		// .getMailSubject());
-		// sendMailOutputBean.setMailText(sendMailInputBean.getMailText());
-		// sendMailOutputBean.setCustomerEmailId(sendMailInputBean
-		// .getCustomerEmailId());
-		// sendMailOutputBean.setMessageToUser("sending mail failed.");
-		//
-		// }
-		//
-		// LOGGER.debug("Exit sendReportInformationMail.");
-		//
-		// return new Gson().toJson(sendMailOutputBean);
-		// }
+		if (sendMailInputBean.getMailSubject().trim().toLowerCase()
+				.equals("general")) {
+			return sendReportInformationMailIfGeneral(sendMailInputBean);
+		} else {
+			SendMailOutputBean sendMailOutputBean = new SendMailOutputBean();
+			if (sendMailIfRefund(sendMailInputBean)) {
+				sendMailOutputBean.setTransactionSuccess(true);
+				sendMailOutputBean.setMessageToUser("Mail sent successfully.");
+
+			} else {
+				sendMailOutputBean.setTransactionSuccess(false);
+				sendMailOutputBean.setMailSubject(sendMailInputBean
+						.getMailSubject());
+				sendMailOutputBean.setMailText(sendMailInputBean.getMailText());
+				sendMailOutputBean.setCustomerEmailId(sendMailInputBean
+						.getCustomerEmailId());
+				sendMailOutputBean.setMessageToUser("sending mail failed.");
+
+			}
+
+			LOGGER.debug("Exit sendReportInformationMail.");
+
+			return new Gson().toJson(sendMailOutputBean);
+		}
 	}
 
 	private String sendReportInformationMailIfGeneral(

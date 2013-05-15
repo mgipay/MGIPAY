@@ -286,7 +286,8 @@ public class ACImpl implements ACInterface {
 			payResponse = PayPalBO.payToMoneyGram(
 					commitTransactionInputBean.getToken(),
 					commitTransactionInputBean.getCustomerEmail(),
-					commitTransactionInputBean.getTransactionAmount());
+					commitTransactionInputBean.getTransactionAmount(),commitTransactionInputBean.getCustomerPhoneNumber(),
+					commitTransactionResponse.getReferenceNumber());
 		} catch (Exception exception) {
 			// If PAY API call failed
 			LOGGER.error(exception.getLocalizedMessage());

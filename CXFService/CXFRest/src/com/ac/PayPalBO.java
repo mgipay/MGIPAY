@@ -2,6 +2,9 @@ package com.ac;
 
 import java.math.BigDecimal;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Hashtable;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
@@ -16,6 +19,7 @@ import com.google.gson.Gson;
 import com.mgi.paypal.inputbean.UserDataInputBean;
 import com.mgi.paypal.inputbean.UserLimitInputBean;
 import com.mgi.paypal.util.AccessToken;
+import com.mgi.paypal.util.Mgi_Paypal_Constants;
 import com.mgi.paypal.util.PropertyUtil;
 import com.mgi.paypal.util.UserData;
 import com.paypal.adaptivepayment.client.AccountIdentifier;
@@ -33,6 +37,7 @@ import com.paypal.adaptivepayment.client.PhoneNumberType;
 import com.paypal.adaptivepayment.client.Receiver;
 import com.paypal.adaptivepayment.client.ReceiverList;
 import com.paypal.adaptivepayment.client.RequestEnvelope;
+import com.paypal.adaptivepayment.client.SenderIdentifier;
 
 public class PayPalBO {
 
@@ -44,7 +49,9 @@ public class PayPalBO {
 
 	public static Hashtable<String, String> stateNameAndCodeHashtable = new Hashtable<String, String>();
 
-	public static PayResponse payToMoneyGram(String token, String customerEmail, BigDecimal amount)
+	public static PayResponse payToMoneyGram(String token,
+			String customerEmail, BigDecimal amount,
+			String customerPhoneNumber, String referenceNumber)
 			throws Exception {
 
 		LOGGER.debug("Enter payToMoneyGram.");
@@ -53,9 +60,27 @@ public class PayPalBO {
 		requestEnvelopee.setDetailLevel(DetailLevelCode.RETURN_ALL);
 		requestEnvelopee.setErrorLanguage("error_US");
 		PayRequest payRequest = new PayRequest();
+		 PhoneNumberType phoneNumberType = new PhoneNumberType(); 
+		  phoneNumberType.setCountryCode("1"); 
+//		  phoneNumberType.setPhoneNumber(customerPhoneNumber);
+		  String memo = PropertyUtil.constantFromProperties 
+				    .getString("MEMO");
+		 SenderIdentifier senderIdentifier = new SenderIdentifier();
+		  senderIdentifier.setPhone(phoneNumberType);		  
+		  DateFormat df = new SimpleDateFormat(Mgi_Paypal_Constants.DATE_FORMAT); 
+		  String invoice = df.format(Calendar.getInstance().getTime()) 
+		    .concat("-").concat(referenceNumber);
+		  
+//		  senderIdentifier.setEmail(customerEmail); 
+		  payRequest.setTrackingId(invoice); 
+//		  payRequest.setSender(senderIdentifier); 
+		  payRequest.setMemo(memo); 
+		  
 
 		Receiver receiver = new Receiver();
 		receiver.setAmount(amount);
+		
+		receiver.setInvoiceId(invoice);
 		// receiver.setEmail("lsoni@moneygram.com");
 		receiver.setEmail(PropertyUtil.constantFromProperties.getString("RECEIVER_EMAIL_PAY"));
 		receiver.setPaymentType("WITHDRAWAL");
@@ -81,6 +106,9 @@ public class PayPalBO {
 
 		AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client client = new AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client();
 
+		
+		System.out.println(new Gson().toJson(payRequest));
+		
 		payResponse = client.getPay(payRequest, token);
 		System.out.println("Response from serverrr:"
 				+ payResponse.getPaymentExecStatus().toString());
@@ -96,8 +124,8 @@ public class PayPalBO {
 
 		PhoneNumberType phoneNumberType = new PhoneNumberType();
 		phoneNumberType.setCountryCode("1");
-		phoneNumberType.setExtension("4237");
-		phoneNumberType.setPhoneNumber("6057100363");
+//		phoneNumberType.setExtension("4237");
+		phoneNumberType.setPhoneNumber(userLimitInputBean.getPhoneNumber());
 
 		AccountIdentifier accountIdentifier = new AccountIdentifier();
 		LOGGER.debug("from ui " + userLimitInputBean.getEmailID());
@@ -262,6 +290,10 @@ public class PayPalBO {
 
 			userData = (UserData) gson.fromJson(userDataString, UserData.class);
 			userData.setToken(token);
+			if (stateNameAndCodeHashtable.isEmpty()) {
+				Country.getStateForUSA();
+			}
+				
 			String stateName = stateNameAndCodeHashtable.get(userData.getAddress()
 					.getRegion());
 			userData.getAddress().setStateName(stateName);

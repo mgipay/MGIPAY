@@ -1,58 +1,59 @@
 package com.ac;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.mgi.paypal.inputbean.SendProofInputBean;
 import com.sdk.client.EDialogWebServices_EDialogWebServicesSoap11_Client;
+import com.sdk.client.PropertyType;
+
 public class SignUp {
 
 	private static Logger LOGGER = Logger.getLogger(SignUp.class);
-	
+
 	public SignUp() {
 
 	}
-	
+
 	public String sendProofMessage(SendProofInputBean sendProofInputBean) {
 		
 		LOGGER.debug("Enter sendProofMessage.");
-		String Response = null;
-	    {
-			System.out.println("Invoking sendProofMessage...");
-//			System.setProperty("http.proxyHost", "proxy.tcs.com");
-//			System.setProperty("http.proxyPort", "8080");
-//			System.setProperty("http.proxyUser", "538540");
-//			System.setProperty("http.proxyPassword", "Bala@May84");
-			/*String messageName = "EXAMPLETRIGGER";
+		
+		String response = "";
+		{
+
+			String messageName = "EXAMPLETRIGGER";
 
 			List<String> replacementAddressList = new ArrayList<String>();
-			replacementAddressList.add("ndubey@moneygram.com");
+			replacementAddressList.add(sendProofInputBean.getCustomerEmail());
 
 			List<PropertyType> propertyTypeList = new ArrayList<PropertyType>();
 
 			PropertyType propertyType = new PropertyType();
 			propertyType.setName("EMAIL");
-			propertyType.setValue("ndubey@moneygram.com");
+			propertyType.setValue(sendProofInputBean.getCustomerEmail());
 
 			PropertyType propertyType2 = new PropertyType();
 			propertyType2.setName("TEMPZIP");
-			propertyType2.setValue("01568");
+			propertyType2.setValue(sendProofInputBean.getZipCode());
 
 			propertyTypeList.add(propertyType);
-			propertyTypeList.add(propertyType2);*/
+			propertyTypeList.add(propertyType2);
 
-			EDialogWebServices_EDialogWebServicesSoap11_Client client =
+			EDialogWebServices_EDialogWebServicesSoap11_Client client = 
 					new EDialogWebServices_EDialogWebServicesSoap11_Client();
-			Response = client
-					.sendProofMessageForSignUP(sendProofInputBean);
+//			Response = client.sendProofMessageForSignUP(sendProofInputBean);
 
-			System.out.println("Response "+ Response);
-		
-		LOGGER.debug("Exit sendProofMessage.");
-		
-		return new Gson().toJson(Response);
-	    }
+			response = client.sendProofMessageForSignUP(messageName,
+					replacementAddressList, propertyTypeList);
+
+			LOGGER.debug("Exit sendProofMessage.");
+
+			return new Gson().toJson(response);
+		}
 	}
-	
-	
+
 }

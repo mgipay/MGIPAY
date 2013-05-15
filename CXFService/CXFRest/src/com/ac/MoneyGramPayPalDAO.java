@@ -175,8 +175,8 @@ public class MoneyGramPayPalDAO {
 
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
-//		preparedStatement.setString(1, TransactionStatus.SEND_VALIDATION_FAILED.value());
 		preparedStatement.setString(1, TransactionStatus.MGI_FAILED.value());
+//		preparedStatement.setString(1, TransactionStatus.PAYPAL_FAILED.value());
 		
 		ResultSet resultSet = preparedStatement.executeQuery();
 		List<HistoryDetails> historyDetailsList = new ArrayList<HistoryDetails>();

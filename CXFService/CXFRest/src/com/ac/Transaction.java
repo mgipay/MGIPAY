@@ -160,37 +160,39 @@ public class Transaction {
 			com.mgi.agentconnect.client.SendValidationRequest sendValidationRequest) {
 
 		LOGGER.debug("Enter setSenderName.");
-		
+
 		String firstName = sendValidationInputBean.getSenderFirstName();
 		String lastName = sendValidationInputBean.getSenderLastName();
-		
+
 		if (firstName.length() <= 20) {
 			sendValidationRequest.setSenderFirstName(firstName);
 			sendValidationRequest.setReceiverFirstName(firstName);
 		} else {
-			String senderFirstName = firstName.substring(0, 19);
-			String senderMiddleName = firstName.substring(20,
-					firstName.length() - 1);
+			String senderFirstName = firstName.substring(0,
+					Mgi_Paypal_Constants.INTEGER_NINETEEN);
+			String senderMiddleName = firstName
+					.substring(Mgi_Paypal_Constants.INTEGER_TWENTY,
+							firstName.length() - 1);
 			sendValidationRequest.setSenderFirstName(senderFirstName);
 			sendValidationRequest.setSenderMiddleName(senderMiddleName);
-			
+
 			sendValidationRequest.setReceiverFirstName(senderFirstName);
 		}
 
-		if (lastName.length() <= 30) {
+		if (lastName.length() <= Mgi_Paypal_Constants.INTEGER_THIRTY) {
 			sendValidationRequest.setSenderLastName(lastName);
 			sendValidationRequest.setReceiverLastName(lastName);
 		} else {
-			String senderLastName = lastName.substring(0, 29);
-			String senderLastName2 = lastName.substring(30,
-					lastName.length() - 1);
+			String senderLastName = lastName.substring(0,
+					Mgi_Paypal_Constants.INTEGER_TWENTY_NINE);
+			String senderLastName2 = lastName.substring(
+					Mgi_Paypal_Constants.INTEGER_THIRTY, lastName.length() - 1);
 			sendValidationRequest.setSenderLastName(senderLastName);
 			sendValidationRequest.setSenderLastName2(senderLastName2);
-			
+
 			sendValidationRequest.setReceiverLastName(senderLastName);
 		}
 
-		
 		LOGGER.debug("Exit setSenderName.");
 	}
 	
