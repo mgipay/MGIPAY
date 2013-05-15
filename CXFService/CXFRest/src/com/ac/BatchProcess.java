@@ -12,7 +12,6 @@ import com.mgi.agentconnect.client.DetailLookupResponse;
 import com.mgi.agentconnect.client.SendReversalReasonCode;
 import com.mgi.agentconnect.client.SendReversalRequest;
 import com.mgi.agentconnect.client.SendReversalType;
-import com.mgi.agentconnect.client.TransactionStatus;
 import com.mgi.paypal.inputbean.SendReversalInputBean;
 import com.mgi.paypal.util.CalendarUtil;
 import com.mgi.paypal.util.HistoryDetails;
@@ -35,11 +34,10 @@ public class BatchProcess {
 
 		LOGGER.debug("Enter doBatchForSendReversal.");
 
-		MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
 
 		List<HistoryDetails> historyDetailList = null;
 		try {
-			historyDetailList = moneyGramPayPalDAO
+			historyDetailList = MoneyGramPayPalDAO
 					.retrieveHistroyDetailsForBatchProcess();
 			List<StatusToReverseBean> statusToReverseBeanList = new ArrayList<StatusToReverseBean>();
 			List<String> statusToRejectList = new ArrayList<String>();
@@ -53,8 +51,8 @@ public class BatchProcess {
 				// .getReferenceNumber();
 
 				if (detailLookupResponse != null
-						&& !detailLookupResponse.getTransactionStatus().equals(
-								TransactionStatus.UNCOMMITED)) {
+						/*&& !detailLookupResponse.getTransactionStatus().equals(
+								TransactionStatus.UNCOMMITED)*/) {
 
 					// DO Send Reversal
 
@@ -87,7 +85,7 @@ public class BatchProcess {
 
 				}
 			}
-			moneyGramPayPalDAO.updateHistoryDetailStatusReversedAndRejected(
+			MoneyGramPayPalDAO.updateHistoryDetailStatusReversedAndRejected(
 					statusToReverseBeanList, statusToRejectList);
 
 		} catch (Exception exception) {
@@ -97,14 +95,22 @@ public class BatchProcess {
 	}
 
 	private static DetailLookupResponse detailLookUpForBatchProcess(
-			String mgiTransactionSessionId) throws Exception {
+			String mgiTransactionSessionId) {
 
 		LOGGER.debug("Enter detailLookUpForBatchProcess.");
 
 		DetailLookupRequest detailLookupRequest = createDetailLookupRequest(mgiTransactionSessionId);
 		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
-		DetailLookupResponse detailLookupResponse = client
-				.detailLookup(detailLookupRequest);
+		DetailLookupResponse detailLookupResponse = null;
+		try {
+			detailLookupResponse = client.detailLookup(detailLookupRequest);
+		} catch (Exception exception) {
+			return null;
+
+		}
+		if (detailLookupResponse == null) {
+			return null;
+		}
 
 		LOGGER.debug("Enter detailLookUpForBatchProcess.");
 

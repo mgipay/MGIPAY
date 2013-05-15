@@ -158,7 +158,7 @@ public class MoneyGramPayPalDAO {
 		return historyDetailsList;
 	}
 
-	public List<HistoryDetails> retrieveHistroyDetailsForBatchProcess()
+	public static List<HistoryDetails> retrieveHistroyDetailsForBatchProcess()
 			throws ClassNotFoundException, SQLException {
 
 		LOGGER.debug("Enter retrieveHistroyDetails.");
@@ -405,7 +405,7 @@ public class MoneyGramPayPalDAO {
 		LOGGER.debug("Exit updateHistoryDetail.");
 	}
 
-	public void updateHistoryDetailStatusReversedAndRejected(
+	public static void updateHistoryDetailStatusReversedAndRejected(
 			List<StatusToReverseBean> statusToReverseBeanList,
 			List<String> stausToRejectBeanList) throws ClassNotFoundException,
 			SQLException {
@@ -422,14 +422,13 @@ public class MoneyGramPayPalDAO {
 		for (StatusToReverseBean statusToReverseBean : statusToReverseBeanList) {
 
 			String queryToUpdateReverse = " Update MGI_PAYPAL_TRAN_HIST set TRAN_STATUS = '"
-					.concat(TransactionStatus.REVERSED.value())
-					.concat("' , PAYPAL_TRAN_STATUS = '")
-					.concat(TransactionStatus.REFND.value())
-					.concat("' and MGI_REF_NUM = '")
-					.concat(statusToReverseBean.getMgiReferenceNumber())
-					.concat("' where MGI_SESS_ID = '"
-							.concat(statusToReverseBean
-									.getMgiTransactionSessionID())).concat("'");
+					+ TransactionStatus.REVERSED.value()
+					+ "' , MGI_TRAN_STATUS = '"
+					+ TransactionStatus.REFND.value()
+					+ "' and MGI_REF_NUM = '"
+					+ statusToReverseBean.getMgiReferenceNumber()
+					+ "' where MGI_SESS_ID = '"
+					+ statusToReverseBean.getMgiTransactionSessionID() + "'";
 //TODO
 			LOGGER.debug(queryToUpdateReverse);
 			
@@ -438,9 +437,8 @@ public class MoneyGramPayPalDAO {
 		}
 		for (String mgiTransactionSessionID : stausToRejectBeanList) {
 			String queryToUpdateReject = "Update MGI_PAYPAL_TRAN_HIST set TRAN_STATUS = '"
-					.concat(TransactionStatus.REJECTED.value())
-					.concat("' where MGI_SESS_ID = '")
-					.concat(mgiTransactionSessionID).concat("'");
+					+ TransactionStatus.REJECTED.value()
+					+ "' where MGI_SESS_ID = '" + mgiTransactionSessionID + "'";
 
 			LOGGER.debug(queryToUpdateReject);
 			
