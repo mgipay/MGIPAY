@@ -44,45 +44,43 @@ public class PayPalBO {
 	public PayPalBO() {
 	}
 
-
 	private static Logger LOGGER = Logger.getLogger(PayPalBO.class);
 
 	public static Hashtable<String, String> stateNameAndCodeHashtable = new Hashtable<String, String>();
 
 	public static PayResponse payToMoneyGram(String token,
 			String customerEmail, BigDecimal amount,
-			String customerPhoneNumber, String referenceNumber)
+			String customerPhoneNumber, String referenceNumber, BigDecimal fee)
 			throws Exception {
 
 		LOGGER.debug("Enter payToMoneyGram.");
 
+		BigDecimal totalAmount = amount.add(fee);
 		RequestEnvelope requestEnvelopee = new RequestEnvelope();
 		requestEnvelopee.setDetailLevel(DetailLevelCode.RETURN_ALL);
 		requestEnvelopee.setErrorLanguage("error_US");
 		PayRequest payRequest = new PayRequest();
-		 PhoneNumberType phoneNumberType = new PhoneNumberType(); 
-		  phoneNumberType.setCountryCode("1"); 
-//		  phoneNumberType.setPhoneNumber(customerPhoneNumber);
-		  String memo = PropertyUtil.constantFromProperties 
-				    .getString("MEMO");
-		 SenderIdentifier senderIdentifier = new SenderIdentifier();
-		  senderIdentifier.setPhone(phoneNumberType);		  
-		  DateFormat df = new SimpleDateFormat(Mgi_Paypal_Constants.DATE_FORMAT); 
-		  String invoice = df.format(Calendar.getInstance().getTime()) 
-		    .concat("-").concat(referenceNumber);
-		  
-//		  senderIdentifier.setEmail(customerEmail); 
-		  payRequest.setTrackingId(invoice); 
-//		  payRequest.setSender(senderIdentifier); 
-		  payRequest.setMemo(memo); 
-		  
+		PhoneNumberType phoneNumberType = new PhoneNumberType();
+		phoneNumberType.setCountryCode("1");
+		// phoneNumberType.setPhoneNumber(customerPhoneNumber);
+		String memo = PropertyUtil.constantFromProperties.getString("MEMO");
+		SenderIdentifier senderIdentifier = new SenderIdentifier();
+		senderIdentifier.setPhone(phoneNumberType);
+		DateFormat df = new SimpleDateFormat(Mgi_Paypal_Constants.DATE_FORMAT);
+		String invoice = df.format(Calendar.getInstance().getTime())
+				.concat("-").concat(referenceNumber);
+
+		// senderIdentifier.setEmail(customerEmail);
+		payRequest.setTrackingId(invoice);
+		// payRequest.setSender(senderIdentifier);
+		payRequest.setMemo(memo);
 
 		Receiver receiver = new Receiver();
-		receiver.setAmount(amount);
-		
+		receiver.setAmount(totalAmount);
+
 		receiver.setInvoiceId(invoice);
-		// receiver.setEmail("lsoni@moneygram.com");
-		receiver.setEmail(PropertyUtil.constantFromProperties.getString("RECEIVER_EMAIL_PAY"));
+		receiver.setEmail(PropertyUtil.constantFromProperties
+				.getString("RECEIVER_EMAIL_PAY"));
 		receiver.setPaymentType("WITHDRAWAL");
 		ReceiverList receiverList = new ReceiverList();
 		receiverList.getReceiver().add(receiver);
@@ -106,9 +104,8 @@ public class PayPalBO {
 
 		AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client client = new AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client();
 
-		
 		System.out.println(new Gson().toJson(payRequest));
-		
+
 		payResponse = client.getPay(payRequest, token);
 		System.out.println("Response from serverrr:"
 				+ payResponse.getPaymentExecStatus().toString());
@@ -124,7 +121,7 @@ public class PayPalBO {
 
 		PhoneNumberType phoneNumberType = new PhoneNumberType();
 		phoneNumberType.setCountryCode("1");
-//		phoneNumberType.setExtension("4237");
+		// phoneNumberType.setExtension("4237");
 		phoneNumberType.setPhoneNumber(userLimitInputBean.getPhoneNumber());
 
 		AccountIdentifier accountIdentifier = new AccountIdentifier();
@@ -142,8 +139,9 @@ public class PayPalBO {
 		getUserLimitsRequest.setRequestEnvelope(requestEnvelope);
 		getUserLimitsRequest.setCountry(PropertyUtil.constantFromProperties
 				.getString("PP_COUNTRY_CODE_US"));
-		getUserLimitsRequest.setCurrencyCode(PropertyUtil.constantFromProperties
-				.getString("PP_CURRENCY_CODE_USA"));
+		getUserLimitsRequest
+				.setCurrencyCode(PropertyUtil.constantFromProperties
+						.getString("PP_CURRENCY_CODE_USA"));
 		getUserLimitsRequest.getLimitType().add(
 				PropertyUtil.constantFromProperties.getString("PP_LIMIT_TYPE"));
 
@@ -213,7 +211,8 @@ public class PayPalBO {
 		System.setProperty("javax.net.ssl.trustStore",
 				PropertyUtil.constantFromProperties.getString("trustStore"));
 		System.setProperty("javax.net.ssl.trustStorePassword",
-				PropertyUtil.constantFromProperties.getString("trustStorePassword"));
+				PropertyUtil.constantFromProperties
+						.getString("trustStorePassword"));
 		HttpClient client = new HttpClient();
 		PostMethod postMethod = new PostMethod(uri);
 		String myQuery = "profile https://uri.paypal.com/services/AdaptivePaymentsPayAPI openid";
@@ -293,11 +292,11 @@ public class PayPalBO {
 			if (stateNameAndCodeHashtable.isEmpty()) {
 				Country.getStateForUSA();
 			}
-				
-			String stateName = stateNameAndCodeHashtable.get(userData.getAddress()
-					.getRegion());
+
+			String stateName = stateNameAndCodeHashtable.get(userData
+					.getAddress().getRegion());
 			userData.getAddress().setStateName(stateName);
-			
+
 		} catch (Exception jsonSyntaxException) {
 			jsonSyntaxException.printStackTrace();
 			LOGGER.error(jsonSyntaxException.getLocalizedMessage());

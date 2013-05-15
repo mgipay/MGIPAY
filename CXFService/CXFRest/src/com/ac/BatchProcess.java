@@ -19,8 +19,7 @@ import com.mgi.paypal.util.HistoryDetails;
 import com.mgi.paypal.util.PropertyUtil;
 import com.mgi.paypal.util.StatusToReverseBean;
 
-
-public class BatchProcess  {
+public class BatchProcess {
 
 	public BatchProcess() {
 
@@ -31,131 +30,131 @@ public class BatchProcess  {
 	public static void doBatchForSendReversal() {
 		LOGGER.debug("doBatchForSendReversal");
 	}
+
 	public static void doBatchForSendReversal1() {
 
 		LOGGER.debug("Enter doBatchForSendReversal.");
-		
+
 		MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
 
-		while (true) {
-			List<HistoryDetails> historyDetailList = null;
-			try {
-				historyDetailList = moneyGramPayPalDAO
-						.retrieveHistroyDetailsForBatchProcess();
-				if (historyDetailList != null && historyDetailList.isEmpty()) {
-					break;
-				}
-				List<StatusToReverseBean> statusToReverseBeanList = 
-						new ArrayList<StatusToReverseBean>();
-				List<String> statusToRejectList = new ArrayList<String>();
-				
-				LOGGER.debug("size : " + historyDetailList.size());
-				
-				for (HistoryDetails historyDetails : historyDetailList) {
-					DetailLookupResponse detailLookupResponse 
-					= detailLookUpForBatchProcess(historyDetails
+		List<HistoryDetails> historyDetailList = null;
+		try {
+			historyDetailList = moneyGramPayPalDAO
+					.retrieveHistroyDetailsForBatchProcess();
+			List<StatusToReverseBean> statusToReverseBeanList = new ArrayList<StatusToReverseBean>();
+			List<String> statusToRejectList = new ArrayList<String>();
+
+			LOGGER.debug("size : " + historyDetailList.size());
+
+			for (HistoryDetails historyDetails : historyDetailList) {
+				DetailLookupResponse detailLookupResponse = detailLookUpForBatchProcess(historyDetails
+						.getMgiTransactionSessionID());
+				// String mgiReferenceNumber = detailLookupResponse
+				// .getReferenceNumber();
+
+				if (detailLookupResponse != null
+						&& !detailLookupResponse.getTransactionStatus().equals(
+								TransactionStatus.UNCOMMITED)) {
+
+					// DO Send Reversal
+
+					SendReversalInputBean sendReversalInputBean = new SendReversalInputBean();
+					sendReversalInputBean.setFeeAmount(historyDetails
+							.getTransactionFee());
+					sendReversalInputBean.setReferenceNumber(historyDetails
+							.getMgiReferenceNumber());
+					sendReversalInputBean.setSendAmount(historyDetails
+							.getTransactionAmount());
+					sendReversalInputBean.setSendCurrency("USD");
+
+					doSendReversal(sendReversalInputBean);
+
+					// Update history with reference number and status as
+					// 'REVERSED'
+					StatusToReverseBean statusToReverseBean = new StatusToReverseBean();
+					statusToReverseBean
+							.setMgiReferenceNumber(detailLookupResponse
+									.getReferenceNumber());
+					statusToReverseBean
+							.setMgiTransactionSessionID(historyDetails
+									.getMgiTransactionSessionID());
+					statusToReverseBeanList.add(statusToReverseBean);
+
+				} else {
+					// Update history TABLE mgi_status as 'REJECTED'
+					statusToRejectList.add(historyDetails
 							.getMgiTransactionSessionID());
-//					String mgiReferenceNumber = detailLookupResponse
-//							.getReferenceNumber();
-					
-					if (detailLookupResponse != null
-							&& !detailLookupResponse.getTransactionStatus()
-									.equals(TransactionStatus.UNCOMMITED)) {
-						
-						// DO Send Reversal
-						
-						SendReversalInputBean sendReversalInputBean = new SendReversalInputBean();
-						sendReversalInputBean.setFeeAmount(historyDetails.getTransactionFee());
-						sendReversalInputBean.setReferenceNumber(historyDetails.getMgiReferenceNumber());
-						sendReversalInputBean.setSendAmount(historyDetails.getTransactionAmount());
-						sendReversalInputBean.setSendCurrency("USD");
-						
-						doSendReversal(sendReversalInputBean);
-						
-						// Update history with reference number and status as
-						// 'REVERSED'
-						StatusToReverseBean statusToReverseBean = new StatusToReverseBean();
-						statusToReverseBean.setMgiReferenceNumber(detailLookupResponse
-								.getReferenceNumber());
-						statusToReverseBean
-								.setMgiTransactionSessionID(historyDetails
-										.getMgiTransactionSessionID());
-						statusToReverseBeanList.add(statusToReverseBean);
-						
-					} else {
-						// Update history TABLE mgi_status as 'REJECTED'
-						statusToRejectList.add(historyDetails.getMgiTransactionSessionID());
 
-					}
 				}
-				moneyGramPayPalDAO
-						.updateHistoryDetailStatusReversedAndRejected(
-								statusToReverseBeanList,
-								statusToRejectList);
-
-			} catch (Exception exception) {
-				exception.printStackTrace();
 			}
+			moneyGramPayPalDAO.updateHistoryDetailStatusReversedAndRejected(
+					statusToReverseBeanList, statusToRejectList);
+
+		} catch (Exception exception) {
+			exception.printStackTrace();
 		}
 		LOGGER.debug("Exit doBatchForSendReversal.");
 	}
 
 	private static DetailLookupResponse detailLookUpForBatchProcess(
 			String mgiTransactionSessionId) throws Exception {
-		
+
 		LOGGER.debug("Enter detailLookUpForBatchProcess.");
-		
-		DetailLookupRequest detailLookupRequest = createDetailLookupRequest(
-				mgiTransactionSessionId);
+
+		DetailLookupRequest detailLookupRequest = createDetailLookupRequest(mgiTransactionSessionId);
 		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
-		 DetailLookupResponse detailLookupResponse = client
+		DetailLookupResponse detailLookupResponse = client
 				.detailLookup(detailLookupRequest);
-		 
-		 LOGGER.debug("Enter detailLookUpForBatchProcess.");
-		 
+
+		LOGGER.debug("Enter detailLookUpForBatchProcess.");
+
 		return detailLookupResponse;
 	}
 
-
-
 	private static DetailLookupRequest createDetailLookupRequest(
-			 String mgiTransactionSessionID) {
+			String mgiTransactionSessionID) {
 		DetailLookupRequest detailLookupRequest = new DetailLookupRequest();
 
 		detailLookupRequest.setAgentID(PropertyUtil.constantFromProperties
 				.getString("AGENT_ID"));
-		detailLookupRequest.setAgentSequence(PropertyUtil.constantFromProperties
-				.getString("AGENT_SEQUENCE"));
+		detailLookupRequest
+				.setAgentSequence(PropertyUtil.constantFromProperties
+						.getString("AGENT_SEQUENCE"));
 		detailLookupRequest.setApiVersion(PropertyUtil.constantFromProperties
 				.getString("API_VERSION"));
-		detailLookupRequest.setClientSoftwareVersion(PropertyUtil.constantFromProperties
-				.getString("CLIENT_SOFTWARE_VERSION"));
+		detailLookupRequest
+				.setClientSoftwareVersion(PropertyUtil.constantFromProperties
+						.getString("CLIENT_SOFTWARE_VERSION"));
 		detailLookupRequest.setIncludeUseData(false);
 		detailLookupRequest.setLanguage(PropertyUtil.constantFromProperties
 				.getString("LANGUAGE_CODE_ENGLISH"));
 		detailLookupRequest.setTimeStamp(CalendarUtil.getTimeStamp());
-		detailLookupRequest.setToken(PropertyUtil.constantFromProperties.getString("TOKEN"));
+		detailLookupRequest.setToken(PropertyUtil.constantFromProperties
+				.getString("TOKEN"));
 		detailLookupRequest.setMgiTransactionSessionID(mgiTransactionSessionID);
 		return detailLookupRequest;
 	}
-	
-	private static void doSendReversal(SendReversalInputBean sendReversalInputBean) {
+
+	private static void doSendReversal(
+			SendReversalInputBean sendReversalInputBean) {
 
 		LOGGER.debug("Enter sendReversal.");
 
 		SendReversalRequest sendReversalRequest = new SendReversalRequest();
 		sendReversalRequest.setAgentID(PropertyUtil.constantFromProperties
 				.getString("AGENT_ID"));
-		sendReversalRequest.setAgentSequence(PropertyUtil.constantFromProperties
-				.getString("AGENT_SEQUENCE"));
+		sendReversalRequest
+				.setAgentSequence(PropertyUtil.constantFromProperties
+						.getString("AGENT_SEQUENCE"));
 		sendReversalRequest.setToken(PropertyUtil.constantFromProperties
 				.getString("TOKEN"));
 
 		sendReversalRequest.setTimeStamp(CalendarUtil.getTimeStamp());
 		sendReversalRequest.setApiVersion(PropertyUtil.constantFromProperties
 				.getString("API_VERSION"));
-		sendReversalRequest.setClientSoftwareVersion(PropertyUtil.constantFromProperties
-				.getString("CLIENT_SOFTWARE_VERSION"));
+		sendReversalRequest
+				.setClientSoftwareVersion(PropertyUtil.constantFromProperties
+						.getString("CLIENT_SOFTWARE_VERSION"));
 		sendReversalRequest
 				.setSendAmount(sendReversalInputBean.getSendAmount());
 		sendReversalRequest.setFeeAmount(sendReversalInputBean.getFeeAmount());
@@ -185,19 +184,14 @@ public class BatchProcess  {
 
 	}
 
-	/*public static void main(String[] args) {
-		BatchProcess batchProcess = new BatchProcess();
-		while (true) {
-			batchProcess.doBatchForSendReversal();
-			try {
-				Thread.sleep(30 * 60 * 1000);
-			} catch (InterruptedException interruptedException) {
-				LOGGER.error("Batch process stopped beacause of : "
-						+ interruptedException.getLocalizedMessage());
-				interruptedException.printStackTrace();
-			}
-		}
-	}*/
-	
-	
+	/*
+	 * public static void main(String[] args) { BatchProcess batchProcess = new
+	 * BatchProcess(); while (true) { batchProcess.doBatchForSendReversal(); try
+	 * { Thread.sleep(30 * 60 * 1000); } catch (InterruptedException
+	 * interruptedException) {
+	 * LOGGER.error("Batch process stopped beacause of : " +
+	 * interruptedException.getLocalizedMessage());
+	 * interruptedException.printStackTrace(); } } }
+	 */
+
 }

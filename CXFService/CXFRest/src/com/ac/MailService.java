@@ -59,8 +59,12 @@ public class MailService {
 		LOGGER.info("Start messaging....");
 		TransactionInformationMailResponse response = new TransactionInformationMailResponse();
 		Message message = new MimeMessage(session);
+		
 		BigDecimal totalAmount = BigDecimal.ZERO;
-		totalAmount = new BigDecimal(amount).add(new BigDecimal(fee));
+		if (amount != null && fee != null) {
+			totalAmount = new BigDecimal(amount).add(new BigDecimal(fee));
+		}
+		
 		LOGGER.debug("Total Amount: " + totalAmount.toString());
 
 		try {
