@@ -128,9 +128,13 @@ public class Transaction {
 					exception.printStackTrace();
 					sendValidationResponseForUI
 							.setTransactionSuccess(false);
-					sendValidationResponseForUI
-							.setErrorMessage(PropertyUtil.messageFromProperties
-									.getString("TRANSACTION_FAILED_RETRY"));
+					if (exception.getMessage().equalsIgnoreCase("Only a slash, an apostrophe or a hyphen is allowed as part of the name - please correct and reenter.")){
+						sendValidationResponseForUI.setErrorMessage(PropertyUtil.messageFromProperties.getString("NAME_ERROR"));
+					}else{
+						sendValidationResponseForUI
+						.setErrorMessage(PropertyUtil.messageFromProperties
+								.getString("TRANSACTION_FAILED_RETRY"));
+					}
 					return sendValidationResponseForUI;
 				}
 			}
