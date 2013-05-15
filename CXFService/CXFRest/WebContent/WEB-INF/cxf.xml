@@ -32,4 +32,29 @@ xsi:schemaLocation="http://cxf.apache.org/configuration/security http://cxf.apac
    </sec:cipherSuitesFilter>
  </http:tlsClientParameters>
 </http:conduit>
+
+
+<bean id="schedulerTask" class="org.springframework.scheduling.timer.MethodInvokingTimerTaskFactoryBean">
+  <property name="targetObject" ref="runMeTask" />
+  <property name="targetMethod" value="doBatchForSendReversal" />
+ </bean>
+
+ <bean id="runMeTask" class="com.ac.BatchProcess" />
+
+ <bean id="timerTask"
+  class="org.springframework.scheduling.timer.ScheduledTimerTask">
+  <property name="timerTask" ref="schedulerTask" />
+  <property name="delay" value="1800000" />
+  <property name="period" value="1800000" />
+ </bean>
+
+ <bean class="org.springframework.scheduling.timer.TimerFactoryBean">
+  <property name="scheduledTimerTasks">
+   <list>
+    <ref local="timerTask" />
+   </list>
+  </property>
+ </bean>
+
+
 </beans>

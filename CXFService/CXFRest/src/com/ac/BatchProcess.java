@@ -28,7 +28,10 @@ public class BatchProcess  {
 
 	private static Logger LOGGER = Logger.getLogger(BatchProcess.class);
 
-	public void doBatchForSendReversal() {
+	public static void doBatchForSendReversal() {
+		LOGGER.debug("doBatchForSendReversal");
+	}
+	public static void doBatchForSendReversal1() {
 
 		LOGGER.debug("Enter doBatchForSendReversal.");
 		
@@ -97,7 +100,7 @@ public class BatchProcess  {
 		LOGGER.debug("Exit doBatchForSendReversal.");
 	}
 
-	private DetailLookupResponse detailLookUpForBatchProcess(
+	private static DetailLookupResponse detailLookUpForBatchProcess(
 			String mgiTransactionSessionId) throws Exception {
 		
 		LOGGER.debug("Enter detailLookUpForBatchProcess.");
@@ -115,7 +118,7 @@ public class BatchProcess  {
 
 
 
-	private DetailLookupRequest createDetailLookupRequest(
+	private static DetailLookupRequest createDetailLookupRequest(
 			 String mgiTransactionSessionID) {
 		DetailLookupRequest detailLookupRequest = new DetailLookupRequest();
 
@@ -136,7 +139,7 @@ public class BatchProcess  {
 		return detailLookupRequest;
 	}
 	
-	private void doSendReversal(SendReversalInputBean sendReversalInputBean) {
+	private static void doSendReversal(SendReversalInputBean sendReversalInputBean) {
 
 		LOGGER.debug("Enter sendReversal.");
 
@@ -182,7 +185,7 @@ public class BatchProcess  {
 
 	}
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		BatchProcess batchProcess = new BatchProcess();
 		while (true) {
 			batchProcess.doBatchForSendReversal();
@@ -194,7 +197,7 @@ public class BatchProcess  {
 				interruptedException.printStackTrace();
 			}
 		}
-	}
+	}*/
 	
 	
 }
