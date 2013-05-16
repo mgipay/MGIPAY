@@ -59,12 +59,12 @@ public class MailService {
 		LOGGER.info("Start messaging....");
 		TransactionInformationMailResponse response = new TransactionInformationMailResponse();
 		Message message = new MimeMessage(session);
-		
+
 		BigDecimal totalAmount = BigDecimal.ZERO;
 		if (amount != null && fee != null) {
 			totalAmount = new BigDecimal(amount).add(new BigDecimal(fee));
 		}
-		
+
 		LOGGER.debug("Total Amount: " + totalAmount.toString());
 
 		try {
@@ -126,75 +126,158 @@ public class MailService {
 	}
 
 	private boolean sendMailIfRefund(SendMailInputBean sendMailInputBean) {
-
 		LOGGER.debug("Enter sendMailIfRefund.");
 
 		TransactionInformationMailResponse response = new TransactionInformationMailResponse();
+
 		Message message = new MimeMessage(session);
+
 		LOGGER.info("Reason is refund so calling Mail service to Mars");
+
 		try {
+
 			message.setFrom(new InternetAddress("donotreply@moneygram.com"));
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(
 					"MGLKW_ExpressPay-Mars@moneygram.com"));
-
 			message.setSubject("Inquiry");
 
 			System.out.println(new Gson().toJson(sendMailInputBean));
-
+			String bodyOfMail = "";
 			String mailText = sendMailInputBean.getMailText();
 
+			if (mailText == null) {
+				mailText = "";
+			}
+
 			String customerName = "Name : "
-					+ sendMailInputBean.getFirstname().concat("")
-							.concat(sendMailInputBean.getLastName())
-							.concat(System.getProperty("line.separator"));
+					+ sendMailInputBean.getFirstname().concat(" ")
+							.concat(sendMailInputBean.getLastName());
 			String refrenceNumber = "Reference Number : "
-					+ sendMailInputBean.getReferenceNumber().concat(
-							System.getProperty("line.separator"));
+					+ sendMailInputBean.getReferenceNumber();
 			String customerEmailID = "EmailID : "
-					+ sendMailInputBean.getCustomerEmailId().concat(
-							System.getProperty("line.separator"));
-			String phoneNumber = "Phone Number : ";
-			String amount = "Amount : ";
-			if (phoneNumber != null && !phoneNumber.trim().equals("")) {
-
-				phoneNumber = sendMailInputBean.getPhoneNumber().concat(
-						System.getProperty("line.separator"));
-
-			} else {
-				phoneNumber = phoneNumber.concat(System
-						.getProperty("line.separator"));
+					+ sendMailInputBean.getCustomerEmailId();
+			String phoneNumber = sendMailInputBean.getPhoneNumber();
+			String amount = sendMailInputBean.getAmount();
+			if (phoneNumber == null) {
+				phoneNumber = "";
 			}
-			if (amount != null && !amount.trim().equals("")) {
-
-				amount = sendMailInputBean.getAmount().concat(
-						System.getProperty("line.separator"));
-			} else {
-
-				amount = amount.concat(System.getProperty("line.separator"));
+			if (amount == null) {
+				amount = "";
 			}
-
-			String bodyOfMail = customerName.concat(refrenceNumber)
-					.concat(amount).concat(customerEmailID).concat(phoneNumber)
+			phoneNumber = "Phone Number : " + phoneNumber;
+			amount = "Amount : " + amount;
+			bodyOfMail = customerName
+					.concat(System.getProperty("line.separator"))
+					.concat(refrenceNumber)
+					.concat(System.getProperty("line.separator"))
+					.concat(amount)
+					.concat(System.getProperty("line.separator"))
+					.concat(customerEmailID)
+					.concat(System.getProperty("line.separator"))
+					.concat(phoneNumber)
+					.concat(System.getProperty("line.separator"))
+					.concat(System.getProperty("line.separator"))
 					.concat(mailText);
+
+			System.out.println(bodyOfMail);
 
 			message.setContent(bodyOfMail, "text/html; charset=utf-8");
 			message.setSentDate(new Date());
 			Transport.send(message);
+
 		} catch (Exception exception) {
+
 			exception.printStackTrace();
+
 			LOGGER.error(exception.getLocalizedMessage());
+
 			response.setTransactionSuccess(false);
+
 			response.setMessageToUser("Mail sending failed.");
+
 			return false;
 
 		}
+
 		LOGGER.info("Sent message successfully to MARS....");
+
 		response.setTransactionSuccess(true);
+
 		response.setMessageToUser("Email sent successfully to customer's email ID.");
 
 		LOGGER.debug("Exit sendMailIfRefund.");
 
 		return true;
+
+		// LOGGER.debug("Enter sendMailIfRefund.");
+		//
+		// TransactionInformationMailResponse response = new
+		// TransactionInformationMailResponse();
+		// Message message = new MimeMessage(session);
+		// LOGGER.info("Reason is refund so calling Mail service to Mars");
+		// try {
+		// message.setFrom(new InternetAddress("donotreply@moneygram.com"));
+		// message.addRecipient(Message.RecipientType.TO, new InternetAddress(
+		// "MGLKW_ExpressPay-Mars@moneygram.com"));
+		//
+		// message.setSubject("Inquiry");
+		//
+		// System.out.println(new Gson().toJson(sendMailInputBean));
+		//
+		// String mailText = sendMailInputBean.getMailText();
+		//
+		// String customerName = "Name : "
+		// + sendMailInputBean.getFirstname().concat("")
+		// .concat(sendMailInputBean.getLastName())
+		// .concat(System.getProperty("line.separator"));
+		// String refrenceNumber = "Reference Number : "
+		// + sendMailInputBean.getReferenceNumber().concat(
+		// System.getProperty("line.separator"));
+		// String customerEmailID = "EmailID : "
+		// + sendMailInputBean.getCustomerEmailId().concat(
+		// System.getProperty("line.separator"));
+		// String phoneNumber = "Phone Number : ";
+		// String amount = "Amount : ";
+		// if (phoneNumber != null && !phoneNumber.trim().equals("")) {
+		//
+		// phoneNumber = sendMailInputBean.getPhoneNumber().concat(
+		// System.getProperty("line.separator"));
+		//
+		// } else {
+		// phoneNumber = phoneNumber.concat(System
+		// .getProperty("line.separator"));
+		// }
+		// if (amount != null && !amount.trim().equals("")) {
+		//
+		// amount = sendMailInputBean.getAmount().concat(
+		// System.getProperty("line.separator"));
+		// } else {
+		//
+		// amount = amount.concat(System.getProperty("line.separator"));
+		// }
+		//
+		// String bodyOfMail = customerName.concat(refrenceNumber)
+		// .concat(amount).concat(customerEmailID).concat(phoneNumber)
+		// .concat(mailText);
+		//
+		// message.setContent(bodyOfMail, "text/html; charset=utf-8");
+		// message.setSentDate(new Date());
+		// Transport.send(message);
+		// } catch (Exception exception) {
+		// exception.printStackTrace();
+		// LOGGER.error(exception.getLocalizedMessage());
+		// response.setTransactionSuccess(false);
+		// response.setMessageToUser("Mail sending failed.");
+		// return false;
+		//
+		// }
+		// LOGGER.info("Sent message successfully to MARS....");
+		// response.setTransactionSuccess(true);
+		// response.setMessageToUser("Email sent successfully to customer's email ID.");
+		//
+		// LOGGER.debug("Exit sendMailIfRefund.");
+		//
+		// return true;
 	}
 
 	public String sendReportInformationMail(SendMailInputBean sendMailInputBean) {
@@ -257,7 +340,8 @@ public class MailService {
 					.getReferenceNumber());
 			insertRecsIntoCRMExtWebFormRequest.setTelephone(sendMailInputBean
 					.getPhoneNumber());
-			insertRecsIntoCRMExtWebFormRequest.setComplaintRequestType("Inquiry");
+			insertRecsIntoCRMExtWebFormRequest
+					.setComplaintRequestType("Inquiry");
 			Header header = new Header();
 			AgentHeader agentHeader = new AgentHeader();
 			agentHeader.setAgentId(PropertyUtil.constantFromProperties

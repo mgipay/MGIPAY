@@ -27,11 +27,11 @@ public class BatchProcess {
 
 	private static Logger LOGGER = Logger.getLogger(BatchProcess.class);
 
-	public static void doBatchForSendReversal() {
+	public static void doBatchForSendReversal1() {
 		LOGGER.debug("doBatchForSendReversal");
 	}
 
-	public static void doBatchForSendReversal1() {
+	public static void doBatchForSendReversal() {
 
 		LOGGER.debug("Enter doBatchForSendReversal.");
 
@@ -186,7 +186,9 @@ public class BatchProcess {
 			client.sendReversal(sendReversalRequest);
 		} catch (Exception exception) {
 			if (exception.getLocalizedMessage().equals(
-					"Transaction not in Send status")) {
+					"Transaction not in Send status")
+					|| exception.getLocalizedMessage().equals(
+							"Send reversal/cancel must be requested same day")) {
 				return true;
 			} else {
 				LOGGER.error("SendReversal Failed for MgiReferenceNumber : "
