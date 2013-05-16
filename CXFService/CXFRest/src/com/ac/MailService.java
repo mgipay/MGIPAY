@@ -139,28 +139,43 @@ public class MailService {
 
 			message.setSubject("Inquiry");
 
-			
 			System.out.println(new Gson().toJson(sendMailInputBean));
-			
-			String mailText = sendMailInputBean.getMailText(); 
-			 
-			   String customerName = "Name : " 
-			     + sendMailInputBean.getFirstname().concat("") 
-			       .concat(sendMailInputBean.getLastName()) 
-			       .concat(System.getProperty("line.separator")); 
-			   String refrenceNumber = "Reference Number : " 
-			     + sendMailInputBean.getReferenceNumber().concat( 
-			       System.getProperty("line.separator")); 
-			   String customerEmailID = "EmailID : " 
-			     + sendMailInputBean.getCustomerEmailId().concat( 
-			       System.getProperty("line.separator")); 
-			   String phoneNumber = "Phone Number : " 
-			     + sendMailInputBean.getPhoneNumber().concat( 
-			       System.getProperty("line.separator")); 
-			 
-			   String bodyOfMail = customerName.concat(refrenceNumber) 
-			     .concat(customerEmailID).concat(phoneNumber) 
-			     .concat(mailText);
+
+			String mailText = sendMailInputBean.getMailText();
+
+			String customerName = "Name : "
+					+ sendMailInputBean.getFirstname().concat("")
+							.concat(sendMailInputBean.getLastName())
+							.concat(System.getProperty("line.separator"));
+			String refrenceNumber = "Reference Number : "
+					+ sendMailInputBean.getReferenceNumber().concat(
+							System.getProperty("line.separator"));
+			String customerEmailID = "EmailID : "
+					+ sendMailInputBean.getCustomerEmailId().concat(
+							System.getProperty("line.separator"));
+			String phoneNumber = "Phone Number : ";
+			String amount = "Amount : ";
+			if (phoneNumber != null && !phoneNumber.trim().equals("")) {
+
+				phoneNumber = sendMailInputBean.getPhoneNumber().concat(
+						System.getProperty("line.separator"));
+
+			} else {
+				phoneNumber = phoneNumber.concat(System
+						.getProperty("line.separator"));
+			}
+			if (amount != null && !amount.trim().equals("")) {
+
+				amount = sendMailInputBean.getAmount().concat(
+						System.getProperty("line.separator"));
+			} else {
+
+				amount = amount.concat(System.getProperty("line.separator"));
+			}
+
+			String bodyOfMail = customerName.concat(refrenceNumber)
+					.concat(amount).concat(customerEmailID).concat(phoneNumber)
+					.concat(mailText);
 
 			message.setContent(bodyOfMail, "text/html; charset=utf-8");
 			message.setSentDate(new Date());

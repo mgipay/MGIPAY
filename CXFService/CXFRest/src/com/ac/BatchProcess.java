@@ -27,11 +27,11 @@ public class BatchProcess {
 
 	private static Logger LOGGER = Logger.getLogger(BatchProcess.class);
 
-	public static void doBatchForSendReversal1() {
+	public static void doBatchForSendReversal() {
 		LOGGER.debug("doBatchForSendReversal");
 	}
 
-	public static void doBatchForSendReversal() {
+	public static void doBatchForSendReversal1() {
 
 		LOGGER.debug("Enter doBatchForSendReversal.");
 
