@@ -62,7 +62,6 @@ public class PayPalBO {
 		PayRequest payRequest = new PayRequest();
 		PhoneNumberType phoneNumberType = new PhoneNumberType();
 		phoneNumberType.setCountryCode("1");
-		// phoneNumberType.setPhoneNumber(customerPhoneNumber);
 		String memo = PropertyUtil.constantFromProperties.getString("MEMO");
 		SenderIdentifier senderIdentifier = new SenderIdentifier();
 		senderIdentifier.setPhone(phoneNumberType);
@@ -70,9 +69,7 @@ public class PayPalBO {
 		String invoice = df.format(Calendar.getInstance().getTime())
 				.concat("-").concat(referenceNumber);
 
-		// senderIdentifier.setEmail(customerEmail);
 		payRequest.setTrackingId(invoice);
-		// payRequest.setSender(senderIdentifier);
 		payRequest.setMemo(memo);
 
 		Receiver receiver = new Receiver();
@@ -91,7 +88,6 @@ public class PayPalBO {
 		payRequest.setReceiverList(receiverList);
 		payRequest.setCancelUrl("https://noop");
 		payRequest.setFeesPayer("NOFEE");
-		// mgi_fundsout_test@moneygram.com
 		payRequest.setSenderEmail(customerEmail);
 		FundingTypeInfo fundingTypeInfo = new FundingTypeInfo();
 		fundingTypeInfo.setFundingType("BALANCE");
@@ -102,13 +98,10 @@ public class PayPalBO {
 		payRequest.setFundingConstraint(fundingConstraint);
 		PayResponse payResponse = new PayResponse();
 
-		AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client client = new AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client();
-
-		System.out.println(new Gson().toJson(payRequest));
+		AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client client 
+		= new AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client();
 
 		payResponse = client.getPay(payRequest, token);
-		System.out.println("Response from serverrr:"
-				+ payResponse.getPaymentExecStatus().toString());
 
 		LOGGER.debug("Exit payToMoneyGram.");
 
@@ -121,12 +114,9 @@ public class PayPalBO {
 
 		PhoneNumberType phoneNumberType = new PhoneNumberType();
 		phoneNumberType.setCountryCode("1");
-		// phoneNumberType.setExtension("4237");
 		phoneNumberType.setPhoneNumber(userLimitInputBean.getPhoneNumber());
 
 		AccountIdentifier accountIdentifier = new AccountIdentifier();
-		LOGGER.debug("from ui " + userLimitInputBean.getEmailID());
-		// TODO MODIFY BELOW LINE.
 		accountIdentifier.setEmail(userLimitInputBean.getEmailID());
 		accountIdentifier.setPhone(phoneNumberType);
 
@@ -149,7 +139,7 @@ public class PayPalBO {
 		Gson gson = new Gson();
 
 		com.mgi.paypal.response.GetUserLimitsResponse getUserLimitsResponseForReturn = new com.mgi.paypal.response.GetUserLimitsResponse();
-		byte retryCount = 3;
+		int retryCount = Mgi_Paypal_Constants.retryCount;
 		while (retryCount >= 1) {
 			try {
 				AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client client = new AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client();
@@ -192,6 +182,7 @@ public class PayPalBO {
 					.setErrorMessage(PropertyUtil.messageFromProperties
 							.getString("SESSION_EXPIRED"));
 		}
+		
 		LOGGER.debug("Exit getUserLimits.");
 
 		return gson.toJson(getUserLimitsResponseForReturn);

@@ -212,26 +212,6 @@ public class MoneyGramPayPalDAO {
 				PropertyUtil.constantFromProperties.getString("ORACLE_DB_LOGIN_ID"),
 				PropertyUtil.constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 		String strQuery = null;
-
-
-//		SQL> desc MGI_PAYPAL_TRAN_HIST
-//		 Name                                      Null?    Type
-//		 ----------------------------------------- -------- ----------------------------
-//		 TRAN_ID                                   NOT NULL NUMBER(30)
-//		 CUST_EMAIL                                NOT NULL VARCHAR2(200)
-//		 CUST_NAME                                          VARCHAR2(200)
-//		 CUST_PHONE                                         VARCHAR2(20)
-//		 PAYPAL_TRAN_ID                            NOT NULL VARCHAR2(200)
-//		 MGI_REF_NUM                               NOT NULL VARCHAR2(200)
-//		 TRAN_DATE                                 NOT NULL DATE
-//		 CREATION_DATE                                      TIMESTAMP(6)
-//		 LAST_UPDATE_DATE                                   TIMESTAMP(6)
-//		 TRAN_AMT                                  NOT NULL NUMBER(10,2)
-//		 TRAN_FEE                                  NOT NULL NUMBER(10,2)
-//		 TRAN_STATUS                               NOT NULL VARCHAR2(50)
-//		 MGI_SESS_ID                                        VARCHAR2(200)
-//		 MGI_TRAN_STATUS								    VARCHAR2(50)
-		
 		strQuery = "INSERT INTO MGI_PAYPAL_TRAN_HIST (TRAN_ID, CUST_EMAIL, CUST_NAME, "
 				+ "CUST_PHONE, PAYPAL_TRAN_ID, MGI_REF_NUM, TRAN_DATE, TRAN_AMT, TRAN_FEE, "
 				+ "TRAN_STATUS, MGI_SESS_ID,MGI_TRAN_STATUS) "
