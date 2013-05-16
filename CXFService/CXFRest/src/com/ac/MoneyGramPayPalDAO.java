@@ -171,12 +171,11 @@ public class MoneyGramPayPalDAO {
 				PropertyUtil.constantFromProperties.getString("ORACLE_DB_PASSWORD"));
 
 		String strQuery = "SELECT * FROM (SELECT * FROM MGI_PAYPAL_TRAN_HIST "
-				+ "WHERE TRAN_STATUS = ? and  order by TRAN_DATE desc) a where rownum < 1001";
+				+ "WHERE TRAN_STATUS = ?  order by TRAN_DATE desc) a where rownum < 1001";
 
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1, TransactionStatus.MGI_FAILED.value());
-//		preparedStatement.setString(1, TransactionStatus.PAYPAL_FAILED.value());
 		
 		ResultSet resultSet = preparedStatement.executeQuery();
 		List<HistoryDetails> historyDetailsList = new ArrayList<HistoryDetails>();

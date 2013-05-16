@@ -139,6 +139,9 @@ public class MailService {
 
 			message.setSubject("Inquiry");
 
+			
+			System.out.println(new Gson().toJson(sendMailInputBean));
+			
 			String mailText = sendMailInputBean.getMailText(); 
 			 
 			   String customerName = "Name : " 
