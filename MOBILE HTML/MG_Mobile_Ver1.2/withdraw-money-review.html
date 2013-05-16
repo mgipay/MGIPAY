@@ -1,0 +1,740 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=0, maximum-scale=0, minimum-scale=1, user-scalable=no" />
+<meta name="description" content="Review your money transfer and avoid money transfer fraud. Follow a few simple instructions to ensure a secure money transfer when you send money with MoneyGram-PayPal.">
+<link rel="shortcut icon" href="images/favicon.png" type="image/png">
+<title>Secure Money Transfer: Review Money Transfer & Withdraw Cash | MoneyGram</title>
+<meta name="keywords" content="Secure Money Transfer, Review Money Transfer, Withdraw Cash">
+<link href="css/styles.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="css/fancybox.css" type="text/css" >
+<script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="scripts/topmenu.js"></script>
+<script type="text/javascript" src="scripts/tabContent.js"></script>
+<script type="text/javascript" src="scripts/fancybox.js"></script>
+<script type="text/javascript" src="scripts/jquery.cookie.js"></script>
+<script type="text/javascript" src="scripts/common.js"></script>
+<script type="text/javascript" src="scripts/spinmin.js"></script>
+<script type="text/javascript" src="scripts/global.js"></script>
+<script type="text/javascript" src="scripts/service.js"></script>
+<script type="text/javascript" src="scripts/review.js"></script>
+<script type="text/javascript" src="scripts/utility.js"></script>
+<script type="text/javascript" src="scripts/genric.js"></script>
+<script language="javascript">
+/***** Google Analytics Code Start*******/
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-38945408-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+/***** Google Analytics Code Start*******/
+
+</script>
+</head>
+
+<body>
+<div id="preview" style="display:none">
+            <div class="loading_content" id="loadingContent">
+               <p>Processing your request.</p><p> This will take just a moment</p>
+               <div class="clear"></div>
+               <div id="loading_div">
+               </div>
+            </div>
+</div>
+<div id="wrapper">
+		<!-- #header -->
+		<div id="header">
+        <header>
+  <ul class="menuheader">
+    <li class="btnnav"><a href="javascript:history.back()"><img src="images/btn_arrow.png"></a></li>
+    <li class="logomoneygramblock"><a href="home.html"><img src="images/logo.png"></a></li>
+    <li class="logopaypalblock"><a href="home.html"><img src="images/logoPaypal.png"></a></li>
+     <li class="menu" id="menu_active"><a href="#" class="topmenulink"><img src="images/icon_menu.png" id="menuActive"></a></li>
+  </ul>
+</header>
+<!-- Dropdown Menu -->
+<ul class="topmenu">
+  <li> <a href="frequently-asked-questions.html"> FAQs</a> </li>
+  <li> <a href="contact-us.html">Contact Us</a> </li>
+  <li id="historyLink" class="displaynone"> <a href="AutherticatedHome.html">History</a> </li>
+  <li> <a href="privacypolicy.html">Privacy Policy</a> </li>
+  <li> <a href="termsofuse.html"> Terms of Use</a> </li>
+  <li> <a href="terms_and_conditions.html">Terms and Conditions</a> </li>
+  <li> <a href="about-moneygram-paypal.html">About MoneyGram</a> </li>
+  <li id="loginLink" class="displayblock"> <a href="home.html">Login</a> </li>
+  <li id="logoutLink" class="displaynone"> <a onClick="logout()">Logout</a> </li>
+</ul>
+
+<!-- Dropdown Menu End -->
+		</div>
+        
+        
+		<!-- #content -->
+		<div id="content">
+		<section class="sectionwithdraw sectioncontent">
+  <div class="withdrawcashHeader">
+    <h1>Secure Money Transfer: Review Your Money Transfer</h1>
+    <img src="images/widthdrawcash2_pbar.png"> </div>
+    <p>Review the details for your withdraw, read the fraud warnings, and agree to the terms.</p>
+  <ul class="withdrawcashBalancetbl">
+    <li><span>Sender/ Receiver:</span>
+      <label class="sender_name"></label>
+    </li>
+    <li><span>Destination Country:</span>
+      <label class="state"></label>
+    </li>
+    <li><span>Pickup Location:</span>
+      <label class="pickup"></label>
+    </li>
+    <li><span>Availability:</span>
+      <label class="availability"></label>
+    </li>
+    <li><span>Amount to Withdraw:</span>
+      <label class="review_total"></label>
+    </li>
+    <li><span>Fee:</span>
+      <label class="final_fee"></label>
+    </li>
+    <li><span>Receive Amount:</span>
+      <label class="receive_amt"></label>
+    </li>
+    <!--<li><span>Exchange Rate:</span>
+      <label>1USD == 1USD</label>
+    </li>-->
+  </ul>
+  <hr/>
+  <p class="buttonAlign">
+    <button onClick='goToConfirmation()'  id='withdraw_button'>Withdraw Cash  ></button>
+  </div>
+  
+  <!-- LIGHTBOX CONTENT -->
+  
+ 
+        	
+        	<div id="fraudMessageContent" >
+  	<div class="staticcontainer">
+  <div class="staicContent">
+    <h4>Valued MoneyGram Customer:STOP!  Please Read! MONEY TRANSFER FRAUD WARNING</h4>
+    <p>The Internet has made everyday transactions more convenient, but it has also created opportunities for criminals to gain access to your personal and financial information. While MoneyGram employs a variety of internal security measures it is important that you:</p>
+    <div class='bullets_list'>
+      <ul>
+        <li>
+          <p>Secure user IDs, passwords and personal identification numbers</p>
+        </li>
+        <li>
+          <p>Do not share your MoneyGram Registration Number with anyone</p>
+        </li>
+        <li>
+          <p>Use a secure web browser with updated anti-virus software</p>
+        </li>
+        <li>
+          <p>If you’re using a computer with public access, be sure and log out and close your browser after initiating your transaction</p>
+        </li>
+        <li>
+          <p>Do not use your account to send money for someone other than yourself</p>
+        </li>
+      </ul>
+    </div>
+    <p>In the event that such information is compromised or stolen by potentially fraudulent means, please contact MoneyGram immediately at 1-800-922-7146.</p>
+    <p>Once your money has been picked up, which can happen within a short time, you cannot get a refund, even if someone stole your money through fraud.</p>
+  
+<input type="checkbox" class="checkbox" onClick="checkBoxClick()">
+  By checking the box, you agree to the <a class="fancybox.iframe checkboxMessage "  onclick="openTermsAndConditions()">Terms and Conditions</a>
+  </div>
+</div>
+</div>
+
+<div id="termsAndConditions" class="white_content">
+	<div class="staticcontainer">
+	<div class="staicContent">
+<h1>Terms and Conditions</h1>
+<p >
+						<span class="bold">Terms and Conditions for MoneyGram&reg Money Transfer Services</span>
+					</p>
+					<h2> INTRODUCTION </h2>
+					<p>
+						This agreement about a single payment transaction is between you and MoneyGram Payment Systems, Inc. (“<span class="bold">us</span>“  “we” “our” or “<span class="bold">MoneyGram</span>“)
+					</p>
+					<h2> ELECTRONIC DISCLOSURES AND CONSENT </h2>
+					<p>
+						Capitalized terms used in these Electronic Disclosures and Consent are defined in Section 3, below.
+					</p>
+					<ol class="listabc">
+						<li>
+							<h2>Consent</h2>
+
+							<p>
+								As a condition of your use of the Service, you consent to: having your PayPal Account debited  to pay for any Transfers you initiate at the Website using our Service(s) as well as any applicable fees, including Consumer Fees, and other charges; electronically signing (by use of an electronic signature that evidences your identity) required documents and agreements; and receiving all required disclosures, notices, statements and other communications from us electronically (we may, at our sole discretion, post them at the Website, email, or send them to you) (the "Electronic Consent").
+							</p>
+							<p>
+								You understand and agree that all money transmission services provided under this Agreement are being provided exclusively by MoneyGram and not PayPal.  PayPal is just providing you a way to connect to MoneyGram.
+							</p>
+						</li>
+						<li>
+							<h2> Categories of Communications </h2>
+							<p>
+								You understand and agree that we may provide you with disclosures, notices, statements, other communications and information regarding our Service, your Transfers, the debiting (or crediting) of your PayPal Account ("Communications"), in electronic form, including but not limited to the following categories of communications:
+							</p>
+							<ol class="listroman">
+								<li>
+									Records of your Transfers, including without limitation, histories and confirmations of individual Transfers.
+								</li>
+								<li>
+									Any initial, periodic, annual or other disclosures or notices provided in connection with the Service(s), your Transfers, the debiting (or crediting) of your PayPal Account, and any others required by applicable law.
+								</li>
+								<li>
+									Any notice or disclosure regarding fees or charges, including without limitation, any Consumer Fee(s) imposed for Transfers or for an electronic debit to your PayPal Account that is returned for any reason, such as insufficient funds.
+								</li>
+								<li>
+									Any customer service communications, including without limitation, communications with respect to claims of error or unauthorized use of Service(s).
+								</li>
+								<li>
+									Any change in the terms and conditions of use of the Service(s).
+								</li>
+								<li>
+									Privacy statements or notices.
+								</li>
+								<li>
+									Any other legally required statements, including without limitation, Transfer Receipts.
+								</li>
+								<li>
+									Any other communication related to the Service(s).
+								</li>
+							</ol>
+							<p>
+								Although we reserve the right to provide communications in paper format at any time, you agree that we are under no obligation to do so, except as otherwise set forth in this agreement. All communications in either electronic or paper format will be considered to be "in writing."
+							</p>
+
+						</li>
+						<li>
+							<h2> Retaining Copies For Your Records </h2>
+							<p>
+								You should print a paper copy of any electronic communication that is important to you and retain the copy for your records. If you do not wish to agree to this Electronic Consent or receive the Communications electronically, you may not use our Service(s).
+							</p>
+						</li>
+						<li>
+							<h2> Electronic Signatures </h2>
+							<p>
+								You understand and agree that we may electronically provide you with documents and agreements for your electronic signature.
+							</p>
+						</li>
+						<li>
+							<h2> How To Withdraw Consent </h2>
+							<p>
+								Your Electronic Consent shall remain in full force and effect unless you provide written notice of your withdrawal of this Electronic Consent to us at Manager, Complaints Management
+								MoneyGram International Ltd, 3940 S. Teller Street, Lakewood, CO 80235 . Your withdrawal will only become effective after we have received such written notice and have had a reasonable amount of time to process it. We do not currently impose a fee to withdraw your Electronic Consent, but we retain the right to charge fees for withdrawal at a later date if we provide you with a notice of such a change-in-terms, either through an email to you or by posting such a change-in-terms on the Website.
+
+							</p>
+							<p>
+								If you choose not to agree to this Electronic Consent, or you withdraw your Electronic Consent, you cannot use our Service(s). Your withdrawal of this Electronic Consent will cancel your agreement to use electronic records and electronic signatures, and therefore, your ability to use these Service(s).
+							</p>
+						</li>
+						<li>
+							<h2> How To Update Your Records </h2>
+							<p>
+								You agree to promptly update your PayPal Account records if your email address or other information that we need to contact you electronically changes
+							</p>
+							<p>
+								If you do not promptly update your contact information in your PayPal Account, you understand and agree that any communications shall nevertheless be deemed to have been provided to you if they (a) were emailed to the email address in your PayPal Account records or (b) made available electronically at the Website as provided in this Electronic Consent.
+							</p>
+						</li>
+						<li>
+							<h2> Delivery Of Electronic Communications </h2>
+							<p>
+								Communications may be delivered to you via the email address you provide, or via your PayPal Account. You agree that these are reasonable procedures for sending and receiving electronic communications
+							</p>
+						</li>
+						<li>
+							<h2> Hardware And Software Requirements </h2>
+							<p>
+								In order to access and retain communications and use our Service(s), you must have:
+							</p>
+							<ol class="listroman">
+								<li>
+									An Internet browser or mobile operating system that supports 128-bit encryption, such as Internet Explorer version 8 or above and iOS5 or above.
+								</li>
+								<li>
+									An email account and email software capable of interfacing with MoneyGram's systems.
+								</li>
+								<li>
+									A personal computer, operating system and telecommunications connections to the Internet capable of supporting the foregoing.
+								</li>
+								<li>
+									Sufficient electronic storage capacity on your computer's hard drive or other data storage unit.
+								</li>
+								<li>
+									A printer that is capable of printing from your browser and email software.
+								</li>
+							</ol>
+						</li>
+					</ol>
+					<ol class="listnumbers" >
+						<li>
+							<h2> Obtaining Paper Copies </h2>
+							<p>
+								You may obtain a paper copy of any legally-required communications for up to 24 months after such communication or agreement has been provided or made available to you electronically. You may request such a paper copy by sending a detailed written request to Manager, Complaints Management, MoneyGram International Ltd, 3940 S. Teller Street, Lakewood, CO 80235. Although we do not currently impose a fee for a paper copy of our electronic records, we reserve the right to charge fees for paper copies at a later date if we provide you with a notice of such a change-in-terms, via an email directly to you or by posting such a change-in-terms on the Website.
+							</p>
+							<p class="text_bold">
+								When you click on the check box just before you initiate a Transfer, you agree that:
+								<ol class="listroman text_bold">
+									<li>
+										your computer system meets the minimum hardware and software requirements set forth above and you can read and print any communications that we make available to you electronically;
+									</li>
+									<li>
+										you are affirmatively agreeing to this Electronic Consent and receiving communications electronically (not in paper form);
+									</li>
+									<li>
+										you consent to your PayPal Account being debited (or credited) to pay for the Transfers you initiate through the Website and applicable Service fees, including Consumer Fees, and other applicable charges;
+									</li>
+									<li>
+										you consent to using an electronic signature on required documents and agreements;
+									</li>
+									<li>
+										your consent reasonably demonstrates that you can access information electronically, you are able to use an electronic signature, and any electronic signature that you provide shall be valid and binding.
+									</li>
+
+								</ol>
+							</p>
+						</li>
+						<li>
+							<h2> Acceptance of Terms </h2>
+							<p>
+								These Terms and Conditions (this "Agreement") set forth the terms and conditions governing your use of the MoneyGram Money Transfer service offered by MoneyGram Payment Systems, Inc. ("MoneyGram"). You are bound by this Agreement if you use the Service. Please read this carefully. By accepting this Agreement, you agree that you have read and understand this Agreement and that you will be bound by and comply with all of its terms.
+							</p>
+						</li>
+
+						<li>
+							<h2> Definitions </h2>
+							<p>
+								As you read this Agreement please keep in mind that the following terms, when capitalized, will have the following meanings:
+							</p>
+							<p>
+								<span class="bold">"Business Day"</span> means a day, other than a Saturday, Sunday or banking holiday, that banks in the United States are open for business to the public.
+							</p>
+
+							<p>
+								<span class="bold">"Consumer Fee"</span> is the fee charged to a Sender to complete a Money Transfer.
+							</p>
+							<p>
+								<span class="bold">"Money Transfer"</span> is the money transfer Service provided by MoneyGram at the Website that allows a Sender to transfer money to himself or herself, which can be received at one of MoneyGram's Locations in the United States.
+							</p>
+							<p>
+								<span class="bold">"Location"</span> is a facility operated by a Representative where a Receive Amount can be collected by a Receiver.
+							</p>
+							<p>
+								<span class="bold">“PayPal Account” </span>is an Account held by PayPal, Inc. that a Sender authorizes MoneyGram to charge against in order to pay the Transfer Amount and Consumer Fee.
+							</p>
+							<p>
+								<span class="bold">"Password"</span> is the private security code created by the Sender that permits access to the Sender's PayPal Account.
+							</p>
+							<p>
+								<span class="bold">"Receipt"</span> is the form containing information regarding your Transfer that can be printed by a Sender.
+							</p>
+							<p>
+								<span class="bold">"Receive Amount"</span> is the amount of money that is paid to the Receiver.
+							</p>
+							<p>
+								<span class="bold">"Receiver"</span> is a person who receives money as the result of a Money Transfer. The only person eligible to be a Receiver of a Money Transfer from this Website is the Sender of the Money Transfer.
+							</p>
+							<p>
+								<span class="bold">"Reference Number"</span> is the unique number that MoneyGram issues to a Sender to identify the Money Transfer.
+							</p>
+							<p>
+								<span class="bold">"Representative"</span> means a person, usually a company that maintains a facility that is open to the public, who is authorized by MoneyGram to pay Receive Amounts to Receivers.
+
+							</p>
+							<p>
+								<span class="bold">"Service(s)"</span> refers to the Money Transfer service.
+							</p>
+							<p>
+								<span class="bold">"Service Provider" </span>is any company or companies engaged by MoneyGram or its contractors to provide services in connection with the Services.
+							</p>
+							<p>
+								<span class="bold">"Sender"</span> is a person who purchases the Money Transfer service. Sender will refer to you if you purchase either Service. A Sender is bound by the terms of this Agreement.
+							</p>
+							<p>
+								<span class="bold">"Transfer"</span> refers to a money transfer using the Money Transfer service.
+							</p>
+							<p>
+								<span class="bold">"Transfer Amount"</span> is the amount sent by the Sender, excluding the Consumer Fee.
+							</p>
+							<p>
+								<span class="bold">"Website"</span> refers to the transactional pages on which the Services can be initiated that are accessible through certain MoneyGram related websites, currently including paypal.moneygram.com.
+							</p>
+						</li>
+						<li>
+							<h2> Signing Up to Use the Services </h2>
+							<ol class="listabc">
+								<li>
+									<h2> Eligible Users </h2>
+									<p>In order to use either Service, </p>
+									<ol class="listroman">
+										<li>
+											you must have a postal mailing address in the United States and a valid and active e-mail address,
+										</li>
+										<li>
+											you must have a valid PayPal Account in the United States;
+										</li>
+										<li>
+											you must be a United States resident; and
+										</li>
+										<li>
+											you must be at least 18 years of age.
+										</li>
+									</ol>
+									<p>
+										You cannot send a Transfer on behalf of a third party. Other restrictions may apply.
+									</p>
+								</li>
+								<li>
+									<h2> Verification of Information </h2>
+									<p>
+										In an effort to combat money laundering activities and the funding of terrorism, the U.S. federal government enacted laws that require a money transmitting institution such as MoneyGram to obtain, verify, and record information that identifies each person who initiates a Transfer through its Service(s). You agree that we may obtain a consumer report on you at any time.
+									</p>
+
+									<p>
+										As part of the application process required to utilize the services on our Website, we will collect personally identifiable information about you, such as your name, address, date of birth, etc. that will help us to identify you. We may request that PayPal provide us with this information about you.  We may also request other identifying documents or information. If you refuse or fail to provide the requested information, or to allow PayPal to provide the requested information, we may decline to provide the Service(s) to you, or may discontinue providing such Service(s) to you at any time, in our sole discretion.
+									</p>
+									<p>
+										Until you have completed the appropriate application and verification processes required to utilize the Service(s) and we have approved your application, you will not have access to the Service(s). The verification process will not occur until you request a Transfer. Once you have completed the application procedures, your use of the Service(s) may be subject to certain restrictions as disclosed to you in this Agreement or in another Communication from us. The restrictions will remain in effect until any verification of your address, identity, or PayPal Account required by MoneyGram has been successfully completed. Once your address, identity, and PayPal Account information have been successfully verified or authenticated by us, you may make use of the Service(s) subject to the terms and conditions of this Agreement.
+									</p>
+
+								</li>
+							</ol>
+						</li>
+						<li>
+							<h2> Using the Services </h2>
+							<ol class="listabc ">
+								<li>
+									<h2> How To Use The Service. </h2>
+									<p>
+										To initiate a Transfer, you must enter the required information at the Website.
+									</p>
+								</li>
+								<li>
+									<h2> Purpose for Using the Services </h2>
+									<p>
+										You agree to use the Service(s) only for bona fide and lawful purposes. You may not use the Service(s) to conduct gambling activities or any illegal activity. MoneyGram has the right to terminate your ability to initiate Transfers and to refuse to process (or may reverse) any Transfer if it believes, in its sole discretion, that you are using a Service for any illegal or improper purpose or if: (a) any Transfer is less than the Consumer Fee or exceeds the available funds on deposit in your PayPal Account; (b) we have reason to believe any Transfer may not be authorized by you; (c) any Transfer involves funds subject to a hold, dispute or legal process preventing their withdrawal from the PayPal Account; (d) any Transfer would violate any law, rule or regulation applicable to the Service, you or the PayPal Account; (e) any Transfer is not in accordance with any other requirement stated in this Agreement or any of our policies, procedures or practices; or (f) for our protection or yours, we have reasonable cause not to honor a Transfer. You agree that neither MoneyGram nor any Representative or Service Provider will be held responsible or liable to you or any other person for such action except as required by law. MoneyGram may report suspicious activity to appropriate law enforcement organizations or other government agencies.
+									</p>
+								</li>
+								<li>
+									<h2> Transfer Limits </h2>
+
+									<p>
+
+										You can make individual Transfers in amounts up to $200 per day with a monthly aggregate limit of $500.  Subject to applicable legal requirements, MoneyGram reserves the right to change limits at any time in its sole discretion including but not limited to stricter aggregate dollar limits or refusing to process any Transfer for you.
+									</p>
+								</li>
+								<li>
+									<h2> Limitations on Your PayPal Account </h2>
+
+									<p>
+										If we are not able to debit the amount required to cover a Transfer (including any applicable Consumer Fees) you initiate at the Website from your PayPal Account, we will not be able to complete the Transfer you have authorized and will not be held liable for any costs, damages, etc., caused by such failure. We have no obligation to try to debit a PayPal Account for a specific money transmission more than once.
+									</p>
+								</li>
+								<li>
+									<h2> Business Days </h2>
+
+									<p>
+										MoneyGram's business days are Monday through Friday, excluding banking holidays in the United States.
+									</p>
+								</li>
+							</ol>
+						</li>
+						<li>
+						<h2> Paying for the Services </h2>
+						<ol class="listabc ">
+
+							<li>
+
+								<h2> Fees </h2>
+								<p>
+									Prior to sending a Transfer, the Consumer Fee will be shown on the Website. The fees and charges we assess to your PayPal Account will be reflected on the Receipt form that we will make available to you during your initiation of each Transfer. Please print out a copy of the Receipt form for each Transfer you initiate and retain it for your records and save the Receipt to your local hard drive for your records.
+								</p>
+							</li>
+							<li>
+								
+								<h2> Paying for a Transfer and Payment Authorization </h2>
+								<p>
+									You can pay for a Transfer initiated on the Website, including the Transfer Amount and any applicable fees, including the Consumer Fee, and charges by instructing MoneyGram to debit your PayPal Account.
+								</p>
+								
+								<p>
+									For each Transfer you initiate you authorize MoneyGram (or any party authorized by MoneyGram) to debit from your PayPal Account the Transfer Amount you enter, plus any applicable fees, including the Consumer Fee, and charges. The funds must be available in the account from which the Transfer is made. Please be sure funds are available in that account before you initiate a Transfer. When you authorize a Transfer, you are authorizing MoneyGram (and any party authorized by MoneyGram) to take the funds from your PayPal Account the Transfer Amount plus any applicable fees, including the Consumer Fee, and charges.
+								</p>
+							</li>
+							<li>
+								<h2>Obligation To Have Sufficient Funds or Credit </h2>
+								<p>
+									MoneyGram shall have no obligation to affect a Transfer unless sufficient funds are available in your PayPal Account, and neither MoneyGram nor any Service Provider shall have any liability if a Transfer is not affected as a result of the unavailability of sufficient funds.  You are responsible if MoneyGram makes a Transfer you request and, for any reason, MoneyGram is unable to collect the funds from your PayPal Account, or the Transfer is later reversed. In addition, MoneyGram's making of any Transfer without sufficient funds available or without PayPal’s approval shall not create any obligation on the part of MoneyGram to make any such Transfer now or in the future.
+								</p>
+							</li>
+						</ol>
+						</li>
+						<li>
+							<h2>Receiving a Transfer</h2>
+							<ol class="listabc ">
+								<li>
+									<h2> Availability </h2>
+									<p>
+										A Transfer will be delayed until your identity and funding information has been fully confirmed by MoneyGram. Thereafter, the Receive Amount can usually be received at a MoneyGram Location within ten (10) minutes after the Transfer was sent, subject to the hours of operation of the Location selected for receipt of the Transfer and other terms contained in this Agreement. You may call 1-800-469-4993 or refer to the Website for the address and phone number of Locations. Your ability to receive any Transfer may be restricted until any identity verification required by MoneyGram has been successfully completed and the availability of funds has been confirmed. In addition, due to circumstances beyond the control of MoneyGram Transfers to certain destinations may be subject to delay. Please note that holiday observance may affect your ability to collect Transfers.
+									</p>
+								</li>
+								<li>
+									<h2> Pay-out Information </h2>
+									<p>
+										Transfers will be paid out in cash, traveler's check, money order, MoneyGram Money Transfer Check or a combination thereof. If the Receive Amount stated on the receipt is different than the amount actually received by you, please contact us at 1-800-469-4993 or email us through the "Contact Customer Service" link on our Website at paypal.moneygram.com.
+									</p>
+
+								</li>
+								<li>
+									<h2> Identification upon Receipt of a Transfer </h2>
+									<p>
+										<span class="bold">ONLY YOU MAY RECEIVE YOUR TRANSFER </span> , and your identity will be subject to verification prior to receiving your Transfer.  You must appear in person at a MoneyGram Location and produce photo identification acceptable to MoneyGram in order to receive a Transfer.
+									</p>
+								</li>
+							</ol>
+						<li>
+							<h2> Canceling Payments-Refunds </h2>
+							<p>
+								To cancel a Transfer contact MoneyGram through the Website. You cannot cancel a Transfer or receive a refund after the Receive Amount has been disbursed. Except as required by law, MoneyGram will not be responsible or liable in any manner to you or any other person for its failure for any reason to cancel a Transfer. Except as otherwise set forth in this Agreement or required by law, if you ask us to terminate a Transfer, or your PayPal Account is closed for any reason, you will remain liable for previously authorized Transfers. Under certain circumstances you may be eligible for a refund. To request a refund, please contact MoneyGram through the Website and supply the following information:
+							</p>
+							<p>
+								Give your name, telephone number, and email address, reference number, Transfer amount and date of the Transfer in question.
+							</p>
+							<p>
+								Describe the error or Transfer you are unsure about, and explain as clearly as you can why you feel you are entitled to a refund.
+							</p>
+							<p>
+								Provide the dollar amount of the refund you are requesting.
+							</p>
+							<p>
+								If available, provide all of the information that appeared on the Receipt.
+							</p>
+							<p>
+								MoneyGram will use reasonable efforts to determine whether you are entitled to a refund and, if applicable effect a refund, within thirty (30) days after it receives from you a valid written request (including by email) or such shorter period as may be required by law. If MoneyGram determines that funds have not been delivered due solely to MoneyGram's or our Representative's fault, both the Transfer Amount and the Consumer Fee will be refunded in U.S. dollars. If MoneyGram determines that you are entitled to a refund for any other reason, only the Transfer Amount will be refunded. If MoneyGram determines that you qualify for a refund, your PayPal Account, will be credited and you agree we may process such a credit. You will receive notification if MoneyGram determines that you are not entitled to a refund. For more information, please contact customer Service through the Website.
+							</p>
+						</li>
+						<li>
+							<h2> Records of Transfers </h2>
+							<p>
+								Records of all Transfers will be posted and updated on the Website on a continuing basis. You may access these records at any time by viewing your PayPal Account.
+							</p>
+						</li>
+						<li>
+							<h2> Your Other Financial Obligations </h2>
+							<p>
+								To the extent allowed by law, MoneyGram also has the right to collect from you the amount of any uncollected or reversed Transfer, plus any fees assessed and collection expenses, court costs and attorney's fees. To the extent allowed by law, you agree to hold MoneyGram harmless from any losses, costs, expenses or damages it may incur in connection with collecting for any Transfer or in defending any of the foregoing actions, including court costs and attorney's fees. You may be reported to a collection agency or credit bureau if you do not pay for any Transfer or Consumer Fee you have authorized in accordance with this agreement. You authorize MoneyGram to debit your PayPal Account for any amounts owing to MoneyGram described in this section.
+							</p>
+						</li>
+						<li>
+							<h2> Your Obligation to Provide Complete and Accurate Information </h2>
+							<p>
+								You represent and warrant that all information you provide, or give consent for PayPal to provide, to MoneyGram, including but not limited to your application information and all data entered in connection with any Transfer or other transaction, will be complete and accurate in all respects. MoneyGram is entitled to rely on any information you provide and you agree to update your information if it changes. MoneyGram also reserves the right to take steps to verify the information you provide, although it is not required to do so. You authorize MoneyGram to obtain consumer reports on you to evaluate your application for monitoring or collection purposes, or for any other lawful purpose. If MoneyGram is unable to verify the information you provide, your request for a Transfer may be rejected. IF YOU PROVIDE FALSE INFORMATION, YOUR ABILITY TO UTILIZE THE SERVICES MAY BE TERMINATED AND ANY PENDING TRANSFERS MAY BE CANCELLED. IN ADDITION, YOU MAY BE SUBJECT TO CIVIL AND CRIMINAL PENALTIES.
+							</p>
+						</li>
+						<li>
+							<h2> Your Representations </h2>
+							<p>
+								You represent and warrant in connection with any Transfer that (a) the Transfer information  is accurate, (b) your PayPal Account, has sufficient funds  to make the Transfer, (c) the Transfer is lawful, and (d) the Transfer complies with the terms of this agreement.
+							</p>
+						</li>
+						<li>
+							<h2> Password Protection </h2>
+							<p>
+								You must use your PayPal Password to initiate a Transfer. You agree that your Password has the same effect as your written signature and can be used to authorize Transfers. You agree not to divulge your Password to any other person, and you agree not to use another person's Password. If, notwithstanding the foregoing prohibition, you give your Password to another person, you will be deemed to have authorized such person to use that Password for any and all purposes, without limitation. You agree to assume the entire responsibility at all times for the supervision, management, control and confidentiality of your Password. You agree that, to the extent permitted by law, you will assume the entire risk for fraudulent or unintentional use of your Password and that neither MoneyGram nor any Service Provider shall have any responsibility or liability to you or any other person for any losses or damages which you or anyone else may suffer if you disclose your Password to any other person, including any losses or damages arising out of the disclosure of your Password by the recipient to another person. 
+							</p>
+						</li>
+						<li>
+							<h2> Your Liability </h2>
+							<p>
+								You agree to review and verify regularly and promptly all receipts and disclosures and respective debits for payment thereof from your PayPal Account shown on our Website and on your PayPal Account.
+							</p>
+							<p>
+								Contact us AT ONCE at 1-800-469-4993, email us through the "Contact Customer Service" link on our Website at<a href="home.html"> paypal.moneygram.com</a> if you believe your Password has been lost or stolen or if any debit to your PayPal Account relating to a Transfer initiated through the Service(s) is erroneous or unauthorized. Telephoning is the best way of minimizing your potential losses. Otherwise, you could lose all the money in your PayPal Account.  YOU MAY ALSO NEED TO CONTACT PAYPAL TO PROVIDE THEM WITH INFORMATION ABOUT YOUR PASSWORD.  See any account agreement you may have with PayPal for other terms and conditions.
+							</p>
+							<p>
+								If your PayPal Account shows transmissions by us that you did not authorize, tell us AT ONCE.
+							</p>
+						</li>
+						<li>
+							<h2> Error Resolution Notice </h2>
+							<p>
+								In case of errors or questions about any debit to your PayPal Account relating to a Transfer initiated through the Service(s), telephone us at 1-800-469-4993 or email us through the "Contact Us" link on our Website at <a href="home.html">paypal.moneygram.com</a>
+							</p>
+							
+							<p>
+								Contact us as soon as you can, if you think a transaction on your statement or a receipt for a Transfer is wrong or, if you need more information about a transfer listed in your statement or receipt. We must hear from you no later than 90 days after the FIRST date on which the information appeared in your PayPal Account. When you notify us, you should:
+							</p>
+							<ol class="listroman ">
+								<li>
+									provide your name, your e-mail address, the Reference Number for your Transfer (if available), the date of the Transfer and the Transfer amount.
+								</li>
+								<li>
+									describe the error or the Transfer you are unsure about and explain as clearly as you can why you believe it is an error or why you need more information; and
+								</li>
+								<li>
+									disclose the dollar amount of the suspected error.
+								</li>
+
+							</ol>
+							<p>
+								If you notify us by telephone, we may require that you send us your complaint or question in writing within 10 business days.
+							</p>
+							<p>
+								We will advise you of the results after we finish our investigation. If we decide that there was no error, we will send you a written explanation. You may ask for copies of the documents that we used in our investigation.
+							</p>
+						</li>
+						<li>
+							<h2> Indemnification </h2>
+							<p>
+								Except to the extent that MoneyGram is otherwise liable under this Agreement or by law, you agree to indemnify and hold MoneyGram, its shareholders, subsidiaries, affiliates, directors, officers, employees, agents, representatives, suppliers, Service Providers, and subcontractors harmless from any and all losses, liabilities, claims, demands, judgments and expenses, including but not limited to reasonable attorney's fees, arising out of or in any way connected with your use of or the performance of the Services. You provide this indemnification without regard to whether our claim for indemnification is due to the use of the Services by you or your PayPal Account.
+							</p>
+						</li>
+						<li>
+							<h2> In Case of Errors or Questions About Transfers from Your PayPal Account </h2>
+							<p>
+								All questions about Transfers paid for via a debit to your PayPal Account through the Website must be directed to us (MoneyGram) and not to PayPal.   We are responsible for the Service(s) and for resolving any errors in Transfers made with your Password at the Website. IF YOU BELIEVE YOUR PASSWORD OR PAYPAL ACCOUNT HAS BEEN COMPROMISED, YOU SHOULD CONTACT PAYPAL DIRECTLY.
+							</p>
+							<p>
+								We will not mail you a written statement listing Transfers made from your PayPal Account in connection with the Service, but such information will be made available to you at our Website or on your PayPal Account. SAVE THE RECEIPT FORMS YOU ARE GIVEN WHEN YOU INITIATE TRANSFERS THROUGH THE WEBSITE, AND CHECK THEM AGAINST THE INFORMATION AVAILABLE AT THE WEBSITE AND, IF APPLICABLE, AGAINST YOUR PAYPAL ACCOUNT. If you have any questions about a Transfer from your PayPal Account contact customer service through the link on this Website or call MoneyGram at 1-800-469-4993.
+							</p>
+							<h2> IF YOUR PASSWORD IS LOST OR STOLEN, NOTIFY PAYPAL IMMEDIATELY. </h2>
+						</li>
+						<li>
+							<h2> Change in Terms Notice </h2>
+							<p>
+								We may change the terms and conditions of this Agreement from time to time, at our sole discretion, and (a) if required by law, sending a notice of such change or a copy of the amended agreement to your last address or email address shown in our records or (b) if required by law, posting a notice at the Website. Prior notice may not be given, however, when not required by law or where an immediate change is necessary for security purposes. By continuing to use the Service(s) after any such change, you agree to be bound by the changed terms and conditions of this Agreement as of the effective date of such changes.
+							</p>
+						</li>
+						<li>
+							<h2> Termination </h2>
+							<p>
+								MoneyGram may, without notice (except as required by law) and without liability to you, refuse to honor any instruction for a Transfer or terminate or suspend your access to the Services at any time and for any reason, including without limitation, if: (a) you attempt to transfer or charge funds from an account that does not belong to you or from an account which does not have sufficient available funds; (b) PayPal attempts to charge back or reverse a Transfer entered into using a Service on the basis of a dispute related to a Transfer; (c) you use a Service, directly or indirectly, for any unlawful or improper purpose; (d) you provide incorrect or false information about yourself, your PayPal Account; (e) you attempt to tamper, hack, modify or otherwise corrupt the security or functionality of the Services or any Website; (f) MoneyGram receives conflicting claims regarding ownership of, or the right to withdraw funds from, a PayPal Account; (g) you have breached a term or condition of this Agreement, or any representation or warranty that you make under this Agreement is false; (i) MoneyGram believes that any Transfer you initiated may be fraudulent or impermissible, violate any applicable law, rule or regulation or otherwise expose you or MoneyGram to risk of loss.
+							</p>
+						</li>
+						<li>
+							<h2> System Malfunctions/Limitations </h2>
+							<p>
+								Neither MoneyGram nor any Service Provider shall be liable for any loss or damage resulting from a cause outside its direct control, including the failure of electronic or mechanical equipment or communication lines, telephone or other interconnection problems, computer viruses, "hacking," unauthorized access, theft, operator error, severe weather, earthquakes, natural disasters, strikes or other labor problems, wars, acts of terrorism, or government restrictions, or for any information lost due to malfunction or loss of any email systems.
+							</p>
+						</li>
+						<li>
+							<h2> Disclaimer of Warranties </h2>
+							<p>
+								YOU EXPRESSLY AGREE AND UNDERSTAND THAT THE SERVICES ARE PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS, MONEYGRAM EXPRESSLY DISCLAIMS ALL WARRANTIES OF ANY KIND, WHETHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF CERTAIN WARRANTIES. ACCORDINGLY, SOME OF THE ABOVE LIMITATIONS MAY NOT APPLY TO YOU.
+							</p>
+						</li>
+						<li>
+							<h2> Our Liability; Limitations </h2>
+							<p>
+								If, after receiving a fully paid, timely, complete and accurate Transfer request in accordance with these Terms & Conditions, MoneyGram does not complete a Transfer on time or in a correct amount according to this Agreement, MoneyGram will be liable only for your proximately caused actual damages as set forth below, to the extent required by applicable law. Without limiting the generality of the preceding sentence, MoneyGram will not be liable if:
+							</p>
+							<ol class="listroman">
+								<li>
+									through no fault of MoneyGram, your PayPal Account does not contain sufficient available funds for us to debit the account in the amount of the Transfer and applicable fees (including Consumer Fees) and charges;
+								</li>
+								<li>
+									you attempt to Transfer funds in excess of the Transfer limits or in violation of any other provision set forth in this Agreement;
+								</li>
+								<li>
+									the Website or other system, including MoneyGram's money transfer network, was not working properly and you knew or had been advised about the malfunction before you completed the Transfer;
+								</li>
+								<li>
+									you did not follow all instructions properly;
+								</li>
+								<li>
+									MoneyGram does not correctly receive your instructions due to a telecommunications failure or otherwise;
+								</li>
+								<li>
+									circumstances beyond MoneyGram's control prevent any Transfer;
+								</li>
+								<li>
+									upon the occurrence of any other facts representing an exception to MoneyGram's liability as stated in this Agreement;
+								</li>
+								<li>
+									Circumstances that are beyond our control (such as fire, flood or computer breakdown or problems with a telephone line or Internet failure) prevent or impede the transmission, despite reasonable precautions we have taken;
+								</li>
+								<li>
+									The funds in your PayPal Account are subject to a hold, legal process or any other encumbrance or claim restricting transfers at the time we attempt to debit your PayPal Account for payment of a money transmission you initiated at our Website; or
+								</li>
+								<li>
+									The information you have supplied to us is incorrect, incomplete or not timely.
+								</li>
+
+							</ol>
+							<p>
+								There may be other exceptions.
+							</p>
+							<p class="bold">
+								If MoneyGram, a Representative or a Service Provider is deemed liable to a Sender in connection with any Transfer made or not made in accordance with this agreement, the maximum aggregate liability of MoneyGram or such Service Provider shall be the amount of the Transfer plus the Consumer Fee, without interest, unless otherwise required by applicable law. YOU EXPRESSLY UNDERSTAND AND AGREE THAT NEITHER MONEYGRAM NOR ANY SERVICE PROVIDER SHALL BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL OR EXEMPLARY DAMAGES, INCLUDING BUT NOT LIMITED TO, DAMAGES FOR LOSS OF PROFITS, GOODWILL, USE, DATA, OR OTHER INTANGIBLE LOSSES, EVEN IF MONEYGRAM OR THE SERVICE PROVIDER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES AND EVEN IF THE CLAIM ARISES DUE TO MONEYGRAM'S, ITS SERVICE PROVIDER'S, OR ITS REPRESENTATIVE'S NEGLIGENCE RELATING TO HUMAN OR MECHANICAL ERROR OR OTHERWISE OR TO MONEYGRAM'S, ITS SERVICE PROVIDER'S OR ITS REPRESENTATIVE'S OTHER FAULT, ERROR, OMMISSION OR NONPERFORMANCE. NEITHER MONEYGRAM, ITS REPRESENTATIVE NOR ANY SERVICE PROVIDER WILL BE LIABLE FOR ANY VARIANCES OR SERVICE DELAYS DUE TO LOCAL REGULATIONS OR CAUSES BEYOND THE CONTROL OF MONEYGRAM, ITS REPRESENTATIVE OR SERVICE PROVIDER.
+
+							</p>
+
+						</li>
+						<li>
+							<h2> Use of Information and Disclosure to Others </h2>
+							<p>
+								You agree that any information about you, your Transfers, or your PayPal Account, that you provide or that MoneyGram otherwise receives in connection with the Services may be provided to any party designated by MoneyGram to perform its obligations under this Agreement, MoneyGram's Service Providers and parties working with those Service Providers and consumers reporting agencies in accordance with the MoneyGram Privacy Policy and as allowed by law.
+							</p>
+							<p>
+								To view MoneyGram’s <span class="bold" >PRIVACY POLICY </span>, go to paypal.moneygram.com/privacy_policy.   
+							</p>
+						</li>
+						<li>
+							<h2> Assignment </h2>
+							<p>
+								You may not assign this Agreement to any other party. MoneyGram may assign this Agreement or delegate certain of its rights and responsibilities under this Agreement to third parties without notice to you.
+							</p>
+						</li>
+						<li>
+							<h2> No Waiver </h2>
+							<p>
+								MoneyGram shall not be deemed to have waived any of its rights or remedies under this Agreement unless such waiver is in writing and is signed by the party alleged to have waived. The delay or failure of MoneyGram to exercise or enforce any right or remedy in connection with this Agreement shall not constitute a waiver of such right or remedy or any other rights or remedies. A waiver on any occasion shall not be construed as a bar or waiver of any rights or remedies on any other occasion.
+							</p>
+						</li>
+						<li>
+							<h2> General Information </h2>
+							<p>
+								This Agreement constitutes the entire agreement between you and MoneyGram regarding the use of the Services, and supersedes any prior agreements between you and MoneyGram to the extent that they might otherwise apply to the Services. Otherwise, any such other agreements remain in full effect in accordance with their terms. This Agreement and the relationship between you and MoneyGram shall be governed by the laws of the state of Minnesota without regard to its conflict of law provisions. You agree to submit to the jurisdiction of the courts located within the state of Minnesota. If any provision of this Agreement is found by a court of competent jurisdiction to be invalid, the parties nevertheless agree that the court should endeavor to give effect to the parties' intentions as reflected in the provision, and the other provisions of this Agreement remain in full force and effect. You agree that to the extent any statute or law to the contrary may be modified hereby, any claim or cause of action arising out of or related to the use of the Services or this Agreement must be filed within one (1) year after such claim or cause of action arose or it will be forever barred. You agree that each Service Provider is a third party beneficiary of this Agreement for purposes of indemnity and limitations on liability.
+							</p>
+						</li>
+						<li>
+							<h2> Arbitration for Transfers Originating Outside of California </h2>
+							<p>
+								Any controversy or claim arising out of or relating to this Agreement with respect to Transfers originating outside of California or the provision of Services by MoneyGram outside of California shall be settled by binding arbitration administered by the American Arbitration Association under its commercial arbitration rules and judgment on the award rendered by the arbitrator(s) may be entered in any court having jurisdiction thereof. Any such arbitration shall be initiated in Minneapolis, Minnesota and this exclusive arbitration remedy shall not be maintained unless initiated within one (1) year after the controversy or claim arose. Either you or MoneyGram may seek any interim or preliminary relief from a court of competent jurisdiction in the state of Minnesota necessary to protect the rights or property of you or MoneyGram (or MoneyGram's Representatives, suppliers, Service Providers or subcontractors) pending the completion of arbitration. You and MoneyGram shall sign all documents and do all other things necessary to submit any such matter to arbitration and further agree to submit to arbitration and to abide by the decision rendered in arbitration.
+							</p>
+							<p class="bold">
+								By accessing and using the Services on the Website, you agree to the terms and conditions of this Agreement.
+							</p>
+						</li>
+                        </ol>
+</div>
+</div>
+</section>
+        	</div>
+		<!-- #footer -->
+		<div id="footer">
+        <div class="footertogglemenu">
+  <fieldset id='menuFieldSet' >
+    <legend><a  id='menuexpandId'   class="menuexpand disblock"></a></legend>
+    <nav id="navfootermenu"> <a href="addcash.html" class="addcash1"></a>
+            <a href="NonauthenWithdraw.html" class="withdrawcash1"></a>
+            <a href="locations.html" class="locations1"></a>  </nav>
+  </fieldset>
+</div>
+<footer>
+  <div class="copyright"> <a href="https://qapaypal.qa.moneygram.com/home.html?mobile=false">Visit Full Site</a> <span>© <label class="footer_year"></label> MoneyGram. All rights reserved</span> </div>
+</footer>
+		</div>
+		</div>
+	
+</body>
+</html>
