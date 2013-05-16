@@ -403,9 +403,7 @@ public class MoneyGramPayPalDAO {
 
 			String queryToUpdateReverse = " Update MGI_PAYPAL_TRAN_HIST set TRAN_STATUS = '"
 					+ TransactionStatus.REVERSED.value()
-					+ "' , MGI_TRAN_STATUS = '"
-					+ TransactionStatus.REFND.value()
-					+ "' and MGI_REF_NUM = '"
+					+ "' , MGI_REF_NUM = '"
 					+ statusToReverseBean.getMgiReferenceNumber()
 					+ "' where MGI_SESS_ID = '"
 					+ statusToReverseBean.getMgiTransactionSessionID() + "'";

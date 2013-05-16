@@ -139,9 +139,27 @@ public class MailService {
 
 			message.setSubject("Inquiry");
 
-			String msg = sendMailInputBean.getMailText();
+			String mailText = sendMailInputBean.getMailText(); 
+			 
+			   String customerName = "Name : " 
+			     + sendMailInputBean.getFirstname().concat("") 
+			       .concat(sendMailInputBean.getLastName()) 
+			       .concat(System.getProperty("line.separator")); 
+			   String refrenceNumber = "Reference Number : " 
+			     + sendMailInputBean.getReferenceNumber().concat( 
+			       System.getProperty("line.separator")); 
+			   String customerEmailID = "EmailID : " 
+			     + sendMailInputBean.getCustomerEmailId().concat( 
+			       System.getProperty("line.separator")); 
+			   String phoneNumber = "Phone Number : " 
+			     + sendMailInputBean.getPhoneNumber().concat( 
+			       System.getProperty("line.separator")); 
+			 
+			   String bodyOfMail = customerName.concat(refrenceNumber) 
+			     .concat(customerEmailID).concat(phoneNumber) 
+			     .concat(mailText);
 
-			message.setContent(msg, "text/html; charset=utf-8");
+			message.setContent(bodyOfMail, "text/html; charset=utf-8");
 			message.setSentDate(new Date());
 			Transport.send(message);
 		} catch (Exception exception) {
@@ -221,6 +239,7 @@ public class MailService {
 					.getReferenceNumber());
 			insertRecsIntoCRMExtWebFormRequest.setTelephone(sendMailInputBean
 					.getPhoneNumber());
+			insertRecsIntoCRMExtWebFormRequest.setComplaintRequestType("Inquiry");
 			Header header = new Header();
 			AgentHeader agentHeader = new AgentHeader();
 			agentHeader.setAgentId(PropertyUtil.constantFromProperties
