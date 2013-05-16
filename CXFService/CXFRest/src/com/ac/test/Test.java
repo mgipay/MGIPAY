@@ -24,6 +24,7 @@ import com.mgi.agentconnect.client.FeeLookupResponse;
 import com.mgi.agentconnect.client.SendReversalReasonCode;
 import com.mgi.agentconnect.client.SendReversalRequest;
 import com.mgi.agentconnect.client.SendReversalType;
+import com.mgi.paypal.inputbean.SendMailInputBean;
 import com.mgi.paypal.inputbean.SendProofInputBean;
 import com.mgi.paypal.inputbean.SendReversalInputBean;
 import com.mgi.paypal.inputbean.TransactionInformationMailInputBean;
@@ -395,6 +396,17 @@ public class Test {
 	}
 	public static void main(String[] args) {
 		
+		SendMailInputBean sendMailInputBean = new SendMailInputBean();
+		sendMailInputBean.setAmount("45");
+		sendMailInputBean.setCustomerEmailId("mgi@tcs.com");
+		sendMailInputBean.setFirstname("murali");
+		sendMailInputBean.setLastName("krishnan");
+		sendMailInputBean.setMailSubject("general");
+		sendMailInputBean.setMailText("Body of mail.");
+		sendMailInputBean.setPhoneNumber("56789876534");
+		sendMailInputBean.setReferenceNumber("47855698");
+		
+		System.out.println(new Gson().toJson(sendMailInputBean));
 		
 //		SendProofMessage sendProofMessage = new SendProofMessage();
 //		sendProofMessage.setMessageName("EXAMPLETRIGGER");

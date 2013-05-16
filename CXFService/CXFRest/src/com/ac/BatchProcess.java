@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client;
+import com.mgi.agentconnect.client.AmountInfo;
 import com.mgi.agentconnect.client.DetailLookupRequest;
 import com.mgi.agentconnect.client.DetailLookupResponse;
 import com.mgi.agentconnect.client.SendReversalReasonCode;
@@ -61,13 +62,20 @@ public class BatchProcess {
 						// DO Send Reversal
 
 						SendReversalInputBean sendReversalInputBean = new SendReversalInputBean();
-						sendReversalInputBean.setFeeAmount(historyDetails
-								.getTransactionFee());
+						
 						sendReversalInputBean.setReferenceNumber(historyDetails
 								.getMgiReferenceNumber());
-						sendReversalInputBean.setSendAmount(historyDetails
-								.getTransactionAmount());
-						sendReversalInputBean.setSendCurrency("USD");
+						sendReversalInputBean
+								.setSendAmount(detailLookupResponse
+										.getSendAmounts().getSendAmount());
+						
+						for(AmountInfo amountInfo : detailLookupResponse.getSendAmounts().getDetailSendAmounts()){
+							if(amountInfo.getAmountType().equals("totalMgiCollectedFeesAndTaxes")){
+								sendReversalInputBean.setSendCurrency(amountInfo.getAmountCurrency());
+								sendReversalInputBean.setFeeAmount(amountInfo.getAmount());
+								break;
+							}
+						}
 
 						if (doSendReversal(sendReversalInputBean)) {
 
@@ -107,26 +115,6 @@ public class BatchProcess {
 
 		LOGGER.debug("Enter detailLookUpForBatchProcess.");
 
-		DetailLookupRequest detailLookupRequest = createDetailLookupRequest(mgiTransactionSessionId);
-		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
-		DetailLookupResponse detailLookupResponse = null;
-		try {
-			detailLookupResponse = client.detailLookup(detailLookupRequest);
-		} catch (Exception exception) {
-			return null;
-
-		}
-		if (detailLookupResponse == null) {
-			return null;
-		}
-
-		LOGGER.debug("Enter detailLookUpForBatchProcess.");
-
-		return detailLookupResponse;
-	}
-
-	private static DetailLookupRequest createDetailLookupRequest(
-			String mgiTransactionSessionID) {
 		DetailLookupRequest detailLookupRequest = new DetailLookupRequest();
 
 		detailLookupRequest.setAgentID(PropertyUtil.constantFromProperties
@@ -145,9 +133,24 @@ public class BatchProcess {
 		detailLookupRequest.setTimeStamp(CalendarUtil.getTimeStamp());
 		detailLookupRequest.setToken(PropertyUtil.constantFromProperties
 				.getString("TOKEN"));
-		detailLookupRequest.setMgiTransactionSessionID(mgiTransactionSessionID);
-		return detailLookupRequest;
+		detailLookupRequest.setMgiTransactionSessionID(mgiTransactionSessionId);
+		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
+		DetailLookupResponse detailLookupResponse = null;
+		try {
+			detailLookupResponse = client.detailLookup(detailLookupRequest);
+		} catch (Exception exception) {
+			return null;
+
+		}
+		if (detailLookupResponse == null) {
+			return null;
+		}
+
+		LOGGER.debug("Enter detailLookUpForBatchProcess.");
+
+		return detailLookupResponse;
 	}
+
 
 	private static boolean doSendReversal(
 			SendReversalInputBean sendReversalInputBean) {
@@ -176,7 +179,7 @@ public class BatchProcess {
 				.getSendCurrency());
 		sendReversalRequest.setReferenceNumber(sendReversalInputBean
 				.getReferenceNumber());
-		sendReversalRequest.setReversalType(SendReversalType.C);
+		sendReversalRequest.setReversalType(SendReversalType.R);
 		sendReversalRequest
 				.setSendReversalReason(SendReversalReasonCode.MS_NOT_USED);
 		sendReversalRequest.setFeeRefund("Y");
@@ -185,10 +188,10 @@ public class BatchProcess {
 			AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 			client.sendReversal(sendReversalRequest);
 		} catch (Exception exception) {
+			// If send reversal called for already reversed Transaction then
+			// error is 'Transaction not in Send status'
 			if (exception.getLocalizedMessage().equals(
-					"Transaction not in Send status")
-					|| exception.getLocalizedMessage().equals(
-							"Send reversal/cancel must be requested same day")) {
+					"Transaction not in Send status")) {
 				return true;
 			} else {
 				LOGGER.error("SendReversal Failed for MgiReferenceNumber : "
