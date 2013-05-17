@@ -24,6 +24,7 @@ import com.mgi.paypal.inputbean.SendMailInputBean;
 import com.mgi.paypal.response.SendMailOutputBean;
 import com.mgi.paypal.response.TransactionInformationMailResponse;
 import com.mgi.paypal.util.PropertyUtil;
+import com.thoughtworks.xstream.XStream;
 
 public class MailService {
 
@@ -264,10 +265,16 @@ public class MailService {
 			processingInstruction.setRollbackTransaction(false);
 			header.setProcessingInstruction(processingInstruction);
 			insertRecsIntoCRMExtWebFormRequest.setHeader(header);
+			
+			System.out.println(new XStream().toXML(insertRecsIntoCRMExtWebFormRequest));
+			
 			ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client client 
 			= new ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client();
 			insertRecsIntoCRMExtWebFormResponse = client
 			.insertRecsIntoCRMExtWebForm(insertRecsIntoCRMExtWebFormRequest);
+			
+			System.out.println(new XStream().toXML(insertRecsIntoCRMExtWebFormResponse));
+			
 		} catch (Exception exception) {
 			exception.printStackTrace();
 			return cpsFailed(sendMailInputBean, sendMailOutputBean);
