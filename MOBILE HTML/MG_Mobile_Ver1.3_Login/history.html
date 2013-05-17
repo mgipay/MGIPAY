@@ -3,18 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=0, maximum-scale=0, minimum-scale=1, user-scalable=no" />
-<meta name="description" content="Find out what MoneyGram can do for you today. MoneyGram is an international money transfer services company that helps individuals across the globe with their money transfer and cash withdrawal needs.">
+<meta name="description" content="Get easy access to your MoneyGram transaction history when you use the service to withdraw cash from your PayPal account.">
 <link rel="shortcut icon" href="images/favicon.png" type="image/png">
-<title>About MoneyGram & PayPal: International Money Transfer Service | MoneyGram</title>
-<meta name="keywords" content="About MoneyGram and PayPal,International Money Transfer">
+<title>PayPal Account History: MoneyGram Transaction History | MoneyGram</title>
+<meta name="keywords" content="PayPal Account History,MoneyGram Transaction History">
 <link href="css/styles.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="scripts/topmenu.js"></script>
 <script type="text/javascript" src="scripts/tabContent.js"></script>
 <script type="text/javascript" src="scripts/jquery.cookie.js"></script>
-<script type="text/javascript" src="scripts/utility.js"></script>
 <script type="text/javascript" src="scripts/common.js"></script>
-<script type="text/javascript" src="scripts/genric.js"></script>
+<script type="text/javascript" src="scripts/historyDetails.js"></script>
+<script type="text/javascript" src="scripts/utility.js"></script>
+<script type="text/javascript" src="scripts/spinmin.js"></script>
+<script type="text/javascript" src="scripts/global.js"></script>
+<script type="text/javascript" src="scripts/service.js"></script>
 <script language="javascript">
 /***** Google Analytics Code Start*******/
 
@@ -31,11 +34,17 @@
 /***** Google Analytics Code Start*******/
 
 </script>
-
-
 </head>
 
 <body>
+<div id="preview" style="display:none">
+            <div class="loading_content" id="loadingContent">
+               <p>Processing your request.</p><p> This will take just a moment</p>
+               <div class="clear"></div>
+               <div id="loading_div">
+               </div>
+            </div>
+	</div>
 <div id="wrapper">
 		<!-- #header -->
 		<div id="header">
@@ -59,27 +68,30 @@
   <li id="loginLink" class="displayblock"> <a href="home.html">Login</a> </li>
   <li id="logoutLink" class="displaynone"> <a onClick="logout()">Logout</a> </li>
 </ul>
+
 <!-- Dropdown Menu End -->
 		</div>
         
         
 		<!-- #content -->
 		<div id="content">
-		<section class="sectioncontent">
-<div class="staticcontainer">
-<h1>About MoneyGram & PayPal</h1>
-<hr/>
-<h2></h2>
-<p> 
-The MoneyGram brand is recognized throughout the world as a leading global payment services company. The diverse array of products and services we offer enables consumers and businesses to make payments and transfer money around the world. From New York to Russia or London to India, and in approximately 198 countries, MoneyGram's money transfer service moves money quickly and easily around the world.
-</p>
-<p>MoneyGram’s alliance  with PayPal extends this  service offering by allowing consumers to add cash to their own or someone else’s US PayPal account from selected locations and to withdraw cash from a US PayPal balance for collection at any of the approximately 47,000 US MoneyGram locations.  Cash can be added or withdrawn, usually within minutes<sup>*</sup>.	
-</p>
-<h2></h2>
-<p>See more About Us at <a href="http://www.moneygram.com/MGICorp/index.htm" target='_blank'>moneygram.com</a></p>
+		
+<section class="sectioncontent">
+<div class="historydetails">
+<h1>History
 
-<div  class="disclaimer"><p><sup>*</sup>Subject to agent operating hours, availability, local laws and regulations.</p></div>
-  </div>
+</h1>
+<hr/>
+	<ul>
+    	<li><span>Date:</span><label id='transactionDate'></label></li>
+        <li><span>Sender/ Receiver:</span><label id='SenderName' ></label></li>
+        <li><span>Total to Withdraw:</span><label id='toatalAmount'></label></li>
+        <li>&nbsp;</li>
+        <li><span>Fee:</span><label id='feeAmount'></label></li>
+        <li><span>Status/Reference Number:</span><label id='referenceNumber'></label></li>
+        
+    </ul>
+</div>
 </section>
         </div>
         
@@ -96,7 +108,7 @@ The MoneyGram brand is recognized throughout the world as a leading global payme
     <nav id="navfootermenu">
             <a href="addcash.html" class="addcash1"></a>
             <a href="NonauthenWithdraw.html" class="withdrawcash1"></a>
-            <a href="locations.html" class="locations1"></a>
+            <a href="locations.html" class="locations1"></a> 
    		 </nav>
 </fieldset>
  </div>
@@ -106,13 +118,12 @@ The MoneyGram brand is recognized throughout the world as a leading global payme
 <footer>
 
 <div class="copyright">
-	<a href="https://devpaypal.qa.moneygram.com//home.html" target='_blank'>Visit Full Site</a> <span>© <label class="footer_year"></label> MoneyGram. All rights reserved</span> 
+	<a href="https://qapaypal.qa.moneygram.com/home.html?mobile=false" target='_blank'>Visit Full Site</a> <span>© <label class="footer_year"></label> MoneyGram. All rights reserved</span> 
 </div>
 </footer>
 		</div>
 		
 	</div>
-
 
     
 
