@@ -36,17 +36,16 @@ public class MailService {
 	public MailService() {
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.starttls.enable", "true");
-		props.put("mail.smtp.host", "email-smtp.us-east-1.amazonaws.com");
-		props.put("mail.smtp.port", "587");
-		this.subject = "Your MoneyGram & PayPal Transaction was Sent Successfully";
+		props.put("mail.smtp.host", PropertyUtil.constantFromProperties.getString("AMAZON_MAIL_HOST"));
+		props.put("mail.smtp.port", PropertyUtil.constantFromProperties.getProperty("AMAZON_PORT"));
+		this.subject = PropertyUtil.constantFromProperties.getString("MAIL_SUBJECT");
 
 		session = Session.getInstance(props, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication("AKIAJXRE24TFLGGCS3NQ",
-						"At7+5LK1vvT69cR6ue8mQRxR8pDwnbmI2zB3M/V+Yebj");
+				return new PasswordAuthentication(PropertyUtil.constantFromProperties.getString("MAIL_USER_NAME"),
+						PropertyUtil.constantFromProperties.getString("MAIL_PASSWORD"));
 			}
 		});
-		LOGGER.info("SendMail Initiated....");
 
 	}
 
@@ -56,8 +55,7 @@ public class MailService {
 
 		LOGGER.debug("Enter sendTransactionInformationMail.");
 
-		LOGGER.info("Start messaging....");
-		TransactionInformationMailResponse response = new TransactionInformationMailResponse();
+		TransactionInformationMailResponse transactionInformationMailResponse = new TransactionInformationMailResponse();
 		Message message = new MimeMessage(session);
 
 		BigDecimal totalAmount = BigDecimal.ZERO;
@@ -68,7 +66,7 @@ public class MailService {
 		LOGGER.debug("Total Amount: " + totalAmount.toString());
 
 		try {
-			message.setFrom(new InternetAddress("donotreply@moneygram.com"));
+			message.setFrom(new InternetAddress(PropertyUtil.constantFromProperties.getString("MAIL_FROM_ID")));
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(
 					customerEmailID));
 
@@ -111,35 +109,31 @@ public class MailService {
 			exception.printStackTrace();
 			LOGGER.warn("Mail not sent!!!. Please try again.");
 			LOGGER.error(exception.getLocalizedMessage());
-			response.setTransactionSuccess(false);
-			response.setMessageToUser("Mail sending failed.");
-			return new Gson().toJson(response);
+			transactionInformationMailResponse.setTransactionSuccess(false);
+			transactionInformationMailResponse.setMessageToUser(PropertyUtil.constantFromProperties.getString("MAIL_FAILED_MESSAGE"));
+			return new Gson().toJson(transactionInformationMailResponse);
 
 		}
-		LOGGER.info("Sent message successfully....");
-		response.setTransactionSuccess(true);
-		response.setMessageToUser("Email sent successfully to customer's email ID.");
+		transactionInformationMailResponse.setTransactionSuccess(true);
+		transactionInformationMailResponse.setMessageToUser(PropertyUtil.constantFromProperties.getString("MAIL_SUCCESS_MESSAGE"));
 
 		LOGGER.debug("Enter sendTransactionInformationMail.");
 
-		return new Gson().toJson(response);
+		return new Gson().toJson(transactionInformationMailResponse);
 	}
 
 	private boolean sendMailIfRefund(SendMailInputBean sendMailInputBean) {
+		
 		LOGGER.debug("Enter sendMailIfRefund.");
-
-		TransactionInformationMailResponse response = new TransactionInformationMailResponse();
 
 		Message message = new MimeMessage(session);
 
-		LOGGER.info("Reason is refund so calling Mail service to Mars");
-
 		try {
 
-			message.setFrom(new InternetAddress("donotreply@moneygram.com"));
+			message.setFrom(new InternetAddress(PropertyUtil.constantFromProperties.getString("MAIL_FROM_ID")));
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(
-					"MGLKW_ExpressPay-Mars@moneygram.com"));
-			message.setSubject("Inquiry");
+					PropertyUtil.constantFromProperties.getString("RECIPIENT_ID_IF_REFUND")));
+			message.setSubject(PropertyUtil.constantFromProperties.getString("SUBJECT_INQUIRY"));
 
 			System.out.println(new Gson().toJson(sendMailInputBean));
 			String bodyOfMail = "";
@@ -149,12 +143,12 @@ public class MailService {
 				mailText = "";
 			}
 
-			String customerName = "Name : "
+			String customerName = "Name                  : "
 					+ sendMailInputBean.getFirstname().concat(" ")
 							.concat(sendMailInputBean.getLastName());
-			String refrenceNumber = "Reference Number : "
+			String refrenceNumber = "Reference Number      : "
 					+ sendMailInputBean.getReferenceNumber();
-			String customerEmailID = "EmailID : "
+			String customerEmailID = "EmailID               : "
 					+ sendMailInputBean.getCustomerEmailId();
 			String phoneNumber = sendMailInputBean.getPhoneNumber();
 			String amount = sendMailInputBean.getAmount();
@@ -164,8 +158,8 @@ public class MailService {
 			if (amount == null) {
 				amount = "";
 			}
-			phoneNumber = "Phone Number : " + phoneNumber;
-			amount = "Amount : " + amount;
+			phoneNumber = "Phone Number          : " + phoneNumber;
+			amount = "Amount                : " + amount;
 			bodyOfMail = customerName
 					.concat(System.getProperty("line.separator"))
 					.concat(refrenceNumber)
@@ -186,108 +180,21 @@ public class MailService {
 			Transport.send(message);
 
 		} catch (Exception exception) {
-
 			exception.printStackTrace();
-
 			LOGGER.error(exception.getLocalizedMessage());
-
-			response.setTransactionSuccess(false);
-
-			response.setMessageToUser("Mail sending failed.");
-
 			return false;
 
 		}
-
-		LOGGER.info("Sent message successfully to MARS....");
-
-		response.setTransactionSuccess(true);
-
-		response.setMessageToUser("Email sent successfully to customer's email ID.");
 
 		LOGGER.debug("Exit sendMailIfRefund.");
 
 		return true;
 
-		// LOGGER.debug("Enter sendMailIfRefund.");
-		//
-		// TransactionInformationMailResponse response = new
-		// TransactionInformationMailResponse();
-		// Message message = new MimeMessage(session);
-		// LOGGER.info("Reason is refund so calling Mail service to Mars");
-		// try {
-		// message.setFrom(new InternetAddress("donotreply@moneygram.com"));
-		// message.addRecipient(Message.RecipientType.TO, new InternetAddress(
-		// "MGLKW_ExpressPay-Mars@moneygram.com"));
-		//
-		// message.setSubject("Inquiry");
-		//
-		// System.out.println(new Gson().toJson(sendMailInputBean));
-		//
-		// String mailText = sendMailInputBean.getMailText();
-		//
-		// String customerName = "Name : "
-		// + sendMailInputBean.getFirstname().concat("")
-		// .concat(sendMailInputBean.getLastName())
-		// .concat(System.getProperty("line.separator"));
-		// String refrenceNumber = "Reference Number : "
-		// + sendMailInputBean.getReferenceNumber().concat(
-		// System.getProperty("line.separator"));
-		// String customerEmailID = "EmailID : "
-		// + sendMailInputBean.getCustomerEmailId().concat(
-		// System.getProperty("line.separator"));
-		// String phoneNumber = "Phone Number : ";
-		// String amount = "Amount : ";
-		// if (phoneNumber != null && !phoneNumber.trim().equals("")) {
-		//
-		// phoneNumber = sendMailInputBean.getPhoneNumber().concat(
-		// System.getProperty("line.separator"));
-		//
-		// } else {
-		// phoneNumber = phoneNumber.concat(System
-		// .getProperty("line.separator"));
-		// }
-		// if (amount != null && !amount.trim().equals("")) {
-		//
-		// amount = sendMailInputBean.getAmount().concat(
-		// System.getProperty("line.separator"));
-		// } else {
-		//
-		// amount = amount.concat(System.getProperty("line.separator"));
-		// }
-		//
-		// String bodyOfMail = customerName.concat(refrenceNumber)
-		// .concat(amount).concat(customerEmailID).concat(phoneNumber)
-		// .concat(mailText);
-		//
-		// message.setContent(bodyOfMail, "text/html; charset=utf-8");
-		// message.setSentDate(new Date());
-		// Transport.send(message);
-		// } catch (Exception exception) {
-		// exception.printStackTrace();
-		// LOGGER.error(exception.getLocalizedMessage());
-		// response.setTransactionSuccess(false);
-		// response.setMessageToUser("Mail sending failed.");
-		// return false;
-		//
-		// }
-		// LOGGER.info("Sent message successfully to MARS....");
-		// response.setTransactionSuccess(true);
-		// response.setMessageToUser("Email sent successfully to customer's email ID.");
-		//
-		// LOGGER.debug("Exit sendMailIfRefund.");
-		//
-		// return true;
 	}
 
 	public String sendReportInformationMail(SendMailInputBean sendMailInputBean) {
 
 		LOGGER.debug("Enter sendReportInformationMail.");
-
-		LOGGER.debug("sendMailInputBean.getMailSubject()"
-				+ sendMailInputBean.getMailSubject());
-		LOGGER.debug("sendMailInputBean.getMailSubject().trim().toLowerCase()"
-				+ sendMailInputBean.getMailSubject());
 
 		if (sendMailInputBean.getMailSubject().trim().toLowerCase()
 				.equals("general")) {
@@ -296,7 +203,9 @@ public class MailService {
 			SendMailOutputBean sendMailOutputBean = new SendMailOutputBean();
 			if (sendMailIfRefund(sendMailInputBean)) {
 				sendMailOutputBean.setTransactionSuccess(true);
-				sendMailOutputBean.setMessageToUser("Mail sent successfully.");
+				sendMailOutputBean
+						.setMessageToUser(PropertyUtil.constantFromProperties
+								.getString("MAIL_SUCCESS_MESSAGE"));
 
 			} else {
 				sendMailOutputBean.setTransactionSuccess(false);
@@ -305,7 +214,9 @@ public class MailService {
 				sendMailOutputBean.setMailText(sendMailInputBean.getMailText());
 				sendMailOutputBean.setCustomerEmailId(sendMailInputBean
 						.getCustomerEmailId());
-				sendMailOutputBean.setMessageToUser("sending mail failed.");
+				sendMailOutputBean
+						.setMessageToUser(PropertyUtil.constantFromProperties
+								.getString("MAIL_FAILED_MESSAGE"));
 
 			}
 
@@ -341,7 +252,8 @@ public class MailService {
 			insertRecsIntoCRMExtWebFormRequest.setTelephone(sendMailInputBean
 					.getPhoneNumber());
 			insertRecsIntoCRMExtWebFormRequest
-					.setComplaintRequestType("Inquiry");
+					.setComplaintRequestType(PropertyUtil.constantFromProperties
+							.getString("SUBJECT_INQUIRY"));
 			Header header = new Header();
 			AgentHeader agentHeader = new AgentHeader();
 			agentHeader.setAgentId(PropertyUtil.constantFromProperties
@@ -352,12 +264,11 @@ public class MailService {
 			processingInstruction.setRollbackTransaction(false);
 			header.setProcessingInstruction(processingInstruction);
 			insertRecsIntoCRMExtWebFormRequest.setHeader(header);
-			ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client client = new ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client();
+			ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client client 
+			= new ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client();
 			insertRecsIntoCRMExtWebFormResponse = client
-					.insertRecsIntoCRMExtWebForm(insertRecsIntoCRMExtWebFormRequest);
-			LOGGER.debug(" CPS successfull");
+			.insertRecsIntoCRMExtWebForm(insertRecsIntoCRMExtWebFormRequest);
 		} catch (Exception exception) {
-			LOGGER.debug("Send Mail Failed because of :" + exception);
 			exception.printStackTrace();
 			return cpsFailed(sendMailInputBean, sendMailOutputBean);
 		}

@@ -24,6 +24,10 @@ import com.mgi.agentconnect.client.FeeLookupResponse;
 import com.mgi.agentconnect.client.SendReversalReasonCode;
 import com.mgi.agentconnect.client.SendReversalRequest;
 import com.mgi.agentconnect.client.SendReversalType;
+import com.mgi.complaintproxyservice.client.AgentHeader;
+import com.mgi.complaintproxyservice.client.Header;
+import com.mgi.complaintproxyservice.client.InsertRecsIntoCRMExtWebFormRequest;
+import com.mgi.complaintproxyservice.client.ProcessingInstruction;
 import com.mgi.paypal.inputbean.SendMailInputBean;
 import com.mgi.paypal.inputbean.SendProofInputBean;
 import com.mgi.paypal.inputbean.SendReversalInputBean;
@@ -406,7 +410,78 @@ public class Test {
 		sendMailInputBean.setPhoneNumber("56789876534");
 		sendMailInputBean.setReferenceNumber("47855698");
 		
-		System.out.println(new Gson().toJson(sendMailInputBean));
+//		System.out.println(new Gson().toJson(sendMailInputBean));
+		
+		
+		String bodyOfMail = "";
+		String mailText = sendMailInputBean.getMailText();
+
+		if (mailText == null) {
+			mailText = "";
+		}
+
+		String customerName = "Name                  : "
+				+ sendMailInputBean.getFirstname().concat(" ")
+						.concat(sendMailInputBean.getLastName());
+		String refrenceNumber = "Reference Number      : "
+				+ sendMailInputBean.getReferenceNumber();
+		String customerEmailID = "EmailID               : "
+				+ sendMailInputBean.getCustomerEmailId();
+		String phoneNumber = sendMailInputBean.getPhoneNumber();
+		String amount = sendMailInputBean.getAmount();
+		if (phoneNumber == null) {
+			phoneNumber = "";
+		}
+		if (amount == null) {
+			amount = "";
+		}
+		phoneNumber = "Phone Number          : " + phoneNumber;
+		amount = "Amount                : " + amount;
+		bodyOfMail = customerName
+				.concat(System.getProperty("line.separator"))
+				.concat(refrenceNumber)
+				.concat(System.getProperty("line.separator"))
+				.concat(amount)
+				.concat(System.getProperty("line.separator"))
+				.concat(customerEmailID)
+				.concat(System.getProperty("line.separator"))
+				.concat(phoneNumber)
+				.concat(System.getProperty("line.separator"))
+				.concat(System.getProperty("line.separator"))
+				.concat(mailText);
+		
+		System.out.println(bodyOfMail);
+		
+		InsertRecsIntoCRMExtWebFormRequest insertRecsIntoCRMExtWebFormRequest = new InsertRecsIntoCRMExtWebFormRequest();
+		insertRecsIntoCRMExtWebFormRequest
+				.setWhoCompletingForm("MoneyGram Consumer");
+		insertRecsIntoCRMExtWebFormRequest.setFirstname(sendMailInputBean
+				.getFirstname());
+		insertRecsIntoCRMExtWebFormRequest.setLastname(sendMailInputBean
+				.getLastName());
+		insertRecsIntoCRMExtWebFormRequest
+				.setEmailaddress(sendMailInputBean.getCustomerEmailId());
+		insertRecsIntoCRMExtWebFormRequest.setDescription(sendMailInputBean
+				.getMailText());
+		insertRecsIntoCRMExtWebFormRequest
+				.setComplainingabout(sendMailInputBean.getMailSubject());
+		insertRecsIntoCRMExtWebFormRequest.setTrnRefNbr(sendMailInputBean
+				.getReferenceNumber());
+		insertRecsIntoCRMExtWebFormRequest.setTelephone(sendMailInputBean
+				.getPhoneNumber());
+		insertRecsIntoCRMExtWebFormRequest
+				.setComplaintRequestType("Inquiry");
+		Header header = new Header();
+		AgentHeader agentHeader = new AgentHeader();
+		agentHeader.setAgentId("66697224");
+		header.setAgent(agentHeader);
+		ProcessingInstruction processingInstruction = new ProcessingInstruction();
+		processingInstruction.setAction("InsertRecsIntoCRMExtWebForm");
+		processingInstruction.setRollbackTransaction(false);
+		header.setProcessingInstruction(processingInstruction);
+		insertRecsIntoCRMExtWebFormRequest.setHeader(header);
+		
+		System.out.println(new XStream().toXML(insertRecsIntoCRMExtWebFormRequest));
 		
 //		SendProofMessage sendProofMessage = new SendProofMessage();
 //		sendProofMessage.setMessageName("EXAMPLETRIGGER");
