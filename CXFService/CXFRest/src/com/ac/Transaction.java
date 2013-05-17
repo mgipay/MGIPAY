@@ -62,7 +62,6 @@ public class Transaction {
 				.setSenderCity(StringUtils.left(sendValidationInputBean
 						.getSenderCity(), PropertyUtil.constantFromProperties
 						.getInt("SENDER_CITY_WIDTH")));
-		// sendValidationRequest.setSenderCity(PropertyUtil.constantFromProperties.getString("SENDERCITY"));
 		// TODO Add this also to property file
 		// StringUtils.left is used to get a string within the limit and also to
 		// avoid any exceptions
@@ -126,14 +125,18 @@ public class Transaction {
 					LOGGER.debug("SendValidation Request: "
 							+ new Gson().toJson(sendValidationRequest));
 					exception.printStackTrace();
-					sendValidationResponseForUI
-							.setTransactionSuccess(false);
-					if (exception.getMessage().equalsIgnoreCase("Only a slash, an apostrophe or a hyphen is allowed as part of the name - please correct and reenter.")){
-						sendValidationResponseForUI.setErrorMessage(PropertyUtil.messageFromProperties.getString("NAME_ERROR"));
-					}else{
+					sendValidationResponseForUI.setTransactionSuccess(false);
+					if (exception
+							.getMessage()
+							.equalsIgnoreCase(
+									"Only a slash, an apostrophe or a hyphen is allowed as part of the name - please correct and reenter.")) {
 						sendValidationResponseForUI
-						.setErrorMessage(PropertyUtil.messageFromProperties
-								.getString("TRANSACTION_FAILED_RETRY"));
+								.setErrorMessage(PropertyUtil.messageFromProperties
+										.getString("NAME_ERROR"));
+					} else {
+						sendValidationResponseForUI
+								.setErrorMessage(PropertyUtil.messageFromProperties
+										.getString("TRANSACTION_FAILED_RETRY"));
 					}
 					return sendValidationResponseForUI;
 				}

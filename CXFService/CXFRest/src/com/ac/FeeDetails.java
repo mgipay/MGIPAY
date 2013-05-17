@@ -20,8 +20,6 @@ import com.thoughtworks.xstream.XStream;
 
 public class FeeDetails {
 
-//	private static Integer FEELINK_DAY_IDENTIFIER = 9;
-
 	private static BigDecimal FEE_FOR_TWO_HUNDRED_FUNDS_IN = BigDecimal.ZERO;
 
 	private static BigDecimal FEE_FOR_FIVE_HUNDRED_FUNDS_IN = BigDecimal.ZERO;
@@ -29,6 +27,10 @@ public class FeeDetails {
 	private static BigDecimal FEE_FOR_TWO_HUNDRED_FUNDS_OUT = BigDecimal.ZERO;
 
 	private static BigDecimal FEE_FOR_FIVE_HUNDRED_FUNDS_OUT = BigDecimal.ZERO;
+	
+	private static Integer FEELINK_DAY_IDENTIFIER_FOR_FUND_OUT = 9;
+	
+	private static Integer FEELINK_DAY_IDENTIFIER_FOR_FUND_IN = 9;
 
 	public FeeDetails() {
 
@@ -206,135 +208,7 @@ public class FeeDetails {
 		return new BigDecimal(0);
 
 	}
-/*
-	public String getFeeLinkValue1(FeeLinkValueInputBean feeLinkValueInputBean) {
 
-		LOGGER.debug("Enter getFeeLinkValue.");
-
-		int yesterday = 8;
-		FeeLinkValues feeLinkValues = new FeeLinkValues();
-		if (FEELINK_DAY_IDENTIFIER != Calendar.getInstance().get(
-				Calendar.DAY_OF_WEEK)) {
-			// For first call in a day.Retrive from API and update DB and Update
-			// static Objects.
-			synchronized (FEELINK_DAY_IDENTIFIER) {
-				yesterday = FEELINK_DAY_IDENTIFIER;
-				FEELINK_DAY_IDENTIFIER = Calendar.getInstance().get(
-						Calendar.DAY_OF_WEEK);
-			}
-			BigDecimal feeForTwoHundredFundsIn = getFeeForFeeLink(
-					PropertyUtil.constantFromProperties
-							.getBigDecimal("TWO_HUNDRED_US_DOLLARS"),
-					true);
-			BigDecimal feeForFiveHundredFundsIn = getFeeForFeeLink(
-					PropertyUtil.constantFromProperties
-							.getBigDecimal("FIVE_HUNDRED_US_DOLLARS"),
-					true);
-			BigDecimal feeForTwoHundredFundsOut = getFeeForFeeLink(
-					PropertyUtil.constantFromProperties
-							.getBigDecimal("TWO_HUNDRED_US_DOLLARS"),
-					false);
-			BigDecimal feeForFiveHundredFundsOut = getFeeForFeeLink(
-					PropertyUtil.constantFromProperties
-							.getBigDecimal("FIVE_HUNDRED_US_DOLLARS"),
-					false);
-
-			if (feeForFiveHundredFundsIn.compareTo(BigDecimal.ZERO) == 0
-					|| feeForTwoHundredFundsIn.compareTo(BigDecimal.ZERO) == 0
-					|| feeForFiveHundredFundsOut.compareTo(BigDecimal.ZERO) == 0
-					|| feeForTwoHundredFundsOut.compareTo(BigDecimal.ZERO) == 0) {
-				synchronized (FEELINK_DAY_IDENTIFIER) {
-					FEELINK_DAY_IDENTIFIER = yesterday;
-				}
-				feeLinkValues.setTransactionSuccess(false);
-				feeLinkValues.setErrorMessage(PropertyUtil.messageFromProperties
-						.getString("RETRY"));
-			} else {
-				synchronized (FEE_FOR_TWO_HUNDRED_FUNDS_IN) {
-					FEE_FOR_TWO_HUNDRED_FUNDS_IN = feeForTwoHundredFundsIn;
-				}
-				synchronized (FEE_FOR_FIVE_HUNDRED_FUNDS_IN) {
-					FEE_FOR_FIVE_HUNDRED_FUNDS_IN = feeForFiveHundredFundsIn;
-				}
-				synchronized (FEE_FOR_TWO_HUNDRED_FUNDS_OUT) {
-					FEE_FOR_TWO_HUNDRED_FUNDS_OUT = feeForTwoHundredFundsOut;
-				}
-				synchronized (FEE_FOR_FIVE_HUNDRED_FUNDS_OUT) {
-					FEE_FOR_FIVE_HUNDRED_FUNDS_OUT = feeForFiveHundredFundsOut;
-				}
-				MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
-				try {
-					moneyGramPayPalDAO.updateFeeFeeDetailTable(
-							PropertyUtil.constantFromProperties
-									.getBigDecimal("TWO_HUNDRED_US_DOLLARS"),
-							feeForTwoHundredFundsIn, true);
-					moneyGramPayPalDAO.updateFeeFeeDetailTable(
-							PropertyUtil.constantFromProperties
-									.getBigDecimal("FIVE_HUNDRED_US_DOLLARS"),
-							feeForFiveHundredFundsIn, true);
-
-					moneyGramPayPalDAO.updateFeeFeeDetailTable(
-							PropertyUtil.constantFromProperties
-									.getBigDecimal("TWO_HUNDRED_US_DOLLARS"),
-							feeForTwoHundredFundsOut, false);
-					moneyGramPayPalDAO.updateFeeFeeDetailTable(
-							PropertyUtil.constantFromProperties
-									.getBigDecimal("FIVE_HUNDRED_US_DOLLARS"),
-							feeForFiveHundredFundsOut, false);
-
-				} catch (Exception exception) {
-					exception.printStackTrace();
-					synchronized (FEELINK_DAY_IDENTIFIER) {
-						FEELINK_DAY_IDENTIFIER = yesterday;
-					}
-					LOGGER.error("New Fee Not Updated Into Table 'MGI_PAYPAL_FEE_DTL'.");
-					LOGGER.error(exception.getLocalizedMessage());
-					LOGGER.error(System.getProperty("line.separator"));
-					feeLinkValues.setTransactionSuccess(false);
-					feeLinkValues.setErrorMessage(PropertyUtil.messageFromProperties
-							.getString("RETRY_IN_SOMETIME"));
-				}
-
-				feeLinkValues.setTransactionSuccess(true);
-				if (feeLinkValueInputBean.isFundsIn()) {
-					feeLinkValues
-							.setFeeForTwoHundred(FEE_FOR_TWO_HUNDRED_FUNDS_IN);
-					feeLinkValues
-							.setFeeForFiveHundred(FEE_FOR_FIVE_HUNDRED_FUNDS_IN);
-				} else {
-					feeLinkValues
-							.setFeeForTwoHundred(FEE_FOR_TWO_HUNDRED_FUNDS_OUT);
-					feeLinkValues
-							.setFeeForFiveHundred(FEE_FOR_FIVE_HUNDRED_FUNDS_OUT);
-				}
-
-			}
-
-			return new Gson().toJson(feeLinkValues);
-
-		} else {
-			feeLinkValues.setTransactionSuccess(true);
-			if (feeLinkValueInputBean.isFundsIn()) {
-				feeLinkValues.setFeeForTwoHundred(FEE_FOR_TWO_HUNDRED_FUNDS_IN);
-				feeLinkValues
-						.setFeeForFiveHundred(FEE_FOR_FIVE_HUNDRED_FUNDS_IN);
-			} else {
-				feeLinkValues
-						.setFeeForTwoHundred(FEE_FOR_TWO_HUNDRED_FUNDS_OUT);
-				feeLinkValues
-						.setFeeForFiveHundred(FEE_FOR_FIVE_HUNDRED_FUNDS_OUT);
-			}
-		}
-		// TODO
-		LOGGER.debug(FEE_FOR_TWO_HUNDRED_FUNDS_IN.toString() + "  "
-				+ FEE_FOR_FIVE_HUNDRED_FUNDS_IN.toString() + "  "
-				+ FEE_FOR_TWO_HUNDRED_FUNDS_OUT.toString() + "  "
-				+ FEE_FOR_FIVE_HUNDRED_FUNDS_OUT.toString());
-
-		LOGGER.debug("Exit getFeeLinkValue.");
-
-		return new Gson().toJson(feeLinkValues);
-	}*/
 
 	public String getFeeLinkValue(FeeLinkValueInputBean feeLinkValueInputBean) {
 		
@@ -345,12 +219,9 @@ public class FeeDetails {
 		}
 	}
 	
-	
-	private static Integer FEELINK_DAY_IDENTIFIER_FOR_FUND_IN = 9;
-
 	private String getFeeForFeeLinkFundsIn() {
-		LOGGER.debug("Enter getFeeForFeeLinkFundsIn.");
 		
+		LOGGER.debug("Enter getFeeForFeeLinkFundsIn.");
 		
 		int yesterday = 8;
 		FeeLinkValues feeLinkValues = new FeeLinkValues();
@@ -422,11 +293,13 @@ public class FeeDetails {
 			feeLinkValues.setFeeForFiveHundred(FEE_FOR_FIVE_HUNDRED_FUNDS_IN);
 
 		}
+
 		LOGGER.debug("Exit getFeeForFeeLinkFundsIn.");
+		
 		return new Gson().toJson(feeLinkValues);
 	}
 
-	private static Integer FEELINK_DAY_IDENTIFIER_FOR_FUND_OUT = 9;
+	
 
 	private String getFeeForFeeLinkFundsOut() {
 		

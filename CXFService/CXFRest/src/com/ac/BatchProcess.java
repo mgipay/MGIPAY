@@ -16,7 +16,6 @@ import com.mgi.agentconnect.client.SendReversalType;
 import com.mgi.agentconnect.client.TransactionStatus;
 import com.mgi.paypal.inputbean.SendReversalInputBean;
 import com.mgi.paypal.util.CalendarUtil;
-import com.mgi.paypal.util.HistoryDetails;
 import com.mgi.paypal.util.PropertyUtil;
 import com.mgi.paypal.util.StatusToReverseBean;
 
@@ -28,6 +27,7 @@ public class BatchProcess {
 
 	private static Logger LOGGER = Logger.getLogger(BatchProcess.class);
 
+	// TODO delete below method.
 	public static void doBatchForSendReversal1() {
 		LOGGER.debug("doBatchForSendReversal");
 	}
@@ -37,21 +37,21 @@ public class BatchProcess {
 		LOGGER.debug("Enter doBatchForSendReversal.");
 
 		while (true) {
-			List<HistoryDetails> historyDetailList = null;
+			List<String> mgiTransactionSessionIdList = null;
 			try {
-				historyDetailList = MoneyGramPayPalDAO
+				mgiTransactionSessionIdList = MoneyGramPayPalDAO
 						.retrieveHistroyDetailsForBatchProcess();
-				if (historyDetailList == null || historyDetailList.isEmpty()) {
+				if (mgiTransactionSessionIdList == null
+						|| mgiTransactionSessionIdList.isEmpty()) {
 					break;
 				}
 				List<StatusToReverseBean> statusToReverseBeanList = new ArrayList<StatusToReverseBean>();
 				List<String> statusToRejectList = new ArrayList<String>();
 
-				LOGGER.debug("size : " + historyDetailList.size());
+				LOGGER.debug("size : " + mgiTransactionSessionIdList.size());
 
-				for (HistoryDetails historyDetails : historyDetailList) {
-					DetailLookupResponse detailLookupResponse = detailLookUpForBatchProcess(historyDetails
-							.getMgiTransactionSessionID());
+				for (String mgiTransactionSessionId : mgiTransactionSessionIdList) {
+					DetailLookupResponse detailLookupResponse = detailLookUpForBatchProcess(mgiTransactionSessionId);
 					// String mgiReferenceNumber = detailLookupResponse
 					// .getReferenceNumber();
 
@@ -62,17 +62,23 @@ public class BatchProcess {
 						// DO Send Reversal
 
 						SendReversalInputBean sendReversalInputBean = new SendReversalInputBean();
-						
-						sendReversalInputBean.setReferenceNumber(historyDetails
-								.getMgiReferenceNumber());
+
+						sendReversalInputBean
+								.setReferenceNumber(detailLookupResponse
+										.getReferenceNumber());
 						sendReversalInputBean
 								.setSendAmount(detailLookupResponse
 										.getSendAmounts().getSendAmount());
-						
-						for(AmountInfo amountInfo : detailLookupResponse.getSendAmounts().getDetailSendAmounts()){
-							if(amountInfo.getAmountType().equals("totalMgiCollectedFeesAndTaxes")){
-								sendReversalInputBean.setSendCurrency(amountInfo.getAmountCurrency());
-								sendReversalInputBean.setFeeAmount(amountInfo.getAmount());
+
+						for (AmountInfo amountInfo : detailLookupResponse
+								.getSendAmounts().getDetailSendAmounts()) {
+							if (amountInfo.getAmountType().equals(
+									"totalMgiCollectedFeesAndTaxes")) {
+								sendReversalInputBean
+										.setSendCurrency(amountInfo
+												.getAmountCurrency());
+								sendReversalInputBean.setFeeAmount(amountInfo
+										.getAmount());
 								break;
 							}
 						}
@@ -87,15 +93,13 @@ public class BatchProcess {
 									.setMgiReferenceNumber(detailLookupResponse
 											.getReferenceNumber());
 							statusToReverseBean
-									.setMgiTransactionSessionID(historyDetails
-											.getMgiTransactionSessionID());
+									.setMgiTransactionSessionID(mgiTransactionSessionId);
 							statusToReverseBeanList.add(statusToReverseBean);
 						}
 
 					} else {
 						// Update history TABLE mgi_status as 'REJECTED'
-						statusToRejectList.add(historyDetails
-								.getMgiTransactionSessionID());
+						statusToRejectList.add(mgiTransactionSessionId);
 
 					}
 				}
@@ -150,7 +154,6 @@ public class BatchProcess {
 
 		return detailLookupResponse;
 	}
-
 
 	private static boolean doSendReversal(
 			SendReversalInputBean sendReversalInputBean) {
