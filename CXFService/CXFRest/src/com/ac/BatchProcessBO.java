@@ -12,12 +12,14 @@ import com.mgi.agentconnect.client.DetailLookupRequest;
 import com.mgi.agentconnect.client.DetailLookupResponse;
 import com.mgi.agentconnect.client.SendReversalReasonCode;
 import com.mgi.agentconnect.client.SendReversalRequest;
+import com.mgi.agentconnect.client.SendReversalResponse;
 import com.mgi.agentconnect.client.SendReversalType;
 import com.mgi.agentconnect.client.TransactionStatus;
 import com.mgi.paypal.inputbean.SendReversalInputBean;
 import com.mgi.paypal.util.CalendarUtil;
 import com.mgi.paypal.util.PropertyUtil;
 import com.mgi.paypal.util.StatusToReverseBean;
+import com.thoughtworks.xstream.XStream;
 
 public class BatchProcessBO {
 
@@ -139,9 +141,13 @@ public class BatchProcessBO {
 				.getString("TOKEN"));
 		detailLookupRequest.setMgiTransactionSessionID(mgiTransactionSessionId);
 		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
+		
+		System.out.println(new XStream().toXML(detailLookupRequest));
+		
 		DetailLookupResponse detailLookupResponse = null;
 		try {
 			detailLookupResponse = client.detailLookup(detailLookupRequest);
+			System.out.println(new XStream().toXML(detailLookupResponse));
 		} catch (Exception exception) {
 			return null;
 
@@ -187,9 +193,14 @@ public class BatchProcessBO {
 				.setSendReversalReason(SendReversalReasonCode.MS_NOT_USED);
 		sendReversalRequest.setFeeRefund("Y");
 
+		System.out.println(new XStream().toXML(sendReversalRequest));
+
 		try {
 			AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
-			client.sendReversal(sendReversalRequest);
+			SendReversalResponse sendReversalResponse = client
+					.sendReversal(sendReversalRequest);
+			
+			System.out.println(new XStream().toXML(sendReversalResponse));
 		} catch (Exception exception) {
 			// If send reversal called for already reversed Transaction then
 			// error is 'Transaction not in Send status'
