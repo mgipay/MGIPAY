@@ -246,15 +246,13 @@ public class MailServiceBO {
 					.setEmailaddress(sendMailInputBean.getCustomerEmailId());
 			insertRecsIntoCRMExtWebFormRequest.setDescription(sendMailInputBean
 					.getMailText());
-			insertRecsIntoCRMExtWebFormRequest
-					.setComplainingabout(sendMailInputBean.getMailSubject());
 			insertRecsIntoCRMExtWebFormRequest.setTrnRefNbr(sendMailInputBean
 					.getReferenceNumber());
 			insertRecsIntoCRMExtWebFormRequest.setTelephone(sendMailInputBean
 					.getPhoneNumber());
 			insertRecsIntoCRMExtWebFormRequest
 					.setComplaintRequestType(PropertyUtil.constantFromProperties
-							.getString("SUBJECT_INQUIRY"));
+							.getString("CPS_REQUEST_TYPE"));
 			Header header = new Header();
 			AgentHeader agentHeader = new AgentHeader();
 			agentHeader.setAgentId(PropertyUtil.constantFromProperties

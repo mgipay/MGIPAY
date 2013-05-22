@@ -39,7 +39,7 @@ xsi:schemaLocation="http://cxf.apache.org/configuration/security http://cxf.apac
   <property name="targetMethod" value="doBatchForSendReversal" />
  </bean>
 
- <bean id="runMeTask" class="com.ac.BatchProcess" />
+ <bean id="runMeTask" class="com.ac.BatchProcessBO" />
 
  <bean id="timerTask"
   class="org.springframework.scheduling.timer.ScheduledTimerTask">
