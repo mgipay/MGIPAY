@@ -168,36 +168,38 @@ public class Transaction {
 
 		LOGGER.debug("Enter setSenderName.");
 
-		String firstName = sendValidationInputBean.getSenderFirstName();
-		String lastName = sendValidationInputBean.getSenderLastName();
+		String firstNameFromUI = sendValidationInputBean.getSenderFirstName();
+		String lastNameFromUI = sendValidationInputBean.getSenderLastName();
 
-		if (firstName.length() <= 20) {
-			sendValidationRequest.setSenderFirstName(firstName);
-			sendValidationRequest.setReceiverFirstName(firstName);
+		if (firstNameFromUI.length() <= Mgi_Paypal_Constants.INTEGER_TWENTY) {
+			sendValidationRequest.setSenderFirstName(firstNameFromUI);
+			sendValidationRequest.setReceiverFirstName(firstNameFromUI);
 		} else {
-			String senderFirstName = firstName.substring(0,
-					Mgi_Paypal_Constants.INTEGER_NINETEEN);
-			String senderMiddleName = firstName
+			String firstName = firstNameFromUI.substring(0,
+					Mgi_Paypal_Constants.INTEGER_TWENTY);
+			String middleName = firstNameFromUI
 					.substring(Mgi_Paypal_Constants.INTEGER_TWENTY,
-							firstName.length() - 1);
-			sendValidationRequest.setSenderFirstName(senderFirstName);
-			sendValidationRequest.setSenderMiddleName(senderMiddleName);
+							firstNameFromUI.length());
+			sendValidationRequest.setSenderFirstName(firstName);
+			sendValidationRequest.setSenderMiddleName(middleName);
 
-			sendValidationRequest.setReceiverFirstName(senderFirstName);
+			sendValidationRequest.setReceiverFirstName(firstName);
+			sendValidationRequest.setReceiverMiddleName(middleName);
 		}
 
-		if (lastName.length() <= Mgi_Paypal_Constants.INTEGER_THIRTY) {
-			sendValidationRequest.setSenderLastName(lastName);
-			sendValidationRequest.setReceiverLastName(lastName);
+		if (lastNameFromUI.length() <= Mgi_Paypal_Constants.INTEGER_THIRTY) {
+			sendValidationRequest.setSenderLastName(lastNameFromUI);
+			sendValidationRequest.setReceiverLastName(lastNameFromUI);
 		} else {
-			String senderLastName = lastName.substring(0,
-					Mgi_Paypal_Constants.INTEGER_TWENTY_NINE);
-			String senderLastName2 = lastName.substring(
-					Mgi_Paypal_Constants.INTEGER_THIRTY, lastName.length() - 1);
-			sendValidationRequest.setSenderLastName(senderLastName);
-			sendValidationRequest.setSenderLastName2(senderLastName2);
+			String lastName = lastNameFromUI.substring(0,
+					Mgi_Paypal_Constants.INTEGER_THIRTY);
+			String lastName2 = lastNameFromUI.substring(
+					Mgi_Paypal_Constants.INTEGER_THIRTY, lastNameFromUI.length());
+			sendValidationRequest.setSenderLastName(lastName);
+			sendValidationRequest.setSenderLastName2(lastName2);
 
-			sendValidationRequest.setReceiverLastName(senderLastName);
+			sendValidationRequest.setReceiverLastName(lastName);
+			sendValidationRequest.setReceiverLastName2(lastName2);
 		}
 
 		LOGGER.debug("Exit setSenderName.");
