@@ -17,12 +17,12 @@ import com.mgi.paypal.util.Mgi_Paypal_Constants;
 import com.mgi.paypal.util.PropertyUtil;
 import com.thoughtworks.xstream.XStream;
 
-public class Transaction {
+public class TransactionBO {
 
-	public Transaction() {
+	public TransactionBO() {
 
 	}
-	private static Logger LOGGER = Logger.getLogger(Transaction.class);
+	private static Logger LOGGER = Logger.getLogger(TransactionBO.class);
 
 	public static Hashtable<String, String> stateCodeHashTable = new Hashtable<String, String>();
 	

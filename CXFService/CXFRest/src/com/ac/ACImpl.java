@@ -55,8 +55,8 @@ public class ACImpl implements ACInterface {
 		
 		LOGGER.debug("IP Address : " + request.getRemoteAddr());
 
-		FeeDetails feeDetails = new FeeDetails();
-		return feeDetails.getFee(feeLookupInputBean);
+		FeeDetailsBO feeDetailsBO = new FeeDetailsBO();
+		return feeDetailsBO.getFee(feeLookupInputBean);
 	}
 
 	/**
@@ -96,8 +96,8 @@ public class ACImpl implements ACInterface {
 	@Override
 	public String getFeeLinkValue(FeeLinkValueInputBean feeLinkValueInputBean) {
 
-		FeeDetails feeDetails = new FeeDetails();
-		return feeDetails.getFeeLinkValue(feeLinkValueInputBean);
+		FeeDetailsBO feeDetailsBO = new FeeDetailsBO();
+		return feeDetailsBO.getFeeLinkValue(feeLinkValueInputBean);
 	}
 
 	@POST
@@ -105,8 +105,8 @@ public class ACImpl implements ACInterface {
 	@Override
 	public String sendMail(SendMailInputBean sendMailInputBean) {
 
-		MailService mailService = new MailService();
-		return mailService.sendReportInformationMail(sendMailInputBean);
+		MailServiceBO mailServiceBO = new MailServiceBO();
+		return mailServiceBO.sendReportInformationMail(sendMailInputBean);
 	}
 
 	@POST
@@ -114,8 +114,8 @@ public class ACImpl implements ACInterface {
 	@Override
 	public String sendProofMessage(SendProofInputBean sendProofInputBean) {
 
-		SignUp signUp = new SignUp();
-		return signUp.sendProofMessage(sendProofInputBean);
+		SignUpBO signUpBO = new SignUpBO();
+		return signUpBO.sendProofMessage(sendProofInputBean);
 	}
 
 	@POST
@@ -124,8 +124,8 @@ public class ACImpl implements ACInterface {
 	public String sendTransactionInformationMail(
 			TransactionInformationMailInputBean transactionInformationMailInputBean) {
 		
-		MailService mailService = new MailService();
-		return mailService.sendTransactionInformationMail(
+		MailServiceBO mailServiceBO = new MailServiceBO();
+		return mailServiceBO.sendTransactionInformationMail(
 				transactionInformationMailInputBean.getCustomerEmail(),
 				transactionInformationMailInputBean.getTransactionAmount(),
 				transactionInformationMailInputBean.getReferenceNumber(),
@@ -168,7 +168,7 @@ public class ACImpl implements ACInterface {
 	@Override
 	public String getState() {
 
-		return Country.getStateForUSA();
+		return CountryBO.getStateForUSA();
 	}
 
 	/**
@@ -201,7 +201,7 @@ public class ACImpl implements ACInterface {
 			return new Gson().toJson(sendValidationResponse);
 		}
 
-		sendValidationResponse = Transaction.validate(sendValidationInputBean);
+		sendValidationResponse = TransactionBO.validate(sendValidationInputBean);
 
 		if (!sendValidationResponse.isTransactionSuccess()) {
 			// update history table 'send_validation_failed'
@@ -244,7 +244,7 @@ public class ACImpl implements ACInterface {
 		MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
 
 		// Calling commitTransaction Of Agent Connect.
-		commitTransactionResponse = Transaction
+		commitTransactionResponse = TransactionBO
 				.commitTransaction(commitTransactionInputBean);
 
 		if (!commitTransactionResponse.isTransactionSuccess()) {

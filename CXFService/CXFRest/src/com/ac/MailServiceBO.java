@@ -26,15 +26,15 @@ import com.mgi.paypal.response.TransactionInformationMailResponse;
 import com.mgi.paypal.util.PropertyUtil;
 import com.thoughtworks.xstream.XStream;
 
-public class MailService {
+public class MailServiceBO {
 
 	Properties props = new Properties();
 	Session session;
 	public String subject;
 
-	private static Logger LOGGER = Logger.getLogger(MailService.class);
+	private static Logger LOGGER = Logger.getLogger(MailServiceBO.class);
 
-	public MailService() {
+	public MailServiceBO() {
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.starttls.enable", "true");
 		props.put("mail.smtp.host", PropertyUtil.constantFromProperties.getString("AMAZON_MAIL_HOST"));

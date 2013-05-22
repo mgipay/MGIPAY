@@ -19,13 +19,13 @@ import com.mgi.paypal.util.CalendarUtil;
 import com.mgi.paypal.util.PropertyUtil;
 import com.mgi.paypal.util.StatusToReverseBean;
 
-public class BatchProcess {
+public class BatchProcessBO {
 
-	public BatchProcess() {
+	public BatchProcessBO() {
 
 	}
 
-	private static Logger LOGGER = Logger.getLogger(BatchProcess.class);
+	private static Logger LOGGER = Logger.getLogger(BatchProcessBO.class);
 
 	// TODO delete below method.
 	public static void doBatchForSendReversal1() {

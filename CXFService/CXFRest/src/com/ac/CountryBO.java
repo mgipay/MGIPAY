@@ -14,12 +14,12 @@ import com.mgi.paypal.util.CalendarUtil;
 import com.mgi.paypal.util.Mgi_Paypal_Constants;
 import com.mgi.paypal.util.PropertyUtil;
 
-public class Country {
+public class CountryBO {
 
-	public Country() {
+	public CountryBO() {
 
 	}
-	private static Logger LOGGER = Logger.getLogger(Country.class);
+	private static Logger LOGGER = Logger.getLogger(CountryBO.class);
 
 	private static String STATES_IN_USA = "";
 
@@ -84,7 +84,7 @@ public class Country {
 							stringArray[0] = Character.toUpperCase(stringArray[0]);
 							stateName = new String(stringArray);
 							
-							Transaction.stateCodeHashTable.put(stateName,
+							TransactionBO.stateCodeHashTable.put(stateName,
 									stateCode);
 							PayPalBO.stateNameAndCodeHashtable.put(stateCode,
 									stateName);

@@ -281,7 +281,7 @@ public class PayPalBO {
 			userData = (UserData) gson.fromJson(userDataString, UserData.class);
 			userData.setToken(token);
 			if (stateNameAndCodeHashtable.isEmpty()) {
-				Country.getStateForUSA();
+				CountryBO.getStateForUSA();
 			}
 
 			String stateName = stateNameAndCodeHashtable.get(userData

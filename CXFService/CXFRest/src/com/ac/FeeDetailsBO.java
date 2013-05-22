@@ -18,7 +18,7 @@ import com.mgi.paypal.util.Mgi_Paypal_Constants;
 import com.mgi.paypal.util.PropertyUtil;
 import com.thoughtworks.xstream.XStream;
 
-public class FeeDetails {
+public class FeeDetailsBO {
 
 	private static BigDecimal FEE_FOR_TWO_HUNDRED_FUNDS_IN = BigDecimal.ZERO;
 
@@ -32,11 +32,11 @@ public class FeeDetails {
 	
 	private static Integer FEELINK_DAY_IDENTIFIER_FOR_FUND_IN = 9;
 
-	public FeeDetails() {
+	public FeeDetailsBO() {
 
 	}
 
-	private static Logger LOGGER = Logger.getLogger(FeeDetails.class);
+	private static Logger LOGGER = Logger.getLogger(FeeDetailsBO.class);
 
 	public String getFee(FeeLookupInputBean feeLookupInputBean) {
 

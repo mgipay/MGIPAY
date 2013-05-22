@@ -10,11 +10,11 @@ import com.mgi.paypal.inputbean.SendProofInputBean;
 import com.sdk.client.EDialogWebServices_EDialogWebServicesSoap11_Client;
 import com.sdk.client.PropertyType;
 
-public class SignUp {
+public class SignUpBO {
 
-	private static Logger LOGGER = Logger.getLogger(SignUp.class);
+	private static Logger LOGGER = Logger.getLogger(SignUpBO.class);
 
-	public SignUp() {
+	public SignUpBO() {
 
 	}
 
