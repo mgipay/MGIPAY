@@ -253,6 +253,7 @@ public class MailServiceBO {
 			insertRecsIntoCRMExtWebFormRequest
 					.setComplaintRequestType(PropertyUtil.constantFromProperties
 							.getString("CPS_REQUEST_TYPE"));
+			insertRecsIntoCRMExtWebFormRequest.setPreferContMethod("Email");
 			Header header = new Header();
 			AgentHeader agentHeader = new AgentHeader();
 			agentHeader.setAgentId(PropertyUtil.constantFromProperties
