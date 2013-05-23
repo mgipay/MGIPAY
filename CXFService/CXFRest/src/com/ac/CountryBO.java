@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
@@ -80,10 +81,13 @@ public class CountryBO {
 							String stateCode = stateNameAndCodeList.get(index + 1);
 							
 							stateName = stateName.toLowerCase();
-							char[] stringArray = stateName.toCharArray();
-							stringArray[0] = Character.toUpperCase(stringArray[0]);
-							stateName = new String(stringArray);
 							
+						/*	char[] stringArray = stateName.toCharArray();
+							stringArray[0] = Character.toUpperCase(stringArray[0]);
+							stateName = new String(stringArray);*/
+							stateName = WordUtils.capitalizeFully(stateName);
+
+
 							TransactionBO.stateCodeHashTable.put(stateName,
 									stateCode);
 							PayPalBO.stateNameAndCodeHashtable.put(stateCode,
