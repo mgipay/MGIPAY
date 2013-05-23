@@ -161,18 +161,19 @@ public class MailServiceBO {
 			}
 			phoneNumber = "Phone Number          : " + phoneNumber;
 			amount = "Amount                : " + amount;
-			bodyOfMail = customerName
-					.concat(System.getProperty("line.separator"))
-					.concat(refrenceNumber)
-					.concat(System.getProperty("line.separator"))
-					.concat(amount)
-					.concat(System.getProperty("line.separator"))
-					.concat(customerEmailID)
-					.concat(System.getProperty("line.separator"))
-					.concat(phoneNumber)
-					.concat(System.getProperty("line.separator"))
-					.concat(System.getProperty("line.separator"))
-					.concat(mailText);
+			bodyOfMail = "<html><body>"
+					     +customerName
+					     +"<br></br>"
+					     +refrenceNumber
+					     +"<br></br>"
+					     +amount
+					     +"<br></br>"
+					     +customerEmailID
+					     +"<br></br>"
+					     +phoneNumber
+					     +"<br></br>"
+					     +mailText
+					     +"</body></html>";
 
 			System.out.println(bodyOfMail);
 
@@ -187,7 +188,7 @@ public class MailServiceBO {
 
 		}
 
-		LOGGER.debug("Exit sendMailIfRefund.");
+		LOGGER.debug("Exit sendMail Refund.");
 
 		return true;
 
