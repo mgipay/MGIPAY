@@ -112,8 +112,10 @@ public class BatchProcessBO {
 			} catch (Exception exception) {
 				exception.printStackTrace();
 			}
-			LOGGER.debug("Exit doBatchForSendReversal.");
+			
 		}
+		
+		LOGGER.debug("Exit doBatchForSendReversal.");
 	}
 
 	private static DetailLookupResponse detailLookUpForBatchProcess(

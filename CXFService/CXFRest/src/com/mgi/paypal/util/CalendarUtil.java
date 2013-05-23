@@ -17,15 +17,18 @@ public class CalendarUtil {
 	private static Logger LOGGER = Logger.getLogger(CalendarUtil.class);
 	
 	public  static XMLGregorianCalendar getTimeStamp() {
-		XMLGregorianCalendar xgcal = null;
+		XMLGregorianCalendar xmlGregorianCalendar = null;
 		try {
-			xgcal = DatatypeFactory.newInstance().newXMLGregorianCalendar(
+			xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(
 					new GregorianCalendar());
 		} catch (DatatypeConfigurationException datatypeConfigurationException) {
 			LOGGER.error("Error while getting TimeStamp:"
 					+ datatypeConfigurationException);
 			datatypeConfigurationException.printStackTrace();
 		}
-		return xgcal;
+		
+		System.out.println(xmlGregorianCalendar);
+		
+		return xmlGregorianCalendar;
 	}
 }

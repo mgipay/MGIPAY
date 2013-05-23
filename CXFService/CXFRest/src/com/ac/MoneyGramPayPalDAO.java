@@ -167,7 +167,7 @@ public class MoneyGramPayPalDAO {
 	public static List<String> retrieveHistroyDetailsForBatchProcess()
 			throws ClassNotFoundException, SQLException {
 
-		LOGGER.debug("Enter retrieveHistroyDetails.");
+		LOGGER.debug("Enter retrieveHistroyDetailsForBatchProcess.");
 
 		Class.forName("oracle.jdbc.OracleDriver");
 		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
@@ -185,6 +185,8 @@ public class MoneyGramPayPalDAO {
 				.prepareStatement(strQuery);
 		preparedStatement.setString(1, TransactionStatus.MGI_FAILED.value());
 
+		System.out.println(strQuery);
+		
 		ResultSet resultSet = preparedStatement.executeQuery();
 		List<String> mgiTransactionSessinIdList = new ArrayList<String>();
 		while (resultSet.next()) {
@@ -202,7 +204,9 @@ public class MoneyGramPayPalDAO {
 
 		}
 
-		LOGGER.debug("Exit retrieveHistroyDetails.");
+		System.out.println("Size : " + mgiTransactionSessinIdList.size());
+		
+		LOGGER.debug("Exit retrieveHistroyDetailsForBatchProcess.");
 
 		return mgiTransactionSessinIdList;
 	}

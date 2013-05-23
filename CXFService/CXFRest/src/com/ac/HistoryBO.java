@@ -17,6 +17,7 @@ import com.mgi.paypal.response.HistroyLookupResponse;
 import com.mgi.paypal.util.CalendarUtil;
 import com.mgi.paypal.util.HistoryDetails;
 import com.mgi.paypal.util.PropertyUtil;
+import com.thoughtworks.xstream.XStream;
 
 public class HistoryBO {
 
@@ -156,6 +157,9 @@ public class HistoryBO {
 		DetailLookupResponse detailLookupResponse = null;
 		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 		try {
+			
+			System.out.println(new XStream().toXML(detailLookupRequest));
+			
 			detailLookupResponse = client.detailLookup(detailLookupRequest);
 		} catch (Exception exception) {
 			
@@ -167,6 +171,8 @@ public class HistoryBO {
 			return null;
 		}
 
+		System.out.println(new XStream().toXML(detailLookupResponse));
+		
 		LOGGER.debug("Exit detailLookUpForRetrieveHistory.");
 
 		return detailLookupResponse.getTransactionStatus().value();

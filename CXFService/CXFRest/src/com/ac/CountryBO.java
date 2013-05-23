@@ -82,9 +82,6 @@ public class CountryBO {
 							
 							stateName = stateName.toLowerCase();
 							
-						/*	char[] stringArray = stateName.toCharArray();
-							stringArray[0] = Character.toUpperCase(stringArray[0]);
-							stateName = new String(stringArray);*/
 							stateName = WordUtils.capitalizeFully(stateName);
 
 

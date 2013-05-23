@@ -400,6 +400,14 @@ public class Test {
 	}
 	public static void main(String[] args) {
 		
+		
+		
+//		XMLGregorianCalendar xmlGregorianCalendar = CalendarUtil.getTimeStamp();
+//		
+//		System.out.println(xmlGregorianCalendar);
+		
+		
+		
 		SendMailInputBean sendMailInputBean = new SendMailInputBean();
 		sendMailInputBean.setAmount("45");
 		sendMailInputBean.setCustomerEmailId("mgi@tcs.com");
@@ -410,7 +418,8 @@ public class Test {
 		sendMailInputBean.setPhoneNumber("56789876534");
 		sendMailInputBean.setReferenceNumber("47855698");
 		
-//		System.out.println(new Gson().toJson(sendMailInputBean));
+		
+		System.out.println(new XStream().toXML(sendMailInputBean));
 		
 		
 		String bodyOfMail = "";
