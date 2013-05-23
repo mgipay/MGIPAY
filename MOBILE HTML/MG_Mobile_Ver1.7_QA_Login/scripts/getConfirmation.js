@@ -1,6 +1,6 @@
 
 var message;
-var withdrawValues = "";
+var withdrawValues;
 var reviewDetails;
 var referenceNum;
 var loginResponse = "";
@@ -23,13 +23,12 @@ $(document).ready(function() {
 	}
 	loginResponse = JSON.parse(loginResponse);
 	if(loginResponse == "" || loginResponse == undefined || loginResponse == null)
-	{$(".ref_num").html(referenceNum);
+	{
 	}
 	else
 	{
-		sendMailFlag = true;
-		sendMailReview();
 		reviewDetails = withdrawValues.split(",");
+		console.log(reviewDetails);
 		$(".sender_name").html(reviewDetails[0]);
 		$(".state").html(reviewDetails[1]);
 		$(".pickup").html(reviewDetails[2]);
@@ -39,6 +38,8 @@ $(document).ready(function() {
 		$(".receive_amt").html(reviewDetails[6]+" USD");
 		phoneNumber = loginResponse.phone_number;
 		$(".ref_num").html(referenceNum);
+		sendMailFlag = true;
+		sendMailReview();
 	}
 });
 

@@ -124,6 +124,7 @@ function sendMessage()
 		messageObj.referenceNumber = $("#referenceNumber").val();
 		messageObj.customerEmailId = $("#emailAddress").val();
 		messageObj.phoneNumber = $("#phoneNumber").val();
+		messageObj.amount = $("#transactionAmount").val();
 		var sendMsgObj = new Object();
 		sendMsgObj.SendMailInputBean = messageObj;
 		callService(methods.SendMail[0], methods.SendMail[1], sendMsgObj, emailSuccessHandler, emailFailureHandler);

@@ -14,9 +14,13 @@ function callService(methodName, requestType, postMethodJsonObject, successHandl
 		clearTimeout(timer);
 		callTimer();
 		if(sendMailFlag)
-			$("#preview").hide();
+		{
+			sendMailFlag = false;
+		}
 		else
+		{
 			$("#preview").show();
+		}
 		$.support.cors = true;
 		$.ajax(
 		{

@@ -135,6 +135,7 @@ var withdrawSuccessHandler = function(response){
 	}
 	else
 	{
+		openFraudMessage();
 		alert(response.errorMessage);
 	}
 }		

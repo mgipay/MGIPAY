@@ -42,6 +42,7 @@ $(".identity").click(function(){
 });
 
 /****** navigation End******/
+
 	if(loginResponse == undefined || loginResponse == null || loginResponse == "")
 	{
 		$("#mainBody").addClass("displaynone mainClassBody");
@@ -188,6 +189,7 @@ var getUserDataSuccessHandler = function(response){
 	{
 		$("#mainBody").addClass("displaynone mainClassBody");
 		alert(resources.UScustomer);
+		logout();
 		self.close();
 	}
 	opener.location='home.html';
@@ -205,6 +207,7 @@ var getUserDataFailureHandler = function(){
 	alert(resources.errorMsg);
 	opener.location='home.html';
 	self.close();
+	logout();
 };
 
 /**** method to get fee and total amount *****/

@@ -31,9 +31,9 @@ function goTopaypalWithdraw()
 		}
 		else
 		{
-			//window.location.href = "blank.html";
+			window.location.href = "blank.html";
 			
-			window.location.href = "https://www.stage2cp07.stage.paypal.com:8443/webapps/auth/protocol/openidconnect/v1/authorize?client_id=mgi_fundsout_qa_env.moneygram.com&response_type=code&scope=profile email address phone https://uri.paypal.com/services/AdaptivePaymentsPayAPI openid&redirect_uri=https://qapaypal.qa.moneygram.com/blank.html";
+			//window.location.href = "https://www.stage2cp07.stage.paypal.com:8443/webapps/auth/protocol/openidconnect/v1/authorize?client_id=mgi_fundsout_qa_env.moneygram.com&response_type=code&scope=profile email address phone https://uri.paypal.com/services/AdaptivePaymentsPayAPI openid&redirect_uri=https://qapaypal.qa.moneygram.com/blank.html";
 			
 		}
 }

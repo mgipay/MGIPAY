@@ -11,12 +11,12 @@ var url = document.URL;
 		getUserData.code = code;
 		var getUserDataObj = new Object();
 		getUserDataObj.UserDataInputBean = getUserData;
-		callService(methods.GetUserData[0], methods.GetUserData[1], getUserDataObj, getUserDataSuccessHandler, getUserDataFailureHandler);
-		//getUserDataSuccessHandler("");
+		//callService(methods.GetUserData[0], methods.GetUserData[1], getUserDataObj, getUserDataSuccessHandler, getUserDataFailureHandler);
+		getUserDataSuccessHandler("");
 });
 
 var getUserDataSuccessHandler = function(response){
-	//response = {"address":{"postal_code":"07901","locality":"Summit","region":"NJ","country":"US","street_address":"4807384 5th Street, 3272844 4th Street","senderState":"New Jersey"},"family_name":"Fundsout","verified":"true","phone_number":"6023820578","zoneinfo":"America/Los_Angeles","name":"MGIFundsout","email":"mgi_consumer_test@moneygram.com","given_name":"MGI","user_id":"https://www.paypal.com/webapps/auth/identity/user/dCn3hbvb2NWbecoGgSGz41zZ5jGdcYvQAr3zmwEZxUo","transactionSuccess":"true","errorMessage":"","token":"wdbfpweurwoeirwofhnwfnvqosifh"};
+	response = {"address":{"postal_code":"07901","locality":"Summit","region":"NJ","country":"US","street_address":"4807384 5th Street, 3272844 4th Street","senderState":"New Jersey"},"family_name":"Fundsout","verified":"true","phone_number":"6023820578","zoneinfo":"America/Los_Angeles","name":"MGIFundsout","email":"mgi_consumer_test@moneygram.com","given_name":"MGI","user_id":"https://www.paypal.com/webapps/auth/identity/user/dCn3hbvb2NWbecoGgSGz41zZ5jGdcYvQAr3zmwEZxUo","transactionSuccess":"true","errorMessage":"","token":"wdbfpweurwoeirwofhnwfnvqosifh"};
 	loginResponse = response;
 	var locationInfo;
 		if($.browser.chrome){
