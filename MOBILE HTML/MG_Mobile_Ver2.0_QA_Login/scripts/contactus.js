@@ -1,33 +1,21 @@
 
-var flagClass = false;
 var loginResponse = "";
 $.browser.chrome = /chrome/.test(navigator.userAgent.toLowerCase());
-$("document").ready(function() {
-	$("#contact_us_byEmail").hide();
+
+$(document).ready(function() {
 	emptyAllFields();
-	
-	$("#contact_us_tab li ").click(function() {
-		//  First remove class "active" from currently active tab
-		if ($(this).index() != 2)
-			displayCoverageBalanceAlert = false;
-		var selected_tab = $(this).find("a").attr("href");
-
-		if (selected_tab != "#") {
-			$("#contact_us_tab li").removeClass('active');
-			//  Now add class "active" to the selected/clicked tab
-			$(this).addClass("active");
-			//  Hide all tab content
-			$(".contact_us_content").hide();
-			//  Here we get the href value of the selected tab
-
-			//  Show the selected tab content
-			$(selected_tab).fadeIn();
-		}
-		//  At the end, we add return false so that the click on the link is not executed
-		return false;
-	});
-	$(".tab3blank").unbind("click");
-	if($.browser.chrome) {
+	$(".toggle_container").hide();
+		$("h2.expand_heading").click(function() {
+				if($(this).hasClass("active")){
+				$(this).removeClass("active");
+				}
+				else{
+					$(this).addClass("active");
+				}
+				$(this).next().slideToggle(500).siblings(".toggle_container").hide(500);
+				$(this).siblings().removeClass("active");
+		});
+		if($.browser.chrome) {
 			loginResponse = localStorage.loginResponse;
 		} else {
 			loginResponse = $.cookie("loginResponse");
@@ -45,6 +33,7 @@ $("document").ready(function() {
 	}
 });
 
+var flagClass = false;
 function sendMessage()
 {
 	var emailFlag = 0;
@@ -137,7 +126,7 @@ function sendMessage()
 		var messageObj = new Object();
 		messageObj.firstname = $("#firstName").val();
         messageObj.lastName = $("#lastName").val();
-		messageObj.mailSubject = $("#reasonID option:selected").html();
+		messageObj.mailSubject = $("#reasonID option:selected").val();
 		messageObj.mailText = $('#message').val();
 		messageObj.referenceNumber = $("#referenceNumber").val();
 		messageObj.customerEmailId = $("#emailAddress").val();
@@ -165,6 +154,8 @@ function selectedValue()
 	{
 		$("#referenceNumber").removeClass("impFields");
 		$("#refnum").removeClass("txtbold");
+		$("#referenceNumber").removeClass("requiredField");
+		$(".contact_us_byEmail ul:eq(6) li .lblerror").html("");
 		flagClass = false;
 	}
 }
@@ -182,9 +173,10 @@ function emptyAllFields()
 	$('#reasonID option[value="General"]').attr("selected",true);
 }
 
+
 var emailSuccessHandler = function(response) {
 	$("#preview").hide();
-	$('.contact_us_byEmail p').css("color","black");
+	document.body.style.overflow="visible";
 	if(response.transactionSuccess == true)
 	{
 		$("#emailDiv").addClass("displaynone");
@@ -198,6 +190,6 @@ var emailSuccessHandler = function(response) {
 	}
 };
 
-var emailFailureHandler = function() {
+var emailFailureHandler = function(response) {
 	alert(resources.errorMsg);
 };

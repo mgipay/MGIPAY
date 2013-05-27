@@ -434,7 +434,7 @@ var signUpFailureHandler = function(){
 
 function emailFocusIn(i)
 {
-	if($("#signUpMail"+i).val() == "Email address*")
+	if($("#signUpMail"+i).val() == "Email address")
 	{
 		$("#signUpMail"+i).val("");
 		$("#signUpMail"+i).addClass("txt_signup");
