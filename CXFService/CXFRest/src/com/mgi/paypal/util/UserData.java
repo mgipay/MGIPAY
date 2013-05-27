@@ -21,12 +21,13 @@ public class UserData {
 	private Address address;
 	private boolean transactionSuccess;
 	private String errorMessage;
-	
+
 	public boolean isTransactionSuccess() {
 		return transactionSuccess;
 	}
 
-	public void setTransactionSuccess(boolean transactionSuccess) {
+	public void setTransactionSuccess(
+			boolean transactionSuccess) {
 		this.transactionSuccess = transactionSuccess;
 	}
 
@@ -34,7 +35,8 @@ public class UserData {
 		return errorMessage;
 	}
 
-	public void setErrorMessage(String errorMessage) {
+	public void setErrorMessage(
+			String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
 
@@ -42,7 +44,8 @@ public class UserData {
 		return address;
 	}
 
-	public void setAddress(Address address) {
+	public void setAddress(
+			Address address) {
 		this.address = address;
 	}
 
@@ -50,7 +53,8 @@ public class UserData {
 		return family_name;
 	}
 
-	public void setFamily_name(String family_name) {
+	public void setFamily_name(
+			String family_name) {
 		this.family_name = family_name;
 	}
 
@@ -58,7 +62,8 @@ public class UserData {
 		return verified;
 	}
 
-	public void setVerified(boolean verified) {
+	public void setVerified(
+			boolean verified) {
 		this.verified = verified;
 	}
 
@@ -66,7 +71,8 @@ public class UserData {
 		return phone_number;
 	}
 
-	public void setPhone_number(String phone_number) {
+	public void setPhone_number(
+			String phone_number) {
 		this.phone_number = phone_number;
 	}
 
@@ -74,7 +80,8 @@ public class UserData {
 		return zoneinfo;
 	}
 
-	public void setZoneinfo(String zoneinfo) {
+	public void setZoneinfo(
+			String zoneinfo) {
 		this.zoneinfo = zoneinfo;
 	}
 
@@ -82,7 +89,8 @@ public class UserData {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(
+			String name) {
 		this.name = name;
 	}
 
@@ -90,7 +98,8 @@ public class UserData {
 		return email;
 	}
 
-	public void setEmail(String email) {
+	public void setEmail(
+			String email) {
 		this.email = email;
 	}
 
@@ -98,7 +107,8 @@ public class UserData {
 		return given_name;
 	}
 
-	public void setGiven_name(String given_name) {
+	public void setGiven_name(
+			String given_name) {
 		this.given_name = given_name;
 	}
 
@@ -106,7 +116,8 @@ public class UserData {
 		return user_id;
 	}
 
-	public void setUser_id(String user_id) {
+	public void setUser_id(
+			String user_id) {
 		this.user_id = user_id;
 	}
 
@@ -114,7 +125,8 @@ public class UserData {
 		return token;
 	}
 
-	public void setToken(String token) {
+	public void setToken(
+			String token) {
 		this.token = token;
 	}
 

@@ -278,6 +278,13 @@ public class PayPalBO {
 			String userDataString = processToken(token);
 			LOGGER.debug(userDataString);
 
+			if (token == null || token.trim().equals("")) {
+				userData.setTransactionSuccess(false);
+				userData.setErrorMessage(PropertyUtil.messageFromProperties
+						.getString("RETRY_IN_SOMETIME"));
+				return gson.toJson(userData);
+			}
+			
 			userData = (UserData) gson.fromJson(userDataString, UserData.class);
 			userData.setToken(token);
 			if (stateNameAndCodeHashtable.isEmpty()) {
@@ -288,15 +295,17 @@ public class PayPalBO {
 					.getAddress().getRegion());
 			userData.getAddress().setStateName(stateName);
 
-		} catch (Exception jsonSyntaxException) {
-			jsonSyntaxException.printStackTrace();
-			LOGGER.error(jsonSyntaxException.getLocalizedMessage());
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			LOGGER.error(exception.getLocalizedMessage());
 			userData.setTransactionSuccess(false);
 			userData.setErrorMessage(PropertyUtil.messageFromProperties
 					.getString("RETRY_IN_SOMETIME"));
 			return gson.toJson(userData);
 		}
 
+		 userData.setTransactionSuccess(true);
+		
 		LOGGER.debug(gson.toJson(userData));
 
 		LOGGER.debug("Exit getUserData.");
