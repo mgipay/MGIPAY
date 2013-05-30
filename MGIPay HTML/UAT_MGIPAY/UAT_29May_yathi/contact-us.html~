@@ -1,0 +1,203 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=0, maximum-scale=0, minimum-scale=1, user-scalable=no" />
+<meta name="description" content="Have questions about any MoneyGram-PayPal products or services? Contact the MoneyGram Customer Service team online or by phone to get your money transfer questions answered.">
+<link rel="shortcut icon" href="images/favicon.png" type="image/png">
+<title>MoneyGram Customer Service: MoneyGram By Phone | MoneyGram</title>
+<meta name="keywords" content="MoneyGram Customer Service,MoneyGram by Phone">
+<link href="css/moneygram.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script> 
+<script type="text/javascript" src="scripts/jquery.cookie.js"></script>
+<script type="text/javascript" src="scripts/global.js"></script>
+<script type="text/javascript" src="scripts/service.js"></script>
+<script type="text/javascript" src="scripts/utility.js"></script>
+<script type="text/javascript" src="scripts/contact.js"></script>
+<script type="text/javascript" src="scripts/common.js"></script>
+<script type="text/javascript" src="scripts/genric.js"></script>
+<script type="text/javascript" src="scripts/spinmin.js"></script>
+<script type="text/javascript" src="scripts/back.js"></script>
+<script language="javascript">
+/***** Google Analytics Code Start*******/
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-38945408-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+/***** Google Analytics Code Start*******/
+
+</script>
+</head>
+<body>
+	<div id="preview" style="display:none " class="loadingDiv">
+    	<div class="loading_content" id="loadingContent" >
+        	<p>Processing your request.</p><p> This will take just a moment</p>
+            <div class="clear"></div>
+            <div id="loading_div" >
+            </div>
+         </div>
+	</div>
+	<div class="mainwrapper" id="mainwrapper">
+		<div class="subwrapper">
+    		<div class="header">
+    		<div class="logo">
+    			<a href="home.html"><img src="images/logo.png"  alt="MoneyGram" class="logo_moneygram"></a>
+        		<a href="home.html"><img src="images/logo_paypal.png"  alt="PayPal" class="logo_paypal"></a>
+    		</div>
+    		<div class="topNav">
+				<a href="frequently-asked-questions.html">FAQ</a><a href="contact-us.html" id="contactUsLink">Contact Us</a><a href="moneygram-paypal-history.html" id="historyLink" class="displaynone">History</a><a class="logout displaynone" onClick="logout()" id="logoutLink">Log Out</a>
+			</div>
+    		</div>
+    		<div class="innercontainer">
+    			<div class="welcome"></div>
+        		<div class="breadcrumb"><a href="home.html">Home</a> > Contact Us</div>
+   			</div>
+  
+    <!-- Static Content Starts -->
+    <div class="staticcontainer">
+    <h1>Contact Us</h1>
+    <p>Thank you for using MoneyGram & PayPal. </p>
+<p> Please feel free to contact us anytime by mail, phone, or email.  We strive to reply to all email requests within 48 hours.  You may also want to see if your questions are answered in our <a href="frequently-asked-questions.html">Frequently Asked Questions (FAQs)</a> page</p>
+
+<div class="contactus_headquarters">
+    <p>
+    	<h1>MoneyGram World Headquarters</h1>
+    </p>
+    <p>
+    	MoneyGram International Ltd.
+    </p>
+    <p>
+    	3940 S. Teller Street
+    </p>
+    <p>
+    	Lakewood, CO 80235
+    </p>
+ </div>   
+    <div class="contact_us">
+		<ul id="contact_us_tab">
+			<li class="active"><a href="#contact_us_byPhone" class="tabphone">By phone</a></li>
+			<li><a href="#contact_us_byEmail" class="tabemail">By email</a></li>
+            <li class="tab3blank"></li>
+
+		</ul>
+		<div class="contact_us_container">
+			<div id="contact_us_byPhone" class="contact_us_content">
+				<div class="contact_us_byPhone">
+
+					<p class="nomargin">
+						MoneyGram offices in the US:</P>
+						
+						
+						 <p class="countrylbl">English and Spanish : <span>1-800-469-4993</span> </p>
+						
+						
+					
+						
+							
+                      <div class="contactAddress">      
+                    
+					</div>
+
+				</div>
+
+			</div>
+
+			<div id="contact_us_byEmail" class="contact_us_content">
+				<div class="contact_us_byEmail" id="emailDiv">
+					
+					<ul>
+						<li><label class="txtbold">First name:</label></li>
+						<li><input id='firstName' type="text" class="impFields"/>
+                        	<div class="lblerror"></div>
+                        </li>
+					</ul>
+					<ul>
+						<li><label class="txtbold">Last name:</label></li>
+						<li><input id='lastName' type="text" class="impFields"/>
+                        	<div class="lblerror"></div>
+                        </li>
+					</ul>
+					<ul>
+						<li><label class="txtbold" >E-mail address:</label></li>
+						<li><input id='emailAddress' type="email" class="impFields"/>
+                        	<div class="lblerror"></div>
+                        </li>
+					</ul>
+					<ul>
+						<li><label class="txtbold">Phone number:</label></li>
+						<li><input id='phoneNumber' type="text" class="impFields"/>
+                        	<div class="lblerror"></div>
+                        </li>
+					</ul>
+					<ul>
+						<li><label>Transaction date:</label></li>
+						<li><input id='transactionDate' type="text"/>
+                        <div class="lblerror"></div>
+                        </li>
+					</ul>
+					<ul>
+						<li><label>Transaction amount:</label></li>
+						<li><input id='transactionAmount' type="text"/>
+                        <div class="lblerror"></div>
+                        </li>
+					</ul>
+					<ul>
+						<li><label id="refnum">Reference number:</label></li>
+						<li><input  id='referenceNumber' type="text"/>
+                        <div class="lblerror"></div>
+                        </li>
+					</ul>
+					<ul>
+						<li><label class="txtbold">Reason:</label></li>
+						<li><select id="reasonID" onChange="selectedValue()">
+   <option value="General">General</option><option value="Refund">Refund</option></select></li>
+					</ul>
+
+					<ul>
+						<li><label class="txtbold">Message</label></li>
+						<li><textarea id='message'cols="37" rows="6" class="impFields"></textarea>
+                        	<div class="lblerror"></div>
+                        </li>
+					</ul>
+
+				</div>
+				<input type="button" id='sendMessage' value="Send Message >" class="button" onClick="sendMessage()">
+				<div class="contact_us_byEmail byemailmsg displaynone" id="contentDiv">
+				<p style='padding-bottom:0.5em' class="general_message">Email Sent Successfully.</p>
+                                <p style='padding-bottom:0.2em' class="general_message">For further communication, please provide this <strong>online reference number</strong> provided by Customer Service:</p>
+            	</div>
+
+			</div>
+            
+
+		</div>
+        
+	</div>
+    </div>
+    <!-- Static Content End -->
+    
+   </div>
+   <div class="clear"></div>
+   <div class="footer">
+				<div>
+					<span>© <label class="footer_year"></label> MoneyGram. All rights reserved<a href="#"  title="Back to Top" class="backtotop"></a></span><a href="privacypolicy.html">Privacy Policy</a> <a href="termsofuse.html">Terms of Use</a><a href="terms_conditions.html">Terms and Conditions</a><a href="about-moneygram-paypal.html" class="aboutlink">About MoneyGram</a>
+					
+					<p>
+						Licensed as a Money Transmitter by the Banking Department of the State of New York
+					</p>
+                    <p>
+						This website is provided by MoneyGram International, Inc. and its subsidiaries and affiliates ("MoneyGram") and PayPal. The money transfer services provided on this website are being provided solely by MoneyGram and PayPal is not responsible for the money transfer services or customer service. Please direct any comments and questions to <a href="http://www.moneygram.com/MGICorp/index.htm" target="_blank" class="noborder">MoneyGram International</a>.
+					</p>
+				</div>
+			</div>
+</div>
+</body>
+</html>
