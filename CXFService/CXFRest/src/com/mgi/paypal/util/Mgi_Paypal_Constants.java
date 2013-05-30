@@ -5,7 +5,7 @@ public class Mgi_Paypal_Constants {
 	public Mgi_Paypal_Constants() {
 
 	}
-	public static final String DATE_FORMAT = "yyyyMMdd'T'hhmmss";
+	public static final String DATE_FORMAT = "yyyyMMddhhmmss";
 
 	public static final int retryCount = 1;
 	

@@ -66,16 +66,15 @@ public class PayPalBO {
 		SenderIdentifier senderIdentifier = new SenderIdentifier();
 		senderIdentifier.setPhone(phoneNumberType);
 		DateFormat df = new SimpleDateFormat(Mgi_Paypal_Constants.DATE_FORMAT);
-		String invoice = df.format(Calendar.getInstance().getTime())
-				.concat("-").concat(referenceNumber);
-
-		payRequest.setTrackingId(invoice);
-		payRequest.setMemo(memo);
+		
+		String TrackingId =referenceNumber.concat("-").concat( df.format(Calendar.getInstance().getTime()));
+		payRequest.setTrackingId(TrackingId);
+		payRequest.setMemo(memo + referenceNumber);
 
 		Receiver receiver = new Receiver();
 		receiver.setAmount(totalAmount);
 
-		receiver.setInvoiceId(invoice);
+		receiver.setInvoiceId(referenceNumber);
 		receiver.setEmail(PropertyUtil.constantFromProperties
 				.getString("RECEIVER_EMAIL_PAY"));
 		receiver.setPaymentType("WITHDRAWAL");
