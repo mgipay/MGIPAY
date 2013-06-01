@@ -175,7 +175,7 @@ public class Test {
 			System.setProperty("http.proxyHost", "proxy.tcs.com");
 			 System.setProperty("http.proxyPort", "8080");
 			 System.setProperty("http.proxyUser", "538540");
-			 System.setProperty("http.proxyPassword", "Bala@May84");
+			 System.setProperty("http.proxyPassword", "*****");
 			com.mgi.agentconnect.client.FeeLookupRequest feeLookupRequest = new com.mgi.agentconnect.client.FeeLookupRequest();
 
 			feeLookupRequest.setAgentID("30014943");
@@ -343,7 +343,7 @@ public class Test {
 		 System.setProperty("http.proxyHost", "proxy.tcs.com");
 		 System.setProperty("http.proxyPort", "8080");
 		 System.setProperty("http.proxyUser", "538540");
-		 System.setProperty("http.proxyPassword", "Bala@May84");
+		 System.setProperty("http.proxyPassword", "*****");
 		 com.mgi.agentconnect.client.CommitTransactionRequest commitTransactionRequest = new com.mgi.agentconnect.client.CommitTransactionRequest();
 		com.mgi.agentconnect.client.CommitTransactionResponse commitTransactionResponse = null;
 
@@ -371,7 +371,7 @@ public class Test {
 		 System.setProperty("http.proxyHost", "proxy.tcs.com");
 				 System.setProperty("http.proxyPort", "8080");
 				 System.setProperty("http.proxyUser", "538540");
-				 System.setProperty("http.proxyPassword", "Bala@Apr84");
+				 System.setProperty("http.proxyPassword", "****");
 		CodeTableRequest codeTableRequest = new CodeTableRequest();
 		codeTableRequest.setAgentAllowedOnly(true);
 		codeTableRequest.setApiVersion("1211");
@@ -530,7 +530,7 @@ public class Test {
 		System.setProperty("http.proxyHost", "proxy.tcs.com");
 		System.setProperty("http.proxyPort", "8080");
 		System.setProperty("http.proxyUser", "538540");
-		System.setProperty("http.proxyPassword", "Bala@May84");
+		System.setProperty("http.proxyPassword", "*****");
 		detailLookupRequest.setAgentID("30014943");
 		detailLookupRequest.setAgentSequence("9");
 		detailLookupRequest.setApiVersion("1211");
@@ -565,7 +565,7 @@ public class Test {
 		System.setProperty("http.proxyHost", "proxy.tcs.com");
 		 System.setProperty("http.proxyPort", "8080");
 		 System.setProperty("http.proxyUser", "538540");
-		 System.setProperty("http.proxyPassword", "Bala@May84");
+		 System.setProperty("http.proxyPassword", "*****");
 		 
 		sendReversalRequest.setAgentID("30014943");
 		sendReversalRequest.setAgentSequence("9");

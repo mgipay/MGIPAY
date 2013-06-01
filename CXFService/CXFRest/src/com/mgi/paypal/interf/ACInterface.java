@@ -30,13 +30,11 @@ public interface ACInterface {
 
 	String sendValidation(SendValidationInputBean sendValidationInputBean);
 
-	String getUserLimits(UserLimitInputBean userLimitInputBean);
 
 	String sendMail(SendMailInputBean sendMailInputBean);
 
 	String getHistoryDetails(HistroyLookupInputBean histroyLookupInputBean);
 
-	String getUserData(UserDataInputBean userDataInputBean);
 
 	String getFeeLinkValue(FeeLinkValueInputBean feeLinkValueInputBean);
 
@@ -44,5 +42,11 @@ public interface ACInterface {
 
 	String sendTransactionInformationMail(
 			TransactionInformationMailInputBean transactionInformationMailinputBean);
+
+	String getUserData(
+			HttpServletRequest request, UserDataInputBean userDataInputBean);
+
+	String getUserLimits(
+			HttpServletRequest request, UserLimitInputBean userLimitInputBean);
 
 }

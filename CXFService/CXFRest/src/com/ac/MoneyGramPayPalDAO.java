@@ -179,16 +179,18 @@ public class MoneyGramPayPalDAO {
 						.getString("ORACLE_DB_PASSWORD"));
 
 		String strQuery = "SELECT * FROM (SELECT * FROM MGI_PAYPAL_TRAN_HIST "
-				+ "WHERE TRAN_STATUS = ?  order by TRAN_DATE desc) a where rownum < 1001";
+				+ "WHERE TRAN_STATUS = 'MGI_FAILED' order by TRAN_DATE desc) a where rownum < 1001";
 
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
-		preparedStatement.setString(1, TransactionStatus.MGI_FAILED.value());
+//		preparedStatement.setString(1, TransactionStatus.MGI_FAILED.value());
 
 		System.out.println(strQuery);
-		
+//		System.out.println(TransactionStatus.MGI_FAILED.value());
+
 		ResultSet resultSet = preparedStatement.executeQuery();
 		List<String> mgiTransactionSessinIdList = new ArrayList<String>();
+//		System.out.println(resultSet.);
 		while (resultSet.next()) {
 //			HistoryDetails historyDetails = new HistoryDetails();
 //			historyDetails.setMgiReferenceNumber(resultSet
@@ -199,6 +201,7 @@ public class MoneyGramPayPalDAO {
 //					.getBigDecimal("TRAN_FEE"));
 //			historyDetails.setMgiTransactionSessionID(resultSet
 //					.getString("MGI_SESS_ID"));
+			System.out.println(resultSet.getString("MGI_SESS_ID"));
 			mgiTransactionSessinIdList.add(resultSet
 					.getString("MGI_SESS_ID"));
 

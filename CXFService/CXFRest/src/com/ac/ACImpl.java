@@ -2,6 +2,7 @@ package com.ac;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -54,7 +55,9 @@ public class ACImpl implements ACInterface {
 
 		
 		LOGGER.debug("IP Address : " + request.getRemoteAddr());
-
+//		HttpSession httpSession = request.getSession();
+//		sys
+//httpSession.
 		FeeDetailsBO feeDetailsBO = new FeeDetailsBO();
 		return feeDetailsBO.getFee(feeLookupInputBean);
 	}
@@ -71,7 +74,7 @@ public class ACImpl implements ACInterface {
 	@POST
 	@Path("/getUserLimits")
 	@Override
-	public String getUserLimits(UserLimitInputBean userLimitInputBean) {
+	public String getUserLimits(@Context HttpServletRequest request,UserLimitInputBean userLimitInputBean) {
 
 		return PayPalBO.getUserLimits(userLimitInputBean);
 	}
@@ -79,8 +82,12 @@ public class ACImpl implements ACInterface {
 	@POST
 	@Path("/getUserData")
 	@Override
-	public String getUserData(UserDataInputBean userDataInputBean) {
+	public String getUserData(@Context HttpServletRequest request,UserDataInputBean userDataInputBean) {
 		
+		
+		HttpSession httpSession = request.getSession();
+		httpSession.setAttribute("userLoggedIn", true);
+//		httpSession.
 		return PayPalBO.getUserData(userDataInputBean);
 	}
 
