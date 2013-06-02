@@ -12,7 +12,13 @@ xsi:schemaLocation="http://cxf.apache.org/configuration/security http://cxf.apac
  <jaxrs:serviceBeans>
   <ref bean="ACService"/>
  </jaxrs:serviceBeans>
+
+<jaxrs:providers>
+    <bean id="cxfExceptionMapper" class="com.mgi.paypal.util.CXFExceptionMapper" /> 
+ </jaxrs:providers>
 </jaxrs:server>
+
+
 
 <bean id="ACService" class="com.ac.ACImpl"/>
 
