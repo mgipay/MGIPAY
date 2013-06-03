@@ -1,0 +1,160 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=0, maximum-scale=0, minimum-scale=1, user-scalable=no" />
+		<meta name="description" content="Get easy access to your MoneyGram transaction history when you use the service to withdraw cash from your PayPal account.">
+		<link rel="shortcut icon" href="images/favicon.png" type="image/png">
+		<title>PayPal Account History: MoneyGram Transaction History | MoneyGram</title>
+		<meta name="keywords" content="PayPal Account History,MoneyGram Transaction History">
+		<link href="css/styles.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="scripts/topmenu.js"></script>
+		<script type="text/javascript" src="scripts/tabContent.js"></script>
+		<script type="text/javascript" src="scripts/jquery.cookie.js"></script>
+		<script type="text/javascript" src="scripts/common.js"></script>
+		<script type="text/javascript" src="scripts/spinmin.js"></script>
+		<script type="text/javascript" src="scripts/history.js"></script>
+		<script type="text/javascript" src="scripts/global.js"></script>
+		<script type="text/javascript" src="scripts/service.js"></script>
+		<script type="text/javascript" src="scripts/utility.js"></script>
+		<script type="text/javascript" src="scripts/genric.js"></script>
+		<script language="javascript">
+			/***** Google Analytics Code Start*******/
+
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-38945408-1']);
+			_gaq.push(['_trackPageview']);
+
+			(function() {
+				var ga = document.createElement('script');
+				ga.type = 'text/javascript';
+				ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(ga, s);
+			})();
+
+			/***** Google Analytics Code Start*******/
+		</script>
+
+	</head>
+
+	<body>
+		<div id="preview" style="display:none">
+			<div class="loading_content" id="loadingContent">
+				<p>
+					Processing your request.
+				</p>
+				<p>
+					This will take just a moment
+				</p>
+				<div class="clear"></div>
+				<div id="loading_div"></div>
+			</div>
+		</div>
+		<div id="wrapper">
+			<!-- #header -->
+			<div id="header">
+				<header>
+					<ul class="menuheader">
+						<li class="btnnav">
+							<a href="javascript:history.back()"><img src="images/btn_arrow.png"></a>
+						</li>
+						<li class="logomoneygramblock">
+							<a href="home.html"><img src="images/logo.png"></a>
+						</li>
+						<li class="logopaypalblock">
+							<a href="home.html"><img src="images/logoPaypal.png"></a>
+						</li>
+						<li class="menu" id="menu_active">
+							<a href="#" class="topmenulink"><img src="images/icon_menu.png" id="menuActive"></a>
+						</li>
+					</ul>
+				</header>
+				<!-- Dropdown Menu -->
+				<ul class="topmenu">
+					<li>
+						<a href="frequently-asked-questions.html"> FAQs</a>
+					</li>
+					<li>
+						<a href="contact-us.html">Contact Us</a>
+					</li>
+					<li id="historyLink" class="displaynone">
+						<a href="AutherticatedHome.html">History</a>
+					</li>
+					<li>
+						<a href="privacypolicy.html">Privacy Policy</a>
+					</li>
+					<li>
+						<a href="termsofuse.html"> Terms of Use</a>
+					</li>
+					<li>
+						<a href="terms_and_conditions.html">Terms and Conditions</a>
+					</li>
+					<li>
+						<a href="about-moneygram-paypal.html">About MoneyGram</a>
+					</li>
+					<li id="loginLink" class="displayblock">
+						<a href="home.html">Login</a>
+					</li>
+					<li id="logoutLink" class="displaynone">
+						<a onClick="logout()">Logout</a>
+					</li>
+				</ul>
+
+				<!-- Dropdown Menu End -->
+			</div>
+
+			<!-- #content -->
+			<div id="content">
+				<section class="sectioncontent">
+					<div class="staticcontainer">
+						<div class="authenticatedhome">
+
+							<h1>View Your PayPal Account History and MoneyGram Transaction History</h1>
+
+							<p class="displaynone">
+								Currently, you don't have any recent withdraw activity in this account.  To see your add cash history, please log into <a target="_blank" href='https://www.paypal.com/cgi-bin/webscr?cmd=_cip-verification&flow=CASH&return_url=size="3">http://54.236.96.35/frequently-asked-questions.html&cancel_url=http://54.236.96.35/frequently-asked-questions.html'>paypal.com. </a>
+							</p>
+							<p class="displaynone">
+								Thank you for using MoneyGram to withdraw cash from your PayPal balance.
+							</p>
+
+						</div>
+						<div class="authenticateGrid">
+							<ul class="tablegrid" id="historyTable">
+
+							</ul>
+						</div>
+					</div>
+				</section>
+			</div>
+
+			<!-- #footer -->
+			<div id="footer">
+				<div class="footertogglemenu">
+					<fieldset id='menuFieldSet' >
+						<legend>
+							<a  id='menuexpandId'   class="menuexpand disblock"></a>
+						</legend>
+						<nav id="navfootermenu">
+							<a href="addcash.html" class="addcash1"></a><a href="NonauthenWithdraw.html" class="withdrawcash1"></a><a href="locations.html" class="locations1"></a>
+						</nav>
+					</fieldset>
+				</div>
+				<footer>
+					<div class="copyright">
+						<a href="https://qapaypal.qa.moneygram.com/home.html?mobile=false" target='_blank'>Visit Full Site</a><span>© <label class="footer_year"></label> MoneyGram. All Rights Reserved </span>
+					</div>
+					<p>
+						MoneyGram is licensed as a Money Transmitter by the Banking Department of the State of New York
+					</p>
+					<p>
+						This website is provided by MoneyGram Payment Systems, Inc. The money transfer services on this website are being provided solely by MoneyGram and PayPal is not responsible for the money transfer services or customer service. Please direct any comments and questions to MoneyGram.
+					</p>
+				</footer>
+			</div>
+		</div>
+	</body>
+</html>
