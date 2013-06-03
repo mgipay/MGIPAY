@@ -401,7 +401,7 @@ public class MoneyGramPayPalDAO {
 			preparedStatement.executeUpdate();
 			connection.close();
 		} catch (Exception exception) {
-			LOGGER.error("Updating History failed for PAYPAL_TRAN_STATUS : "
+			LOGGER.error("Updating History failed for MGI_TRAN_STATUS : "
 					+ detailLookUpStatus + " and MGI_SESS_ID : "
 					+ mgiTransactionSessionID);
 		}

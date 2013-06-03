@@ -16,8 +16,7 @@ public class CXFExceptionMapper implements ExceptionMapper<Exception> {
 			Exception exception) {
 		return Response
 				.status(Status.BAD_REQUEST)
-				.entity("An error has occurred while processing. Please try again. " +
-						"If you continue to receive this error, contact MoneyGram at 1-800-MONEYGRAM. Thank you.")
+				.entity(Mgi_Paypal_Constants.CONTACT_MGI_ERROR_MESSAGE)
 				.build();
 	}
 

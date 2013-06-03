@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 import com.mgi.paypal.inputbean.UserDataInputBean;
 import com.mgi.paypal.inputbean.UserLimitInputBean;
 import com.mgi.paypal.util.AccessToken;
+import com.mgi.paypal.util.MGI_PayPal_Util;
 import com.mgi.paypal.util.Mgi_Paypal_Constants;
 import com.mgi.paypal.util.PropertyUtil;
 import com.mgi.paypal.util.UserData;
@@ -69,8 +70,7 @@ public class PayPalBO {
 		
 		String TrackingId =referenceNumber.concat("-").concat( df.format(Calendar.getInstance().getTime()));
 		payRequest.setTrackingId(TrackingId);
-		payRequest.setMemo(memo + referenceNumber);
-
+		payRequest.setMemo(memo.concat(" ").concat(referenceNumber));
 		Receiver receiver = new Receiver();
 		receiver.setAmount(totalAmount);
 
@@ -110,7 +110,19 @@ public class PayPalBO {
 	public static String getUserLimits(UserLimitInputBean userLimitInputBean) {
 
 		LOGGER.debug("Enter getUserLimits.");
-
+		
+		com.mgi.paypal.response.GetUserLimitsResponse getUserLimitsResponseForUI = new com.mgi.paypal.response.GetUserLimitsResponse();
+		Gson gson = new Gson();
+		if (MGI_PayPal_Util.isInputNull(userLimitInputBean)) {
+			CurrencyType currencyType = new CurrencyType();
+			currencyType.setAmount(new BigDecimal(0));
+			currencyType.setCode("Invalid Code");
+			getUserLimitsResponseForUI.setCurrencyType(currencyType);
+			getUserLimitsResponseForUI.setTransactionSuccess(false);
+			getUserLimitsResponseForUI
+					.setErrorMessage(Mgi_Paypal_Constants.CONTACT_MGI_ERROR_MESSAGE);
+			return gson.toJson(getUserLimitsResponseForUI);
+		}
 		PhoneNumberType phoneNumberType = new PhoneNumberType();
 		phoneNumberType.setCountryCode("1");
 		phoneNumberType.setPhoneNumber(userLimitInputBean.getPhoneNumber());
@@ -135,10 +147,8 @@ public class PayPalBO {
 				PropertyUtil.constantFromProperties.getString("PP_LIMIT_TYPE"));
 
 		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
-		Gson gson = new Gson();
-
-		com.mgi.paypal.response.GetUserLimitsResponse getUserLimitsResponseForReturn = new com.mgi.paypal.response.GetUserLimitsResponse();
-		int retryCount = Mgi_Paypal_Constants.retryCount;
+		
+		int retryCount = Mgi_Paypal_Constants.RETRY_COUNT;
 		while (retryCount >= 1) {
 			try {
 				AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client client = new AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client();
@@ -151,8 +161,8 @@ public class PayPalBO {
 				if (retryCount == 0) {
 					exception.printStackTrace();
 					LOGGER.debug("Max number of retries for GetUserLimits reached. Call Failed.");
-					getUserLimitsResponseForReturn.setTransactionSuccess(false);
-					getUserLimitsResponseForReturn
+					getUserLimitsResponseForUI.setTransactionSuccess(false);
+					getUserLimitsResponseForUI
 							.setErrorMessage(PropertyUtil.messageFromProperties
 									.getString("SESSION_EXPIRED"));
 
@@ -164,9 +174,9 @@ public class PayPalBO {
 		if (getUserLimitsResponse != null
 				&& getUserLimitsResponse.getUserLimit() != null
 				&& !getUserLimitsResponse.getUserLimit().isEmpty()) {
-			getUserLimitsResponseForReturn.setTransactionSuccess(true);
+			getUserLimitsResponseForUI.setTransactionSuccess(true);
 
-			getUserLimitsResponseForReturn
+			getUserLimitsResponseForUI
 					.setCurrencyType(getUserLimitsResponse.getUserLimit()
 							.get(0).getLimitAmount());
 
@@ -175,16 +185,16 @@ public class PayPalBO {
 			CurrencyType currencyType = new CurrencyType();
 			currencyType.setAmount(new BigDecimal(0));
 			currencyType.setCode("Invalid Code");
-			getUserLimitsResponseForReturn.setCurrencyType(currencyType);
-			getUserLimitsResponseForReturn.setTransactionSuccess(false);
-			getUserLimitsResponseForReturn
+			getUserLimitsResponseForUI.setCurrencyType(currencyType);
+			getUserLimitsResponseForUI.setTransactionSuccess(false);
+			getUserLimitsResponseForUI
 					.setErrorMessage(PropertyUtil.messageFromProperties
 							.getString("SESSION_EXPIRED"));
 		}
 		
 		LOGGER.debug("Exit getUserLimits.");
 
-		return gson.toJson(getUserLimitsResponseForReturn);
+		return gson.toJson(getUserLimitsResponseForUI);
 	}
 
 	private static String createToken(String codeValue) throws Exception {
@@ -263,7 +273,7 @@ public class PayPalBO {
 		return responseBody;
 	}
 
-	public static String getUserData(UserDataInputBean userDataInputBean) {
+	public static UserData getUserData(UserDataInputBean userDataInputBean) {
 
 		LOGGER.debug("Enter getUserData.");
 
@@ -281,7 +291,7 @@ public class PayPalBO {
 				userData.setTransactionSuccess(false);
 				userData.setErrorMessage(PropertyUtil.messageFromProperties
 						.getString("RETRY_IN_SOMETIME"));
-				return gson.toJson(userData);
+				return userData;
 			}
 			
 			userData = (UserData) gson.fromJson(userDataString, UserData.class);
@@ -300,7 +310,7 @@ public class PayPalBO {
 			userData.setTransactionSuccess(false);
 			userData.setErrorMessage(PropertyUtil.messageFromProperties
 					.getString("RETRY_IN_SOMETIME"));
-			return gson.toJson(userData);
+			return userData;
 		}
 
 		 userData.setTransactionSuccess(true);
@@ -309,6 +319,6 @@ public class PayPalBO {
 
 		LOGGER.debug("Exit getUserData.");
 
-		return gson.toJson(userData);
+		return userData;
 	}
 }

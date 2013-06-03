@@ -64,7 +64,7 @@ public class CountryBO {
 				codeTableRequest.setTimeStamp(CalendarUtil.getTimeStamp());
 				codeTableRequest.setLanguage(PropertyUtil.constantFromProperties
 						.getString("LANGUAGE_CODE_ENGLISH"));
-				int retryCount = Mgi_Paypal_Constants.retryCount;
+				int retryCount = Mgi_Paypal_Constants.RETRY_COUNT;
 				boolean responseRecived = false;
 				while (retryCount >= 1) {
 

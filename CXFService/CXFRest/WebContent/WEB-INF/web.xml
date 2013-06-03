@@ -18,6 +18,21 @@
         <servlet-name>CXFServlet</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
+    
+        
+    <filter>
+      <filter-name>RequestValidationFilter</filter-name>
+      <filter-class>com.mgi.paypal.util.RequestValidationFilter</filter-class>
+    </filter>
+    
+    
+    <filter-mapping>
+      <filter-name>RequestValidationFilter</filter-name>
+      <servlet-name>CXFServlet</servlet-name>
+    </filter-mapping>
+
+    
+    
     <filter>
 		<filter-name>CORS</filter-name>
 		<filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>

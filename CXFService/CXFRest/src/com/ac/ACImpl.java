@@ -2,7 +2,6 @@ package com.ac;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -26,6 +25,7 @@ import com.mgi.paypal.interf.ACInterface;
 import com.mgi.paypal.response.CommitTransactionResponse;
 import com.mgi.paypal.response.SendValidationResponse;
 import com.mgi.paypal.util.PropertyUtil;
+import com.mgi.paypal.util.UserData;
 import com.paypal.adaptivepayment.client.PayResponse;
 
 @Consumes("application/json")
@@ -49,17 +49,14 @@ public class ACImpl implements ACInterface {
 	@POST
 	@Path("/getFee")
 	@Override
-	public String getFee(@Context HttpServletRequest request,
+	public String getFee(
+			@Context HttpServletRequest request,
 			@Context HttpServletResponse response,
 			FeeLookupInputBean feeLookupInputBean) {
 
-		
 		LOGGER.debug("IP Address : " + request.getRemoteAddr());
-//		HttpSession httpSession = request.getSession();
-//		sys
-//httpSession.
-		FeeDetailsBO feeDetailsBO = new FeeDetailsBO();
-		return feeDetailsBO.getFee(feeLookupInputBean);
+
+		return FeeDetailsBO.getFee(feeLookupInputBean);
 	}
 
 	/**
@@ -74,7 +71,11 @@ public class ACImpl implements ACInterface {
 	@POST
 	@Path("/getUserLimits")
 	@Override
-	public String getUserLimits(@Context HttpServletRequest request,UserLimitInputBean userLimitInputBean) {
+	public String getUserLimits(
+			@Context HttpServletRequest request,
+			UserLimitInputBean userLimitInputBean) {
+		userLimitInputBean.setEmailID((String) request.getSession()
+				.getAttribute("customerEmail"));
 
 		return PayPalBO.getUserLimits(userLimitInputBean);
 	}
@@ -82,13 +83,21 @@ public class ACImpl implements ACInterface {
 	@POST
 	@Path("/getUserData")
 	@Override
-	public String getUserData(@Context HttpServletRequest request,UserDataInputBean userDataInputBean) {
-		
-		
-		HttpSession httpSession = request.getSession();
-		httpSession.setAttribute("userLoggedIn", true);
-//		httpSession.
-		return PayPalBO.getUserData(userDataInputBean);
+	public String getUserData(
+			@Context HttpServletRequest request,
+			UserDataInputBean userDataInputBean) {
+
+		UserData userData = PayPalBO.getUserData(userDataInputBean);
+
+		if (userData.isTransactionSuccess()) {
+			request.getSession().setAttribute("userLoggedIn", "true");
+			request.getSession().setAttribute("paypalToken",
+					userData.getToken());
+			request.getSession().setAttribute("customerEmail",
+					userData.getEmail());
+		}
+
+		return new Gson().toJson(userData);
 	}
 
 	/**
@@ -101,7 +110,8 @@ public class ACImpl implements ACInterface {
 	@POST
 	@Path("/getFeeLinkValue")
 	@Override
-	public String getFeeLinkValue(FeeLinkValueInputBean feeLinkValueInputBean) {
+	public String getFeeLinkValue(
+			FeeLinkValueInputBean feeLinkValueInputBean) {
 
 		FeeDetailsBO feeDetailsBO = new FeeDetailsBO();
 		return feeDetailsBO.getFeeLinkValue(feeLinkValueInputBean);
@@ -110,7 +120,17 @@ public class ACImpl implements ACInterface {
 	@POST
 	@Path("/sendmail")
 	@Override
-	public String sendMail(SendMailInputBean sendMailInputBean) {
+	public String sendMail(
+			@Context HttpServletRequest request,
+			SendMailInputBean sendMailInputBean) {
+
+		String userLoggedIn = (String) request.getSession().getAttribute(
+				"userLoggedIn");
+
+		if (userLoggedIn.equalsIgnoreCase("true")) {
+			sendMailInputBean.setCustomerEmailId((String) request.getSession()
+					.getAttribute("customerEmail"));
+		}
 
 		MailServiceBO mailServiceBO = new MailServiceBO();
 		return mailServiceBO.sendReportInformationMail(sendMailInputBean);
@@ -119,7 +139,8 @@ public class ACImpl implements ACInterface {
 	@POST
 	@Path("/sendProofMessage")
 	@Override
-	public String sendProofMessage(SendProofInputBean sendProofInputBean) {
+	public String sendProofMessage(
+			SendProofInputBean sendProofInputBean) {
 
 		SignUpBO signUpBO = new SignUpBO();
 		return signUpBO.sendProofMessage(sendProofInputBean);
@@ -129,8 +150,12 @@ public class ACImpl implements ACInterface {
 	@Path("/sendTransactionInformationMail")
 	@Override
 	public String sendTransactionInformationMail(
+			@Context HttpServletRequest request,
 			TransactionInformationMailInputBean transactionInformationMailInputBean) {
-		
+
+		transactionInformationMailInputBean.setCustomerEmail((String) request
+				.getSession().getAttribute("customerEmail"));
+
 		MailServiceBO mailServiceBO = new MailServiceBO();
 		return mailServiceBO.sendTransactionInformationMail(
 				transactionInformationMailInputBean.getCustomerEmail(),
@@ -139,7 +164,7 @@ public class ACImpl implements ACInterface {
 				transactionInformationMailInputBean.getCustomerName(),
 				transactionInformationMailInputBean.getStateName(),
 				transactionInformationMailInputBean.getFee());
-			
+
 	}
 
 	/**
@@ -157,7 +182,11 @@ public class ACImpl implements ACInterface {
 	@Path("/getHistoryDetails")
 	@Override
 	public String getHistoryDetails(
+			@Context HttpServletRequest request,
 			HistroyLookupInputBean histroyLookupInputBean) {
+
+		histroyLookupInputBean.setCustomerEmailId((String) request.getSession()
+				.getAttribute("customerEmail"));
 
 		return HistoryBO.retrieveHistoryDetails(histroyLookupInputBean);
 	}
@@ -191,7 +220,12 @@ public class ACImpl implements ACInterface {
 	@POST
 	@Path("/sendValidation")
 	@Override
-	public String sendValidation(SendValidationInputBean sendValidationInputBean) {
+	public String sendValidation(
+			@Context HttpServletRequest request,
+			SendValidationInputBean sendValidationInputBean) {
+
+		sendValidationInputBean.setSenderEmail((String) request.getSession()
+				.getAttribute("customerEmail"));
 
 		// insert session , consumer ID in history table.
 		MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
@@ -203,12 +237,14 @@ public class ACImpl implements ACInterface {
 			// If insert DB failed , then return error msg to UI.
 			LOGGER.error(exception.getLocalizedMessage());
 			sendValidationResponse.setTransactionSuccess(false);
-			sendValidationResponse.setErrorMessage(PropertyUtil.messageFromProperties
-					.getString("TRANSACTION_FAILED_RETRY"));
+			sendValidationResponse
+					.setErrorMessage(PropertyUtil.messageFromProperties
+							.getString("TRANSACTION_FAILED_RETRY"));
 			return new Gson().toJson(sendValidationResponse);
 		}
 
-		sendValidationResponse = TransactionBO.validate(sendValidationInputBean);
+		sendValidationResponse = TransactionBO
+				.validate(sendValidationInputBean);
 
 		if (!sendValidationResponse.isTransactionSuccess()) {
 			// update history table 'send_validation_failed'
@@ -223,8 +259,7 @@ public class ACImpl implements ACInterface {
 						+ sendValidationInputBean.getMgiTransactionSessionID());
 			}
 		}
-		
-		
+
 		return new Gson().toJson(sendValidationResponse);
 	}
 
@@ -243,9 +278,28 @@ public class ACImpl implements ACInterface {
 	@Path("/commitTransaction")
 	@Override
 	public String commitTransaction(
+			@Context HttpServletRequest request,
 			CommitTransactionInputBean commitTransactionInputBean) {
 
 		LOGGER.debug("Enter commitTransaction.");
+
+		// validate payPal token and current session are valid.
+
+		String paypalToken = (String) request.getSession().getAttribute(
+				"paypalToken");
+		if (!commitTransactionInputBean.getToken().equals(paypalToken)) {
+			LOGGER.debug("Invalid token in input bean : Token In session : "
+					+ paypalToken + " Token from UI : "
+					+ commitTransactionInputBean.getToken());
+
+			CommitTransactionResponse commitTransactionResponse = new CommitTransactionResponse();
+			commitTransactionResponse.setTransactionSuccess(false);
+			commitTransactionResponse.setErrorMessage("Invalid Transaction.");
+
+			return new Gson().toJson(commitTransactionResponse);
+		}
+		commitTransactionInputBean.setCustomerEmail((String) request
+				.getSession().getAttribute("customerEmail"));
 
 		CommitTransactionResponse commitTransactionResponse = new CommitTransactionResponse();
 		MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
@@ -256,18 +310,19 @@ public class ACImpl implements ACInterface {
 
 		if (!commitTransactionResponse.isTransactionSuccess()) {
 			// If Commit FAILED .
-			//Update history 'COMMIT_TRANSACTION_FAILED'
+			// Update history 'COMMIT_TRANSACTION_FAILED'
 			try {
 				moneyGramPayPalDAO
-				.updateHistorySendValidationOrCommitTransactionFailed(commitTransactionInputBean
-						.getMgiTransactionSessionID());
+						.updateHistorySendValidationOrCommitTransactionFailed(commitTransactionInputBean
+								.getMgiTransactionSessionID());
 			} catch (Exception exception) {
 				exception.getLocalizedMessage();
 				LOGGER.error("Updating history table as 'MGI_FAILED' failed for MgiTransactionSessionID : "
-						+ commitTransactionInputBean.getMgiTransactionSessionID());
+						+ commitTransactionInputBean
+								.getMgiTransactionSessionID());
 
 			}
-			
+
 			return new Gson().toJson(commitTransactionResponse);
 		}
 
@@ -290,9 +345,8 @@ public class ACImpl implements ACInterface {
 
 		PayResponse payResponse = null;
 		try {
-			payResponse = PayPalBO.payToMoneyGram(
-					commitTransactionInputBean.getToken(),
-					commitTransactionInputBean.getCustomerEmail(),
+			payResponse = PayPalBO.payToMoneyGram(commitTransactionInputBean
+					.getToken(), commitTransactionInputBean.getCustomerEmail(),
 					commitTransactionInputBean.getTransactionAmount(),
 					commitTransactionInputBean.getCustomerPhoneNumber(),
 					commitTransactionResponse.getReferenceNumber(),
@@ -322,9 +376,8 @@ public class ACImpl implements ACInterface {
 		// update history PAYPAL_TRAN_ID = payResponse.getPayKey() and
 
 		try {
-			moneyGramPayPalDAO.updateHistoryAfterPay(
-					commitTransactionInputBean.getMgiTransactionSessionID(),
-					payResponse.getPayKey());
+			moneyGramPayPalDAO.updateHistoryAfterPay(commitTransactionInputBean
+					.getMgiTransactionSessionID(), payResponse.getPayKey());
 		} catch (Exception exception) {
 			LOGGER.error("Updating PAYPAL_TRAN_ID in history Failed. PAYPAL_TRAN_ID : "
 					+ payResponse.getPayKey()
@@ -339,8 +392,9 @@ public class ACImpl implements ACInterface {
 		return new Gson().toJson(commitTransactionResponse);
 	}
 
-	private static String payAPIFailed(String customerEmail,
-			String mgiTransactionSessionID, String referenceNumber) {
+	private static String payAPIFailed(
+			String customerEmail, String mgiTransactionSessionID,
+			String referenceNumber) {
 
 		LOGGER.error("Pay API Call failed for email Id : " + customerEmail
 				+ " MgiTransactionSessionID : " + mgiTransactionSessionID
@@ -352,13 +406,15 @@ public class ACImpl implements ACInterface {
 		} catch (Exception exception) {
 
 			exception.printStackTrace();
-			LOGGER.error("Updating TRAN_STATUS = 'PAYPAL_FAILED' in history table fai" +
-					"led for mgiTransactionSessionID : " + mgiTransactionSessionID);
+			LOGGER.error("Updating TRAN_STATUS = 'PAYPAL_FAILED' in history table fai"
+					+ "led for mgiTransactionSessionID : "
+					+ mgiTransactionSessionID);
 		}
 		CommitTransactionResponse commitTransactionResponse = new CommitTransactionResponse();
 		commitTransactionResponse.setTransactionSuccess(false);
-		commitTransactionResponse.setErrorMessage(PropertyUtil.messageFromProperties
-				.getString("TRANSACTION_FAILED_RETRY"));
+		commitTransactionResponse
+				.setErrorMessage(PropertyUtil.messageFromProperties
+						.getString("TRANSACTION_FAILED_RETRY"));
 
 		return new Gson().toJson(commitTransactionResponse);
 

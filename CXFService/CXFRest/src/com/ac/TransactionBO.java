@@ -105,7 +105,7 @@ public class TransactionBO {
 
 		com.mgi.paypal.response.SendValidationResponse sendValidationResponseForUI 
 		= new com.mgi.paypal.response.SendValidationResponse();
-		int retryCount = Mgi_Paypal_Constants.retryCount;
+		int retryCount = Mgi_Paypal_Constants.RETRY_COUNT;
 		
 		// TODO 
 		
@@ -247,7 +247,7 @@ public class TransactionBO {
 		
 		LOGGER.debug(new XStream().toXML(commitTransactionRequest));
 		
-		int retryCount = Mgi_Paypal_Constants.retryCount;
+		int retryCount = Mgi_Paypal_Constants.RETRY_COUNT;
 		while (retryCount >= 1) {
 			try {
 				AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();

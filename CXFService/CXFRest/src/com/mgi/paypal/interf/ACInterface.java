@@ -17,36 +17,42 @@ import com.mgi.paypal.inputbean.UserLimitInputBean;
 
 public interface ACInterface {
 
-	String getFee(@Context HttpServletRequest request,
+	String getFee(
+			@Context HttpServletRequest request,
 			@Context HttpServletResponse response,
 			FeeLookupInputBean feeLookupInputBean);
 
-	String commitTransaction(
-			CommitTransactionInputBean commitTransactionInputBean);
-
 	String getState();
 
-//	String sendReversal(SendReversalInputBean sendReversalInputBean);
+	String getFeeLinkValue(
+			FeeLinkValueInputBean feeLinkValueInputBean);
 
-	String sendValidation(SendValidationInputBean sendValidationInputBean);
-
-
-	String sendMail(SendMailInputBean sendMailInputBean);
-
-	String getHistoryDetails(HistroyLookupInputBean histroyLookupInputBean);
-
-
-	String getFeeLinkValue(FeeLinkValueInputBean feeLinkValueInputBean);
-
-	String sendProofMessage(SendProofInputBean sendProofInputBean);
-
-	String sendTransactionInformationMail(
-			TransactionInformationMailInputBean transactionInformationMailinputBean);
+	String sendProofMessage(
+			SendProofInputBean sendProofInputBean);
 
 	String getUserData(
 			HttpServletRequest request, UserDataInputBean userDataInputBean);
 
+	String commitTransaction(
+			HttpServletRequest request,
+			CommitTransactionInputBean commitTransactionInputBean);
+
 	String getUserLimits(
 			HttpServletRequest request, UserLimitInputBean userLimitInputBean);
+
+	String sendMail(
+			HttpServletRequest request, SendMailInputBean sendMailInputBean);
+
+	String sendTransactionInformationMail(
+			HttpServletRequest request,
+			TransactionInformationMailInputBean transactionInformationMailInputBean);
+
+	String getHistoryDetails(
+			HttpServletRequest request,
+			HistroyLookupInputBean histroyLookupInputBean);
+
+	String sendValidation(
+			HttpServletRequest request,
+			SendValidationInputBean sendValidationInputBean);
 
 }
