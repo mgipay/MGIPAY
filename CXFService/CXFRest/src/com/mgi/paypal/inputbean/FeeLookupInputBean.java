@@ -12,6 +12,16 @@ public class FeeLookupInputBean {
 	}
 
 	private BigDecimal amount;
+	
+	private String token;
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
 
 	public BigDecimal getAmount() {
 		return amount;

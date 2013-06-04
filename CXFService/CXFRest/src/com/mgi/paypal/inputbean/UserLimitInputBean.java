@@ -19,6 +19,16 @@ public class UserLimitInputBean {
 	private String emailID;
 	
 	private String phoneNumber;
+	
+	private String token;
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
 
 	public String getPhoneNumber() {
 		return phoneNumber;

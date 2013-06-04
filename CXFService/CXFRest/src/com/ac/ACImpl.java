@@ -23,7 +23,10 @@ import com.mgi.paypal.inputbean.UserDataInputBean;
 import com.mgi.paypal.inputbean.UserLimitInputBean;
 import com.mgi.paypal.interf.ACInterface;
 import com.mgi.paypal.response.CommitTransactionResponse;
+import com.mgi.paypal.response.FeeLookupResponse;
+import com.mgi.paypal.response.HistroyLookupResponse;
 import com.mgi.paypal.response.SendValidationResponse;
+import com.mgi.paypal.response.TransactionInformationMailResponse;
 import com.mgi.paypal.util.PropertyUtil;
 import com.mgi.paypal.util.UserData;
 import com.paypal.adaptivepayment.client.PayResponse;
@@ -50,11 +53,28 @@ public class ACImpl implements ACInterface {
 	@Path("/getFee")
 	@Override
 	public String getFee(
-			@Context HttpServletRequest request,
+			@Context HttpServletRequest httpServletRequest,
 			@Context HttpServletResponse response,
 			FeeLookupInputBean feeLookupInputBean) {
 
-		LOGGER.debug("IP Address : " + request.getRemoteAddr());
+		String paypalToken = (String) httpServletRequest.getSession()
+				.getAttribute("paypalToken");
+		if (feeLookupInputBean.getToken() == null
+				|| !feeLookupInputBean.getToken().equals(paypalToken)) {
+			LOGGER.debug("Invalid token in input bean : Token In session : "
+					+ paypalToken + " Token from UI : "
+					+ feeLookupInputBean.getToken());
+
+			FeeLookupResponse feeLookupResponseUI = new FeeLookupResponse();
+			feeLookupResponseUI.setErrorMessage("Invalid Transaction.");
+			feeLookupResponseUI.setTransactionSuccess(false);
+
+			return new Gson().toJson(feeLookupResponseUI);
+		}
+		
+		
+		
+		LOGGER.debug("IP Address : " + httpServletRequest.getRemoteAddr());
 
 		return FeeDetailsBO.getFee(feeLookupInputBean);
 	}
@@ -72,9 +92,27 @@ public class ACImpl implements ACInterface {
 	@Path("/getUserLimits")
 	@Override
 	public String getUserLimits(
-			@Context HttpServletRequest request,
+			@Context HttpServletRequest httpServletRequest,
 			UserLimitInputBean userLimitInputBean) {
-		userLimitInputBean.setEmailID((String) request.getSession()
+		
+		String paypalToken = (String) httpServletRequest.getSession()
+				.getAttribute("paypalToken");
+		if (userLimitInputBean.getToken() == null
+				|| !userLimitInputBean.getToken().equals(paypalToken)) {
+			LOGGER.debug("Invalid token in input bean : Token In session : "
+					+ paypalToken + " Token from UI : "
+					+ userLimitInputBean.getToken());
+
+			com.mgi.paypal.response.GetUserLimitsResponse getUserLimitsResponse 
+			= new com.mgi.paypal.response.GetUserLimitsResponse();
+			getUserLimitsResponse.setErrorMessage("Invalid Transaction.");
+			getUserLimitsResponse.setTransactionSuccess(false);
+
+			return new Gson().toJson(getUserLimitsResponse);
+		}
+		
+		
+		userLimitInputBean.setEmailID((String) httpServletRequest.getSession()
 				.getAttribute("customerEmail"));
 
 		return PayPalBO.getUserLimits(userLimitInputBean);
@@ -84,16 +122,16 @@ public class ACImpl implements ACInterface {
 	@Path("/getUserData")
 	@Override
 	public String getUserData(
-			@Context HttpServletRequest request,
+			@Context HttpServletRequest httpServletRequest,
 			UserDataInputBean userDataInputBean) {
 
 		UserData userData = PayPalBO.getUserData(userDataInputBean);
 
 		if (userData.isTransactionSuccess()) {
-			request.getSession().setAttribute("userLoggedIn", "true");
-			request.getSession().setAttribute("paypalToken",
+			httpServletRequest.getSession().setAttribute("userLoggedIn", "true");
+			httpServletRequest.getSession().setAttribute("paypalToken",
 					userData.getToken());
-			request.getSession().setAttribute("customerEmail",
+			httpServletRequest.getSession().setAttribute("customerEmail",
 					userData.getEmail());
 		}
 
@@ -121,14 +159,16 @@ public class ACImpl implements ACInterface {
 	@Path("/sendmail")
 	@Override
 	public String sendMail(
-			@Context HttpServletRequest request,
+			@Context HttpServletRequest httpServletRequest,
 			SendMailInputBean sendMailInputBean) {
 
-		String userLoggedIn = (String) request.getSession().getAttribute(
+		String userLoggedIn = (String) httpServletRequest.getSession().getAttribute(
 				"userLoggedIn");
 
-		if (userLoggedIn.equalsIgnoreCase("true")) {
-			sendMailInputBean.setCustomerEmailId((String) request.getSession()
+		LOGGER.debug(userLoggedIn);
+		
+		if (userLoggedIn != null && userLoggedIn.equalsIgnoreCase("true")) {
+			sendMailInputBean.setCustomerEmailId((String) httpServletRequest.getSession()
 					.getAttribute("customerEmail"));
 		}
 
@@ -150,10 +190,27 @@ public class ACImpl implements ACInterface {
 	@Path("/sendTransactionInformationMail")
 	@Override
 	public String sendTransactionInformationMail(
-			@Context HttpServletRequest request,
+			@Context HttpServletRequest httpServletRequest,
 			TransactionInformationMailInputBean transactionInformationMailInputBean) {
 
-		transactionInformationMailInputBean.setCustomerEmail((String) request
+		String paypalToken = (String) httpServletRequest.getSession()
+				.getAttribute("paypalToken");
+		if (transactionInformationMailInputBean.getToken() == null
+				|| !transactionInformationMailInputBean.getToken().equals(
+						paypalToken)) {
+			LOGGER.debug("Invalid token in input bean : Token In session : "
+					+ paypalToken + " Token from UI : "
+					+ transactionInformationMailInputBean.getToken());
+
+			TransactionInformationMailResponse transactionInformationMailResponse = new TransactionInformationMailResponse();
+			transactionInformationMailResponse.setTransactionSuccess(false);
+			transactionInformationMailResponse
+					.setMessageToUser("Invalid Transaction.");
+			return new Gson().toJson(transactionInformationMailResponse);
+
+		}
+		
+		transactionInformationMailInputBean.setCustomerEmail((String) httpServletRequest
 				.getSession().getAttribute("customerEmail"));
 
 		MailServiceBO mailServiceBO = new MailServiceBO();
@@ -182,10 +239,26 @@ public class ACImpl implements ACInterface {
 	@Path("/getHistoryDetails")
 	@Override
 	public String getHistoryDetails(
-			@Context HttpServletRequest request,
+			@Context HttpServletRequest httpServletRequest,
 			HistroyLookupInputBean histroyLookupInputBean) {
 
-		histroyLookupInputBean.setCustomerEmailId((String) request.getSession()
+		String paypalToken = (String) httpServletRequest.getSession()
+				.getAttribute("paypalToken");
+		if (histroyLookupInputBean == null
+				|| !histroyLookupInputBean.getToken().equals(paypalToken)) {
+			LOGGER.debug("Invalid token in input bean : Token In session : "
+					+ paypalToken + " Token from UI : "
+					+ histroyLookupInputBean.getToken());
+
+			HistroyLookupResponse histroyLookupResponse = new HistroyLookupResponse();
+			histroyLookupResponse.setTransactionSuccess(false);
+			histroyLookupResponse
+					.setErrorMessage("Invalid Transaction.");
+			return new Gson().toJson(histroyLookupResponse);
+
+		}
+
+		histroyLookupInputBean.setCustomerEmailId((String) httpServletRequest.getSession()
 				.getAttribute("customerEmail"));
 
 		return HistoryBO.retrieveHistoryDetails(histroyLookupInputBean);
@@ -221,15 +294,30 @@ public class ACImpl implements ACInterface {
 	@Path("/sendValidation")
 	@Override
 	public String sendValidation(
-			@Context HttpServletRequest request,
+			@Context HttpServletRequest httpServletRequest,
 			SendValidationInputBean sendValidationInputBean) {
 
-		sendValidationInputBean.setSenderEmail((String) request.getSession()
+		SendValidationResponse sendValidationResponse = new SendValidationResponse();
+		String paypalToken = (String) httpServletRequest.getSession()
+				.getAttribute("paypalToken");
+		if (sendValidationInputBean.getToken() == null
+				|| !sendValidationInputBean.getToken().equals(paypalToken)) {
+			LOGGER.debug("Invalid token in input bean : Token In session : "
+					+ paypalToken + " Token from UI : "
+					+ sendValidationInputBean.getToken());
+
+			sendValidationResponse.setTransactionSuccess(false);
+			sendValidationResponse.setErrorMessage("Invalid Transaction.");
+			return new Gson().toJson(sendValidationResponse);
+
+		}
+		
+		sendValidationInputBean.setSenderEmail((String) httpServletRequest.getSession()
 				.getAttribute("customerEmail"));
 
 		// insert session , consumer ID in history table.
 		MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
-		SendValidationResponse sendValidationResponse = new SendValidationResponse();
+		
 		try {
 			moneyGramPayPalDAO
 					.insertHistoryDetailsBeforeSendValidation(sendValidationInputBean);
@@ -278,16 +366,17 @@ public class ACImpl implements ACInterface {
 	@Path("/commitTransaction")
 	@Override
 	public String commitTransaction(
-			@Context HttpServletRequest request,
+			@Context HttpServletRequest httpServletRequest,
 			CommitTransactionInputBean commitTransactionInputBean) {
 
 		LOGGER.debug("Enter commitTransaction.");
 
 		// validate payPal token and current session are valid.
 
-		String paypalToken = (String) request.getSession().getAttribute(
+		String paypalToken = (String) httpServletRequest.getSession().getAttribute(
 				"paypalToken");
-		if (!commitTransactionInputBean.getToken().equals(paypalToken)) {
+		if (commitTransactionInputBean.getToken() == null
+				|| !commitTransactionInputBean.getToken().equals(paypalToken)) {
 			LOGGER.debug("Invalid token in input bean : Token In session : "
 					+ paypalToken + " Token from UI : "
 					+ commitTransactionInputBean.getToken());
@@ -298,7 +387,7 @@ public class ACImpl implements ACInterface {
 
 			return new Gson().toJson(commitTransactionResponse);
 		}
-		commitTransactionInputBean.setCustomerEmail((String) request
+		commitTransactionInputBean.setCustomerEmail((String) httpServletRequest
 				.getSession().getAttribute("customerEmail"));
 
 		CommitTransactionResponse commitTransactionResponse = new CommitTransactionResponse();
@@ -418,5 +507,16 @@ public class ACImpl implements ACInterface {
 
 		return new Gson().toJson(commitTransactionResponse);
 
+	}
+	
+	@POST
+	@Path("/logOutUser")
+	@Override
+	public void logOutUser(@Context HttpServletRequest httpServletRequest) {
+
+		httpServletRequest.getSession().removeAttribute("userLoggedIn");
+		httpServletRequest.getSession().removeAttribute("paypalToken");
+		httpServletRequest.getSession().removeAttribute("customerEmail");
+		httpServletRequest.getSession().invalidate();
 	}
 }

@@ -30,6 +30,16 @@ public class SendValidationInputBean {
 	private String consumerId;
 	private String mgiTransactionSessionID;
 	private String senderEmail;
+	private String token;
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(
+			String token) {
+		this.token = token;
+	}
 
 	public String getSenderEmail() {
 		return senderEmail;

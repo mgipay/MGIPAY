@@ -10,12 +10,23 @@ public class HistroyLookupInputBean {
 	}
 
 	private String customerEmailId;
+	private String token;
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(
+			String token) {
+		this.token = token;
+	}
 
 	public String getCustomerEmailId() {
 		return customerEmailId;
 	}
 
-	public void setCustomerEmailId(String customerEmailId) {
+	public void setCustomerEmailId(
+			String customerEmailId) {
 		this.customerEmailId = customerEmailId;
 	}
 

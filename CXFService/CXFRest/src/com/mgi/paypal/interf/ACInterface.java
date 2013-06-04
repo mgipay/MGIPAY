@@ -55,4 +55,7 @@ public interface ACInterface {
 			HttpServletRequest request,
 			SendValidationInputBean sendValidationInputBean);
 
+	void logOutUser(
+			HttpServletRequest httpServletRequest);
+
 }

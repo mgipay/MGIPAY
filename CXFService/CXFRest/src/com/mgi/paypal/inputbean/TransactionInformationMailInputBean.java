@@ -15,7 +15,15 @@ public class TransactionInformationMailInputBean {
 	private String customerName;
 	private String stateName;
 	private String fee;
+	private String token;
 	
+	public String getToken() {
+		return token;
+	}
+	public void setToken(
+			String token) {
+		this.token = token;
+	}
 	public String getFee() {
 		return fee;
 	}
