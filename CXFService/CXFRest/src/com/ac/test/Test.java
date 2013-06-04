@@ -12,9 +12,6 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.lang.StringUtils;
-
 import com.google.gson.Gson;
 import com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client;
 import com.mgi.agentconnect.client.CodeTableRequest;
@@ -30,10 +27,8 @@ import com.mgi.complaintproxyservice.client.InsertRecsIntoCRMExtWebFormRequest;
 import com.mgi.complaintproxyservice.client.ProcessingInstruction;
 import com.mgi.paypal.inputbean.SendMailInputBean;
 import com.mgi.paypal.inputbean.SendProofInputBean;
-import com.mgi.paypal.inputbean.SendReversalInputBean;
 import com.mgi.paypal.inputbean.TransactionInformationMailInputBean;
 import com.mgi.paypal.util.CalendarUtil;
-import com.mgi.paypal.util.PropertyUtil;
 import com.thoughtworks.xstream.XStream;
 
 public class Test {
@@ -399,6 +394,9 @@ public class Test {
 		System.err.println(tempStateList);
 	}
 	public static void main(String[] args) {
+		
+		
+		
 		
 		Boolean b = null;
 		System.err.println(b);

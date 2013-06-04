@@ -467,6 +467,34 @@ private void setCredentials(){
 		}
 	}
 	@Test
+	public void TestLogOut() { setCredentials();
+
+		try {
+			URL url = new URL("http://localhost:8080/CXFRest/rest/logOutUser");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-Type", "application/json");
+			Scanner scanner;
+			String response;
+			if (conn.getResponseCode() != 200) {
+				scanner = new Scanner(conn.getErrorStream());
+				response = "Error From Server \n\n";
+			} else {
+				scanner = new Scanner(conn.getInputStream());
+				response = "Response From Server \n\n";
+			}
+			scanner.useDelimiter("\\Z");
+			LOGGER.debug(response + scanner.next());
+			scanner.close();
+			conn.disconnect();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	@Test
 	public void TestFeeLinkValue() { setCredentials();
 
 		try {

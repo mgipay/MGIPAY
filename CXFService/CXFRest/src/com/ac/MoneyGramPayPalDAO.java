@@ -183,24 +183,12 @@ public class MoneyGramPayPalDAO {
 
 		PreparedStatement preparedStatement = connection
 				.prepareStatement(strQuery);
-//		preparedStatement.setString(1, TransactionStatus.MGI_FAILED.value());
 
 		System.out.println(strQuery);
-//		System.out.println(TransactionStatus.MGI_FAILED.value());
 
 		ResultSet resultSet = preparedStatement.executeQuery();
 		List<String> mgiTransactionSessinIdList = new ArrayList<String>();
-//		System.out.println(resultSet.);
 		while (resultSet.next()) {
-//			HistoryDetails historyDetails = new HistoryDetails();
-//			historyDetails.setMgiReferenceNumber(resultSet
-//					.getString("MGI_REF_NUM"));
-//			historyDetails.setTransactionAmount(resultSet
-//					.getBigDecimal("TRAN_AMT"));
-//			historyDetails.setTransactionFee(resultSet
-//					.getBigDecimal("TRAN_FEE"));
-//			historyDetails.setMgiTransactionSessionID(resultSet
-//					.getString("MGI_SESS_ID"));
 			System.out.println(resultSet.getString("MGI_SESS_ID"));
 			mgiTransactionSessinIdList.add(resultSet
 					.getString("MGI_SESS_ID"));

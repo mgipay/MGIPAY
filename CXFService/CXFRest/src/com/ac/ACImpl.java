@@ -25,7 +25,6 @@ import com.mgi.paypal.interf.ACInterface;
 import com.mgi.paypal.response.CommitTransactionResponse;
 import com.mgi.paypal.response.FeeLookupResponse;
 import com.mgi.paypal.response.HistroyLookupResponse;
-import com.mgi.paypal.response.LogOutResponse;
 import com.mgi.paypal.response.SendValidationResponse;
 import com.mgi.paypal.response.TransactionInformationMailResponse;
 import com.mgi.paypal.util.PropertyUtil;
@@ -162,16 +161,6 @@ public class ACImpl implements ACInterface {
 	public String sendMail(
 			@Context HttpServletRequest httpServletRequest,
 			SendMailInputBean sendMailInputBean) {
-
-		String userLoggedIn = (String) httpServletRequest.getSession().getAttribute(
-				"userLoggedIn");
-
-		LOGGER.debug(userLoggedIn);
-		
-		if (userLoggedIn != null && userLoggedIn.equalsIgnoreCase("true")) {
-			sendMailInputBean.setCustomerEmailId((String) httpServletRequest.getSession()
-					.getAttribute("customerEmail"));
-		}
 
 		MailServiceBO mailServiceBO = new MailServiceBO();
 		return mailServiceBO.sendReportInformationMail(sendMailInputBean);
@@ -513,15 +502,11 @@ public class ACImpl implements ACInterface {
 	@POST
 	@Path("/logOutUser")
 	@Override
-	public String logOutUser(@Context HttpServletRequest httpServletRequest) {
+	public void logOutUser(@Context HttpServletRequest httpServletRequest) {
 
 		httpServletRequest.getSession().removeAttribute("userLoggedIn");
 		httpServletRequest.getSession().removeAttribute("paypalToken");
 		httpServletRequest.getSession().removeAttribute("customerEmail");
 		httpServletRequest.getSession().invalidate();
-		LogOutResponse logOutResponse = new LogOutResponse();
-		logOutResponse.setTransactionSuccess(true);
-		
-		return new Gson().toJson(logOutResponse);
 	}
 }

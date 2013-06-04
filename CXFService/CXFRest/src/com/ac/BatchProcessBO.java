@@ -206,7 +206,7 @@ public class BatchProcessBO {
 		} catch (Exception exception) {
 			// If send reversal called for already reversed Transaction then
 			// error is 'Transaction not in Send status'
-			if (exception.getLocalizedMessage().equals(
+			if (exception.getLocalizedMessage().equalsIgnoreCase(
 					"Transaction not in Send status")) {
 				return true;
 			} else {

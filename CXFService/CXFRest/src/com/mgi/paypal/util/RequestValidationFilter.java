@@ -37,7 +37,8 @@ public class RequestValidationFilter implements Filter {
 
 		LOGGER.debug("session id :  " + httpSession.getId());
 
-		if (httpServletRequest.getRequestURI().contains("getFee")
+		if ((httpServletRequest.getRequestURI().contains("getFee") && !httpServletRequest
+				.getRequestURI().contains("getFeeLinkValue"))
 				|| httpServletRequest.getRequestURI().contains("getUserLimits")
 				|| httpServletRequest.getRequestURI()
 						.contains("sendValidation")
@@ -61,13 +62,6 @@ public class RequestValidationFilter implements Filter {
 		}
 		LOGGER.debug("Exit doFilter Servlet Filter");
 	}
-
-		
-
-//		filterChain.doFilter(servletRequest, servletResponse);
-//		LOGGER.debug("Exit doFilter Servlet Filter");
-
-//	}
 
 	@Override
 	public void init(
