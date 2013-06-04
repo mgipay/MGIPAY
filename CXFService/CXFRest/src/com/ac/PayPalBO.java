@@ -19,7 +19,6 @@ import com.google.gson.Gson;
 import com.mgi.paypal.inputbean.UserDataInputBean;
 import com.mgi.paypal.inputbean.UserLimitInputBean;
 import com.mgi.paypal.util.AccessToken;
-import com.mgi.paypal.util.MGI_PayPal_Util;
 import com.mgi.paypal.util.Mgi_Paypal_Constants;
 import com.mgi.paypal.util.PropertyUtil;
 import com.mgi.paypal.util.UserData;
@@ -113,16 +112,6 @@ public class PayPalBO {
 		
 		com.mgi.paypal.response.GetUserLimitsResponse getUserLimitsResponseForUI = new com.mgi.paypal.response.GetUserLimitsResponse();
 		Gson gson = new Gson();
-		if (MGI_PayPal_Util.isInputNull(userLimitInputBean)) {
-			CurrencyType currencyType = new CurrencyType();
-			currencyType.setAmount(new BigDecimal(0));
-			currencyType.setCode("Invalid Code");
-			getUserLimitsResponseForUI.setCurrencyType(currencyType);
-			getUserLimitsResponseForUI.setTransactionSuccess(false);
-			getUserLimitsResponseForUI
-					.setErrorMessage(Mgi_Paypal_Constants.CONTACT_MGI_ERROR_MESSAGE);
-			return gson.toJson(getUserLimitsResponseForUI);
-		}
 		PhoneNumberType phoneNumberType = new PhoneNumberType();
 		phoneNumberType.setCountryCode("1");
 		phoneNumberType.setPhoneNumber(userLimitInputBean.getPhoneNumber());
@@ -277,8 +266,10 @@ public class PayPalBO {
 
 		LOGGER.debug("Enter getUserData.");
 
-		Gson gson = new Gson();
 		UserData userData = new UserData();
+		
+		Gson gson = new Gson();
+		
 		LOGGER.debug(gson.toJson(userDataInputBean));
 		try {
 			String token = createToken(userDataInputBean.getCode());

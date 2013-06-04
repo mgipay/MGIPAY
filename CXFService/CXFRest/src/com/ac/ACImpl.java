@@ -25,6 +25,7 @@ import com.mgi.paypal.interf.ACInterface;
 import com.mgi.paypal.response.CommitTransactionResponse;
 import com.mgi.paypal.response.FeeLookupResponse;
 import com.mgi.paypal.response.HistroyLookupResponse;
+import com.mgi.paypal.response.LogOutResponse;
 import com.mgi.paypal.response.SendValidationResponse;
 import com.mgi.paypal.response.TransactionInformationMailResponse;
 import com.mgi.paypal.util.PropertyUtil;
@@ -335,7 +336,7 @@ public class ACImpl implements ACInterface {
 				.validate(sendValidationInputBean);
 
 		if (!sendValidationResponse.isTransactionSuccess()) {
-			// update history table 'send_validation_failed'
+			// update history table 'MGI_FAILED'
 			try {
 				moneyGramPayPalDAO
 						.updateHistorySendValidationOrCommitTransactionFailed(sendValidationInputBean
@@ -399,7 +400,7 @@ public class ACImpl implements ACInterface {
 
 		if (!commitTransactionResponse.isTransactionSuccess()) {
 			// If Commit FAILED .
-			// Update history 'COMMIT_TRANSACTION_FAILED'
+			// Update history 'MGI_FAILED'
 			try {
 				moneyGramPayPalDAO
 						.updateHistorySendValidationOrCommitTransactionFailed(commitTransactionInputBean
@@ -512,11 +513,15 @@ public class ACImpl implements ACInterface {
 	@POST
 	@Path("/logOutUser")
 	@Override
-	public void logOutUser(@Context HttpServletRequest httpServletRequest) {
+	public String logOutUser(@Context HttpServletRequest httpServletRequest) {
 
 		httpServletRequest.getSession().removeAttribute("userLoggedIn");
 		httpServletRequest.getSession().removeAttribute("paypalToken");
 		httpServletRequest.getSession().removeAttribute("customerEmail");
 		httpServletRequest.getSession().invalidate();
+		LogOutResponse logOutResponse = new LogOutResponse();
+		logOutResponse.setTransactionSuccess(true);
+		
+		return new Gson().toJson(logOutResponse);
 	}
 }

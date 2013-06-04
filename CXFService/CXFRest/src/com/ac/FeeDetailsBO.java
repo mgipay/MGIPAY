@@ -14,7 +14,6 @@ import com.mgi.paypal.inputbean.FeeLinkValueInputBean;
 import com.mgi.paypal.inputbean.FeeLookupInputBean;
 import com.mgi.paypal.util.CalendarUtil;
 import com.mgi.paypal.util.FeeLinkValues;
-import com.mgi.paypal.util.MGI_PayPal_Util;
 import com.mgi.paypal.util.Mgi_Paypal_Constants;
 import com.mgi.paypal.util.PropertyUtil;
 import com.thoughtworks.xstream.XStream;
@@ -45,87 +44,81 @@ public class FeeDetailsBO {
 		LOGGER.debug("Enter getFee.");
 
 		com.mgi.paypal.response.FeeLookupResponse feeLookupResponseUI = new com.mgi.paypal.response.FeeLookupResponse();
-		if (MGI_PayPal_Util.isInputNull(feeLookupInputBean)) {
-			feeLookupResponseUI
-					.setErrorMessage(Mgi_Paypal_Constants.CONTACT_MGI_ERROR_MESSAGE);
 
-			feeLookupResponseUI.setTransactionSuccess(false);
-		} else {
+		FeeLookupRequest feeLookupRequest = new FeeLookupRequest();
+		feeLookupRequest = createFeeLookupInput(feeLookupInputBean.getAmount(),
+				false);
 
-			FeeLookupRequest feeLookupRequest = new FeeLookupRequest();
-			feeLookupRequest = createFeeLookupInput(feeLookupInputBean
-					.getAmount(), false);
+		FeeLookupResponse feeLookupResponse = null;
 
-			FeeLookupResponse feeLookupResponse = null;
+		// TODO
+		System.out.println(new XStream().toXML(feeLookupRequest));
 
-			// TODO
-			System.out.println(new XStream().toXML(feeLookupRequest));
+		int retryCount = Mgi_Paypal_Constants.RETRY_COUNT;
+		while (retryCount >= 1) {
 
-			int retryCount = Mgi_Paypal_Constants.RETRY_COUNT;
-			while (retryCount >= 1) {
+			try {
+				AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
+				feeLookupResponse = client.feeLookup(feeLookupRequest);
+				// TODO
+				System.out.println(new XStream().toXML(feeLookupResponse));
+				break;
+			} catch (Exception exception) {
 
-				try {
-					AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
-					feeLookupResponse = client.feeLookup(feeLookupRequest);
-					// TODO
-					System.out.println(new XStream().toXML(feeLookupResponse));
-					break;
-				} catch (Exception exception) {
+				retryCount--;
+				if (retryCount == 0) {
+					LOGGER.error("FeeLookup Retrying because of"
+							+ exception.getLocalizedMessage());
+					exception.printStackTrace();
+					LOGGER.debug("Maximum Number of Retries reached. FeeLookUp Response Failed.");
+					feeLookupResponseUI.setErrorMessage(exception
+							.getLocalizedMessage());
 
-					retryCount--;
-					if (retryCount == 0) {
-						LOGGER.error("FeeLookup Retrying because of"
-								+ exception.getLocalizedMessage());
-						exception.printStackTrace();
-						LOGGER.debug("Maximum Number of Retries reached. FeeLookUp Response Failed.");
-						feeLookupResponseUI.setErrorMessage(exception
-								.getLocalizedMessage());
-
-						feeLookupResponseUI.setTransactionSuccess(false);
-
-						return new Gson().toJson(feeLookupResponseUI);
-					}
-				}
-			}
-			if (feeLookupResponse != null) {
-				BigDecimal totalAmount = feeLookupResponse.getFeeInfo().get(0)
-						.getTotalAmount();
-				if (totalAmount.compareTo(PropertyUtil.constantFromProperties
-						.getBigDecimal("TWO_HUNDRED_US_DOLLARS")) <= 0) {
-					feeLookupResponseUI.setTransactionSuccess(true);
-
-					feeLookupResponseUI
-							.setMgiTransactionSessionID(feeLookupResponse
-									.getMgiTransactionSessionID());
-
-					feeLookupResponseUI.setTotalAmount(totalAmount);
-					feeLookupResponseUI.setFeeAmount(totalAmount
-							.subtract(feeLookupInputBean.getAmount()));
-
-				} else {
-					LOGGER.warn("Entered Amount above 200 dollars");
-					feeLookupResponseUI
-							.setErrorMessage(PropertyUtil.messageFromProperties
-									.getString("WITHDRAW_ERROR_MESSAGE1")
-									.concat(totalAmount
-											.toString()
-											.concat(PropertyUtil.messageFromProperties
-													.getString("WITHDRAW_ERROR_MESSAGE2"))));
 					feeLookupResponseUI.setTransactionSuccess(false);
-					feeLookupResponseUI.setTotalAmount(totalAmount);
-					feeLookupResponseUI.setFeeAmount(totalAmount
-							.subtract(feeLookupInputBean.getAmount()));
+
+					return new Gson().toJson(feeLookupResponseUI);
 				}
-
-			} else {
-
-				feeLookupResponseUI
-						.setErrorMessage(PropertyUtil.messageFromProperties
-								.getString("RETRY_IN_SOMETIME"));
-
-				feeLookupResponseUI.setTransactionSuccess(false);
 			}
 		}
+		if (feeLookupResponse != null) {
+			BigDecimal totalAmount = feeLookupResponse.getFeeInfo().get(0)
+					.getTotalAmount();
+			if (totalAmount.compareTo(PropertyUtil.constantFromProperties
+					.getBigDecimal("TWO_HUNDRED_US_DOLLARS")) <= 0) {
+				feeLookupResponseUI.setTransactionSuccess(true);
+
+				feeLookupResponseUI
+						.setMgiTransactionSessionID(feeLookupResponse
+								.getMgiTransactionSessionID());
+
+				feeLookupResponseUI.setTotalAmount(totalAmount);
+				feeLookupResponseUI.setFeeAmount(totalAmount
+						.subtract(feeLookupInputBean.getAmount()));
+
+			} else {
+				LOGGER.warn("Entered Amount above 200 dollars");
+				feeLookupResponseUI
+						.setErrorMessage(PropertyUtil.messageFromProperties
+								.getString("WITHDRAW_ERROR_MESSAGE1")
+								.concat(totalAmount
+										.toString()
+										.concat(PropertyUtil.messageFromProperties
+												.getString("WITHDRAW_ERROR_MESSAGE2"))));
+				feeLookupResponseUI.setTransactionSuccess(false);
+				feeLookupResponseUI.setTotalAmount(totalAmount);
+				feeLookupResponseUI.setFeeAmount(totalAmount
+						.subtract(feeLookupInputBean.getAmount()));
+			}
+
+		} else {
+
+			feeLookupResponseUI
+					.setErrorMessage(PropertyUtil.messageFromProperties
+							.getString("RETRY_IN_SOMETIME"));
+
+			feeLookupResponseUI.setTransactionSuccess(false);
+		}
+
 		LOGGER.debug("Exit getFee.");
 
 		return new Gson().toJson(feeLookupResponseUI);
