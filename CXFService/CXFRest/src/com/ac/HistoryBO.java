@@ -158,7 +158,7 @@ public class HistoryBO {
 		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 		try {
 			
-			System.out.println(new XStream().toXML(detailLookupRequest));
+			LOGGER.debug(new XStream().toXML(detailLookupRequest));
 			
 			detailLookupResponse = client.detailLookup(detailLookupRequest);
 		} catch (Exception exception) {
@@ -171,7 +171,7 @@ public class HistoryBO {
 			return null;
 		}
 
-		System.out.println(new XStream().toXML(detailLookupResponse));
+		LOGGER.debug(new XStream().toXML(detailLookupResponse));
 		
 		LOGGER.debug("Exit detailLookUpForRetrieveHistory.");
 

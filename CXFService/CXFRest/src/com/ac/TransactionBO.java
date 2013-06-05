@@ -109,7 +109,7 @@ public class TransactionBO {
 		
 		// TODO 
 		
-		System.out.println(new XStream().toXML(sendValidationRequest));
+		LOGGER.debug(new XStream().toXML(sendValidationRequest));
 		
 		
 		while (retryCount >= 1) {
@@ -117,7 +117,7 @@ public class TransactionBO {
 				AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 				sendValidationResponse = client
 						.sendValidation(sendValidationRequest);
-				System.out.println(new XStream().toXML(sendValidationResponse));
+				LOGGER.debug(new XStream().toXML(sendValidationResponse));
 				break;
 			} catch (Exception exception) {
 				retryCount--;

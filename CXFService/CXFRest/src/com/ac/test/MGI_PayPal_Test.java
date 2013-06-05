@@ -81,10 +81,10 @@ public class MGI_PayPal_Test {
 		}
 
 		// BigDecimal bigDecimal = new BigDecimal("6057100363.234");
-		// System.out.println(bigDecimal.setScale(0,RoundingMode.DOWN));
-		// // System.out.println(Integer.parseInt(bigDecimal.toString()));
+		// LOGGER.debug(bigDecimal.setScale(0,RoundingMode.DOWN));
+		// // LOGGER.debug(Integer.parseInt(bigDecimal.toString()));
 		// String string2 = "ABC@GMAil.com";
-		// System.out.println(string2.toLowerCase());
+		// LOGGER.debug(string2.toLowerCase());
 
 		HistoryDetails details = new HistoryDetails();
 		HistoryDetails details2 = new HistoryDetails();
@@ -110,7 +110,7 @@ public class MGI_PayPal_Test {
 		 */
 
 		for (HistoryDetails historyDetails : historyDetailsList) {
-			System.out.println(historyDetails.getTransactionID());
+			LOGGER.debug(historyDetails.getTransactionID());
 		}
 
 		Collections.sort(historyDetailsList, new Comparator<HistoryDetails>() {
@@ -123,17 +123,17 @@ public class MGI_PayPal_Test {
 		});
 
 		for (HistoryDetails historyDetails : historyDetailsList) {
-			System.out.println(historyDetails.getTransactionID());
+			LOGGER.debug(historyDetails.getTransactionID());
 		}
 		//
 		// // Integer i = new Integer(999999999);
 		// //java.util.Date sysDate = new java.util.Date();
 		// //java.sql.Date sqlDate = new java.sql.Date(sysDate.getTime());
-		// //System.out.println(sqlDate);
+		// //LOGGER.debug(sqlDate);
 		//
 		// UserDataInputBean userDataInputBean = new UserDataInputBean();
 		// userDataInputBean.setCode(".7M-j4lm-wvADrkX6I5KEH3mcjTobdEyEYioavl3woQ");
-		// System.out.println(new Gson().toJson(userDataInputBean));
+		// LOGGER.debug(new Gson().toJson(userDataInputBean));
 		//
 		// String string =
 		// "{\"family_name\":\"FundsInI\",\"language\":\"en_US\",\"veri" +
@@ -151,7 +151,7 @@ public class MGI_PayPal_Test {
 		properties.load(new FileInputStream("Constants.properties"));
 		String name = properties.getProperty("TWO_HUNDRED_US_DOLLARS");
 		System.err.println(properties.getProperty("AGENT_ID"));
-		System.out.println(name);
+		LOGGER.debug(name);
 	}
 	
 	@Test
@@ -299,7 +299,7 @@ public class MGI_PayPal_Test {
 			response = "Response From Server \n\n";
 		}
 		// test = new Scanner(conn.getInputStream());
-		// System.out.println(test);
+		// LOGGER.debug(test);
 		scanner.useDelimiter("\\Z");
 		LOGGER.debug(response + scanner.next());
 	}
@@ -359,7 +359,7 @@ public class MGI_PayPal_Test {
 	@Test
 	public void TestDetailLookup() { setCredentials();
 		try {
-			System.out.println(TransactionStatus.AVAIL.value());
+			LOGGER.debug(TransactionStatus.AVAIL.value());
 			URL url = new URL(
 					"http://localhost:8092/CXFRest/rest/detailLookUp");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();

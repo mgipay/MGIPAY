@@ -52,7 +52,7 @@ public class FeeDetailsBO {
 		FeeLookupResponse feeLookupResponse = null;
 
 		// TODO
-		System.out.println(new XStream().toXML(feeLookupRequest));
+		LOGGER.debug(new XStream().toXML(feeLookupRequest));
 
 		int retryCount = Mgi_Paypal_Constants.RETRY_COUNT;
 		while (retryCount >= 1) {
@@ -61,7 +61,7 @@ public class FeeDetailsBO {
 				AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 				feeLookupResponse = client.feeLookup(feeLookupRequest);
 				// TODO
-				System.out.println(new XStream().toXML(feeLookupResponse));
+				LOGGER.debug(new XStream().toXML(feeLookupResponse));
 				break;
 			} catch (Exception exception) {
 

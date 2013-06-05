@@ -225,18 +225,18 @@ public class MoneyGramPayPalDAO {
 		try {
 			preparedStatement = connection.prepareStatement(strQuery);
 
-			System.out.println(strQuery);
+			LOGGER.debug(strQuery);
 
 			resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
-				System.out.println(resultSet.getString("MGI_SESS_ID"));
+				LOGGER.debug(resultSet.getString("MGI_SESS_ID"));
 				mgiTransactionSessinIdList.add(resultSet
 						.getString("MGI_SESS_ID"));
 
 			}
 
-			System.out.println("Size : " + mgiTransactionSessinIdList.size());
+			LOGGER.debug("Size : " + mgiTransactionSessinIdList.size());
 		} catch (Exception exception) {
 
 			exception.printStackTrace();

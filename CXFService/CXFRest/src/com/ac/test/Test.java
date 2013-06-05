@@ -12,6 +12,8 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.log4j.Logger;
+
 import com.google.gson.Gson;
 import com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client;
 import com.mgi.agentconnect.client.CodeTableRequest;
@@ -33,7 +35,7 @@ import com.thoughtworks.xstream.XStream;
 
 public class Test {
 	private static Hashtable<String, String> stateAndCodeHashTable = new Hashtable<String, String>();
-	
+	private static Logger LOGGER = Logger.getLogger(Test.class);
 	/*private static PropertiesConfiguration PropertyUtil.messageFromProperties = new PropertyUtil()
 	.getMessagePropertyConfig();
 */
@@ -41,13 +43,13 @@ public class Test {
 	public static void main8(String[] args) throws InterruptedException {
 		
 		while(true){
-//		System.out.println(PropertyUtil.messageFromProperties.getString("RETRY"));
+//		LOGGER.debug(PropertyUtil.messageFromProperties.getString("RETRY"));
 		
 		Thread.sleep(3000);
 		}
-//		System.out.println(PropertyUtil.messageFromProperties.getString("RETRY"));
+//		LOGGER.debug(PropertyUtil.messageFromProperties.getString("RETRY"));
 //		
-//		System.out.println("gg");
+//		LOGGER.debug("gg");
 	}
 	
 	
@@ -120,7 +122,7 @@ public class Test {
 		
 		
 		XStream xStream = new XStream();
-		// System.out.println(xStream.toXML(feeLookupRequest));
+		// LOGGER.debug(xStream.toXML(feeLookupRequest));
 	}
 	public static void main3(String[] args) {
 
@@ -129,7 +131,7 @@ public class Test {
 //////		list.add("ab");
 //////		list.add("aa");
 //////		Collections.sort(list);
-//////		System.out.println(list);
+//////		LOGGER.debug(list);
 ////		
 //////		java.sql.Date transactionDate = (java.sql.Date) Calendar.getInstance()
 //////				.getTime();
@@ -164,7 +166,7 @@ public class Test {
 //			e.printStackTrace();
 //		}
 
-//		System.out.println(getUserLimitsResponse.getUserLimit().get(0)
+//		LOGGER.debug(getUserLimitsResponse.getUserLimit().get(0)
 //				.getLimitAmount().getAmount());
 		try {
 			System.setProperty("http.proxyHost", "proxy.tcs.com");
@@ -188,13 +190,13 @@ public class Test {
 			feeLookupRequest.setAllOptions("true");
 
 			XStream xStream = new XStream();
-//			  System.out.println(xStream.toXML(feeLookupRequest));
+//			  LOGGER.debug(xStream.toXML(feeLookupRequest));
 			
-//			System.out.println(gson.toJson(feeLookupRequest));
+//			LOGGER.debug(gson.toJson(feeLookupRequest));
 			AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 			FeeLookupResponse feeLookupResponse =client
 					.feeLookup(feeLookupRequest);
-//			System.out.println(gson.toJson(feeLookupResponse));
+//			LOGGER.debug(gson.toJson(feeLookupResponse));
 			XMLGregorianCalendar xmlGregorianCalendar = getTimeStamp();
 			com.mgi.agentconnect.client.SendValidationResponse sendValidationResponse = sendValidation(
 					 feeLookupResponse, xmlGregorianCalendar);
@@ -212,13 +214,13 @@ public class Test {
 							.getMgiTransactionSessionID());
 			commitTransactionRequest
 					.setProductType(com.mgi.agentconnect.client.ProductType.SEND);
-//			System.out.println(gson.toJson(commitTransactionRequest));
+//			LOGGER.debug(gson.toJson(commitTransactionRequest));
 			commitTransactionResponse = client
 					.commitTransaction(commitTransactionRequest);
-			// System.out.println(xStream.toXML(commitTransactionRequest));
-			 System.out.println(xStream.toXML(commitTransactionResponse));*/
+			// LOGGER.debug(xStream.toXML(commitTransactionRequest));
+			 LOGGER.debug(xStream.toXML(commitTransactionResponse));*/
 			
-//			System.out.println(commitTransactionResponse.getReferenceNumber());
+//			LOGGER.debug(commitTransactionResponse.getReferenceNumber());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -282,12 +284,12 @@ public class Test {
 		com.mgi.agentconnect.client.SendValidationResponse sendValidationResponse = null;
 		
 		
-		System.out.println(new XStream().toXML(sendValidationRequest));
-//		System.out.println(gson.toJson(sendValidationRequest));
+		LOGGER.debug(new XStream().toXML(sendValidationRequest));
+//		LOGGER.debug(gson.toJson(sendValidationRequest));
 		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 		sendValidationResponse = client
 				.sendValidation(sendValidationRequest);
-//		System.out.println(sendValidationResponse);
+//		LOGGER.debug(sendValidationResponse);
 		return sendValidationResponse;
 	}
 
@@ -311,7 +313,7 @@ public class Test {
 		bean.setCustomerEmail("TestAccmgipay@gmail.com");
 		bean.setTransactionAmount("100");
 		bean.setReferenceNumber("56987458");
-		System.out.println(new Gson().toJson(bean));
+		LOGGER.debug(new Gson().toJson(bean));
 		
 		
 
@@ -322,7 +324,7 @@ public class Test {
 
 		strdate = sdf.format(Calendar.getInstance().getTime());
 
-		System.out.println(strdate);
+		LOGGER.debug(strdate);
 		
 		
 		
@@ -332,7 +334,7 @@ public class Test {
 		SendProofInputBean sendProofInputBean = new SendProofInputBean();
 		sendProofInputBean.setCustomerEmail("ndubey@moneygram.com");
 		sendProofInputBean.setZipCode("01568");
-		System.out.println(new Gson().toJson(sendProofInputBean));
+		LOGGER.debug(new Gson().toJson(sendProofInputBean));
 		
 		
 		 System.setProperty("http.proxyHost", "proxy.tcs.com");
@@ -353,13 +355,13 @@ public class Test {
 		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 		commitTransactionResponse = client
 				.commitTransaction(commitTransactionRequest);
-		System.out.println(new Gson().toJson(commitTransactionResponse));
+		LOGGER.debug(new Gson().toJson(commitTransactionResponse));
 	}
 	public static void main2(String[] args) throws Exception {
 		
 		
 		Hashtable<String, String> hashtable = new Hashtable<String, String>();
-		System.out.println(hashtable.get("NJ"));
+		LOGGER.debug(hashtable.get("NJ"));
 		
 		
 		
@@ -383,14 +385,14 @@ public class Test {
 		List<String> stateAndCodeList = new ArrayList<String>();
 		
 		stateAndCodeList = client
-				.codeTable(codeTableRequest,"USA");System.out.println(stateAndCodeList);
+				.codeTable(codeTableRequest,"USA");LOGGER.debug(stateAndCodeList);
 		int index = 0;
 		for (index =0 ; index < stateAndCodeList.size(); index = index + 2) {
 			stateAndCodeHashTable.put(
 					stateAndCodeList.get(index),
 					stateAndCodeList.get(index + 1));
 		}
-		System.out.println(stateAndCodeHashTable);
+		LOGGER.debug(stateAndCodeHashTable);
 		System.err.println(tempStateList);
 	}
 	public static void main(String[] args) {
@@ -401,7 +403,7 @@ public class Test {
 		
 //		XMLGregorianCalendar xmlGregorianCalendar = CalendarUtil.getTimeStamp();
 //		
-//		System.out.println(xmlGregorianCalendar);
+//		LOGGER.debug(xmlGregorianCalendar);
 		
 		
 		
@@ -416,7 +418,7 @@ public class Test {
 		sendMailInputBean.setReferenceNumber("47855698");
 		
 		
-		System.out.println(new XStream().toXML(sendMailInputBean));
+		LOGGER.debug(new XStream().toXML(sendMailInputBean));
 		
 		
 		String bodyOfMail = "";
@@ -456,7 +458,7 @@ public class Test {
 				.concat(System.getProperty("line.separator"))
 				.concat(mailText);
 		
-		System.out.println(bodyOfMail);
+		LOGGER.debug(bodyOfMail);
 		
 		InsertRecsIntoCRMExtWebFormRequest insertRecsIntoCRMExtWebFormRequest = new InsertRecsIntoCRMExtWebFormRequest();
 		insertRecsIntoCRMExtWebFormRequest
@@ -487,7 +489,7 @@ public class Test {
 		header.setProcessingInstruction(processingInstruction);
 		insertRecsIntoCRMExtWebFormRequest.setHeader(header);
 		
-		System.out.println(new XStream().toXML(insertRecsIntoCRMExtWebFormRequest));
+		LOGGER.debug(new XStream().toXML(insertRecsIntoCRMExtWebFormRequest));
 		
 //		SendProofMessage sendProofMessage = new SendProofMessage();
 //		sendProofMessage.setMessageName("EXAMPLETRIGGER");
@@ -509,11 +511,11 @@ public class Test {
 	/*	Hashtable<String,String> hashtable = new Hashtable<String, String>();
 		hashtable.put("ALASKA", "q");
 
-		System.out.println(hashtable.get("Alaska".toUpperCase()));*/
+		LOGGER.debug(hashtable.get("Alaska".toUpperCase()));*/
 		if ("General".trim().toLowerCase().equals("General"))
-		System.out.println("HI" + "General".trim().toLowerCase());
+		LOGGER.debug("HI" + "General".trim().toLowerCase());
 		else
-			System.out.println("failed");
+			LOGGER.debug("failed");
 //		SdkServiceStub sdkServiceStub = new SdkServiceStub();
 //	SendProofMessageResponse sendProofMessageResponse = sdkServiceStub.sendProofMessage("EXAMPLETRIGGER", strings, propertyTypes);
 		
@@ -551,7 +553,7 @@ public class Test {
 			exception.printStackTrace();
 		}
 
-		System.out.println(new Gson().toJson(detailLookupResponse));
+		LOGGER.debug(new Gson().toJson(detailLookupResponse));
 	}
 
 	public static void main7(String... sendReversalInputBean) {
@@ -582,7 +584,7 @@ public class Test {
 
 		try {
 			AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
-			System.out.println(new Gson().toJson(client
+			LOGGER.debug(new Gson().toJson(client
 					.sendReversal(sendReversalRequest)));
 		} catch (Exception exception) {
 

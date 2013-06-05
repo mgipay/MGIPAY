@@ -16,6 +16,8 @@ import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.MessageContext;
 
+import org.apache.log4j.Logger;
+
 import com.mgi.paypal.util.PropertyUtil;
 import com.mgi.paypal.util.SOAPMessageLoggingHandler;
 import com.mgi.paypal.util.StringOutputStream;
@@ -31,7 +33,7 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 	public AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client() {
 
 	}
-
+	private static Logger LOGGER = Logger.getLogger(AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client.class);
 	public GetUserLimitsResponse getUserLimit(
 			GetUserLimitsRequest getUserLimitsRequest)
 			throws java.lang.Exception {
@@ -45,11 +47,10 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 			objPpFaultMessage.printStackTrace();
 			FaultMessage objFaultMessage = objPpFaultMessage.getFaultInfo();
 			ErrorData ed = objFaultMessage.getError().get(0);
-			System.out
-					.println("Expected exception: PPFaultMessage has occurred.");
-			System.out.println("Error Code: " + ed.getErrorId()
+			LOGGER.debug("Expected exception: PPFaultMessage has occurred.");
+			LOGGER.debug("Error Code: " + ed.getErrorId()
 					+ " FaultMessage" + ed.getMessage());
-			System.out.println(objPpFaultMessage.toString());
+			LOGGER.debug(objPpFaultMessage.toString());
 		}
 
 		return _getUserLimits__return;
@@ -67,11 +68,10 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 			objPpFaultMessage.printStackTrace();
 			FaultMessage objFaultMessage = objPpFaultMessage.getFaultInfo();
 			ErrorData ed = objFaultMessage.getError().get(0);
-			System.out
-					.println("Expected exception: PPFaultMessage has occurred.");
-			System.out.println("Error Code: " + ed.getErrorId()
+			LOGGER.debug("Expected exception: PPFaultMessage has occurred.");
+			LOGGER.debug("Error Code: " + ed.getErrorId()
 					+ " FaultMessage" + ed.getMessage());
-			System.out.println(objPpFaultMessage.toString());
+			LOGGER.debug(objPpFaultMessage.toString());
 		}
 
 		return _PayResponse;

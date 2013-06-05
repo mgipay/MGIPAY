@@ -136,7 +136,7 @@ public class MailServiceBO {
 					PropertyUtil.constantFromProperties.getString("RECIPIENT_ID_IF_REFUND")));
 			message.setSubject(PropertyUtil.constantFromProperties.getString("SUBJECT_INQUIRY"));
 
-			System.out.println(new Gson().toJson(sendMailInputBean));
+			LOGGER.debug(new Gson().toJson(sendMailInputBean));
 			String bodyOfMail = "";
 			String mailText = sendMailInputBean.getMailText();
 
@@ -175,7 +175,7 @@ public class MailServiceBO {
 					     +mailText
 					     +"</body></html>";
 
-			System.out.println(bodyOfMail);
+			LOGGER.debug(bodyOfMail);
 
 			message.setContent(bodyOfMail, "text/html; charset=utf-8");
 			message.setSentDate(new Date());
@@ -266,14 +266,14 @@ public class MailServiceBO {
 			header.setProcessingInstruction(processingInstruction);
 			insertRecsIntoCRMExtWebFormRequest.setHeader(header);
 			
-			System.out.println(new XStream().toXML(insertRecsIntoCRMExtWebFormRequest));
+			LOGGER.debug(new XStream().toXML(insertRecsIntoCRMExtWebFormRequest));
 			
 			ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client client 
 			= new ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client();
 			insertRecsIntoCRMExtWebFormResponse = client
 			.insertRecsIntoCRMExtWebForm(insertRecsIntoCRMExtWebFormRequest);
 			
-			System.out.println(new XStream().toXML(insertRecsIntoCRMExtWebFormResponse));
+			LOGGER.debug(new XStream().toXML(insertRecsIntoCRMExtWebFormResponse));
 			
 		} catch (Exception exception) {
 			exception.printStackTrace();

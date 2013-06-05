@@ -144,12 +144,12 @@ public class BatchProcessBO {
 		detailLookupRequest.setMgiTransactionSessionID(mgiTransactionSessionId);
 		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
 		
-		System.out.println(new XStream().toXML(detailLookupRequest));
+		LOGGER.debug(new XStream().toXML(detailLookupRequest));
 		
 		DetailLookupResponse detailLookupResponse = null;
 		try {
 			detailLookupResponse = client.detailLookup(detailLookupRequest);
-			System.out.println(new XStream().toXML(detailLookupResponse));
+			LOGGER.debug(new XStream().toXML(detailLookupResponse));
 		} catch (Exception exception) {
 			return null;
 
@@ -195,7 +195,7 @@ public class BatchProcessBO {
 				.setSendReversalReason(SendReversalReasonCode.MS_NOT_USED);
 		sendReversalRequest.setFeeRefund("Y");
 
-		System.out.println(new XStream().toXML(sendReversalRequest));
+		LOGGER.debug(new XStream().toXML(sendReversalRequest));
 
 		while (true) {
 			try {
@@ -203,7 +203,7 @@ public class BatchProcessBO {
 				SendReversalResponse sendReversalResponse = client
 						.sendReversal(sendReversalRequest);
 
-				System.out.println(new XStream().toXML(sendReversalResponse));
+				LOGGER.debug(new XStream().toXML(sendReversalResponse));
 				break;
 			} catch (Exception exception) {
 				// If send reversal called for already reversed Transaction then

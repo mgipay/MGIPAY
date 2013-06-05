@@ -27,7 +27,7 @@ public class CalendarUtil {
 			datatypeConfigurationException.printStackTrace();
 		}
 		
-		System.out.println(xmlGregorianCalendar);
+		LOGGER.debug(xmlGregorianCalendar);
 		
 		return xmlGregorianCalendar;
 	}
