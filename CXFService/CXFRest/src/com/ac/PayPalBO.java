@@ -232,7 +232,68 @@ public class PayPalBO {
 
 		return accessToken.getAccess_token();
 	}
+	public static void logOutPayPal(String id_Token) throws Exception {
 
+		LOGGER.debug("Enter logOutPayPal");
+		LOGGER.debug("id_Token ::::::" + id_Token);
+
+		/*
+		 * "https://www.stage2cp07.stage.paypal.com:8443/webapps/auth/protocol/openidconnect
+		 * /v1/endsession?id_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJtZ2lfZnVuZ
+		 * HNvdXRfcWFfZW52Lm1vbmV5Z3JhbS5jb20iLCJhdXRoX3RpbWUiOjEzNzA0MzUzOTMsImlzcyI6Imh0dHBzO
+		 * i8vd3d3LnBheXBhbC5jb20iLCJzZXNzaW9uSW5kZXgiOiI4OThiZWE3MTI1ZTJkMWY3NjRiM2JmNThhZDIwOGZj
+		 * NGU4NmFkZTg5IiwiaWF0IjoxMzcwNDM1NDEwLCJleHAiOjI4ODAwLCJ1c2VyX2lkIjoiaHR0cHM6Ly93d3cucGF5
+		 * cGFsLmNvbS93ZWJhcHBzL2F1dGgvaWRlbnRpdHkvdXNlci9YREcxY2xxRnk5RGIzem41bHhvS1lfdU9veWdjNmpp
+		 * UGR1ZVd0b3VfOGhjIn0%3D.oMcAz2C-UitIvgrt5oXYBe8chASbq6ajbbH9kQWSmBs&
+		 * redirect_uri=https://devpaypal.qa.moneygram.com/withdraw-money.html&logout=true" 
+		 * (https://www.stage2cp07.stage.paypal.com:8443/webapps/auth/protocol/openidconnect/v1
+		 * /endsession?id_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJtZ2lfZnVuZHNvdXRfcWFf
+		 * ZW52Lm1vbmV5Z3JhbS5jb20iLCJhdXRoX3RpbWUiOjEzNzA0MzUzOTMsImlzcyI6Imh0dHBzOi8vd3d3LnBheXBhbC
+		 * 5jb20iLCJzZXNzaW9uSW5kZXgiOiI4OThiZWE3MTI1ZTJkMWY3NjRiM2JmNThhZDIwOGZjNGU4NmFkZTg5IiwiaWF
+		 * 0IjoxMzcwNDM1NDEwLCJleHAiOjI4ODAwLCJ1c2VyX2lkIjoiaHR0cHM6Ly93d3cucGF5cGFsLmNvbS93ZWJhcHBzL
+		 * 2F1dGgvaWRlbnRpdHkvdXNlci9YREcxY2xxRnk5RGIzem41bHhvS1lfdU9veWdjNmppUGR1ZVd0b3VfOGhjIn0%3D.
+		 * oMcAz2C-UitIvgrt5oXYBe8chASbq6ajbbH9kQWSmBs&redirect_uri=https://devpaypal.qa.moneygram.com/wit
+		 * hdraw-money.html&logout=true%22)
+		 */
+		String uri = "https://www.stage2cp07.stage.paypal.com:8443/webapps/auth/protocol/openidconnect/v1/endsession";
+		System.setProperty("javax.net.ssl.trustStoreType",
+				PropertyUtil.constantFromProperties.getString("trustStoreType"));
+		System.setProperty("javax.net.ssl.trustStore",
+				PropertyUtil.constantFromProperties.getString("trustStore"));
+		System.setProperty("javax.net.ssl.trustStorePassword",
+				PropertyUtil.constantFromProperties
+						.getString("trustStorePassword"));
+		HttpClient client = new HttpClient();
+		PostMethod postMethod = new PostMethod(uri);
+//		String myQuery = "profile https://uri.paypal.com/services/AdaptivePaymentsPayAPI openid";
+//		String ScopeValue = URLEncoder.encode(myQuery, "ISO-8859-1").toString();
+		postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+				new DefaultHttpMethodRetryHandler(3, false));
+		String AUTHORIZATION_BASIC_VALUE = PropertyUtil.constantFromProperties
+				.getString("AUTHORIZATION_BASIC");
+		postMethod.addRequestHeader("Authorization", AUTHORIZATION_BASIC_VALUE);
+		postMethod.addRequestHeader("id_token", id_Token);
+		postMethod.addParameter("redirect_uri", "https://devpaypal.qa.moneygram.com/withdraw-money.html");
+		postMethod.addParameter("logout", "true");
+//		postMethod.addParameter("code", id_Token);
+		LOGGER.debug(id_Token);
+
+		int statusCode = client.executeMethod(postMethod);
+		// TODO
+		LOGGER.debug(statusCode);
+		if (statusCode != HttpStatus.SC_NOT_IMPLEMENTED) {
+			String string = postMethod.getResponseBodyAsString();
+			// TODO
+			LOGGER.debug("string ::::::" + string);
+//			LOGGER.debug(string);
+//			accessToken = (AccessToken) new Gson().fromJson(string,
+//					AccessToken.class);
+		}
+
+		LOGGER.debug("Exit Create Token");
+
+//		return accessToken.getAccess_token();
+	}
 	private static String processToken(String tokenData) throws Exception {
 
 		LOGGER.debug("Enter processToken");

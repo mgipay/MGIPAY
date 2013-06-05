@@ -38,7 +38,7 @@ public class FeeDetailsBO {
 
 	private static Logger LOGGER = Logger.getLogger(FeeDetailsBO.class);
 
-	public static String getFee(
+	public static com.mgi.paypal.response.FeeLookupResponse getFee(
 			FeeLookupInputBean feeLookupInputBean) {
 
 		LOGGER.debug("Enter getFee.");
@@ -76,7 +76,7 @@ public class FeeDetailsBO {
 
 					feeLookupResponseUI.setTransactionSuccess(false);
 
-					return new Gson().toJson(feeLookupResponseUI);
+					return feeLookupResponseUI;
 				}
 			}
 		}
@@ -121,7 +121,7 @@ public class FeeDetailsBO {
 
 		LOGGER.debug("Exit getFee.");
 
-		return new Gson().toJson(feeLookupResponseUI);
+		return feeLookupResponseUI;
 	}
 
 	/**

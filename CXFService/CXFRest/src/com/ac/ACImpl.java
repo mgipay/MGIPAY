@@ -8,7 +8,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
@@ -42,43 +41,7 @@ public class ACImpl implements ACInterface {
 
 	private static Logger LOGGER = Logger.getLogger(ACImpl.class);
 
-	/**
-	 * getFee. This method will return fee in USD for given input amount.
-	 * 
-	 * @param HttpServletRequest
-	 *            ,HttpServletResponse,FeeLookupInputBean
-	 * 
-	 * @return FeeLookupResponse This response contains fee in JSON format.
-	 */
-	@POST
-	@Path("/getFee")
-	@Override
-	public String getFee(
-			@Context HttpServletRequest httpServletRequest,
-			@Context HttpServletResponse response,
-			FeeLookupInputBean feeLookupInputBean) {
-
-		String paypalToken = (String) httpServletRequest.getSession()
-				.getAttribute("paypalToken");
-		if (feeLookupInputBean.getToken() == null
-				|| !feeLookupInputBean.getToken().equals(paypalToken)) {
-			LOGGER.debug("Invalid token in input bean : Token In session : "
-					+ paypalToken + " Token from UI : "
-					+ feeLookupInputBean.getToken());
-
-			FeeLookupResponse feeLookupResponseUI = new FeeLookupResponse();
-			feeLookupResponseUI.setErrorMessage("Invalid Transaction.");
-			feeLookupResponseUI.setTransactionSuccess(false);
-
-			return new Gson().toJson(feeLookupResponseUI);
-		}
-		
-		
-		
-		LOGGER.debug("IP Address : " + httpServletRequest.getRemoteAddr());
-
-		return FeeDetailsBO.getFee(feeLookupInputBean);
-	}
+	
 
 	/**
 	 * getUserLimits. This method will call getUserLimits API of
@@ -135,10 +98,6 @@ public class ACImpl implements ACInterface {
 			httpServletRequest.getSession().setAttribute("customerEmail",
 					userData.getEmail());
 			httpServletRequest.getSession().setAttribute("id_Token", userDataInputBean.getId_Token());
-			httpServletRequest.getSession().setAttribute("sendValidationRequest",
-					"true");
-			httpServletRequest.getSession().setAttribute("commitTransactionRequest",
-					"true");
 		}
 
 		return new Gson().toJson(userData);
@@ -275,7 +234,48 @@ public class ACImpl implements ACInterface {
 
 		return CountryBO.getStateForUSA();
 	}
+	/**
+	 * getFee. This method will return fee in USD for given input amount.
+	 * 
+	 * @param HttpServletRequest
+	 *            ,HttpServletResponse,FeeLookupInputBean
+	 * 
+	 * @return FeeLookupResponse This response contains fee in JSON format.
+	 */
+	@POST
+	@Path("/getFee")
+	@Override
+	public String getFee(
+			@Context HttpServletRequest httpServletRequest,
+			@Context HttpServletResponse response,
+			FeeLookupInputBean feeLookupInputBean) {
 
+		String paypalToken = (String) httpServletRequest.getSession()
+				.getAttribute("paypalToken");
+		if (feeLookupInputBean.getToken() == null
+				|| !feeLookupInputBean.getToken().equals(paypalToken)) {
+			LOGGER.debug("Invalid token in input bean : Token In session : "
+					+ paypalToken + " Token from UI : "
+					+ feeLookupInputBean.getToken());
+
+			FeeLookupResponse feeLookupResponseUI = new FeeLookupResponse();
+			feeLookupResponseUI.setErrorMessage("Invalid Transaction.");
+			feeLookupResponseUI.setTransactionSuccess(false);
+
+			return new Gson().toJson(feeLookupResponseUI);
+		}
+		
+		LOGGER.info("IP Address : " + httpServletRequest.getRemoteAddr());
+
+		FeeLookupResponse feeLookupResponse = FeeDetailsBO
+				.getFee(feeLookupInputBean);
+		if (feeLookupResponse.isTransactionSuccess()) {
+			httpServletRequest.getSession().setAttribute(
+					feeLookupResponse.getMgiTransactionSessionID(),
+					"sendValidate");
+		}
+		return new Gson().toJson(feeLookupResponse);
+	}
 	/**
 	 * sendValidation. This method will call sendValidation API of Agent
 	 * Connect. This method will store the transaction details in MoneyGram
@@ -293,17 +293,21 @@ public class ACImpl implements ACInterface {
 			@Context HttpServletRequest httpServletRequest,
 			SendValidationInputBean sendValidationInputBean) {
 		
-		String sendValidationRequest = (String) httpServletRequest.getSession()
-				.getAttribute("sendValidationRequest");
-		if (sendValidationRequest.equals("true")) {
+		String key = (String) httpServletRequest.getSession().getAttribute(
+				sendValidationInputBean.getMgiTransactionSessionID());
+		if (key != null && key.equals("sendValidate")) {
+			LOGGER.debug(key);
 			httpServletRequest.getSession().setAttribute(
-					"sendValidationRequest", "false");
+					sendValidationInputBean.getMgiTransactionSessionID(),
+					"commitTransaction");
+			LOGGER.debug((String) httpServletRequest.getSession().getAttribute(
+				sendValidationInputBean.getMgiTransactionSessionID()));
 		} else {
 			SendValidationResponse sendValidationResponse = new SendValidationResponse();
-			sendValidationResponse.setTransactionSuccess(true);
+			sendValidationResponse.setTransactionSuccess(false);
 			return new Gson().toJson(sendValidationResponse);
 		}
-
+		
 		SendValidationResponse sendValidationResponse = new SendValidationResponse();
 		String paypalToken = (String) httpServletRequest.getSession()
 				.getAttribute("paypalToken");
@@ -378,17 +382,20 @@ public class ACImpl implements ACInterface {
 
 		LOGGER.debug("Enter commitTransaction.");
 		
-		String commitTransactionRequest = (String) httpServletRequest.getSession()
-				.getAttribute("commitTransactionRequest");
-		if (commitTransactionRequest.equals("true")) {
-			httpServletRequest.getSession().setAttribute(
-					"commitTransactionRequest", "false");
+		String key = (String) httpServletRequest.getSession().getAttribute(
+				commitTransactionInputBean.getMgiTransactionSessionID());
+		
+		if (key != null && key.equals("commitTransaction")) {
+			LOGGER.debug(key);
+			httpServletRequest.getSession().removeAttribute(
+					commitTransactionInputBean.getMgiTransactionSessionID());
+			LOGGER.debug((String) httpServletRequest.getSession().getAttribute(
+				commitTransactionInputBean.getMgiTransactionSessionID()));
 		} else {
 			CommitTransactionResponse commitTransactionResponse = new CommitTransactionResponse();
 			commitTransactionResponse.setTransactionSuccess(true);
 			return new Gson().toJson(commitTransactionResponse);
 		}
-
 		// validate payPal token and current session are valid.
 
 		String paypalToken = (String) httpServletRequest.getSession().getAttribute(
@@ -558,9 +565,15 @@ public class ACImpl implements ACInterface {
 		httpServletRequest.getSession().invalidate();
 		
 		
-		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
-				+ "/v1/tokenservice";
-		GetMethod getMethod = new GetMethod();
+//		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
+//				+ "/v1/tokenservice";
+		try {
+			PayPalBO.logOutPayPal(id_Token);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+//		GetMethod getMethod = new GetMethod();
 //		getMethod.s
 	}
 }
