@@ -50,8 +50,8 @@ xsi:schemaLocation="http://cxf.apache.org/configuration/security http://cxf.apac
  <bean id="timerTask"
   class="org.springframework.scheduling.timer.ScheduledTimerTask">
   <property name="timerTask" ref="schedulerTask" />
-  <property name="delay" value="1800000" />
-  <property name="period" value="1800000" />
+  <property name="delay" value="300000" />
+  <property name="period" value="300000" />
 
  </bean>
 

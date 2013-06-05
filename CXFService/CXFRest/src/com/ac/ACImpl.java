@@ -135,6 +135,10 @@ public class ACImpl implements ACInterface {
 			httpServletRequest.getSession().setAttribute("customerEmail",
 					userData.getEmail());
 			httpServletRequest.getSession().setAttribute("id_Token", userDataInputBean.getId_Token());
+			httpServletRequest.getSession().setAttribute("sendValidationRequest",
+					"true");
+			httpServletRequest.getSession().setAttribute("commitTransactionRequest",
+					"true");
 		}
 
 		return new Gson().toJson(userData);
@@ -288,6 +292,17 @@ public class ACImpl implements ACInterface {
 	public String sendValidation(
 			@Context HttpServletRequest httpServletRequest,
 			SendValidationInputBean sendValidationInputBean) {
+		
+		String sendValidationRequest = (String) httpServletRequest.getSession()
+				.getAttribute("sendValidationRequest");
+		if (sendValidationRequest.equals("true")) {
+			httpServletRequest.getSession().setAttribute(
+					"sendValidationRequest", "false");
+		} else {
+			SendValidationResponse sendValidationResponse = new SendValidationResponse();
+			sendValidationResponse.setTransactionSuccess(true);
+			return new Gson().toJson(sendValidationResponse);
+		}
 
 		SendValidationResponse sendValidationResponse = new SendValidationResponse();
 		String paypalToken = (String) httpServletRequest.getSession()
@@ -362,6 +377,17 @@ public class ACImpl implements ACInterface {
 			CommitTransactionInputBean commitTransactionInputBean) {
 
 		LOGGER.debug("Enter commitTransaction.");
+		
+		String commitTransactionRequest = (String) httpServletRequest.getSession()
+				.getAttribute("commitTransactionRequest");
+		if (commitTransactionRequest.equals("true")) {
+			httpServletRequest.getSession().setAttribute(
+					"commitTransactionRequest", "false");
+		} else {
+			CommitTransactionResponse commitTransactionResponse = new CommitTransactionResponse();
+			commitTransactionResponse.setTransactionSuccess(true);
+			return new Gson().toJson(commitTransactionResponse);
+		}
 
 		// validate payPal token and current session are valid.
 
@@ -526,6 +552,9 @@ public class ACImpl implements ACInterface {
 		httpServletRequest.getSession().removeAttribute("userLoggedIn");
 		httpServletRequest.getSession().removeAttribute("paypalToken");
 		httpServletRequest.getSession().removeAttribute("customerEmail");
+		httpServletRequest.getSession().removeAttribute("id_Token");
+		httpServletRequest.getSession().removeAttribute("commitTransactionRequest");
+		httpServletRequest.getSession().removeAttribute("sendValidationRequest");
 		httpServletRequest.getSession().invalidate();
 		
 		
