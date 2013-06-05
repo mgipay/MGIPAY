@@ -99,11 +99,5 @@
 		<filter-name>CORS</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-<!-- 	
-<listener>
-<listener-class>com.ac.BatchProcess</listener-class>
-</listener> 
-	 -->
-	
 	
 </web-app>

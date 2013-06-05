@@ -565,15 +565,11 @@ public class ACImpl implements ACInterface {
 		httpServletRequest.getSession().invalidate();
 		
 		
-//		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
-//				+ "/v1/tokenservice";
-		try {
+		/*try {
 			PayPalBO.logOutPayPal(id_Token);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-//		GetMethod getMethod = new GetMethod();
-//		getMethod.s
+		}*/
 	}
 }
