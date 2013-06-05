@@ -3,20 +3,13 @@
  */
 package com.ac.test;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Properties;
 import java.util.Scanner;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -27,12 +20,8 @@ import org.apache.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client;
 import com.mgi.agentconnect.client.TransactionStatus;
-import com.mgi.paypal.util.HistoryDetails;
-import com.mgi.paypal.util.UserData;
 
 /**
  * @author TCS
@@ -41,121 +30,9 @@ import com.mgi.paypal.util.UserData;
 public class MGI_PayPal_Test {
 	
 	private static Logger LOGGER = Logger.getLogger(MGI_PayPal_Test.class);
-	@SuppressWarnings({  "unused" })
-	@Test
-	public void test() throws FileNotFoundException, IOException {
-
-		// "{\"FeeLookupInputBean\":{\"amount\":\"100\"}}";
-
-		String string4 = "{\"address\":{\"postal_code\":\"07901\",\"locality\":\"Summ"
-				+ "it\",\"region\":\"NJ\",\"country\":\"US\",\"street_address\":\"4807384 5th"
-				+ " Street, 3272844 4th Street\"},"
-				+ "\"family_name\":\"Fundsout11\",\"verified\":\"true\",\"phone"
-				+ "_number\":\"6023820578\",\"zoneinfo\":\"America/Los_Angeles\",\"name\":\"MGI F"
-				+ "undsout11\",\"email\":\"testuser@moneygram.com\",\"given_name\":\"MGI\",\"user_id\":\"https://www.pa"
-				+ "ypal.com/webapps/auth/identity/user/dCn3hbvb2NWbecoGgSGz41zZ5jGdcYvQAr3zmwEZxUo\"}";
-		// String string4 =/* "{\"UserData\":" +*/
-		// "{\"family_name\":\"Fundsout11\",\"verified\":\"true\",\"phone" +
-		// "_number\":\"6023820578\",\"zoneinfo\":\"America/Los_Angeles\",\"name\":\"MGI F"
-		// +
-		// "undsout11\",\"email\":\"testuser@moneygram.com\",\"given_name\":\"MGI\",\"user_id\":\"https://www.pa"
-		// +
-		// "ypal.com/webapps/auth/identity/user/dCn3hbvb2NWbecoGgSGz41zZ5jGdcYvQAr3zmwEZxUo\"}";
-		UserData userData = new UserData();
-		try {
-			userData = (UserData) new Gson().fromJson(string4, UserData.class);
-		} catch (JsonSyntaxException exception) {
-			exception.printStackTrace();
-		}
-
-		String string = "BALA";
-		String string2 = "MURALI";
-		List<String> list = new ArrayList<String>();
-		list.add(string);
-		list.add(string2);
-		for (String statemName : list) {
-			statemName = statemName.toLowerCase();
-			char[] stringArray = statemName.toCharArray();
-			stringArray[0] = Character.toUpperCase(stringArray[0]);
-			statemName = new String(stringArray);
-		}
-
-		// BigDecimal bigDecimal = new BigDecimal("6057100363.234");
-		// LOGGER.debug(bigDecimal.setScale(0,RoundingMode.DOWN));
-		// // LOGGER.debug(Integer.parseInt(bigDecimal.toString()));
-		// String string2 = "ABC@GMAil.com";
-		// LOGGER.debug(string2.toLowerCase());
-
-		HistoryDetails details = new HistoryDetails();
-		HistoryDetails details2 = new HistoryDetails();
-		HistoryDetails details3 = new HistoryDetails();
-		HistoryDetails details4 = new HistoryDetails();
-		details.setTransactionID(new BigDecimal(1));
-		details2.setTransactionID(new BigDecimal(2));
-		details3.setTransactionID(new BigDecimal(3));
-		details4.setTransactionID(new BigDecimal(4));
-
-		List<HistoryDetails> historyDetailsList = new ArrayList<HistoryDetails>();
-
-		historyDetailsList.add(details3);
-		historyDetailsList.add(details4);
-		historyDetailsList.add(details);
-		historyDetailsList.add(details2);
-		/*
-		 * Collections.sort(employeeList, new Comparator() {
-		 * 
-		 * @Override public int compare(Object obj1, Object obj2) { Employee
-		 * emp1 = (Employee)obj1; Employee emp2 = (Employee)obj2; return
-		 * emp1.getFirstName().compareToIgnoreCase(emp2.getFirstName()); } });
-		 */
-
-		for (HistoryDetails historyDetails : historyDetailsList) {
-			LOGGER.debug(historyDetails.getTransactionID());
-		}
-
-		Collections.sort(historyDetailsList, new Comparator<HistoryDetails>() {
-			public int compare(HistoryDetails historyDetails1,
-					HistoryDetails historyDetails2) {
-				return historyDetails2.getTransactionID().compareTo(
-						historyDetails1.getTransactionID());
-			}
-
-		});
-
-		for (HistoryDetails historyDetails : historyDetailsList) {
-			LOGGER.debug(historyDetails.getTransactionID());
-		}
-		//
-		// // Integer i = new Integer(999999999);
-		// //java.util.Date sysDate = new java.util.Date();
-		// //java.sql.Date sqlDate = new java.sql.Date(sysDate.getTime());
-		// //LOGGER.debug(sqlDate);
-		//
-		// UserDataInputBean userDataInputBean = new UserDataInputBean();
-		// userDataInputBean.setCode(".7M-j4lm-wvADrkX6I5KEH3mcjTobdEyEYioavl3woQ");
-		// LOGGER.debug(new Gson().toJson(userDataInputBean));
-		//
-		// String string =
-		// "{\"family_name\":\"FundsInI\",\"language\":\"en_US\",\"veri" +
-		// "fied\":\"true\",\"locale\":\"en_US\",\"zoneinfo\":\"America/Los" +
-		// "_Angeles\",\"name\":\"MGI FundsInI\",\"given_name\":\"MGI\",\"user_id\":\"url\"}";
-		//
-		// Gson gson = new Gson();
-		//
-		// java.sql.Date transactionDate = (java.sql.Date)
-		// Calendar.getInstance()
-		// .getTime();
-		//
-
-		Properties properties = new Properties();
-		properties.load(new FileInputStream("Constants.properties"));
-		String name = properties.getProperty("TWO_HUNDRED_US_DOLLARS");
-		System.err.println(properties.getProperty("AGENT_ID"));
-		LOGGER.debug(name);
-	}
 	
 	@Test
-	public void TestFeeLookUp() { setCredentials();
+	public void TestFeeLookUp() { 
 		try {
 			
 			URL url = new URL("http://localhost:8080/CXFRest/rest/getFee");
@@ -193,7 +70,7 @@ public class MGI_PayPal_Test {
 
 	@Test
 	public void TestSignUp() {
-		setCredentials();
+		
 		try {
 
 			URL url = new URL(
@@ -232,7 +109,7 @@ public class MGI_PayPal_Test {
 	}
 
 	@Test
-	public void TestGetUserData() { setCredentials();
+	public void TestGetUserData() { 
 		try {
 			
 			URL url = new URL("http://localhost:8080/CXFRest/rest/getUserData");
@@ -290,7 +167,6 @@ public class MGI_PayPal_Test {
 		os.flush();
 		Scanner scanner;
 		String response;
-		// Scanner test;
 		if (conn.getResponseCode() != 200) {
 			scanner = new Scanner(conn.getErrorStream());
 			response = "Error From Server \n\n";
@@ -298,14 +174,12 @@ public class MGI_PayPal_Test {
 			scanner = new Scanner(conn.getInputStream());
 			response = "Response From Server \n\n";
 		}
-		// test = new Scanner(conn.getInputStream());
-		// LOGGER.debug(test);
 		scanner.useDelimiter("\\Z");
 		LOGGER.debug(response + scanner.next());
 	}
 
 	@Test
-	public void TestCommitTransaction() { setCredentials();
+	public void TestCommitTransaction() { 
 		try {
 			URL url = new URL(
 					"http://localhost:8092/CXFRest/rest/commitTransaction");
@@ -313,22 +187,6 @@ public class MGI_PayPal_Test {
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");
 			conn.setRequestProperty("Content-Type", "application/json");
-			
-//			CommitTransactionInputBean commitTransactionInputBean = new CommitTransactionInputBean();
-//			commitTransactionInputBean.setCustomerEmail("vbalki@ebay.com");
-//			commitTransactionInputBean.setCustomerName("VIJAY BALAKRISHNAN");
-////			commitTransactionInputBean.setCustomerPhoneNumber("6057100363");
-//			commitTransactionInputBean
-//					.setMgiTransactionSessionID("9708729E1572561364843019504");
-//			commitTransactionInputBean.setPaypalTransactionID("58965687");
-//			commitTransactionInputBean
-//					.setTransactionAmount(new BigDecimal(100));
-//			commitTransactionInputBean.setTransactionFee(new BigDecimal(12));
-////			commitTransactionInputBean.setTransactionStatus("PENDING");
-//			
-//
-////			Integer integer = 200050000;
-//			LOGGER.debug(new Gson().toJson(commitTransactionInputBean));
 			
 			String inputJsonObject = "{\"CommitTransactionInputBean\":{\"mgiTransactionSessionID\":\""
 					+ "9708729E1572561364808310118" + "\"}}";
@@ -357,7 +215,7 @@ public class MGI_PayPal_Test {
 		}
 	}
 	@Test
-	public void TestDetailLookup() { setCredentials();
+	public void TestDetailLookup() { 
 		try {
 			LOGGER.debug(TransactionStatus.AVAIL.value());
 			URL url = new URL(
@@ -393,13 +251,6 @@ public class MGI_PayPal_Test {
 			e.printStackTrace();
 		}
 	}
-	
-private void setCredentials(){
-	/*System.setProperty("http.proxyHost", "proxy.tcs.com");
-	System.setProperty("http.proxyPort", "8080");
-	System.setProperty("http.proxyUser", "538540");
-	System.setProperty("http.proxyPassword", "******");*/
-}
 	@Test
 	public void TestUserLimit() {
 		
@@ -412,9 +263,6 @@ private void setCredentials(){
 			conn.setRequestProperty("Content-Type", "application/json");
 			String inputJsonObject = "{\"UserLimitInputBean\":{\"emailID\":\"mgi_fundsout_test@moneygram.com\"}}";
 			
-//			String inputJsonObject = "{\"UserLimitInputBean\":{\"emailID\":\"mgi_consumer_tes" +
-//					"t@moneygram.com\"}}";
-
 			OutputStream os = conn.getOutputStream();
 			os.write(inputJsonObject.getBytes());
 			os.flush();
@@ -439,7 +287,7 @@ private void setCredentials(){
 	}
 
 	@Test
-	public void TestCodeTable() { setCredentials();
+	public void TestCodeTable() { 
 
 		try {
 			URL url = new URL("http://localhost:8092/CXFRest/rest/getStateCode");
@@ -467,7 +315,7 @@ private void setCredentials(){
 		}
 	}
 	@Test
-	public void TestLogOut() { setCredentials();
+	public void TestLogOut() { 
 
 		try {
 			URL url = new URL("http://localhost:8080/CXFRest/rest/logOutUser");
@@ -495,7 +343,7 @@ private void setCredentials(){
 		}
 	}
 	@Test
-	public void TestFeeLinkValue() { setCredentials();
+	public void TestFeeLinkValue() { 
 
 		try {
 			URL url = new URL("http://localhost:8080/CXFRest/rest/getFeeLinkValue");
@@ -527,7 +375,7 @@ private void setCredentials(){
 		}
 	}
 	@Test
-	public void TestSendMail() { setCredentials();
+	public void TestSendMail() { 
 
 		try {
 
@@ -567,7 +415,7 @@ private void setCredentials(){
 		}
 	}
 	@Test
-	public void TestTransactionInformationMail() { setCredentials();
+	public void TestTransactionInformationMail() { 
 
 		try {
 
@@ -606,7 +454,7 @@ private void setCredentials(){
 		}
 	}
 	@Ignore
-	public void TestGetHistoryDetails() { setCredentials();
+	public void TestGetHistoryDetails() { 
 
 		try {
 
@@ -643,8 +491,8 @@ private void setCredentials(){
 		}
 	}
 	@Ignore
-	public void TestSendReversal() { setCredentials();
-		// setCredentials();
+	public void TestSendReversal() { 
+		// 
 		com.mgi.agentconnect.client.SendReversalRequest sendReversalRequest = new com.mgi.agentconnect.client.SendReversalRequest();
 		sendReversalRequest.setAgentID("");
 		sendReversalRequest.setAgentSequence("9");
