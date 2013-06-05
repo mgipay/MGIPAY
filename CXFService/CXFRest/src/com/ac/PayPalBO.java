@@ -208,9 +208,6 @@ public class PayPalBO {
 		String ScopeValue = URLEncoder.encode(myQuery, "ISO-8859-1").toString();
 		postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
 				new DefaultHttpMethodRetryHandler(3, false));
-		// postMethod
-		// .addRequestHeader("Authorization",
-		// "Basic bWdpX2Z1bmRzX291dC5tb25leWdyYW0uY29tOlNTQVJXTEJRUkxGTURMSEg=");
 		String AUTHORIZATION_BASIC_VALUE = PropertyUtil.constantFromProperties
 				.getString("AUTHORIZATION_BASIC");
 		postMethod.addRequestHeader("Authorization", AUTHORIZATION_BASIC_VALUE);

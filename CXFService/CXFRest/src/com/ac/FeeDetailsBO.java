@@ -264,24 +264,36 @@ public class FeeDetailsBO {
 				feeLinkValues.setFeeForTwoHundred(FEE_FOR_TWO_HUNDRED_FUNDS_IN);
 				feeLinkValues
 						.setFeeForFiveHundred(FEE_FOR_FIVE_HUNDRED_FUNDS_IN);
-				MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
 				try {
-					moneyGramPayPalDAO.updateFeeFeeDetailTable(
-							PropertyUtil.constantFromProperties
-									.getBigDecimal("TWO_HUNDRED_US_DOLLARS"),
-							feeForTwoHundredFundsIn, true);
-					moneyGramPayPalDAO.updateFeeFeeDetailTable(
-							PropertyUtil.constantFromProperties
-									.getBigDecimal("FIVE_HUNDRED_US_DOLLARS"),
-							feeForFiveHundredFundsIn, true);
+					boolean feeForTwoHundred = MoneyGramPayPalDAO
+							.updateFeeFeeDetailTable(
+									PropertyUtil.constantFromProperties
+											.getBigDecimal("TWO_HUNDRED_US_DOLLARS"),
+									feeForTwoHundredFundsIn, true);
+					boolean feeForFiveHundred = MoneyGramPayPalDAO
+							.updateFeeFeeDetailTable(
+									PropertyUtil.constantFromProperties
+											.getBigDecimal("FIVE_HUNDRED_US_DOLLARS"),
+									feeForFiveHundredFundsIn, true);
+					if (!feeForTwoHundred || !feeForFiveHundred) {
+						synchronized (FEELINK_DAY_IDENTIFIER_FOR_FUND_IN) {
+							FEELINK_DAY_IDENTIFIER_FOR_FUND_IN = yesterday;
+						}
+						LOGGER.error("New Fee Not Updated Into Table 'MGI_PAYPAL_FEE_DTL'.");
+						LOGGER.error(System.getProperty("line.separator"));
+						feeLinkValues.setTransactionSuccess(false);
+						feeLinkValues
+								.setErrorMessage(PropertyUtil.messageFromProperties
+										.getString("RETRY_IN_SOMETIME"));
+					}
 
-				} catch (Exception exception) {
-					exception.printStackTrace();
+				} catch (Exception sqlException) {
+					sqlException.printStackTrace();
 					synchronized (FEELINK_DAY_IDENTIFIER_FOR_FUND_IN) {
 						FEELINK_DAY_IDENTIFIER_FOR_FUND_IN = yesterday;
 					}
 					LOGGER.error("New Fee Not Updated Into Table 'MGI_PAYPAL_FEE_DTL'.");
-					LOGGER.error(exception.getLocalizedMessage());
+					LOGGER.error(sqlException.getLocalizedMessage());
 					LOGGER.error(System.getProperty("line.separator"));
 					feeLinkValues.setTransactionSuccess(false);
 					feeLinkValues.setErrorMessage(PropertyUtil.messageFromProperties
@@ -348,16 +360,25 @@ public class FeeDetailsBO {
 						.setFeeForTwoHundred(FEE_FOR_TWO_HUNDRED_FUNDS_OUT);
 				feeLinkValues
 						.setFeeForFiveHundred(FEE_FOR_FIVE_HUNDRED_FUNDS_OUT);
-				MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
 				try {
-					moneyGramPayPalDAO.updateFeeFeeDetailTable(
+					boolean feeForTwoHundred = MoneyGramPayPalDAO.updateFeeFeeDetailTable(
 							PropertyUtil.constantFromProperties
 									.getBigDecimal("TWO_HUNDRED_US_DOLLARS"),
 							feeForTwoHundredFundsOut, false);
-					moneyGramPayPalDAO.updateFeeFeeDetailTable(
+					boolean feeForFiveHundred = MoneyGramPayPalDAO.updateFeeFeeDetailTable(
 							PropertyUtil.constantFromProperties
 									.getBigDecimal("FIVE_HUNDRED_US_DOLLARS"),
 							feeForFiveHundredFundsOut, false);
+					if(!feeForFiveHundred||!feeForTwoHundred){
+						synchronized (FEELINK_DAY_IDENTIFIER_FOR_FUND_OUT) {
+							FEELINK_DAY_IDENTIFIER_FOR_FUND_OUT = yesterday;
+						}
+						LOGGER.error("New Fee Not Updated Into Table 'MGI_PAYPAL_FEE_DTL'.");
+						LOGGER.error(System.getProperty("line.separator"));
+						feeLinkValues.setTransactionSuccess(false);
+						feeLinkValues.setErrorMessage(PropertyUtil.messageFromProperties
+								.getString("RETRY_IN_SOMETIME"));
+					}
 
 				} catch (Exception exception) {
 					exception.printStackTrace();

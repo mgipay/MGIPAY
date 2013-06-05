@@ -190,34 +190,44 @@ public class BatchProcessBO {
 				.getSendCurrency());
 		sendReversalRequest.setReferenceNumber(sendReversalInputBean
 				.getReferenceNumber());
-		sendReversalRequest.setReversalType(SendReversalType.R);
+		sendReversalRequest.setReversalType(SendReversalType.C);
 		sendReversalRequest
 				.setSendReversalReason(SendReversalReasonCode.MS_NOT_USED);
 		sendReversalRequest.setFeeRefund("Y");
 
 		System.out.println(new XStream().toXML(sendReversalRequest));
 
-		try {
-			AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
-			SendReversalResponse sendReversalResponse = client
-					.sendReversal(sendReversalRequest);
-			
-			System.out.println(new XStream().toXML(sendReversalResponse));
-		} catch (Exception exception) {
-			// If send reversal called for already reversed Transaction then
-			// error is 'Transaction not in Send status'
-			if (exception.getLocalizedMessage().equalsIgnoreCase(
-					"Transaction not in Send status")) {
-				return true;
-			} else {
-				LOGGER.error("SendReversal Failed for MgiReferenceNumber : "
-						+ sendReversalInputBean.getReferenceNumber()
-						+ ". Becasue of : " + exception.getLocalizedMessage());
-				LOGGER.error("sendReversalRequest: "
-						+ new Gson().toJson(sendReversalRequest));
+		while (true) {
+			try {
+				AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
+				SendReversalResponse sendReversalResponse = client
+						.sendReversal(sendReversalRequest);
 
-				exception.printStackTrace();
-				return false;
+				System.out.println(new XStream().toXML(sendReversalResponse));
+				break;
+			} catch (Exception exception) {
+				// If send reversal called for already reversed Transaction then
+				// error is 'Transaction not in Send status'
+				if (exception.getLocalizedMessage().equalsIgnoreCase(
+						"Transaction not in Send status")) {
+					return true;
+				} else if (exception.getLocalizedMessage().equalsIgnoreCase(
+						"Send reversal/cancel must be requested same day")) {
+					exception.printStackTrace();
+					LOGGER.error("Retrying with reversal type R.");
+					
+					sendReversalRequest.setReversalType(SendReversalType.R);
+				} else {
+					LOGGER.error("SendReversal Failed for MgiReferenceNumber : "
+							+ sendReversalInputBean.getReferenceNumber()
+							+ ". Becasue of : "
+							+ exception.getLocalizedMessage());
+					LOGGER.error("sendReversalRequest: "
+							+ new Gson().toJson(sendReversalRequest));
+
+					exception.printStackTrace();
+					return false;
+				}
 			}
 		}
 

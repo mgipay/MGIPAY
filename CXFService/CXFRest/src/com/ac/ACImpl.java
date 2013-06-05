@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
@@ -133,6 +134,7 @@ public class ACImpl implements ACInterface {
 					userData.getToken());
 			httpServletRequest.getSession().setAttribute("customerEmail",
 					userData.getEmail());
+			httpServletRequest.getSession().setAttribute("id_Token", userDataInputBean.getId_Token());
 		}
 
 		return new Gson().toJson(userData);
@@ -407,9 +409,17 @@ public class ACImpl implements ACInterface {
 
 		// If Commit Success then update history with MGIReference Number.
 		try {
-			moneyGramPayPalDAO.updateHistoryAfterCommitTransaction(
+			if (!moneyGramPayPalDAO.updateHistoryAfterCommitTransaction(
 					commitTransactionInputBean.getMgiTransactionSessionID(),
-					commitTransactionResponse.getReferenceNumber());
+					commitTransactionResponse.getReferenceNumber())) {
+				CommitTransactionResponse commitTransactionResponse2 = new CommitTransactionResponse();
+				commitTransactionResponse2.setTransactionSuccess(false);
+				commitTransactionResponse2
+						.setErrorMessage(PropertyUtil.messageFromProperties
+								.getString("TRANSACTION_FAILED_RETRY"));
+
+				return new Gson().toJson(commitTransactionResponse2);
+			}
 		} catch (Exception exception) {
 
 			LOGGER.error("Updating history with MgiReferenceNumber : "
@@ -418,6 +428,13 @@ public class ACImpl implements ACInterface {
 					+ commitTransactionInputBean.getMgiTransactionSessionID());
 			LOGGER.error(exception.getLocalizedMessage());
 			exception.printStackTrace();
+			
+			CommitTransactionResponse commitTransactionResponse2 = new CommitTransactionResponse();
+			commitTransactionResponse2.setTransactionSuccess(false);
+			commitTransactionResponse2.setErrorMessage(PropertyUtil.messageFromProperties
+					.getString("TRANSACTION_FAILED_RETRY"));
+
+			return new Gson().toJson(commitTransactionResponse2);
 		}
 
 		// Call PAY API of Paypal.
@@ -504,9 +521,17 @@ public class ACImpl implements ACInterface {
 	@Override
 	public void logOutUser(@Context HttpServletRequest httpServletRequest) {
 
+		String id_Token = (String) httpServletRequest.getSession().getAttribute("id_Token");
+		
 		httpServletRequest.getSession().removeAttribute("userLoggedIn");
 		httpServletRequest.getSession().removeAttribute("paypalToken");
 		httpServletRequest.getSession().removeAttribute("customerEmail");
 		httpServletRequest.getSession().invalidate();
+		
+		
+		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
+				+ "/v1/tokenservice";
+		GetMethod getMethod = new GetMethod();
+//		getMethod.s
 	}
 }
