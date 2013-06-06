@@ -48,8 +48,8 @@ public class PayPalBO {
 
 	public static Hashtable<String, String> stateNameAndCodeHashtable = new Hashtable<String, String>();
 
-	public static PayResponse payToMoneyGram(String token,
-			String customerEmail, BigDecimal amount,
+	public static PayResponse payToMoneyGram(
+			String token, String customerEmail, BigDecimal amount,
 			String customerPhoneNumber, String referenceNumber, BigDecimal fee)
 			throws Exception {
 
@@ -58,16 +58,19 @@ public class PayPalBO {
 		BigDecimal totalAmount = amount.add(fee);
 		RequestEnvelope requestEnvelopee = new RequestEnvelope();
 		requestEnvelopee.setDetailLevel(DetailLevelCode.RETURN_ALL);
-		requestEnvelopee.setErrorLanguage("error_US");
+		requestEnvelopee.setErrorLanguage(PropertyUtil.constantFromProperties
+				.getString("ERROR_US"));
 		PayRequest payRequest = new PayRequest();
 		PhoneNumberType phoneNumberType = new PhoneNumberType();
-		phoneNumberType.setCountryCode("1");
+		phoneNumberType.setCountryCode(PropertyUtil.constantFromProperties
+				.getString("COUNTRY_CODE"));
 		String memo = PropertyUtil.constantFromProperties.getString("MEMO");
 		SenderIdentifier senderIdentifier = new SenderIdentifier();
 		senderIdentifier.setPhone(phoneNumberType);
 		DateFormat df = new SimpleDateFormat(Mgi_Paypal_Constants.DATE_FORMAT);
-		
-		String TrackingId =referenceNumber.concat("-").concat( df.format(Calendar.getInstance().getTime()));
+
+		String TrackingId = referenceNumber.concat("-").concat(
+				df.format(Calendar.getInstance().getTime()));
 		payRequest.setTrackingId(TrackingId);
 		payRequest.setMemo(memo.concat(" ").concat(referenceNumber));
 		Receiver receiver = new Receiver();
@@ -76,19 +79,26 @@ public class PayPalBO {
 		receiver.setInvoiceId(referenceNumber);
 		receiver.setEmail(PropertyUtil.constantFromProperties
 				.getString("RECEIVER_EMAIL_PAY"));
-		receiver.setPaymentType("WITHDRAWAL");
+		receiver.setPaymentType(PropertyUtil.constantFromProperties
+				.getString("PAYMENT_TYPE"));
 		ReceiverList receiverList = new ReceiverList();
 		receiverList.getReceiver().add(receiver);
-		payRequest.setActionType("PAY");
-		payRequest.setCurrencyCode("USD");
+		payRequest.setActionType(PropertyUtil.constantFromProperties
+				.getString("ACTION_TYPE"));
+		payRequest.setCurrencyCode(PropertyUtil.constantFromProperties
+				.getString("CURRENCY_CODE"));
 		payRequest.setRequestEnvelope(requestEnvelopee);
-		payRequest.setReturnUrl("https://noop");
+		payRequest.setReturnUrl(PropertyUtil.constantFromProperties
+				.getString("RETURN_URL"));
 		payRequest.setReceiverList(receiverList);
-		payRequest.setCancelUrl("https://noop");
-		payRequest.setFeesPayer("NOFEE");
+		payRequest.setCancelUrl(PropertyUtil.constantFromProperties
+				.getString("CANCEL_URL"));
+		payRequest.setFeesPayer(PropertyUtil.constantFromProperties
+				.getString("FEES_PAYER"));
 		payRequest.setSenderEmail(customerEmail);
 		FundingTypeInfo fundingTypeInfo = new FundingTypeInfo();
-		fundingTypeInfo.setFundingType("BALANCE");
+		fundingTypeInfo.setFundingType(PropertyUtil.constantFromProperties
+				.getString("FUNDING_TYPE"));
 		FundingTypeList fundingTypeList = new FundingTypeList();
 		fundingTypeList.getFundingTypeInfo().add(fundingTypeInfo);
 		FundingConstraint fundingConstraint = new FundingConstraint();
@@ -96,8 +106,7 @@ public class PayPalBO {
 		payRequest.setFundingConstraint(fundingConstraint);
 		PayResponse payResponse = new PayResponse();
 
-		AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client client 
-		= new AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client();
+		AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client client = new AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client();
 
 		payResponse = client.getPay(payRequest, token);
 
@@ -106,14 +115,16 @@ public class PayPalBO {
 		return payResponse;
 	}
 
-	public static String getUserLimits(UserLimitInputBean userLimitInputBean) {
+	public static String getUserLimits(
+			UserLimitInputBean userLimitInputBean) {
 
 		LOGGER.debug("Enter getUserLimits.");
-		
+
 		com.mgi.paypal.response.GetUserLimitsResponse getUserLimitsResponseForUI = new com.mgi.paypal.response.GetUserLimitsResponse();
 		Gson gson = new Gson();
 		PhoneNumberType phoneNumberType = new PhoneNumberType();
-		phoneNumberType.setCountryCode("1");
+		phoneNumberType.setCountryCode(PropertyUtil.constantFromProperties
+				.getString("COUNTRY_CODE"));
 		phoneNumberType.setPhoneNumber(userLimitInputBean.getPhoneNumber());
 
 		AccountIdentifier accountIdentifier = new AccountIdentifier();
@@ -122,7 +133,8 @@ public class PayPalBO {
 
 		RequestEnvelope requestEnvelope = new RequestEnvelope();
 		requestEnvelope.setDetailLevel(DetailLevelCode.RETURN_ALL);
-		requestEnvelope.setErrorLanguage("NA");
+		requestEnvelope.setErrorLanguage(PropertyUtil.constantFromProperties
+				.getString("ERROR_LANGUAGE"));
 
 		GetUserLimitsRequest getUserLimitsRequest = new GetUserLimitsRequest();
 		getUserLimitsRequest.setUser(accountIdentifier);
@@ -136,7 +148,7 @@ public class PayPalBO {
 				PropertyUtil.constantFromProperties.getString("PP_LIMIT_TYPE"));
 
 		GetUserLimitsResponse getUserLimitsResponse = new GetUserLimitsResponse();
-		
+
 		int retryCount = Mgi_Paypal_Constants.RETRY_COUNT;
 		while (retryCount >= 1) {
 			try {
@@ -165,9 +177,8 @@ public class PayPalBO {
 				&& !getUserLimitsResponse.getUserLimit().isEmpty()) {
 			getUserLimitsResponseForUI.setTransactionSuccess(true);
 
-			getUserLimitsResponseForUI
-					.setCurrencyType(getUserLimitsResponse.getUserLimit()
-							.get(0).getLimitAmount());
+			getUserLimitsResponseForUI.setCurrencyType(getUserLimitsResponse
+					.getUserLimit().get(0).getLimitAmount());
 
 		} else {
 			LOGGER.warn("userLimitList is empty.Hardcoded value went to UI");
@@ -180,20 +191,25 @@ public class PayPalBO {
 					.setErrorMessage(PropertyUtil.messageFromProperties
 							.getString("SESSION_EXPIRED"));
 		}
-		
+
 		LOGGER.debug("Exit getUserLimits.");
 
 		return gson.toJson(getUserLimitsResponseForUI);
 	}
 
-	private static String createToken(String codeValue) throws Exception {
+	private static String createToken(
+			String codeValue) throws Exception {
 
 		LOGGER.debug("Enter Create Token");
 		LOGGER.debug("Code Value ::::::" + codeValue);
 		LOGGER.debug(codeValue);
-
-		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
-				+ "/v1/tokenservice";
+		/*
+		 * String uri =
+		 * "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
+		 * + "/v1/tokenservice";
+		 */
+		String uri = PropertyUtil.constantFromProperties
+				.getString("TOKEN_SERVICE_URL");
 		AccessToken accessToken = new AccessToken();
 		System.setProperty("javax.net.ssl.trustStoreType",
 				PropertyUtil.constantFromProperties.getString("trustStoreType"));
@@ -204,14 +220,17 @@ public class PayPalBO {
 						.getString("trustStorePassword"));
 		HttpClient client = new HttpClient();
 		PostMethod postMethod = new PostMethod(uri);
-		String myQuery = "profile https://uri.paypal.com/services/AdaptivePaymentsPayAPI openid";
+		String myQuery = PropertyUtil.constantFromProperties
+				.getString("MY_QUERY");
 		String ScopeValue = URLEncoder.encode(myQuery, "ISO-8859-1").toString();
 		postMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
 				new DefaultHttpMethodRetryHandler(3, false));
 		String AUTHORIZATION_BASIC_VALUE = PropertyUtil.constantFromProperties
 				.getString("AUTHORIZATION_BASIC");
 		postMethod.addRequestHeader("Authorization", AUTHORIZATION_BASIC_VALUE);
-		postMethod.addParameter("grant_type", "authorization_code");
+		String authorization_code_value = PropertyUtil.constantFromProperties
+				.getString("AUTHORIZATION_CODE");
+		postMethod.addParameter("grant_type", authorization_code_value);
 		postMethod.addParameter("scope", ScopeValue);
 		postMethod.addParameter("code", codeValue);
 		LOGGER.debug(codeValue);
@@ -239,7 +258,10 @@ public class PayPalBO {
 		id_Token = id_Token.substring(0, id_Token.indexOf("&code"));
 		LOGGER.debug("id_Token : " + id_Token);
 
-		String url = "https://www.stage2cp07.stage.paypal.com:8443/webapps/auth/protocol/openidconnect/v1/endsession?id_token=";
+		String url = PropertyUtil.constantFromProperties
+				.getString("TOKEN_END_SESSION_URL");
+		// String url =
+		// "https://www.stage2cp07.stage.paypal.com:8443/webapps/auth/protocol/openidconnect/v1/endsession?id_token=";
 		System.setProperty("javax.net.ssl.trustStoreType",
 				PropertyUtil.constantFromProperties.getString("trustStoreType"));
 		System.setProperty("javax.net.ssl.trustStore",
@@ -254,8 +276,9 @@ public class PayPalBO {
 		 * redirect_uri=<your_return_url>&logout=true"
 		 */
 		url = url.concat(id_Token);
-		url = url
-				+ "&redirect_uri=https://devpaypal.qa.moneygram.com&logout=true";
+		String reDirectUrl = PropertyUtil.constantFromProperties
+				.getString("REDIRECT_URL_LOGOUT");
+		url = url + reDirectUrl;
 
 		LOGGER.debug(url);
 
@@ -265,8 +288,8 @@ public class PayPalBO {
 		// "profile https://uri.paypal.com/services/AdaptivePaymentsPayAPI openid";
 		// String ScopeValue = URLEncoder.encode(myQuery,
 		// "ISO-8859-1").toString();
-		 getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-		 new DefaultHttpMethodRetryHandler(3, false));
+		getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+				new DefaultHttpMethodRetryHandler(3, false));
 		String AUTHORIZATION_BASIC_VALUE = PropertyUtil.constantFromProperties
 				.getString("AUTHORIZATION_BASIC");
 		getMethod.addRequestHeader("Authorization", AUTHORIZATION_BASIC_VALUE);
@@ -286,28 +309,35 @@ public class PayPalBO {
 		}
 		// TODO
 		LOGGER.debug(statusCode);
-//		if (statusCode != HttpStatus.SC_NOT_IMPLEMENTED) {
-//			String string = getMethod.getResponseBodyAsString();
-			// TODO
-			// LOGGER.debug("Response : " + string);
-			// LOGGER.debug(string);
-			// accessToken = (AccessToken) new Gson().fromJson(string,
-			// AccessToken.class);
-//		}
+		// if (statusCode != HttpStatus.SC_NOT_IMPLEMENTED) {
+		// String string = getMethod.getResponseBodyAsString();
+		// TODO
+		// LOGGER.debug("Response : " + string);
+		// LOGGER.debug(string);
+		// accessToken = (AccessToken) new Gson().fromJson(string,
+		// AccessToken.class);
+		// }
 
 		LOGGER.debug("Exit logOutPayPal");
 
 		// return accessToken.getAccess_token();
 	}
-	private static String processToken(String tokenData) throws Exception {
+	private static String processToken(
+			String tokenData) throws Exception {
 
 		LOGGER.debug("Enter processToken");
 
 		LOGGER.debug(tokenData);
 
 		String responseBody = null;
-		String uri = "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
-				+ "/v1/userinfo?schema=openid";
+		String uri = PropertyUtil.constantFromProperties
+				.getString("PROCESS_TOKEN_URL");
+
+		/*
+		 * String uri =
+		 * "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
+		 * + "/v1/userinfo?schema=openid";
+		 */
 
 		HttpClient client = new HttpClient();
 		GetMethod method2 = new GetMethod(uri);
@@ -325,14 +355,15 @@ public class PayPalBO {
 		return responseBody;
 	}
 
-	public static UserData getUserData(UserDataInputBean userDataInputBean) {
+	public static UserData getUserData(
+			UserDataInputBean userDataInputBean) {
 
 		LOGGER.debug("Enter getUserData.");
 
 		UserData userData = new UserData();
-		
+
 		Gson gson = new Gson();
-		
+
 		LOGGER.debug(gson.toJson(userDataInputBean));
 		try {
 			String token = createToken(userDataInputBean.getCode());
@@ -347,7 +378,7 @@ public class PayPalBO {
 						.getString("RETRY_IN_SOMETIME"));
 				return userData;
 			}
-			
+
 			userData = (UserData) gson.fromJson(userDataString, UserData.class);
 			userData.setToken(token);
 			if (stateNameAndCodeHashtable.isEmpty()) {
@@ -367,8 +398,8 @@ public class PayPalBO {
 			return userData;
 		}
 
-		 userData.setTransactionSuccess(true);
-		
+		userData.setTransactionSuccess(true);
+
 		LOGGER.debug(gson.toJson(userData));
 
 		LOGGER.debug("Exit getUserData.");

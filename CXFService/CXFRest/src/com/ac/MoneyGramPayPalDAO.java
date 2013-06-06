@@ -144,8 +144,9 @@ public class MoneyGramPayPalDAO {
 				PropertyUtil.constantFromProperties
 						.getString("ORACLE_DB_PASSWORD"));
 		List<HistoryDetails> historyDetailsList = new ArrayList<HistoryDetails>();
-		String strQuery = PropertyUtil.constantFromProperties
-				.getString("RETRIEVE_HISTORY_DETAILS_QUERY");
+		String strQuery = "SELECT * FROM (SELECT * FROM MGI_PAYPAL_TRAN_HIST "
+				+ "WHERE CUST_EMAIL = ?  and MGI_TRAN_STATUS  in (?,?,?,?) "
+				+ "order by TRAN_DATE desc) a where rownum < 11";
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -216,8 +217,8 @@ public class MoneyGramPayPalDAO {
 				PropertyUtil.constantFromProperties
 						.getString("ORACLE_DB_PASSWORD"));
 
-		String strQuery = PropertyUtil.constantFromProperties
-				.getString("RETRIEVE_HISTORY_DETAILS_FOR_BATCH_QUERY"); 
+		String strQuery = "SELECT * FROM (SELECT * FROM MGI_PAYPAL_TRAN_HIST "
+				+ "WHERE TRAN_STATUS = 'MGI_FAILED' order by TRAN_DATE desc) a where rownum < 1001";
 		List<String> mgiTransactionSessinIdList = new ArrayList<String>();
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -267,8 +268,10 @@ public class MoneyGramPayPalDAO {
 				PropertyUtil.constantFromProperties
 						.getString("ORACLE_DB_PASSWORD"));
 		String strQuery = null;
-		strQuery =PropertyUtil.constantFromProperties
-				.getString("INSERT_HISTORY_DETAILS_QUERY"); 
+		strQuery = "INSERT INTO MGI_PAYPAL_TRAN_HIST (TRAN_ID, CUST_EMAIL, CUST_NAME, "
+				+ "CUST_PHONE, PAYPAL_TRAN_ID, MGI_REF_NUM, TRAN_DATE, TRAN_AMT, TRAN_FEE, "
+				+ "TRAN_STATUS, MGI_SESS_ID,MGI_TRAN_STATUS) "
+				+ "VALUES (mgi_paypal_tranid_seq.nextval,?,?,?,?,?,?,?,?,?,?,?)";
 
 		PreparedStatement preparedStatement = null;
 		try {
@@ -326,8 +329,8 @@ public class MoneyGramPayPalDAO {
 				PropertyUtil.constantFromProperties
 						.getString("ORACLE_DB_PASSWORD"));
 		PreparedStatement preparedStatement = null;
-		String strQuery = PropertyUtil.constantFromProperties
-				.getString("UPDATE_HISTORY_AFTER_COMMITTRANSACTION");
+		String strQuery = "update MGI_PAYPAL_TRAN_HIST set MGI_REF_NUM = ?"
+				+ " , TRAN_STATUS = ? where MGI_SESS_ID = ?";
 		try {
 			preparedStatement = connection.prepareStatement(strQuery);
 			preparedStatement.setString(1, mgiReferenceNumber);
@@ -364,8 +367,8 @@ public class MoneyGramPayPalDAO {
 				PropertyUtil.constantFromProperties
 						.getString("ORACLE_DB_PASSWORD"));
 
-		String strQuery =PropertyUtil.constantFromProperties
-				.getString("UPDATE_HISTORY_SENDVALIDATION_COMMITTRANSACTION_FAILED ");
+		String strQuery = "update MGI_PAYPAL_TRAN_HIST set "
+				+ " TRAN_STATUS = ? where MGI_SESS_ID = ?";
 		PreparedStatement preparedStatement = null;
 		try {
 			preparedStatement = connection.prepareStatement(strQuery);
@@ -400,8 +403,8 @@ public class MoneyGramPayPalDAO {
 				PropertyUtil.constantFromProperties
 						.getString("ORACLE_DB_PASSWORD"));
 
-		String strQuery = PropertyUtil.constantFromProperties
-				.getString("UPDATE_PAY_API_FAILED");
+		String strQuery = "update MGI_PAYPAL_TRAN_HIST set "
+				+ " TRAN_STATUS = ? where MGI_SESS_ID = ?";
 		PreparedStatement preparedStatement = null;
 		try {
 			preparedStatement = connection.prepareStatement(strQuery);
@@ -437,8 +440,8 @@ public class MoneyGramPayPalDAO {
 				PropertyUtil.constantFromProperties
 						.getString("ORACLE_DB_PASSWORD"));
 
-		String strQuery =PropertyUtil.constantFromProperties
-				.getString("UPDATE_HISTORY_AFTER_PAY");
+		String strQuery = "update MGI_PAYPAL_TRAN_HIST set PAYPAL_TRAN_ID = ? "
+				+ ", TRAN_STATUS = ? , MGI_TRAN_STATUS = ? where MGI_SESS_ID = ?";
 		PreparedStatement preparedStatement = null;
 		try {
 			preparedStatement = connection.prepareStatement(strQuery);
@@ -452,7 +455,7 @@ public class MoneyGramPayPalDAO {
 			LOGGER.error("Updating PAYPAL_TRAN_ID =  "
 					+ payPalTransactionID
 					+ ", TRAN_STATUS = PAYPAL_COMMITTED , MGI_TRAN_STATUS = AVAIL  where MGI_SESS_ID = "
-					+ mgiTransactionSessionID + "Failed");
+					+ mgiTransactionSessionID + " Failed");
 			LOGGER.error(exception.getLocalizedMessage());
 			exception.printStackTrace();
 			return false;
@@ -480,8 +483,8 @@ public class MoneyGramPayPalDAO {
 				PropertyUtil.constantFromProperties
 						.getString("ORACLE_DB_PASSWORD"));
 
-		String strQuery = PropertyUtil.constantFromProperties
-				.getString("UPDATE_HISTORY_DETAIL");
+		String strQuery = "update MGI_PAYPAL_TRAN_HIST set "
+				+ "MGI_TRAN_STATUS = ? where MGI_SESS_ID = ?";
 		PreparedStatement preparedStatement = null;
 		try {
 			preparedStatement = connection.prepareStatement(strQuery);
