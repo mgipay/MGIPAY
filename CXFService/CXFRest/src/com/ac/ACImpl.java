@@ -317,7 +317,7 @@ public class ACImpl implements ACInterface {
 					+ paypalToken + " Token from UI : "
 					+ sendValidationInputBean.getToken());
 
-			sendValidationResponse.setTransactionSuccess(false);
+			sendValidationResponse.setTransactionSuccess(true);
 			sendValidationResponse.setErrorMessage("Invalid Transaction.");
 			return new Gson().toJson(sendValidationResponse);
 
@@ -552,24 +552,25 @@ public class ACImpl implements ACInterface {
 	@POST
 	@Path("/logOutUser")
 	@Override
-	public void logOutUser(@Context HttpServletRequest httpServletRequest) {
+	public void logOutUser(
+			@Context HttpServletRequest httpServletRequest) {
 
-		String id_Token = (String) httpServletRequest.getSession().getAttribute("id_Token");
-		
+		// String id_Token = (String)
+		// httpServletRequest.getSession().getAttribute("id_Token");
+
 		httpServletRequest.getSession().removeAttribute("userLoggedIn");
 		httpServletRequest.getSession().removeAttribute("paypalToken");
 		httpServletRequest.getSession().removeAttribute("customerEmail");
 		httpServletRequest.getSession().removeAttribute("id_Token");
-		httpServletRequest.getSession().removeAttribute("commitTransactionRequest");
-		httpServletRequest.getSession().removeAttribute("sendValidationRequest");
+		httpServletRequest.getSession().removeAttribute(
+				"commitTransactionRequest");
+		httpServletRequest.getSession()
+				.removeAttribute("sendValidationRequest");
 		httpServletRequest.getSession().invalidate();
-		
-		
-		/*try {
-			PayPalBO.logOutPayPal(id_Token);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+
+		/*
+		 * try { PayPalBO.logOutPayPal(id_Token); } catch (Exception e) { //
+		 * TODO Auto-generated catch block e.printStackTrace(); }
+		 */
 	}
 }
