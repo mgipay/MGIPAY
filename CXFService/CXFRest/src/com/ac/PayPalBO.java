@@ -201,13 +201,7 @@ public class PayPalBO {
 			String codeValue) throws Exception {
 
 		LOGGER.debug("Enter Create Token");
-		LOGGER.debug("Code Value ::::::" + codeValue);
-		LOGGER.debug(codeValue);
-		/*
-		 * String uri =
-		 * "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
-		 * + "/v1/tokenservice";
-		 */
+		LOGGER.debug("Code Value : " + codeValue);
 		String uri = PropertyUtil.constantFromProperties
 				.getString("TOKEN_SERVICE_URL");
 		AccessToken accessToken = new AccessToken();
@@ -260,8 +254,6 @@ public class PayPalBO {
 
 		String url = PropertyUtil.constantFromProperties
 				.getString("TOKEN_END_SESSION_URL");
-		// String url =
-		// "https://www.stage2cp07.stage.paypal.com:8443/webapps/auth/protocol/openidconnect/v1/endsession?id_token=";
 		System.setProperty("javax.net.ssl.trustStoreType",
 				PropertyUtil.constantFromProperties.getString("trustStoreType"));
 		System.setProperty("javax.net.ssl.trustStore",
@@ -269,12 +261,6 @@ public class PayPalBO {
 		System.setProperty("javax.net.ssl.trustStorePassword",
 				PropertyUtil.constantFromProperties
 						.getString("trustStorePassword"));
-		/*
-		 * curl
-		 * "https://www.paypal.com/webapps/auth/protocol/openidconnect/v1/endsession?
-		 * id_token=<your_id_token>&state=<the_state_you passed_earlier>&
-		 * redirect_uri=<your_return_url>&logout=true"
-		 */
 		url = url.concat(id_Token);
 		String reDirectUrl = PropertyUtil.constantFromProperties
 				.getString("REDIRECT_URL_LOGOUT");
@@ -284,21 +270,11 @@ public class PayPalBO {
 
 		HttpClient httpClient = new HttpClient();
 		GetMethod getMethod = new GetMethod(url);
-		// String myQuery =
-		// "profile https://uri.paypal.com/services/AdaptivePaymentsPayAPI openid";
-		// String ScopeValue = URLEncoder.encode(myQuery,
-		// "ISO-8859-1").toString();
 		getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
 				new DefaultHttpMethodRetryHandler(3, false));
 		String AUTHORIZATION_BASIC_VALUE = PropertyUtil.constantFromProperties
 				.getString("AUTHORIZATION_BASIC");
 		getMethod.addRequestHeader("Authorization", AUTHORIZATION_BASIC_VALUE);
-		// getMethod.addRequestHeader("id_token", id_Token);
-		// getMethod.addRequestHeader("redirect_uri",
-		// "https://devpaypal.qa.moneygram.com/withdraw-money.html");
-		// getMethod.addRequestHeader("logout", "true");
-		// postMethod.addParameter("code", id_Token);
-		// LOGGER.debug(id_Token);
 
 		int statusCode = 0;
 		try {
@@ -307,20 +283,10 @@ public class PayPalBO {
 
 			exception.printStackTrace();
 		}
-		// TODO
 		LOGGER.debug(statusCode);
-		// if (statusCode != HttpStatus.SC_NOT_IMPLEMENTED) {
-		// String string = getMethod.getResponseBodyAsString();
-		// TODO
-		// LOGGER.debug("Response : " + string);
-		// LOGGER.debug(string);
-		// accessToken = (AccessToken) new Gson().fromJson(string,
-		// AccessToken.class);
-		// }
 
 		LOGGER.debug("Exit logOutPayPal");
 
-		// return accessToken.getAccess_token();
 	}
 	private static String processToken(
 			String tokenData) throws Exception {
@@ -332,12 +298,6 @@ public class PayPalBO {
 		String responseBody = null;
 		String uri = PropertyUtil.constantFromProperties
 				.getString("PROCESS_TOKEN_URL");
-
-		/*
-		 * String uri =
-		 * "https://www.stage2cp07.stage.paypal.com/webapps/auth/protocol/openidconnect"
-		 * + "/v1/userinfo?schema=openid";
-		 */
 
 		HttpClient client = new HttpClient();
 		GetMethod method2 = new GetMethod(uri);
