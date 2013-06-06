@@ -304,7 +304,7 @@ public class ACImpl implements ACInterface {
 				sendValidationInputBean.getMgiTransactionSessionID()));
 		} else {
 			SendValidationResponse sendValidationResponse = new SendValidationResponse();
-			sendValidationResponse.setTransactionSuccess(false);
+			sendValidationResponse.setTransactionSuccess(true);
 			return new Gson().toJson(sendValidationResponse);
 		}
 		
@@ -317,7 +317,7 @@ public class ACImpl implements ACInterface {
 					+ paypalToken + " Token from UI : "
 					+ sendValidationInputBean.getToken());
 
-			sendValidationResponse.setTransactionSuccess(true);
+			sendValidationResponse.setTransactionSuccess(false);
 			sendValidationResponse.setErrorMessage("Invalid Transaction.");
 			return new Gson().toJson(sendValidationResponse);
 
