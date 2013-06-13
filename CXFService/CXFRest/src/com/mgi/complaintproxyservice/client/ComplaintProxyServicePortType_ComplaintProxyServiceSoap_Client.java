@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.xml.namespace.QName;
+import javax.xml.ws.BindingProvider;
 
 import org.apache.log4j.Logger;
 
@@ -29,56 +30,53 @@ public final class ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Clien
 	public ComplaintProxyServicePortType_ComplaintProxyServiceSoap_Client() {
 	}
 
-	private  ComplaintProxyServicePortType getPort()
+	private ComplaintProxyServicePortType getPort()
 			throws MalformedURLException {
 
 		LOGGER.debug("Enter getPort.");
 
-		// URL wsdlURL = new URL(
-		// "http://extwsintsvcs.corp.moneygram.com//ComplaintProxyService//Complaint"
-		// + "ProxyService_v1//META-INF//wsdl//ComplaintProxyService_v1.wsdl");
+		LOGGER.debug("PROXY URL from property file : "
+				+ PropertyUtil.constantFromProperties
+						.getString("COMPLAINT_PROXY_PORT_URL"));
 
-		// URL wsdlURL = new URL(
-		// "http://extwsintsvcs.corp.moneygram.com/ComplaintProxyService/ComplaintPr"
-		// +
-		// "oxyService_v1/META-INF/wsdl/ComplaintProxyService_v1.wsdl");
-		setCredentials();
-//		URL wsdlURL = new URL(
-//				"https://q2mgiapps.qa.moneygram.com/ComplaintProxyService/Complaint"
-//						+ "ProxyService_v1/META-INF/wsdl/ComplaintProxyService_v1.wsdl");
-		
-		URL wsdlURL = new URL(PropertyUtil.constantFromProperties.getString("COMPLAINT_PROXY_PORT_URL"));
-//				"http://extwsintsvcs.corp.moneygram.com/ComplaintPr" +
-//				"oxyService/ComplaintProxyService_v1/META-INF/wsdl/ComplaintProxyService_v1.wsdl");
+		LOGGER.debug("End point URL from property file : "
+				+ PropertyUtil.constantFromProperties
+						.getString("COMPLAINT_PROXY_SERVICE_ENDPOINT_URL"));
 
+		URL wsdlURL = new URL(PropertyUtil.constantFromProperties
+				.getString("COMPLAINT_PROXY_PORT_URL"));
 
 		ComplaintProxyServiceV1 ss = new ComplaintProxyServiceV1(wsdlURL,
 				SERVICE_NAME);
 		ComplaintProxyServicePortType port = ss.getComplaintProxyServiceSoap();
-		
+
+		String ServiceEndPointURL = PropertyUtil.constantFromProperties
+				.getString("COMPLAINT_PROXY_SERVICE_ENDPOINT_URL");
+
+		LOGGER.debug("End point URL from property file : "
+				+ PropertyUtil.constantFromProperties
+						.getString("COMPLAINT_PROXY_SERVICE_ENDPOINT_URL"));
+
+		BindingProvider bindingProvider = (BindingProvider) port;
+		bindingProvider.getRequestContext().put(
+				BindingProvider.ENDPOINT_ADDRESS_PROPERTY, ServiceEndPointURL);
+
 		LOGGER.debug("Exit getPort.");
-		
+
 		return port;
 	}
 
-	private static void setCredentials() {
-	/* Security.setProperty("ssl.SocketFactory.provider",
-	 "com.ibm.jsse2.SSLSocketFactoryImpl");
-		 Security.setProperty("ssl.ServerSocketFactory.provider",
-		 "com.ibm.jsse2.SSLServerSocketFactoryImpl");*/
-	 System.setProperty("javax.net.ssl.trustStore",
-		 "CXFRest/WebContent/WEB-INF/truststore.jks");
-		 System.setProperty("javax.net.ssl.trustStorePassword", "changeit");
-	}
+	public com.mgi.complaintproxyservice.client.InsertRecsIntoCRMExtWebFormResponse insertRecsIntoCRMExtWebForm(
+			com.mgi.complaintproxyservice.client.InsertRecsIntoCRMExtWebFormRequest 
 
-	public  com.mgi.complaintproxyservice.client.InsertRecsIntoCRMExtWebFormResponse insertRecsIntoCRMExtWebForm(
-			com.mgi.complaintproxyservice.client.InsertRecsIntoCRMExtWebFormRequest _insertRecsIntoCRMExtWebForm_parameters)
+_insertRecsIntoCRMExtWebForm_parameters)
 			throws MalformedURLException {
 		ComplaintProxyServicePortType port = getPort();
-		com.mgi.complaintproxyservice.client.InsertRecsIntoCRMExtWebFormResponse _insertRecsIntoCRMExtWebForm__return = port
+		com.mgi.complaintproxyservice.client.InsertRecsIntoCRMExtWebFormResponse _insertRecsIntoCRMExtWebForm__return 
+
+= port
 				.insertRecsIntoCRMExtWebForm(_insertRecsIntoCRMExtWebForm_parameters);
 		return _insertRecsIntoCRMExtWebForm__return;
 	}
-
 
 }
