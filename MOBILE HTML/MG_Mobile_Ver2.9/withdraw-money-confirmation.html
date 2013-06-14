@@ -1,0 +1,217 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=0, maximum-scale=0, minimum-scale=1, user-scalable=no" />
+		<meta name="description" content="Your money transfer will be ready soon! Make sure to take your MoneyGram reference number or a printed copy of MoneyGram transfer confirmation page to receive your withdrawal.">
+		<link rel="shortcut icon" href="images/favicon.png" type="image/png">
+		<title>MoneyGram Reference Number: Confirmation of Money Transfer | MoneyGram</title>
+		<meta name="keywords" content="MoneyGram Reference Number, MoneyGram Confirmation">
+		<link href="css/styles.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
+         <script type="text/javascript" src="../constants.js"></script>
+		<script type="text/javascript" src="scripts/topmenu.js"></script>
+		<script type="text/javascript" src="scripts/tabContent.js"></script>
+		<script type="text/javascript" src="scripts/jquery.cookie.js"></script>
+		<script type="text/javascript" src="scripts/common.js"></script>
+		<script type="text/javascript" src="scripts/spinmin.js"></script>
+		<script type="text/javascript" src="scripts/global.js"></script>
+		<script type="text/javascript" src="scripts/service.js"></script>
+		<script type="text/javascript" src="scripts/getConfirmation.js"></script>
+		<script type="text/javascript" src="scripts/utility.js"></script>
+		<script type="text/javascript" src="scripts/genric.js"></script>
+		<script language="javascript">
+			/***** Google Analytics Code Start*******/
+
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-38945408-1']);
+			_gaq.push(['_trackPageview']);
+
+			(function() {
+				var ga = document.createElement('script');
+				ga.type = 'text/javascript';
+				ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(ga, s);
+			})();
+
+			/***** Google Analytics Code Start*******/
+		</script>
+	</head>
+
+	<body onload="changeHashOnLoad();">
+		<div id="preview" style="display:none">
+			<div class="loading_content" id="loadingContent">
+				<p>
+					Processing your request.
+				</p>
+				<p>
+					This will take just a moment
+				</p>
+				<div class="clear"></div>
+				<div id="loading_div"></div>
+			</div>
+		</div>
+		<div id="wrapper">
+			<!-- #header -->
+			<div id="header">
+				<header>
+					<ul class="menuheader">
+						<li class="btnnav">
+							<a href="javascript:history.back()"><img src="images/btn_arrow.png"></a>
+						</li>
+						<li class="logomoneygramblock">
+							<a href="home.html"><img src="images/logo.png"></a>
+						</li>
+						<li class="logopaypalblock">
+							<a href="home.html"><img src="images/logoPaypal.png"></a>
+						</li>
+						<li class="menu" id="menu_active">
+							<a href="#" class="topmenulink"><img src="images/icon_menu.png" id="menuActive"></a>
+						</li>
+					</ul>
+				</header>
+				<!-- Dropdown Menu -->
+				<ul class="topmenu">
+					<li>
+						<a href="frequently-asked-questions.html"> FAQs</a>
+					</li>
+					<li>
+						<a href="contact-us.html">Contact Us</a>
+					</li>
+					<li id="historyLink" class="displaynone">
+						<a href="AutherticatedHome.html">History</a>
+					</li>
+					<li>
+						<a href="privacypolicy.html">Privacy Policy</a>
+					</li>
+					<li>
+						<a href="termsofuse.html"> Terms of Use</a>
+					</li>
+					<li>
+						<a href="terms_and_conditions.html">Terms and Conditions</a>
+					</li>
+					<li>
+						<a href="about-moneygram-paypal.html">About MoneyGram</a>
+					</li>
+					<li id="loginLink" class="displayblock">
+						<a href="home.html">Login</a>
+					</li>
+					<li id="logoutLink" class="displaynone">
+						<a onClick="logout()" class="pointer">Logout</a>
+					</li>
+				</ul>
+
+				<!-- Dropdown Menu End -->
+			</div>
+
+			<!-- #content -->
+			<div id="content">
+				<section class="sectionwithdraw sectioncontent">
+					<div class="withdrawcashHeader">
+						<h1>Your MoneyGram Reference Number and MoneyGram Confirmation </h1>
+						<img src="images/widthdrawcash3_pbar.png">
+					</div>
+					<div class="staicContent">
+
+						<p class='txtbold'>
+							Thank you for using MoneyGram to withdraw cash from your PayPal balance.
+						</p>
+						<p>
+							Your money will be available for pickup within 10 minutes*.
+						</p>
+						<p>
+							Please take your Reference Number and a valid ID to any <a href="http://mobile.where2getit.com/moneygram/en.html ">MoneyGram location to withdraw cash</a> in the US. At the location, complete a simple “Receive Money” form, hand it in, and show your ID.
+						</p>
+						<p>
+							Note:  please make sure your ID matches the name on your transaction.  In some cases, transfers could be delayed if we need to verify additional information.
+						</p>
+
+						<p>
+							Please be sure to pick up your money within 45 days.
+						</p>
+
+					</div>
+					<div>
+						<p id="number">
+							Moneygram Reference Number: <label class="ref_num"></label>
+						</p>
+					</div>
+					<div class="btnsrow">
+						<a class="btn" id="printBtn" onClick="printPage()">Send to Printer</a>
+						<a class="btn" id="smsBtn" onClick="sendSMS()">Text</a>
+						<a class="btn" id="mailBtn" onClick="sendMail()">Mail</a>
+
+						<div id="SMS"></div>
+					</div>
+					<hr>
+
+					<ul class="withdrawcashBalancetbl">
+						<li>
+							<span>Sender/Receiver</span>
+							<label class="sender_name"></label>
+						</li>
+						<li>
+							<span>Destination Country</span>
+							<label class="state"></label>
+						</li>
+						<li>
+							<span>Pick up location</span>
+							<label class="pickup"></label>
+						</li>
+						<li>
+							<span>Availability</span>
+							<label class="availability"></label>
+						</li>
+						<li>
+							<span>Receive amount</span>
+							<label class="receive_amt"></label>
+						</li>
+						<li>
+							<span>Fee</span>
+							<label class="final_fee"></label>
+						</li>
+						<li>
+							<span>Total to withdraw from balance</span>
+							<label class="review_total"></label>
+						</li>
+					</ul>
+
+					<div class="clear"></div>
+					<div  class="disclaimer">
+						<p>
+							<sup>*</sup>Subject to agent operating hours, availability and local laws and regulations.
+						</p>
+					</div>
+
+				</section>
+			</div>
+
+			<!-- #footer -->
+			<div id="footer">
+				<div class="footertogglemenu">
+					<fieldset id='menuFieldSet' >
+						<legend>
+							<a  id='menuexpandId'   class="menuexpand disblock"></a>
+						</legend>
+						<nav id="navfootermenu">
+							<a href="addcash.html" class="addcash1"></a>
+							<a href="NonauthenWithdraw.html" class="withdrawcash1"></a>
+							<a href="locations.html" class="locations1"></a>
+						</nav>
+					</fieldset>
+				</div>
+				<footer>
+
+<div class="copyright">
+	<a onClick="openFullSite()" class="pointer">Visit Full Site</a> <span>© <label class="footer_year"></label> MoneyGram. All Rights Reserved</span> 
+</div>
+</footer
+
+			></div>
+
+		</div>
+
+	</body>
+</html>
