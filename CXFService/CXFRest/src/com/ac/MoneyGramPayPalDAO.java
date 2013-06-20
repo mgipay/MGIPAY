@@ -218,7 +218,8 @@ public class MoneyGramPayPalDAO {
 						.getString("ORACLE_DB_PASSWORD"));
 
 		String strQuery = "SELECT * FROM (SELECT * FROM MGI_PAYPAL_TRAN_HIST "
-				+ "WHERE TRAN_STATUS = 'MGI_FAILED' order by TRAN_DATE desc) a where rownum < 1001";
+				+ "WHERE TRAN_STATUS in ('MGI_FAILED','PAYPAL_FAILED') order by TRAN_DATE desc) "
+				+ "a where rownum < 1001";
 		List<String> mgiTransactionSessinIdList = new ArrayList<String>();
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;

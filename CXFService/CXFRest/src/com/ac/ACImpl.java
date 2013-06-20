@@ -292,7 +292,24 @@ public class ACImpl implements ACInterface {
 	public String sendValidation(
 			@Context HttpServletRequest httpServletRequest,
 			SendValidationInputBean sendValidationInputBean) {
+
+		// Validating session is valid or not.
+
+		String paypalToken = (String) httpServletRequest.getSession()
+				.getAttribute("paypalToken");
+		if (sendValidationInputBean.getToken() == null
+				|| !sendValidationInputBean.getToken().equals(paypalToken)) {
+			LOGGER.debug("Invalid token in input bean : Token In session : "
+					+ paypalToken + " Token from UI : "
+					+ sendValidationInputBean.getToken());
+			SendValidationResponse sendValidationResponse = new SendValidationResponse();
+			sendValidationResponse.setTransactionSuccess(false);
+			sendValidationResponse.setErrorMessage("Invalid Transaction.");
+			return new Gson().toJson(sendValidationResponse);
+
+		}
 		
+		// Validating request coming for first time.
 		String key = (String) httpServletRequest.getSession().getAttribute(
 				sendValidationInputBean.getMgiTransactionSessionID());
 		if (key != null && key.equals("sendValidate")) {
@@ -309,20 +326,6 @@ public class ACImpl implements ACInterface {
 		}
 		
 		SendValidationResponse sendValidationResponse = new SendValidationResponse();
-		String paypalToken = (String) httpServletRequest.getSession()
-				.getAttribute("paypalToken");
-		if (sendValidationInputBean.getToken() == null
-				|| !sendValidationInputBean.getToken().equals(paypalToken)) {
-			LOGGER.debug("Invalid token in input bean : Token In session : "
-					+ paypalToken + " Token from UI : "
-					+ sendValidationInputBean.getToken());
-
-			sendValidationResponse.setTransactionSuccess(false);
-			sendValidationResponse.setErrorMessage("Invalid Transaction.");
-			return new Gson().toJson(sendValidationResponse);
-
-		}
-		
 		sendValidationInputBean.setSenderEmail((String) httpServletRequest.getSession()
 				.getAttribute("customerEmail"));
 
@@ -382,20 +385,7 @@ public class ACImpl implements ACInterface {
 
 		LOGGER.debug("Enter commitTransaction.");
 		
-		String key = (String) httpServletRequest.getSession().getAttribute(
-				commitTransactionInputBean.getMgiTransactionSessionID());
 		
-		if (key != null && key.equals("commitTransaction")) {
-			LOGGER.debug(key);
-			httpServletRequest.getSession().removeAttribute(
-					commitTransactionInputBean.getMgiTransactionSessionID());
-			LOGGER.debug((String) httpServletRequest.getSession().getAttribute(
-				commitTransactionInputBean.getMgiTransactionSessionID()));
-		} else {
-			CommitTransactionResponse commitTransactionResponse = new CommitTransactionResponse();
-			commitTransactionResponse.setTransactionSuccess(true);
-			return new Gson().toJson(commitTransactionResponse);
-		}
 		// validate payPal token and current session are valid.
 
 		String paypalToken = (String) httpServletRequest.getSession().getAttribute(
@@ -412,6 +402,51 @@ public class ACImpl implements ACInterface {
 
 			return new Gson().toJson(commitTransactionResponse);
 		}
+		
+		// Validating the request is coming for first time.
+		String key = (String) httpServletRequest.getSession().getAttribute(
+				commitTransactionInputBean.getMgiTransactionSessionID());
+		
+		if (key != null && key.equals("commitTransaction")) {
+			LOGGER.debug(key);
+			// httpServletRequest.getSession().removeAttribute(
+			// commitTransactionInputBean.getMgiTransactionSessionID());
+			httpServletRequest.getSession()
+					.setAttribute(
+						commitTransactionInputBean
+									.getMgiTransactionSessionID(), "");
+			LOGGER.debug((String) httpServletRequest.getSession().getAttribute(
+				commitTransactionInputBean.getMgiTransactionSessionID()));
+		} else {
+			String referenceNumber = (String) httpServletRequest
+					.getSession().getAttribute(
+							commitTransactionInputBean
+									.getMgiTransactionSessionID());
+			CommitTransactionResponse commitTransactionResponse = new CommitTransactionResponse();
+			if (referenceNumber.trim().equals("")) {
+
+				commitTransactionResponse.setTransactionSuccess(false);
+				commitTransactionResponse.setErrorMessage(PropertyUtil.messageFromProperties
+						.getString("TRANSACTION_FAILED_RETRY"));
+			} else {
+				commitTransactionResponse.setTransactionSuccess(true);
+			}
+			commitTransactionResponse
+					.setReferenceNumber(referenceNumber);
+			return new Gson().toJson(commitTransactionResponse);
+		}
+		
+		
+		if (commitTransactionInputBean.getTransactionAmount() == null
+				|| commitTransactionInputBean.getTransactionFee() == null) {
+			CommitTransactionResponse commitTransactionResponse = new CommitTransactionResponse();
+			commitTransactionResponse.setTransactionSuccess(false);
+			commitTransactionResponse.setErrorMessage("Invalid input data.");
+
+			return new Gson().toJson(commitTransactionResponse);
+
+		}
+		
 		commitTransactionInputBean.setCustomerEmail((String) httpServletRequest
 				.getSession().getAttribute("customerEmail"));
 
@@ -500,7 +535,9 @@ public class ACImpl implements ACInterface {
 					commitTransactionResponse.getReferenceNumber());
 
 		}
-
+		httpServletRequest.getSession().setAttribute(
+				commitTransactionInputBean.getMgiTransactionSessionID(),
+				commitTransactionResponse.getReferenceNumber());
 		// If PAY API Call success.
 		// update history PAYPAL_TRAN_ID = payResponse.getPayKey() and
 

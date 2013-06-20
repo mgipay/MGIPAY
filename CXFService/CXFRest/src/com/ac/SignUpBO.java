@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.mgi.paypal.inputbean.SendProofInputBean;
+import com.mgi.paypal.util.PropertyUtil;
 import com.sdk.client.EDialogWebServices_EDialogWebServicesSoap11_Client;
 import com.sdk.client.PropertyType;
 
@@ -23,10 +24,8 @@ public class SignUpBO {
 		LOGGER.debug("Enter sendProofMessage.");
 		
 		String response = "";
-		{
-
-			String messageName = "EXAMPLETRIGGER";
-
+ 				
+			String messageName = PropertyUtil.constantFromProperties.getString("MSG_NAME_SIGN_UP");
 			List<String> replacementAddressList = new ArrayList<String>();
 			replacementAddressList.add(sendProofInputBean.getCustomerEmail());
 
@@ -37,7 +36,7 @@ public class SignUpBO {
 			propertyType.setValue(sendProofInputBean.getCustomerEmail());
 
 			PropertyType propertyType2 = new PropertyType();
-			propertyType2.setName("TEMPZIP");
+			propertyType2.setName("ZIPCODE");
 			propertyType2.setValue(sendProofInputBean.getZipCode());
 
 			propertyTypeList.add(propertyType);
@@ -45,7 +44,6 @@ public class SignUpBO {
 
 			EDialogWebServices_EDialogWebServicesSoap11_Client client = 
 					new EDialogWebServices_EDialogWebServicesSoap11_Client();
-//			Response = client.sendProofMessageForSignUP(sendProofInputBean);
 
 			response = client.sendProofMessageForSignUP(messageName,
 					replacementAddressList, propertyTypeList);
@@ -54,6 +52,6 @@ public class SignUpBO {
 
 			return new Gson().toJson(response);
 		}
-	}
+	
 
 }

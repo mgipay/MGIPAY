@@ -54,7 +54,7 @@ public class PayPalBO {
 			throws Exception {
 
 		LOGGER.debug("Enter payToMoneyGram.");
-
+		
 		BigDecimal totalAmount = amount.add(fee);
 		RequestEnvelope requestEnvelopee = new RequestEnvelope();
 		requestEnvelopee.setDetailLevel(DetailLevelCode.RETURN_ALL);
@@ -155,6 +155,7 @@ public class PayPalBO {
 				AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client client = new AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client();
 				getUserLimitsResponse = client
 						.getUserLimit(getUserLimitsRequest);
+					
 				break;
 			} catch (Exception exception) {
 				LOGGER.error("Retrying GetUserLimits because of :" + exception);
@@ -181,15 +182,14 @@ public class PayPalBO {
 					.getUserLimit().get(0).getLimitAmount());
 
 		} else {
-			LOGGER.warn("userLimitList is empty.Hardcoded value went to UI");
+			LOGGER.warn("userLimitReponse is empty.Hardcoded value went to UI");
 			CurrencyType currencyType = new CurrencyType();
 			currencyType.setAmount(new BigDecimal(0));
 			currencyType.setCode("Invalid Code");
 			getUserLimitsResponseForUI.setCurrencyType(currencyType);
 			getUserLimitsResponseForUI.setTransactionSuccess(false);
 			getUserLimitsResponseForUI
-					.setErrorMessage(PropertyUtil.messageFromProperties
-							.getString("SESSION_EXPIRED"));
+					.setErrorMessage("Sorry cannot complete transaction.");
 		}
 
 		LOGGER.debug("Exit getUserLimits.");

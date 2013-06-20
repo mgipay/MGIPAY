@@ -72,15 +72,32 @@ public class MailServiceBO {
 					customerEmailID));
 
 			message.setSubject(subject);
+			
+			String hostUrl = PropertyUtil.constantFromProperties
+					.getString("HOST_URL");
+			String moneyGramLocator = PropertyUtil.constantFromProperties
+					.getString("MONEYGRAM_LOCATOR");
+			
+			LOGGER.debug("host URL from Properties file : " + hostUrl);
+			LOGGER.debug("moneyGram Locator URL from properties file : " + moneyGramLocator);
 
 			String msg = "<html><head></head><style type='text/css'>body {width: 800px;}</style> "
-					+ "<body><img width='258' height='50' alt='MoneyGram' style='padding-right:5px' src='http://devpaypal.qa.moneygram.com/images/logo.png' /> "
-					+ "<img width='230' height='45' alt='PayPal' src='http://devpaypal.qa.moneygram.com/images/logo_paypal.png' />"
+					+ "<body><img width='229' height='54' alt='MoneyGram' style='padding-right:5px' src='http://"
+					+ hostUrl
+					+ "/images/logo.png' /> "
+					+ "<img width='139' height='41' alt='PayPal' src='http://"
+					+ hostUrl
+					+ "/images/logo_paypal.png' />"
 					+ " <p>Your money was <strong>Sent Successfully!</strong></p><p>"
 					+ customerName
 					+ "</p><h2>Thank you for using MoneyGram & PayPal to withdraw cash</h2>"
-					+ " <h3>Your cash was sent successfully and is available for pickup at any <a href='http://hosted.where2stageit.com/moneygram/en.html'>MoneyGram agent location.</a></h3>"
-					+ " <p>At the agent location, you will need to complete a simple Receive Money Form with your Reference Number and show a valid photo ID with the name that matches the Sender/Receiver of your transaction.</p>"
+					+ " <h3>Your cash was sent successfully and is available for pickup at "
+					+ "any <a href='http://"
+					+ moneyGramLocator
+					+ "/moneygram/en.html'>MoneyGram agent location.</a></h3>"
+					+ " <p>At the agent location, you will need to complete a simple Receive Money "
+					+ "Form with your Reference Number and show a valid photo ID with the name that matches "
+					+ "the Sender/Receiver of your transaction.</p>"
 					+ " <p>Please be sure to pick up your money within 45 days.</p> <div id='box'>"
 					+ " <table style='border: 1px solid #dddddc;' cellspacing='2'><tr style='background: #e0f3fb;'> <td>Sender/Receiver:</td>"
 					+ " <td>"
@@ -98,8 +115,23 @@ public class MailServiceBO {
 					+ "</td><td>"
 					+ totalAmount.toString()
 					+ " USD</td></tr></table>"
-					+ " </div> <p><a href='http://hosted.where2stageit.com/moneygram/en.html'>Find a MoneyGram location</a></p><p><strong>Thank you for using MoneyGram & PayPal</strong></p>"
-					+ "  <div style='margin:auto; padding-top:1%; background: #303030; color: #999999; font-size: 12px; margin-top: 3em;'><span>�2013 MoneyGram. All rights reserved&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#'  title='Back to Top'></a></span><a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://qapaypal.qa.moneygram.com/privacypolicy.html'>Privacy Policy</a>&nbsp;<a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://qapaypal.qa.moneygram.com/termsofuse.html'>Terms of Use</a>&nbsp;<a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://qapaypal.qa.moneygram.com/terms_conditions.html'>Terms and Conditions</a>&nbsp;<a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://qapaypal.qa.moneygram.com/about-moneygram-paypal.html'>About MoneyGram</a>&nbsp;"
+					+ " </div> <p><a href='http://"
+					+ moneyGramLocator
+					+ "/moneygram/en.html'>Find a MoneyGram location</a></p><p><strong>Thank you for using MoneyGram & PayPal</strong></p>"
+					+ "  <div style='margin:auto; padding-top:1%; background: #303030; color: #999999; font-size: 12px; margin-top: 3em;'><span>�2013 MoneyGram."
+					+ " All rights reserved&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#'  title='Back to "
+					+ "Top'></a></span><a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://"
+					+ hostUrl
+					+ "/privacypolicy.html'>Privacy "
+					+ "Policy</a>&nbsp;<a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://"
+					+ hostUrl
+					+ "/termsofuse.html'>Terms"
+					+ " of Use</a>&nbsp;<a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://"
+					+ hostUrl
+					+ "/terms_conditions.html'>Terms"
+					+ " and Conditions</a>&nbsp;<a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://"
+					+ hostUrl
+					+ "/about-moneygram-paypal.html'>About MoneyGram</a>&nbsp;"
 					+ "<p style='padding-top:1%'>Licensed as a Money Transmitter by the Banking Department of the State of New York</p></div>"
 					+ "</body></html>";
 
