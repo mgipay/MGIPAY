@@ -77,6 +77,9 @@ public class MailServiceBO {
 					.getString("HOST_URL");
 			String moneyGramLocator = PropertyUtil.constantFromProperties
 					.getString("MONEYGRAM_LOCATOR");
+
+			String space = PropertyUtil.constantFromProperties
+							.getString("SPACE");
 			
 			LOGGER.debug("host URL from Properties file : " + hostUrl);
 			LOGGER.debug("moneyGram Locator URL from properties file : " + moneyGramLocator);
@@ -85,6 +88,7 @@ public class MailServiceBO {
 					+ "<body><img width='229' height='54' alt='MoneyGram' style='padding-right:5px' src='http://"
 					+ hostUrl
 					+ "/images/logo.png' /> "
+					+ space
 					+ "<img width='139' height='41' alt='PayPal' src='http://"
 					+ hostUrl
 					+ "/images/logo_paypal.png' />"
@@ -118,7 +122,7 @@ public class MailServiceBO {
 					+ " </div> <p><a href='http://"
 					+ moneyGramLocator
 					+ "/moneygram/en.html'>Find a MoneyGram location</a></p><p><strong>Thank you for using MoneyGram & PayPal</strong></p>"
-					+ "  <div style='margin:auto; padding-top:1%; background: #303030; color: #999999; font-size: 12px; margin-top: 3em;'><span>�2013 MoneyGram."
+					+ "  <div style='margin:auto; padding-top:1%; background: #303030; color: #999999; font-size: 12px; margin-top: 3em;'><span>&copy2013 MoneyGram."
 					+ " All rights reserved&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#'  title='Back to "
 					+ "Top'></a></span><a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://"
 					+ hostUrl
@@ -140,7 +144,7 @@ public class MailServiceBO {
 			Transport.send(message);
 		} catch (Exception exception) {
 			exception.printStackTrace();
-			LOGGER.warn("Mail not sent!!!. Please try again.");
+			LOGGER.error("Mail not sent!!!. Please try again.");
 			LOGGER.error(exception.getLocalizedMessage());
 			transactionInformationMailResponse.setTransactionSuccess(false);
 			transactionInformationMailResponse.setMessageToUser(PropertyUtil.constantFromProperties.getString("MAIL_FAILED_MESSAGE"));

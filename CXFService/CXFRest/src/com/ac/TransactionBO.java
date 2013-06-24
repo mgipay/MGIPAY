@@ -122,7 +122,7 @@ public class TransactionBO {
 			} catch (Exception exception) {
 				retryCount--;
 				if (retryCount == 0) {
-					LOGGER.debug("SendValidation Request: "
+					LOGGER.error("SendValidation Request: "
 							+ new Gson().toJson(sendValidationRequest));
 					exception.printStackTrace();
 					sendValidationResponseForUI.setTransactionSuccess(false);
@@ -259,14 +259,14 @@ public class TransactionBO {
 				retryCount--;
 				if (retryCount == 0) {
 					exception.printStackTrace();
-					LOGGER.debug("Max number of retries reached. Commit Trasaction Failed.");
+					LOGGER.error("Max number of retries reached. Commit Trasaction Failed.");
 
 					commitTransactionResponseForUI
 							.setErrorMessage(PropertyUtil.messageFromProperties
 									.getString("TRANSACTION_FAILED_RETRY"));
 					commitTransactionResponseForUI.setTransactionSuccess(false);
 
-					LOGGER.debug("Exit commitTransaction.");
+					LOGGER.error("Exit commitTransaction.");
 
 					return commitTransactionResponseForUI;
 				}

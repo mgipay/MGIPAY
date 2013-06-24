@@ -162,7 +162,7 @@ public class PayPalBO {
 				retryCount--;
 				if (retryCount == 0) {
 					exception.printStackTrace();
-					LOGGER.debug("Max number of retries for GetUserLimits reached. Call Failed.");
+					LOGGER.error("Max number of retries for GetUserLimits reached. Call Failed.");
 					getUserLimitsResponseForUI.setTransactionSuccess(false);
 					getUserLimitsResponseForUI
 							.setErrorMessage(PropertyUtil.messageFromProperties
