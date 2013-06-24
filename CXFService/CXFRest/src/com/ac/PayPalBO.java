@@ -129,7 +129,7 @@ public class PayPalBO {
 
 		AccountIdentifier accountIdentifier = new AccountIdentifier();
 		accountIdentifier.setEmail(userLimitInputBean.getEmailID());
-		accountIdentifier.setPhone(phoneNumberType);
+//		accountIdentifier.setPhone(phoneNumberType);
 
 		RequestEnvelope requestEnvelope = new RequestEnvelope();
 		requestEnvelope.setDetailLevel(DetailLevelCode.RETURN_ALL);
