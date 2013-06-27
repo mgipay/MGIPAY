@@ -122,7 +122,7 @@ public class MailServiceBO {
 					+ " </div> <p><a href='http://"
 					+ moneyGramLocator
 					+ "/moneygram/en.html'>Find a MoneyGram location</a></p><p><strong>Thank you for using MoneyGram & PayPal</strong></p>"
-					+ "  <div style='margin:auto; padding-top:1%; background: #303030; color: #999999; font-size: 12px; margin-top: 3em;'><span>&copy2013 MoneyGram."
+					+ "  <div style='margin:auto; padding-top:1%; background: #303030; color: #999999; font-size: 12px; margin-top: 3em;'><span>&copy;2013 MoneyGram."
 					+ " All rights reserved&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#'  title='Back to "
 					+ "Top'></a></span><a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://"
 					+ hostUrl

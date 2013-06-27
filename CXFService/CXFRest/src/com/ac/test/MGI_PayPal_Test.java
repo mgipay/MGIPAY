@@ -40,7 +40,6 @@ public class MGI_PayPal_Test {
 			conn.setDoOutput(true);
 			conn.setRequestMethod("POST");
 			conn.setRequestProperty("Content-Type", "application/json");
-
 			String inputJsonObject = "{\"FeeLookupInputBean\":{\"amount\":\"100\"}}";
 
 			OutputStream os = conn.getOutputStream();
