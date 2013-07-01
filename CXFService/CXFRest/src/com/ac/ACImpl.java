@@ -150,6 +150,8 @@ public class ACImpl implements ACInterface {
 
 		String paypalToken = (String) httpServletRequest.getSession()
 				.getAttribute("paypalToken");
+		
+		String userAgent = null;
 		if (transactionInformationMailInputBean.getToken() == null
 				|| !transactionInformationMailInputBean.getToken().equals(
 						paypalToken)) {
@@ -167,7 +169,9 @@ public class ACImpl implements ACInterface {
 		
 		transactionInformationMailInputBean.setCustomerEmail((String) httpServletRequest
 				.getSession().getAttribute("customerEmail"));
-
+		
+		userAgent = httpServletRequest.getHeader("referer");
+		
 		MailServiceBO mailServiceBO = new MailServiceBO();
 		return mailServiceBO.sendTransactionInformationMail(
 				transactionInformationMailInputBean.getCustomerEmail(),
@@ -175,7 +179,8 @@ public class ACImpl implements ACInterface {
 				transactionInformationMailInputBean.getReferenceNumber(),
 				transactionInformationMailInputBean.getCustomerName(),
 				transactionInformationMailInputBean.getStateName(),
-				transactionInformationMailInputBean.getFee());
+				transactionInformationMailInputBean.getFee(),
+				userAgent);
 
 	}
 

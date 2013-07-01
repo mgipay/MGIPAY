@@ -52,7 +52,7 @@ public class MailServiceBO {
 
 	public String sendTransactionInformationMail(String customerEmailID,
 			String amount, String referenceNumber, String customerName,
-			String stateName, String fee) {
+			String stateName, String fee, String userAgent) {
 
 		LOGGER.debug("Enter sendTransactionInformationMail.");
 
@@ -80,6 +80,12 @@ public class MailServiceBO {
 
 			String space = PropertyUtil.constantFromProperties
 							.getString("SPACE");
+			
+			if(userAgent.contains("mobile")){
+                hostUrl = hostUrl + "/mobile";
+                moneyGramLocator = PropertyUtil.constantFromProperties
+                              .getString("MOBILE_MONEYGRAM_LOCATOR");
+			}
 			
 			LOGGER.debug("host URL from Properties file : " + hostUrl);
 			LOGGER.debug("moneyGram Locator URL from properties file : " + moneyGramLocator);
