@@ -91,20 +91,20 @@ public class MailServiceBO {
 			LOGGER.debug("moneyGram Locator URL from properties file : " + moneyGramLocator);
 
 			String msg = "<html><head></head><style type='text/css'>body {width: 800px;}</style> "
-					+ "<body><img width='229' height='54' alt='MoneyGram' style='padding-right:5px' src='http://"
+					+ "<body><img width='229' height='54' alt='MoneyGram' style='padding-right:5px' src='"
 					+ hostUrl
 					+ "/images/logo.png' /> "
 					+ space
-					+ "<img width='139' height='41' alt='PayPal' src='http://"
+					+ "<img width='139' height='41' alt='PayPal' src='"
 					+ hostUrl
 					+ "/images/logo_paypal.png' />"
 					+ " <p>Your money was <strong>Sent Successfully!</strong></p><p>"
 					+ customerName
 					+ "</p><h2>Thank you for using MoneyGram & PayPal to withdraw cash</h2>"
 					+ " <h3>Your cash was sent successfully and is available for pickup at "
-					+ "any <a href='http://"
+					+ "any <a href='"
 					+ moneyGramLocator
-					+ "/moneygram/en.html'>MoneyGram agent location.</a></h3>"
+					+ "'>MoneyGram agent location.</a></h3>"
 					+ " <p>At the agent location, you will need to complete a simple Receive Money "
 					+ "Form with your Reference Number and show a valid photo ID with the name that matches "
 					+ "the Sender/Receiver of your transaction.</p>"
@@ -125,21 +125,21 @@ public class MailServiceBO {
 					+ "</td><td>"
 					+ totalAmount.toString()
 					+ " USD</td></tr></table>"
-					+ " </div> <p><a href='http://"
+					+ " </div> <p><a href='"
 					+ moneyGramLocator
-					+ "/moneygram/en.html'>Find a MoneyGram location</a></p><p><strong>Thank you for using MoneyGram & PayPal</strong></p>"
+					+ "'>Find a MoneyGram location</a></p><p><strong>Thank you for using MoneyGram & PayPal</strong></p>"
 					+ "  <div style='margin:auto; padding-top:1%; background: #303030; color: #999999; font-size: 12px; margin-top: 3em;'><span>&copy;2013 MoneyGram."
 					+ " All rights reserved&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href='#'  title='Back to "
-					+ "Top'></a></span><a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://"
+					+ "Top'></a></span><a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='"
 					+ hostUrl
 					+ "/privacypolicy.html'>Privacy "
-					+ "Policy</a>&nbsp;<a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://"
+					+ "Policy</a>&nbsp;<a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='"
 					+ hostUrl
 					+ "/termsofuse.html'>Terms"
-					+ " of Use</a>&nbsp;<a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://"
+					+ " of Use</a>&nbsp;<a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='"
 					+ hostUrl
 					+ "/terms_conditions.html'>Terms"
-					+ " and Conditions</a>&nbsp;<a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='https://"
+					+ " and Conditions</a>&nbsp;<a style='color:#999; border-left: 1px solid #999;float:right;padding: 0 5px;cursor:pointer;' href='"
 					+ hostUrl
 					+ "/about-moneygram-paypal.html'>About MoneyGram</a>&nbsp;"
 					+ "<p style='padding-top:1%'>Licensed as a Money Transmitter by the Banking Department of the State of New York</p></div>"
