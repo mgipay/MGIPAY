@@ -29,6 +29,8 @@ import com.mgi.paypal.response.SendValidationResponse;
 import com.mgi.paypal.response.TransactionInformationMailResponse;
 import com.mgi.paypal.util.PropertyUtil;
 import com.mgi.paypal.util.UserData;
+import com.paypal.adaptivepayment.client.ErrorData;
+import com.paypal.adaptivepayment.client.FaultMessage;
 import com.paypal.adaptivepayment.client.PayResponse;
 
 @Consumes("application/json")
@@ -539,6 +541,27 @@ public class ACImpl implements ACInterface {
 					commitTransactionResponse.getReferenceNumber());
 
 		}
+		
+		if (payResponse != null
+				&& payResponse.getPaymentExecStatus() != null
+				&& payResponse.getResponseEnvelope().getAck() != null
+				&& (!(payResponse.getPaymentExecStatus().equalsIgnoreCase("COMPLETED") 
+						&& (payResponse.getResponseEnvelope().getAck().toString().equalsIgnoreCase("Success") 
+								|| payResponse.getResponseEnvelope().getAck().toString().equalsIgnoreCase("SuccessWithWarning"))))) {
+
+			LOGGER.error("Response for PAY API is failed. CustomerEmailId :"
+					+ commitTransactionInputBean.getCustomerEmail()
+					+ ". MgiTransactionSessionID : "
+					+ commitTransactionInputBean.getMgiTransactionSessionID());
+
+			return payAPIFailed(commitTransactionInputBean.getCustomerEmail(),
+					commitTransactionInputBean.getMgiTransactionSessionID(),
+					commitTransactionResponse.getReferenceNumber());
+
+		}
+		
+		
+		
 		httpServletRequest.getSession().setAttribute(
 				commitTransactionInputBean.getMgiTransactionSessionID(),
 				commitTransactionResponse.getReferenceNumber());
