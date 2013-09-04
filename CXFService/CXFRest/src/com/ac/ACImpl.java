@@ -542,6 +542,30 @@ public class ACImpl implements ACInterface {
 
 		}
 		
+		if (payResponse != null &&
+				 (null == payResponse.getPaymentExecStatus()
+				|| null == payResponse.getResponseEnvelope() 
+				|| null == payResponse.getResponseEnvelope().getAck())) {
+			// If PAY API call failed
+			LOGGER.error("Error in PAY API is response for CustomerEmailId :"
+					+ commitTransactionInputBean.getCustomerEmail()
+					+ ". MgiTransactionSessionID : "
+					+ commitTransactionInputBean.getMgiTransactionSessionID());
+			
+			if(null == payResponse.getPaymentExecStatus()){
+			LOGGER.error("PAY API response for PaymentExecStatus is NULL");
+			}
+			
+			if(null == payResponse.getResponseEnvelope() || null == payResponse.getResponseEnvelope().getAck()){
+				LOGGER.error("PAY API response for Ack is NULL");
+			}
+			
+			return payAPIFailed(commitTransactionInputBean.getCustomerEmail(),
+					commitTransactionInputBean.getMgiTransactionSessionID(),
+					commitTransactionResponse.getReferenceNumber());
+
+		}
+		
 		if (payResponse != null
 				&& payResponse.getPaymentExecStatus() != null
 				&& payResponse.getResponseEnvelope().getAck() != null

@@ -93,7 +93,7 @@ public class TransactionBO {
 		sendValidationRequest.setSenderState(sendValidationInputBean.getSenderState());
 
 		sendValidationRequest.setSenderZipCode(sendValidationInputBean
-				.getSenderZipCode());
+				.getSenderZipCode().substring(0, 5));
 		sendValidationRequest.setSenderCountry(sendValidationInputBean
 				.getSenderCountry());
 		sendValidationRequest.setSenderHomePhone(sendValidationInputBean
