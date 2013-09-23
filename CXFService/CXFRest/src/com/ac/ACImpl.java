@@ -525,22 +525,50 @@ public class ACImpl implements ACInterface {
 			// If PAY API call failed
 			LOGGER.error(exception.getLocalizedMessage());
 			exception.printStackTrace();
+			
 			return payAPIFailed(commitTransactionInputBean.getCustomerEmail(),
 					commitTransactionInputBean.getMgiTransactionSessionID(),
-					commitTransactionResponse.getReferenceNumber());
+					commitTransactionResponse);
 
 		}
+		
+		
+		
 		if (payResponse == null) {
 			// If PAY API call failed
 			LOGGER.error("Response for PAY API is null. CustomerEmailId :"
 					+ commitTransactionInputBean.getCustomerEmail()
 					+ ". MgiTransactionSessionID : "
 					+ commitTransactionInputBean.getMgiTransactionSessionID());
+			
 			return payAPIFailed(commitTransactionInputBean.getCustomerEmail(),
 					commitTransactionInputBean.getMgiTransactionSessionID(),
-					commitTransactionResponse.getReferenceNumber());
+					commitTransactionResponse);
 
 		}
+		
+		//added to capture PayAPI error - Starts
+		
+		if (payResponse != null
+				 && null!= payResponse.getPayErrorList()
+				 && null!= payResponse.getPayErrorList().getPayError()) {
+			
+			String errorMsg = (String) payResponse.getPayErrorList().getPayError().get(0).getError().getMessage();
+			commitTransactionResponse.setErrorMessage(errorMsg);
+			// If PAY API call failed
+			LOGGER.error("Error Response for PAY API. CustomerEmailId :"
+					+ commitTransactionInputBean.getCustomerEmail()
+					+ ". MgiTransactionSessionID : "
+					+ commitTransactionInputBean.getMgiTransactionSessionID());
+			
+			return payAPIFailed(commitTransactionInputBean.getCustomerEmail(),
+					commitTransactionInputBean.getMgiTransactionSessionID(),
+					commitTransactionResponse);
+
+		}
+		//added to capture PayAPI error - Ends
+		
+		
 		
 		if (payResponse != null &&
 				 (null == payResponse.getPaymentExecStatus()
@@ -562,7 +590,7 @@ public class ACImpl implements ACInterface {
 			
 			return payAPIFailed(commitTransactionInputBean.getCustomerEmail(),
 					commitTransactionInputBean.getMgiTransactionSessionID(),
-					commitTransactionResponse.getReferenceNumber());
+					commitTransactionResponse);
 
 		}
 		
@@ -580,7 +608,7 @@ public class ACImpl implements ACInterface {
 
 			return payAPIFailed(commitTransactionInputBean.getCustomerEmail(),
 					commitTransactionInputBean.getMgiTransactionSessionID(),
-					commitTransactionResponse.getReferenceNumber());
+					commitTransactionResponse);
 
 		}
 		
@@ -609,7 +637,7 @@ public class ACImpl implements ACInterface {
 		return new Gson().toJson(commitTransactionResponse);
 	}
 
-	private static String payAPIFailed(
+/*	private static String payAPIFailed(
 			String customerEmail, String mgiTransactionSessionID,
 			String referenceNumber) {
 
@@ -635,7 +663,44 @@ public class ACImpl implements ACInterface {
 
 		return new Gson().toJson(commitTransactionResponse);
 
+	}*/
+	
+	
+	private static String payAPIFailed(
+			String customerEmail, String mgiTransactionSessionID,
+			CommitTransactionResponse commitTransactionResponse) {
+
+		LOGGER.error("Pay API Call failed for email Id : " + customerEmail
+				+ " MgiTransactionSessionID : " + mgiTransactionSessionID
+				+ " MgiReferenceNumber : " + commitTransactionResponse.getReferenceNumber());
+
+		MoneyGramPayPalDAO moneyGramPayPalDAO = new MoneyGramPayPalDAO();
+		try {
+			moneyGramPayPalDAO.updatePaypalFailed(mgiTransactionSessionID);
+		} catch (Exception exception) {
+
+			exception.printStackTrace();
+			LOGGER.error("Updating TRAN_STATUS = 'PAYPAL_FAILED' in history table fai"
+					+ "led for mgiTransactionSessionID : "
+					+ mgiTransactionSessionID);
+		}
+		//CommitTransactionResponse commitTransactionResponse = new CommitTransactionResponse();
+		commitTransactionResponse.setTransactionSuccess(false);
+		
+		if (null != commitTransactionResponse.getErrorMessage()) {
+			commitTransactionResponse
+					.setErrorMessage(PropertyUtil.messageFromProperties
+							.getString("PAY_API_ERROR_RESPONSE"));
+		} else {
+			commitTransactionResponse
+					.setErrorMessage(PropertyUtil.messageFromProperties
+							.getString("TRANSACTION_FAILED_RETRY"));
+		}
+
+		return new Gson().toJson(commitTransactionResponse);
+
 	}
+	
 	
 	@POST
 	@Path("/logOutUser")
