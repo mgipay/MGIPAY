@@ -72,6 +72,17 @@ public final class AdaptivePaymentsPortType_AdaptivePaymentsSOAP11Http_Client {
 			LOGGER.debug("Error Code: " + ed.getErrorId()
 					+ " FaultMessage" + ed.getMessage());
 			LOGGER.debug(objPpFaultMessage.toString());
+			
+			
+			// Added to  capture PayAPI error - Starts 
+			PayErrorList errorList = new PayErrorList();
+			PayError payErr = new PayError();
+			payErr.setError(ed);
+			errorList.getPayError().add(payErr);
+			
+			_PayResponse = new com.paypal.adaptivepayment.client.PayResponse();
+			_PayResponse.setPayErrorList(errorList);
+			//Added to capture PayAPI error - Ends
 		}
 
 		return _PayResponse;
