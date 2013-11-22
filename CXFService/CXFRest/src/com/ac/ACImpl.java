@@ -477,7 +477,8 @@ public class ACImpl implements ACInterface {
 								.getMgiTransactionSessionID());
 
 			}
-
+			TransactionBO.doRealTimeSendReversal(commitTransactionInputBean
+					.getMgiTransactionSessionID());
 			return new Gson().toJson(commitTransactionResponse);
 		}
 
