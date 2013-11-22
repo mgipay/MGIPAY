@@ -602,4 +602,52 @@ public class MoneyGramPayPalDAO {
 		return dataSourceCache;
 	}
 
+	public static void updateHistoryDetailStatusReversedAndRejected(
+			String mgiReferenceNumber, String mgiTransactionSessionID)
+			throws ClassNotFoundException, SQLException {
+
+		LOGGER.debug("Enter updateHistoryDetailStatusReversedAndRejected.");
+
+		Class.forName("oracle.jdbc.OracleDriver");
+		DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+		Connection connection = DriverManager.getConnection(
+				PropertyUtil.constantFromProperties.getString("ORACLE_DB_URL"),
+				PropertyUtil.constantFromProperties
+						.getString("ORACLE_DB_LOGIN_ID"),
+				PropertyUtil.constantFromProperties
+						.getString("ORACLE_DB_PASSWORD"));
+
+		PreparedStatement preparedStatement = null;
+		try {
+
+			if (mgiReferenceNumber != null) {
+				String queryString = "Update MGI_PAYPAL_TRAN_HIST set TRAN_STATUS = ?,MGI_REF_NUM = ? where MGI_SESS_ID = ?";
+				preparedStatement = connection.prepareStatement(queryString);
+				preparedStatement.setString(1, TransactionStatus.REVERSED
+						.value());
+				preparedStatement.setString(2, mgiReferenceNumber);
+				preparedStatement.setString(3, mgiTransactionSessionID);
+				LOGGER.debug("queryString"+queryString);
+			} else {
+				String queryString = "Update MGI_PAYPAL_TRAN_HIST set TRAN_STATUS = ? where MGI_SESS_ID = ?";
+				preparedStatement = connection.prepareStatement(queryString);
+				preparedStatement.setString(1, TransactionStatus.REJECTED
+						.value());
+				preparedStatement.setString(2, mgiTransactionSessionID);
+				LOGGER.debug("queryString"+queryString);
+			}
+			preparedStatement.executeUpdate();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (preparedStatement != null && connection != null) {
+				preparedStatement.close();
+				connection.close();
+			}
+
+		}
+
+		LOGGER.debug("Exit updateHistoryDetailStatusReversedAndRejected.");
+	}
+
 }

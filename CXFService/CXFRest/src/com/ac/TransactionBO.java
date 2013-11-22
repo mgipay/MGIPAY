@@ -7,10 +7,19 @@ import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.mgi.agentconnect.client.AgentConnect_AgentConnect_Client;
+import com.mgi.agentconnect.client.AmountInfo;
 import com.mgi.agentconnect.client.CommitTransactionRequest;
 import com.mgi.agentconnect.client.CommitTransactionResponse;
+import com.mgi.agentconnect.client.DetailLookupRequest;
+import com.mgi.agentconnect.client.DetailLookupResponse;
 import com.mgi.agentconnect.client.ProductType;
+import com.mgi.agentconnect.client.SendReversalReasonCode;
+import com.mgi.agentconnect.client.SendReversalRequest;
+import com.mgi.agentconnect.client.SendReversalResponse;
+import com.mgi.agentconnect.client.SendReversalType;
+import com.mgi.agentconnect.client.TransactionStatus;
 import com.mgi.paypal.inputbean.CommitTransactionInputBean;
+import com.mgi.paypal.inputbean.SendReversalInputBean;
 import com.mgi.paypal.inputbean.SendValidationInputBean;
 import com.mgi.paypal.util.CalendarUtil;
 import com.mgi.paypal.util.Mgi_Paypal_Constants;
@@ -290,5 +299,178 @@ public class TransactionBO {
 		LOGGER.debug("Exit commitTransaction.");
 
 		return commitTransactionResponseForUI;
+	}
+
+	public static void doRealTimeSendReversal(
+			String mgiTransactionSessionId) {
+		DetailLookupResponse detailLookupResponse = doDetailLookUpForRealTimeSendReversal(mgiTransactionSessionId);
+
+		if (detailLookupResponse != null
+				&& !detailLookupResponse.getTransactionStatus().equals(
+						TransactionStatus.UNCOMMITED)) {
+
+			// DO Send Reversal in RealTime
+
+			SendReversalInputBean sendReversalInputBean = new SendReversalInputBean();
+
+			sendReversalInputBean.setReferenceNumber(detailLookupResponse
+					.getReferenceNumber());
+			sendReversalInputBean.setSendAmount(detailLookupResponse
+					.getSendAmounts().getSendAmount());
+
+			for (AmountInfo amountInfo : detailLookupResponse.getSendAmounts()
+					.getDetailSendAmounts()) {
+				if (amountInfo.getAmountType().equals(
+						"totalMgiCollectedFeesAndTaxes")) {
+					sendReversalInputBean.setSendCurrency(amountInfo
+							.getAmountCurrency());
+					sendReversalInputBean.setFeeAmount(amountInfo.getAmount());
+					break;
+				}
+			}
+
+			if (doSendReversalInRealTime(sendReversalInputBean)) {
+
+				try {
+					MoneyGramPayPalDAO
+							.updateHistoryDetailStatusReversedAndRejected(
+									detailLookupResponse.getReferenceNumber(),
+									mgiTransactionSessionId);
+				} catch (Exception exception) {
+					// TODO Auto-generated catch block
+					exception.printStackTrace();
+				}
+
+			}
+
+		} else {
+
+			try {
+				MoneyGramPayPalDAO
+						.updateHistoryDetailStatusReversedAndRejected(null,
+								mgiTransactionSessionId);
+			} catch (Exception exception) {
+				// TODO Auto-generated catch block
+				exception.printStackTrace();
+			}
+		}
+
+	}
+	private static boolean doSendReversalInRealTime(
+			SendReversalInputBean sendReversalInputBean) {
+
+		LOGGER.debug("Enter sendReversalInRealTime.");
+
+		SendReversalRequest sendReversalRequest = new SendReversalRequest();
+		sendReversalRequest.setAgentID(PropertyUtil.constantFromProperties
+				.getString("AGENT_ID"));
+		sendReversalRequest
+				.setAgentSequence(PropertyUtil.constantFromProperties
+						.getString("AGENT_SEQUENCE"));
+		sendReversalRequest.setToken(PropertyUtil.constantFromProperties
+				.getString("TOKEN"));
+
+		sendReversalRequest.setTimeStamp(CalendarUtil.getTimeStamp());
+		sendReversalRequest.setApiVersion(PropertyUtil.constantFromProperties
+				.getString("API_VERSION"));
+		sendReversalRequest
+				.setClientSoftwareVersion(PropertyUtil.constantFromProperties
+						.getString("CLIENT_SOFTWARE_VERSION"));
+		sendReversalRequest
+				.setSendAmount(sendReversalInputBean.getSendAmount());
+		sendReversalRequest.setFeeAmount(sendReversalInputBean.getFeeAmount());
+		sendReversalRequest.setSendCurrency(sendReversalInputBean
+				.getSendCurrency());
+		sendReversalRequest.setReferenceNumber(sendReversalInputBean
+				.getReferenceNumber());
+		sendReversalRequest.setReversalType(SendReversalType.C);
+		sendReversalRequest
+				.setSendReversalReason(SendReversalReasonCode.MS_NOT_USED);
+		sendReversalRequest.setFeeRefund("Y");
+
+		LOGGER.debug(new XStream().toXML(sendReversalRequest));
+
+		while (true) {
+			try {
+				AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
+				SendReversalResponse sendReversalResponse = client
+						.sendReversal(sendReversalRequest);
+
+				LOGGER.debug(new XStream().toXML(sendReversalResponse));
+				break;
+			} catch (Exception exception) {
+				// If send reversal called for already reversed Transaction then
+				// error is 'Transaction not in Send status'
+				if (exception.getLocalizedMessage().equalsIgnoreCase(
+						"Transaction not in Send status")) {
+					return true;
+				} else if (exception.getLocalizedMessage().equalsIgnoreCase(
+						"Send reversal/cancel must be requested same day")) {
+					exception.printStackTrace();
+					LOGGER.error("Retrying with reversal type R.");
+					
+					sendReversalRequest.setReversalType(SendReversalType.R);
+				} else {
+					LOGGER.error("SendReversal Failed for MgiReferenceNumber : "
+							+ sendReversalInputBean.getReferenceNumber()
+							+ ". Becasue of : "
+							+ exception.getLocalizedMessage());
+					LOGGER.error("sendReversalRequest: "
+							+ new Gson().toJson(sendReversalRequest));
+
+					exception.printStackTrace();
+					return false;
+				}
+			}
+		}
+
+		LOGGER.debug("Exit sendReversalInRealTime.");
+
+		return true;
+	}
+
+	private static DetailLookupResponse doDetailLookUpForRealTimeSendReversal(
+			String mgiTransactionSessionId) {
+
+		LOGGER.debug("Enter detailLookUpForRealTimeSendReversal.");
+
+		DetailLookupRequest detailLookupRequest = new DetailLookupRequest();
+
+		detailLookupRequest.setAgentID(PropertyUtil.constantFromProperties
+				.getString("AGENT_ID"));
+		detailLookupRequest
+				.setAgentSequence(PropertyUtil.constantFromProperties
+						.getString("AGENT_SEQUENCE"));
+		detailLookupRequest.setApiVersion(PropertyUtil.constantFromProperties
+				.getString("API_VERSION"));
+		detailLookupRequest
+				.setClientSoftwareVersion(PropertyUtil.constantFromProperties
+						.getString("CLIENT_SOFTWARE_VERSION"));
+		detailLookupRequest.setIncludeUseData(false);
+		detailLookupRequest.setLanguage(PropertyUtil.constantFromProperties
+				.getString("LANGUAGE_CODE_ENGLISH"));
+		detailLookupRequest.setTimeStamp(CalendarUtil.getTimeStamp());
+		detailLookupRequest.setToken(PropertyUtil.constantFromProperties
+				.getString("TOKEN"));
+		detailLookupRequest.setMgiTransactionSessionID(mgiTransactionSessionId);
+		AgentConnect_AgentConnect_Client client = new AgentConnect_AgentConnect_Client();
+		
+		LOGGER.debug(new XStream().toXML(detailLookupRequest));
+		
+		DetailLookupResponse detailLookupResponse = null;
+		try {
+			detailLookupResponse = client.detailLookup(detailLookupRequest);
+			LOGGER.debug(new XStream().toXML(detailLookupResponse));
+		} catch (Exception exception) {
+			return null;
+
+		}
+		if (detailLookupResponse == null) {
+			return null;
+		}
+
+		LOGGER.debug("Exit detailLookUpForRealTimeSendReversal.");
+
+		return detailLookupResponse;
 	}
 }
