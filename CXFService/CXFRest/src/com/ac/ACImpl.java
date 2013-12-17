@@ -429,7 +429,7 @@ public class ACImpl implements ACInterface {
 							commitTransactionInputBean
 									.getMgiTransactionSessionID());
 			CommitTransactionResponse commitTransactionResponse = new CommitTransactionResponse();
-			if (referenceNumber.trim().equals("")) {
+			if (referenceNumber.trim().equals("")&& referenceNumber.equalsIgnoreCase("sendValidate")) {
 
 				commitTransactionResponse.setTransactionSuccess(false);
 				commitTransactionResponse.setErrorMessage(PropertyUtil.messageFromProperties
@@ -697,7 +697,7 @@ public class ACImpl implements ACInterface {
 					.setErrorMessage(PropertyUtil.messageFromProperties
 							.getString("TRANSACTION_FAILED_RETRY"));
 		}
-
+		TransactionBO.doRealTimeSendReversal(mgiTransactionSessionID);
 		return new Gson().toJson(commitTransactionResponse);
 
 	}
