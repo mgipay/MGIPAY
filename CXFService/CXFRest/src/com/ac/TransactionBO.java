@@ -1,6 +1,8 @@
 package com.ac;
 
 import java.util.Hashtable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -111,6 +113,10 @@ public class TransactionBO {
 				.getSendCurrency());
 		sendValidationRequest.setAgentUseSendData(sendValidationInputBean
 				.getSenderEmail());
+		sendValidationRequest.setMessageField1(PropertyUtil.constantFromProperties
+				.getString("PAYPAL_TRANSACTION"));
+	
+		
 
 		com.mgi.paypal.response.SendValidationResponse sendValidationResponseForUI 
 		= new com.mgi.paypal.response.SendValidationResponse();
@@ -170,6 +176,20 @@ public class TransactionBO {
 
 		return sendValidationResponseForUI;
 	}
+	
+
+public static String replaceSpecialChar(String string) {
+
+		Pattern pt = Pattern.compile("[^a-zA-Z0-9]");
+		Matcher match = pt.matcher(string);
+		while (match.find()) {
+			String string2 = match.group();
+			string = string.replaceAll("\\" + string2, "");
+		}
+		
+		return string;
+		
+	}
 
 	private static void setSenderName(
 			SendValidationInputBean sendValidationInputBean,
@@ -177,8 +197,8 @@ public class TransactionBO {
 
 		LOGGER.debug("Enter setSenderName.");
 
-		String firstNameFromUI = sendValidationInputBean.getSenderFirstName();
-		String lastNameFromUI = sendValidationInputBean.getSenderLastName();
+		String firstNameFromUI = replaceSpecialChar(sendValidationInputBean.getSenderFirstName());
+		String lastNameFromUI = replaceSpecialChar(sendValidationInputBean.getSenderLastName());
 
 		if (firstNameFromUI.length() <= Mgi_Paypal_Constants.INTEGER_TWENTY) {
 			sendValidationRequest.setSenderFirstName(firstNameFromUI);

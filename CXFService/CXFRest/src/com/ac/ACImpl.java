@@ -429,7 +429,7 @@ public class ACImpl implements ACInterface {
 							commitTransactionInputBean
 									.getMgiTransactionSessionID());
 			CommitTransactionResponse commitTransactionResponse = new CommitTransactionResponse();
-			if (referenceNumber.trim().equals("")&& referenceNumber.equalsIgnoreCase("sendValidate")) {
+			if (referenceNumber.trim().equals("")) {
 
 				commitTransactionResponse.setTransactionSuccess(false);
 				commitTransactionResponse.setErrorMessage(PropertyUtil.messageFromProperties
