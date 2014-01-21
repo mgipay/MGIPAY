@@ -178,7 +178,7 @@ public class TransactionBO {
 	}
 	
 
-public static String replaceSpecialChar(String string) {
+private static String replaceSpecialChar(String string) {
 
 		Pattern pt = Pattern.compile("[^a-zA-Z0-9]");
 		Matcher match = pt.matcher(string);
